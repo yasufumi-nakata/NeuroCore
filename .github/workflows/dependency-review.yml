@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v4
         if: steps.repository.outputs.private != 'true' || steps.repository.outputs.advanced_security == 'enabled'
 
-      - uses: actions/dependency-review-action@v4
+      - uses: actions/dependency-review-action@v5
         if: steps.repository.outputs.private != 'true' || steps.repository.outputs.advanced_security == 'enabled'
         with:
           fail-on-severity: high
