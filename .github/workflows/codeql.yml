@@ -22,15 +22,31 @@ jobs:
       matrix:
         language: [python, javascript-typescript]
     steps:
+      - name: Inspect repository security capability
+        id: repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "private=$(gh api repos/${{ github.repository }} --jq '.private')" >> "$GITHUB_OUTPUT"
+          echo "advanced_security=$(gh api repos/${{ github.repository }} --jq '.security_and_analysis.advanced_security.status // "disabled"')" >> "$GITHUB_OUTPUT"
+
+      - name: Skip CodeQL when private repository has no Advanced Security
+        if: steps.repository.outputs.private == 'true' && steps.repository.outputs.advanced_security != 'enabled'
+        run: |
+          echo "CodeQL upload requires GitHub Advanced Security for private repositories."
+          echo "advanced_security=${{ steps.repository.outputs.advanced_security }}"
+
       - uses: actions/checkout@v4
+        if: steps.repository.outputs.private != 'true' || steps.repository.outputs.advanced_security == 'enabled'
 
       - name: Initialize CodeQL
+        if: steps.repository.outputs.private != 'true' || steps.repository.outputs.advanced_security == 'enabled'
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
 
       - name: Install frontend dependencies
-        if: matrix.language == 'javascript-typescript'
+        if: (steps.repository.outputs.private != 'true' || steps.repository.outputs.advanced_security == 'enabled') && matrix.language == 'javascript-typescript'
         uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -38,13 +54,14 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Build frontend for analysis
-        if: matrix.language == 'javascript-typescript'
+        if: (steps.repository.outputs.private != 'true' || steps.repository.outputs.advanced_security == 'enabled') && matrix.language == 'javascript-typescript'
         working-directory: frontend
         run: |
           npm ci
           npm run build
 
       - name: Perform CodeQL Analysis
+        if: steps.repository.outputs.private != 'true' || steps.repository.outputs.advanced_security == 'enabled'
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{ matrix.language }}"
