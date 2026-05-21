@@ -41,7 +41,7 @@ jobs:
 
       - name: Initialize CodeQL
         if: steps.repository.outputs.private != 'true' || steps.repository.outputs.advanced_security == 'enabled'
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
 
@@ -62,6 +62,6 @@ jobs:
 
       - name: Perform CodeQL Analysis
         if: steps.repository.outputs.private != 'true' || steps.repository.outputs.advanced_security == 'enabled'
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{ matrix.language }}"
