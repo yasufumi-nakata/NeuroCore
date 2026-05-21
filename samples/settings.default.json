@@ -1,0 +1,36 @@
+{
+  "device": {
+    "name": "generic-eeg",
+    "sampling_rate": 250.0,
+    "channels": ["Fz", "Cz", "Pz", "Oz"],
+    "channel_aliases": {},
+    "reference": "common"
+  },
+  "signal": {
+    "highpass_hz": 1.0,
+    "lowpass_hz": 40.0,
+    "target_sampling_rate": 250.0,
+    "window_seconds": 1.0,
+    "step_seconds": 0.25,
+    "max_clock_drift_ppm": 100.0
+  },
+  "safety": {
+    "min_confidence": 0.75,
+    "max_actions_per_second": 4.0,
+    "require_human_arm": true,
+    "emergency_stop": false,
+    "block_prompt_like_agent_payloads": true
+  },
+  "agent": {
+    "allowed_tools": ["open_task", "summarize_context", "draft_reply", "run_local_plan"],
+    "max_payload_chars": 512,
+    "require_untrusted_envelope": true
+  },
+  "bindings": [
+    { "intent": "cursor_left", "kind": "mouse", "target": "move_x", "value": -24 },
+    { "intent": "cursor_right", "kind": "mouse", "target": "move_x", "value": 24 },
+    { "intent": "select", "kind": "mouse", "target": "click", "value": "left" },
+    { "intent": "cancel", "kind": "keyboard", "target": "key", "value": "Escape" },
+    { "intent": "agent_focus", "kind": "agent", "target": "open_task", "value": null }
+  ]
+}

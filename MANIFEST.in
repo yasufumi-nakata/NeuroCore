@@ -1,0 +1,4 @@
+include README.md
+include DESIGN.md
+recursive-include samples *.csv *.json
+recursive-include docs *.md
