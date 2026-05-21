@@ -24,13 +24,6 @@ updates:
     labels:
       - dependencies
     ignore:
-      - dependency-name: actions/checkout
-        versions: ["6.x"]
-      - dependency-name: actions/setup-python
-        versions: ["6.x"]
-      - dependency-name: actions/configure-pages
-        versions: ["6.x"]
-      - dependency-name: github/codeql-action
-        versions: ["4.x"]
-      - dependency-name: actions/dependency-review-action
-        versions: ["5.x"]
+      - dependency-name: "*"
+        update-types:
+          - version-update:semver-major
