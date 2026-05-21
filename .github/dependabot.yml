@@ -32,3 +32,5 @@ updates:
         versions: ["6.x"]
       - dependency-name: github/codeql-action
         versions: ["4.x"]
+      - dependency-name: actions/dependency-review-action
+        versions: ["5.x"]
