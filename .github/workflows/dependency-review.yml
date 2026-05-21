@@ -27,7 +27,7 @@ jobs:
           echo "Dependency Review requires GitHub Advanced Security for private repositories."
           echo "advanced_security=${{ steps.repository.outputs.advanced_security }}"
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         if: steps.repository.outputs.private != 'true' || steps.repository.outputs.advanced_security == 'enabled'
 
       - uses: actions/dependency-review-action@v4

@@ -26,7 +26,7 @@ jobs:
         if: steps.repository.outputs.private == 'true'
         run: echo "OSSF Scorecard action cannot read this private repository with the default integration token."
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         if: steps.repository.outputs.private != 'true'
         with:
           persist-credentials: false
