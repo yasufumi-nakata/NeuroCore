@@ -1,0 +1,35 @@
+name: Safety case
+description: EEG control safety、agent payload、OS action boundary に関する報告です。
+title: "[Safety]: "
+labels: ["safety"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        exploit detail、private EEG data、credentials、未公開 payload は public issue に貼らないでください。必要なら SECURITY.md に従ってください。
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - low-confidence action allowed
+        - emergency stop bypass
+        - prompt-like payload bypass
+        - unsafe binding default
+        - audit log missing or wrong
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: 想定される影響を redacted form で書いてください。
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: synthetic fixture や redacted command を使ってください。
+      render: json

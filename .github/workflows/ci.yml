@@ -5,20 +5,29 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   python:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: ${{ matrix.python-version }}
       - name: Install
         run: python -m pip install -e ".[dev,server]"
+      - name: Lint
+        run: python -m ruff check backend scripts
       - name: Test
         run: python -m pytest
       - name: Self-test
-        run: neurocore self-test --json
+        run: python -m neurocore.cli self-test --json
 
   frontend:
     runs-on: ubuntu-latest
@@ -31,7 +40,27 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install
         working-directory: frontend
-        run: npm install
+        run: npm ci
       - name: Build
         working-directory: frontend
         run: npm run build
+
+  docs-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[dev,server]"
+      - name: Repository health
+        run: python scripts/oss_health_check.py
+      - name: Build package artifacts
+        run: python scripts/build_package_artifacts.py
+      - name: Build pages
+        run: python scripts/build_pages.py
+      - name: Validate pages
+        run: python scripts/validate_pages.py
+      - name: Check distributions
+        run: python -m twine check dist/*.whl dist/*.tar.gz

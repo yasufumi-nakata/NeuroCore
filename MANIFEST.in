@@ -1,4 +1,13 @@
 include README.md
 include DESIGN.md
+include LICENSE
+include CHANGELOG.md
+include CITATION.cff
+include CONTRIBUTING.md
+include CODE_OF_CONDUCT.md
+include SECURITY.md
+include SUPPORT.md
+include GOVERNANCE.md
+include ROADMAP.md
 recursive-include samples *.csv *.json
-recursive-include docs *.md
+recursive-include docs *.md *.html *.css

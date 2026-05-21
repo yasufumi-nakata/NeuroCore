@@ -9,3 +9,11 @@ build/
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/
+docs/architecture/
+docs/deployment/
+docs/distributions/
+docs/github-action/
+docs/maintainer-guide/
+docs/packages/
+docs/settings-ui/
+docs/testing-strategy/

@@ -1,0 +1,46 @@
+name: Bug report
+description: NeuroCore runtime の不具合を報告します。
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        private EEG data、credentials、未公開 decoder payload は貼らないでください。
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: 何が起きたかを短く書いてください。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: 再現手順、コマンド、fixture を書いてください。
+      placeholder: |
+        neurocore self-test --json
+        neurocore run-csv samples/synthetic_eeg.csv --sampling-rate 250 --json
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      options:
+        - frame or loader
+        - signal pipeline
+        - stream buffer
+        - control routing
+        - agent safety envelope
+        - settings UI
+        - GitHub Actions or packaging
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: redacted logs だけを貼ってください。
+      render: shell

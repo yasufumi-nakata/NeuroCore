@@ -1,0 +1,38 @@
+name: Feature request
+description: NeuroCore runtime の拡張を提案します。
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: どの EEG-to-control workflow に必要かを書いてください。
+    validations:
+      required: true
+  - type: dropdown
+    id: boundary
+    attributes:
+      label: Boundary
+      options:
+        - core runtime
+        - device adapter
+        - settings UI
+        - tests or self-test
+        - docs or packaging
+        - outside NeuroCore scope
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: Proposed design
+      description: decoder weights や OS side effect を core に入れずに実現する方法を書いてください。
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints
+      options:
+        - label: Decoder weights are not added to this repository.
+        - label: OS input and AI-agent execution remain outside `backend/neurocore`.
+        - label: Safety-relevant behavior will include allowed and blocked tests.

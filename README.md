@@ -1,5 +1,11 @@
 # NeuroCore
 
+[![CI](https://github.com/yasufumi-nakata/NeuroCore/actions/workflows/ci.yml/badge.svg)](https://github.com/yasufumi-nakata/NeuroCore/actions/workflows/ci.yml)
+[![Repository Health](https://github.com/yasufumi-nakata/NeuroCore/actions/workflows/oss-health.yml/badge.svg)](https://github.com/yasufumi-nakata/NeuroCore/actions/workflows/oss-health.yml)
+[![CodeQL](https://github.com/yasufumi-nakata/NeuroCore/actions/workflows/codeql.yml/badge.svg)](https://github.com/yasufumi-nakata/NeuroCore/actions/workflows/codeql.yml)
+[![Tutorial](https://img.shields.io/badge/tutorial-GitHub%20Pages-256f5b)](https://www.yasufumi.net/NeuroCore/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 NeuroCore は、EEG を装着したユーザーがマウス、キーボード、AI エージェントを操作するための研究向けランタイムライブラリです。脳波から intent を推定する重み付けや分類器はこのリポジトリには含めません。外部デコーダが出した intent を、NeuroCore が検証し、安全な操作 envelope に変換します。
 
 ## いま入っているもの
@@ -117,6 +123,18 @@ windows = buffer.append([[0.1, 0.2], [0.3, 0.4]])
 - [docs/architecture.md](docs/architecture.md)
 - [docs/testing-strategy.md](docs/testing-strategy.md)
 - [docs/settings-ui.md](docs/settings-ui.md)
+- [docs/tutorial/index.html](docs/tutorial/index.html)
+- [docs/distributions.md](docs/distributions.md)
+
+公開チュートリアルは GitHub Pages の `https://www.yasufumi.net/NeuroCore/` を想定しています。
+
+## OSS 運用
+
+- 参加方法: [CONTRIBUTING.md](CONTRIBUTING.md)
+- セキュリティ報告: [SECURITY.md](SECURITY.md)
+- サポート: [SUPPORT.md](SUPPORT.md)
+- ガバナンス: [GOVERNANCE.md](GOVERNANCE.md)
+- ロードマップ: [ROADMAP.md](ROADMAP.md)
 
 ## 重要な境界
 

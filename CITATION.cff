@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+title: NeuroCore
+message: "If you use NeuroCore, please cite this repository."
+type: software
+authors:
+  - name: NeuroCore contributors
+version: "0.1.0"
+repository-code: "https://github.com/yasufumi-nakata/NeuroCore"
+license: MIT
+date-released: "2026-05-21"

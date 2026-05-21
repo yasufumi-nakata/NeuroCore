@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NeuroCore Tutorial</title>
+    <meta name="description" content="NeuroCore の install、self-test、CSV pipeline、intent routing、settings UI を確認する tutorial です。">
+    <link rel="stylesheet" href="../assets/neurocore-pages.css">
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <nav class="nav" aria-label="Primary navigation">
+          <a class="brand" href="../" aria-label="NeuroCore tutorial home">
+            <span class="brand-mark">NC</span>
+            <span><strong>NeuroCore</strong><span>EEG Control Runtime</span></span>
+          </a>
+          <div class="nav-links">
+            <a href="../tutorial/">Tutorial</a>
+            <a href="../architecture/">Architecture</a>
+            <a href="../testing-strategy/">Testing</a>
+            <a href="../distributions/">Packages</a>
+            <a class="button" href="https://github.com/yasufumi-nakata/NeuroCore">GitHub</a>
+          </div>
+        </nav>
+      </header>
+
+      <main>
+        <article class="article section">
+          <p class="breadcrumb"><a href="../">NeuroCore</a> / Tutorial</p>
+          <h1>NeuroCore tutorial</h1>
+          <p>
+            この tutorial は、EEG device をまだ接続していない状態でも runtime が壊れていないかを確認できる最短経路です。
+            NeuroCore は decoder weights を持たないため、ここでは synthetic EEG と JSON intent fixture を使います。
+          </p>
+
+          <h2>1. Install</h2>
+          <pre class="terminal"><code>python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e ".[dev,server]"</code></pre>
+
+          <h2>2. Run the self-test</h2>
+          <pre class="terminal"><code>neurocore self-test --json</code></pre>
+          <p>
+            self-test は synthetic EEG の正常経路に加えて、NaN、invalid passband、low confidence、emergency stop、
+            agent payload guard のような破綻ケースを確認します。
+          </p>
+
+          <h2>3. Process a CSV fixture</h2>
+          <pre class="terminal"><code>neurocore run-csv samples/synthetic_eeg.csv --sampling-rate 250 --json</code></pre>
+          <p>
+            CSV は samples x channels の形です。実デバイス loader を足す場合も、まず `NeuroFrame` へ正規化してから pipeline へ渡します。
+          </p>
+
+          <h2>4. Route decoded intents</h2>
+          <pre class="terminal"><code>neurocore route-intent select --confidence 0.92 --json
+neurocore simulate-intents samples/intent_commands.json --json</code></pre>
+          <p>
+            `ControlRouter` は外部 decoder が決めた intent を検証し、mouse、keyboard、agent の action envelope へ変換します。
+            実際の OS 操作や agent 実行は、この core package では行いません。
+          </p>
+
+          <h2>5. Start the local API and settings UI</h2>
+          <pre class="terminal"><code>PYTHONPATH=backend uvicorn neurocore.api:app --reload --port 8010
+cd frontend
+npm install
+npm run dev -- --host 127.0.0.1 --port 5174</code></pre>
+          <p>
+            設定画面では device、signal plan、safety policy、routing、self-test を確認できます。
+            API が起動していない場合も UI は表示されますが、実運用前の検証では API self-test を通してください。
+          </p>
+
+          <h2>6. Before adding a real EEG device</h2>
+          <ul>
+            <li>decoder weights、training checkpoints、個人 EEG raw data はこの repository に入れません。</li>
+            <li>device loader は timestamp、sampling rate、channel labels、unit を明示して `NeuroFrame` を作ります。</li>
+            <li>OS 操作と AI agent 実行は、別プロセスの permissioned service で human-arm と audit をかけます。</li>
+            <li>新しい route や payload を足すときは、allowed path と blocked path の両方を test に入れます。</li>
+          </ul>
+
+          <div class="callout">
+            <strong>運用メモ:</strong>
+            GitHub Actions は Python tests、frontend build、Pages、package artifact、CodeQL、Scorecard、Dependency Review を分けて実行します。
+            issue や alert が出た場合は、まず該当 workflow と security alert を確認し、再現できる最小テストを追加してから修正します。
+          </div>
+        </article>
+      </main>
+
+      <footer class="site-footer">
+        <div class="section">NeuroCore は decoder weights を含まない EEG control runtime です。OS 操作と agent 実行は外部の permissioned service が担当します。</div>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tools
+        run: python -m pip install -e ".[dev,server]"
+
+      - name: Build public pages
+        run: python scripts/build_pages.py
+
+      - name: Build distributions
+        run: python -m build
+
+      - name: Build release metadata
+        run: python scripts/build_release_metadata.py
+
+      - name: Check distributions
+        run: python -m twine check dist/*.whl dist/*.tar.gz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: neurocore-dist
+          path: dist/*
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
