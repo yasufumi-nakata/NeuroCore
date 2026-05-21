@@ -23,3 +23,12 @@ updates:
     open-pull-requests-limit: 5
     labels:
       - dependencies
+    ignore:
+      - dependency-name: actions/checkout
+        versions: ["6.x"]
+      - dependency-name: actions/setup-python
+        versions: ["6.x"]
+      - dependency-name: actions/configure-pages
+        versions: ["6.x"]
+      - dependency-name: github/codeql-action
+        versions: ["4.x"]
