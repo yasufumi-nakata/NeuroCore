@@ -14,7 +14,7 @@ NeuroCore は OpenRI と同じ方針で、通常の tests だけでなく reposi
 
 ## Private Repository Notes
 
-private repository では、CodeQL upload は GitHub Advanced Security が有効な場合だけ実行します。
+private repository では、CodeQL upload と Dependency Review は GitHub Advanced Security が有効な場合だけ実行します。
 Advanced Security がない場合、workflow は明示的に skip します。OSSF Scorecard も default integration token では private repository を読めないため、public repository だけで実行します。
 Dependabot alerts と automated security fixes は repository API から有効化できます。
 

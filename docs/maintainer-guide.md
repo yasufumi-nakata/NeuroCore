@@ -10,7 +10,7 @@ gh run list --repo yasufumi-nakata/NeuroCore --limit 20
 ```
 
 Code scanning と Dependabot alerts は repository security settings が有効な場合に API で確認できます。
-private repository で Advanced Security が未契約の場合、CodeQL と Scorecard は workflow 内で skip します。
+private repository で Advanced Security が未契約の場合、CodeQL、Dependency Review、Scorecard は workflow 内で skip します。
 
 ```bash
 gh api repos/yasufumi-nakata/NeuroCore/code-scanning/alerts
