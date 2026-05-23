@@ -8,6 +8,7 @@ from neurocore.datasets import DatasetRecord
 from neurocore.materialization import (
     extract_supported_signal_files_from_archive,
     materialize_remote_files,
+    resolve_inventory_remote_files,
     resolve_remote_files,
     summarize_remote_file_resolutions,
     _html_fetch_target,
@@ -69,6 +70,41 @@ def test_zenodo_resolution_classifies_direct_and_archive_files() -> None:
     assert resolution.files[1].archive is True
     assert summary["directly_loadable_file_count"] == 1
     assert summary["archive_file_count"] == 1
+
+
+def test_inventory_remote_resolution_supports_offsets_for_batch_exercise() -> None:
+    plans = [
+        plan_acquisition(
+            record(
+                record_id=str(index),
+                url=f"https://zenodo.org/records/{1000 + index}",
+                doi=f"10.5281/zenodo.{1000 + index}",
+            )
+        )
+        for index in range(1, 5)
+    ]
+    queried: list[str] = []
+
+    def fetch_json(url: str):
+        queried.append(url)
+        record_id = url.rsplit("/", 1)[-1]
+        return {
+            "files": [
+                {
+                    "key": f"sub-{record_id}_eeg.edf",
+                    "links": {"self": f"https://example.test/{record_id}.edf"},
+                }
+            ]
+        }
+
+    resolutions = resolve_inventory_remote_files(plans, limit=2, offset=1, fetch_json=fetch_json)
+
+    assert [resolution.record_id for resolution in resolutions] == ["2", "3"]
+    assert queried == [
+        "https://zenodo.org/api/records/1002",
+        "https://zenodo.org/api/records/1003",
+    ]
+    assert all(resolution.files[0].directly_loadable for resolution in resolutions)
 
 
 def test_remote_resolution_does_not_treat_metadata_csv_as_raw_signal() -> None:
@@ -165,6 +201,49 @@ def test_openneuro_resolution_uses_latest_snapshot_and_urls() -> None:
     assert resolution.status == "resolved"
     assert resolution.files[0].directly_loadable is True
     assert resolution.files[0].source_url.endswith("/versions/1.0.0")
+
+
+def test_openneuro_resolution_chooses_url_matching_filename() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://openneuro.org/datasets/ds004147",
+            doi="",
+            source_domain="openneuro.org",
+            description="BIDS BrainVision EEG",
+        )
+    )
+
+    def fetch_json(url: str):
+        decoded = unquote(url)
+        if "datasetInfo" in decoded:
+            return {"data": {"dataset": {"snapshots": [{"tag": "1.0.2", "created": "2024-01-01"}]}}}
+        if "snapshotFiles" in decoded:
+            return {
+                "data": {
+                    "snapshot": {
+                        "files": [
+                            {
+                                "filename": "sub-36/eeg/sub-36_task-casinos_eeg.vhdr",
+                                "size": 6140,
+                                "directory": False,
+                                "annexed": True,
+                                "id": "checksum",
+                                "urls": [
+                                    "https://s3.amazonaws.com/openneuro.org/ds004147/sub-38/eeg/sub-38_task-casinos_eeg.vhdr",
+                                    "https://s3.amazonaws.com/openneuro.org/ds004147/sub-36/eeg/sub-36_task-casinos_eeg.vhdr",
+                                ],
+                            }
+                        ]
+                    }
+                }
+            }
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].name == "sub-36/eeg/sub-36_task-casinos_eeg.vhdr"
+    assert "/sub-36/eeg/sub-36_task-casinos_eeg.vhdr" in resolution.files[0].url
+    assert resolution.files[0].directly_loadable is True
 
 
 def test_osf_resolution_preserves_materialized_path_for_raw_detection() -> None:

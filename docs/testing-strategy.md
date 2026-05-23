@@ -40,6 +40,7 @@ PYTHONPATH=backend python scripts/verify_dataset_loading.py --inventory ../EEG-D
 PYTHONPATH=backend python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv
 PYTHONPATH=backend python -m neurocore.cli dataset-exercise ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 25 --json
 PYTHONPATH=backend python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 10
+PYTHONPATH=backend python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 100 --resolve-offset 100
 PYTHONPATH=backend python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --cache-root private/raw-cache --max-local-files-per-record 0 --max-loads 0 --load-local
 ```
 

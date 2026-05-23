@@ -244,6 +244,7 @@ def resolve_inventory_remote_files(
     plans: Iterable[AcquisitionPlan],
     *,
     limit: int | None = None,
+    offset: int = 0,
     providers: set[str] | None = None,
     automation_statuses: set[str] | None = None,
     fetch_json: JsonFetcher | None = None,
@@ -251,6 +252,7 @@ def resolve_inventory_remote_files(
     max_pages: int = 30,
 ) -> tuple[RemoteFileResolution, ...]:
     selected: list[RemoteFileResolution] = []
+    eligible_seen = 0
     for plan in plans:
         if providers and plan.provider not in providers:
             continue
@@ -258,6 +260,10 @@ def resolve_inventory_remote_files(
             continue
         if not any(candidate.method in RESOLVABLE_METHODS and not candidate.requires_auth for candidate in plan.candidates):
             continue
+        if eligible_seen < offset:
+            eligible_seen += 1
+            continue
+        eligible_seen += 1
         selected.append(resolve_remote_files(plan, fetch_json=fetch_json, timeout=timeout, max_pages=max_pages))
         if limit is not None and len(selected) >= limit:
             break
@@ -630,7 +636,7 @@ def _resolve_openneuro(
                 plan,
                 candidate,
                 name=name,
-                url=_string(urls[0] if urls else ""),
+                url=_openneuro_download_url(urls, name),
                 size_bytes=_int_or_none(item.get("size")),
                 checksum=_string(item.get("id")),
                 media_type="annexed" if item.get("annexed") else "git-object",
@@ -1828,6 +1834,18 @@ def _openneuro_files_query(dataset_id: str, tag: str) -> str:
         "{ files(recursive: true) { filename size directory annexed id urls } }"
         " }"
     )
+
+
+def _openneuro_download_url(urls: list[Any], filename: str) -> str:
+    candidates = [_string(url) for url in urls if _string(url)]
+    normalized_name = filename.replace("\\", "/").lstrip("/")
+    if normalized_name:
+        quoted_name = quote(normalized_name, safe="/")
+        for url in candidates:
+            parsed_path = unescape(urlparse(url).path).lstrip("/")
+            if parsed_path.endswith(normalized_name) or parsed_path.endswith(quoted_name):
+                return url
+    return candidates[0] if candidates else ""
 
 
 def _is_archive_name(name: str) -> bool:

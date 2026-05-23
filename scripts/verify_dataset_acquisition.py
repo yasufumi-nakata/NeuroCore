@@ -59,6 +59,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             resolve_inventory_remote_files(
                 plans,
                 limit=None if args.resolve_limit == 0 else args.resolve_limit,
+                offset=args.resolve_offset,
                 providers=set(args.resolve_provider) if args.resolve_provider else None,
                 automation_statuses=(
                     set(args.resolve_status)
@@ -110,11 +111,22 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "inventory": str(args.inventory),
         "cache_root": str(args.cache_root) if args.cache_root else None,
+        "resolution_scope": {
+            "resolve_remote_files": args.resolve_remote_files,
+            "resolve_limit": args.resolve_limit,
+            "resolve_offset": args.resolve_offset,
+            "resolve_provider": list(args.resolve_provider),
+            "resolve_status": list(args.resolve_status),
+            "http_timeout": args.http_timeout,
+            "max_pages": args.max_pages,
+        },
         "plan_summary": plan_summary,
         "sample_plans": [plan.to_dict() for plan in plans[: args.sample_limit]],
         "dataset_exercise_summary": summarize_dataset_exercise(exercise_records),
+        "dataset_exercise_records": [record.to_dict() for record in exercise_records],
         "sample_dataset_exercise_records": [record.to_dict() for record in exercise_records[: args.sample_limit]],
         "remote_file_resolution_summary": summarize_remote_file_resolutions(remote_resolutions),
+        "remote_file_resolution_records": [resolution.to_dict(file_limit=0) for resolution in remote_resolutions],
         "sample_remote_file_resolutions": [resolution.to_dict() for resolution in remote_resolutions[: args.sample_limit]],
         "materialization_summary": summarize_materialization(materialization_results),
         "sample_materialization_results": [result.to_dict() for result in materialization_results[: args.sample_limit]],
@@ -210,6 +222,8 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- generated_at: {report['generated_at']}",
         f"- inventory: {report['inventory']}",
         f"- cache_root: {report['cache_root']}",
+        f"- resolve_limit: {report['resolution_scope']['resolve_limit']}",
+        f"- resolve_offset: {report['resolution_scope']['resolve_offset']}",
         "",
         "## Acquisition Plan",
         "",
@@ -284,6 +298,12 @@ def main() -> int:
         type=int,
         default=25,
         help="Maximum records to resolve remotely; use 0 to attempt every selected record.",
+    )
+    parser.add_argument(
+        "--resolve-offset",
+        type=int,
+        default=0,
+        help="Skip this many selected resolvable records before querying provider APIs.",
     )
     parser.add_argument(
         "--resolve-provider",

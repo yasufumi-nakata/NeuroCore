@@ -72,13 +72,14 @@ python scripts/verify_dataset_loading.py --inventory ../EEG-DATA/eeg_dataset_sum
 python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv
 neurocore dataset-exercise ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 25 --json
 python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 10
+python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 100 --resolve-offset 100
 python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --cache-root private/raw-cache --max-local-files-per-record 0 --max-loads 0 --load-local</code></pre>
           <p>
             EEG-DATA checkout は raw EEG そのものではなく、公開 dataset の metadata 目録として扱います。
             目録 report は EDF/BDF、BrainVision、EEGLAB `.set`、FIF、CNT/GDF、EGI/MFF、eXimia、Nicolet、Persyst、MEF3、NWB、BIDS 風 directory、XDF、MAT、NumPy、CSV などの loader coverage も返します。
             acquisition report は配布元ごとに NeuroCore 内で解決できる公開 file listing、アカウント必須、手動確認を分け、公開 API や file index で解決できるものは remote file candidate として `download_then_load` / `download_extract_then_scan` / `metadata_or_manual_review` に分類します。dataset exercise は各行を `remote_direct_raw_ready`、`remote_archive_requires_extraction`、`blocked_account_required`、`blocked_unusable`、`remote_not_exercised` などの状態へ分類します。
             対応 resolver は Zenodo、Figshare-compatible repositories、OSF、Dataverse-compatible repositories、Dryad、Mendeley、ScienceDB、Stanford Digital Repository、Radboud Data Repository、BNCI Horizon 2020、repository HTML download pages、OpenNeuro、GitHub、Hugging Face、PhysioNet、DANDI、Gin、Kaggle、NEMAR、DOI landing delegation、generic HTML landing、InvenioRDM records です。
-            archive を materialize した場合は zip/tar を安全に展開し、展開後の対応 raw file を再スキャンして loader に渡します。BrainVision などの sidecar 形式では remote file の相対パスを保って保存し、archive 明示時も metadata-only file は download 対象から外します。
+            archive を materialize した場合は zip/tar を安全に展開し、展開後の対応 raw file を再スキャンして loader に渡します。大規模な全件確認は `--resolve-limit` と `--resolve-offset` で分割できます。BrainVision などの sidecar 形式では remote file の相対パスを保って保存し、archive 明示時も metadata-only file は download 対象から外します。
           </p>
 
           <h2>5. Route decoded intents</h2>

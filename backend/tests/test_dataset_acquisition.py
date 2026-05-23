@@ -311,18 +311,22 @@ def test_dataset_resolve_files_cli_reports_summary_without_network(tmp_path, cap
         encoding="utf-8",
     )
 
-    def fake_resolve(*_args, **_kwargs):
+    captured_kwargs = {}
+
+    def fake_resolve(*_args, **kwargs):
+        captured_kwargs.update(kwargs)
         return (RemoteFileResolution("1", "sample", "zenodo", "resolved", ()),)
 
     monkeypatch.setattr("neurocore.cli.resolve_inventory_remote_files", fake_resolve)
 
-    exit_code = main(["dataset-resolve-files", str(csv_path), "--json"])
+    exit_code = main(["dataset-resolve-files", str(csv_path), "--offset", "10", "--json"])
     captured = capsys.readouterr()
     payload = json.loads(captured.out)
 
     assert exit_code == 0
     assert payload["records_resolved"] == 1
     assert payload["sample_resolutions"][0]["provider"] == "zenodo"
+    assert captured_kwargs["offset"] == 10
 
 
 def test_dataset_acquisition_verifier_writes_private_report(tmp_path) -> None:
@@ -357,5 +361,7 @@ def test_dataset_acquisition_verifier_writes_private_report(tmp_path) -> None:
     payload = json.loads(report.read_text(encoding="utf-8"))
     assert payload["confidentiality"].startswith("private dataset acquisition verification")
     assert payload["plan_summary"]["automation_status_counts"]["direct_api"] == 1
+    assert payload["dataset_exercise_records"][0]["record_id"] == "1"
+    assert payload["remote_file_resolution_records"] == []
     assert payload["local_readiness_summary"]["records_checked"] == 1
     assert "Do not copy this report into public docs" in summary.read_text(encoding="utf-8")

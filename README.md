@@ -158,11 +158,12 @@ python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset
 neurocore dataset-exercise ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 25 --json
 python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --cache-root private/raw-cache --load-local
 python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 25
+python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 100 --resolve-offset 100
 python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-provider zenodo --cache-root private/raw-cache --materialize --max-download-bytes 50000000 --load-local
 python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-provider zenodo --cache-root private/raw-cache --materialize --include-archives --extract-archives --max-download-bytes 2000000000 --max-loads 0 --max-local-files-per-record 0 --load-local
 ```
 
-この report は private 出力です。配布元の規約、アカウント要否、容量制限を無視して raw data を自動公開・自動再配布するものではありません。materialization は BrainVision などの sidecar 参照を壊さないよう remote file の相対パスを保持します。archive は `download_extract_then_scan` として扱い、archive 明示時も metadata-only file は落とさず、展開後に対応 raw file が見つかったものだけを `neurocore.load()` の対象にします。
+この report は private 出力です。配布元の規約、アカウント要否、容量制限を無視して raw data を自動公開・自動再配布するものではありません。大規模な全件確認は `--resolve-limit` と `--resolve-offset` で分割できます。materialization は BrainVision などの sidecar 参照を壊さないよう remote file の相対パスを保持します。archive は `download_extract_then_scan` として扱い、archive 明示時も metadata-only file は落とさず、展開後に対応 raw file が見つかったものだけを `neurocore.load()` の対象にします。
 
 ## 設計資料
 

@@ -86,6 +86,7 @@ def cmd_dataset_resolve_files(args: argparse.Namespace) -> int:
     resolutions = resolve_inventory_remote_files(
         plans,
         limit=None if args.limit == 0 else args.limit,
+        offset=args.offset,
         providers=set(args.provider) if args.provider else None,
         automation_statuses=(
             set(args.status)
@@ -112,6 +113,7 @@ def cmd_dataset_exercise(args: argparse.Namespace) -> int:
         resolutions = resolve_inventory_remote_files(
             plans,
             limit=None if args.resolve_limit == 0 else args.resolve_limit,
+            offset=args.resolve_offset,
             providers=set(args.provider) if args.provider else None,
             automation_statuses=set(args.status) if args.status else {"direct_api", "tooling_required"},
             timeout=args.http_timeout,
@@ -280,6 +282,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_resolve = sub.add_parser("dataset-resolve-files", help="Resolve provider API file lists for EEG-DATA rows")
     p_resolve.add_argument("csv", type=Path)
     p_resolve.add_argument("--limit", type=int, default=25, help="Maximum records to resolve; use 0 for all selected rows")
+    p_resolve.add_argument(
+        "--offset",
+        type=int,
+        default=0,
+        help="Skip this many selected resolvable records before querying provider APIs",
+    )
     p_resolve.add_argument("--sample-limit", type=int, default=10)
     p_resolve.add_argument("--file-limit", type=int, default=50, help="Files to show per sample resolution; use 0 for all")
     p_resolve.add_argument("--provider", action="append", default=[], help="Provider filter; repeat for multiple providers")
@@ -301,6 +309,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_exercise.add_argument("csv", type=Path)
     p_exercise.add_argument("--resolve-remote-files", action="store_true")
     p_exercise.add_argument("--resolve-limit", type=int, default=25, help="Maximum records to resolve; use 0 for all")
+    p_exercise.add_argument(
+        "--resolve-offset",
+        type=int,
+        default=0,
+        help="Skip this many selected resolvable records before querying provider APIs",
+    )
     p_exercise.add_argument("--sample-limit", type=int, default=10)
     p_exercise.add_argument("--provider", action="append", default=[], help="Provider filter for remote resolution")
     p_exercise.add_argument("--status", action="append", default=[], help="Automation status filter for remote resolution")
