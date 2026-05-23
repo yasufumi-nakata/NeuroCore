@@ -79,6 +79,38 @@ def test_plan_acquisition_understands_english_access_statuses() -> None:
     assert unavailable.automation_status == "unusable"
 
 
+def test_plan_acquisition_treats_generic_doi_as_automatable() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="generic-doi",
+            url="https://doi.org/10.9999/example-dataset",
+            doi="10.9999/example-dataset",
+            source_domain="doi.org",
+            access_status="すぐに使える",
+        )
+    )
+
+    assert plan.provider == "doi"
+    assert plan.automation_status == "direct_api"
+    assert plan.candidates[0].method == "doi_resolver"
+
+
+def test_plan_acquisition_treats_public_unknown_hosts_as_web_landing() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="web",
+            url="https://lab.example.test/eeg-dataset",
+            doi="",
+            source_domain="lab.example.test",
+            access_status="すぐに使える",
+        )
+    )
+
+    assert plan.provider == "web_landing"
+    assert plan.automation_status == "direct_api"
+    assert plan.candidates[0].method == "http_landing"
+
+
 def test_plan_acquisition_treats_public_sciencedb_as_resolvable_api() -> None:
     plan = plan_acquisition(
         record(
@@ -235,9 +267,10 @@ def test_plan_inventory_acquisition_summary_counts() -> None:
     summary = summarize_acquisition_plans(plans)
 
     assert detect_provider(inventory.records[1]) == "openneuro"
-    assert summary["automation_status_counts"]["direct_api"] == 2
+    assert detect_provider(inventory.records[2]) == "web_landing"
+    assert summary["automation_status_counts"]["direct_api"] == 3
     assert summary["automation_status_counts"].get("tooling_required", 0) == 0
-    assert summary["automation_status_counts"]["manual_review"] == 1
+    assert summary["automation_status_counts"].get("manual_review", 0) == 0
 
 
 def test_local_readiness_finds_cached_signal_file(tmp_path) -> None:

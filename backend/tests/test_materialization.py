@@ -10,6 +10,7 @@ from neurocore.materialization import (
     materialize_remote_files,
     resolve_remote_files,
     summarize_remote_file_resolutions,
+    _html_fetch_target,
 )
 
 
@@ -535,6 +536,13 @@ def test_http_landing_scrapes_direct_file_links() -> None:
 
     assert resolution.files[0].name == "sub-01_eeg.edf"
     assert resolution.files[0].directly_loadable is True
+
+
+def test_http_landing_uses_plain_http_for_known_expired_cert_hosts() -> None:
+    assert (
+        _html_fetch_target("https://archive.ics.uci.edu/dataset/457/eeg")
+        == "http://archive.ics.uci.edu/dataset/457/eeg"
+    )
 
 
 def test_github_resolution_uses_tree_api_and_raw_urls() -> None:

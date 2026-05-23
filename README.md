@@ -59,7 +59,7 @@ neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provide
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider scidb --limit 5 --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider figshare --provider dataverse --limit 5 --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider bnci --provider repository_html --limit 5 --json
-neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider unknown --limit 5 --json
+neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider doi --provider web_landing --limit 5 --json
 neurocore route-intent select --confidence 0.92 --json
 neurocore simulate-intents samples/intent_commands.json --json
 ```

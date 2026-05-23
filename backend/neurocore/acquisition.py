@@ -14,6 +14,7 @@ from .loaders import find_supported_signal_files
 DIRECT_API_PROVIDERS = {
     "dandi",
     "data_ru",
+    "doi",
     "zenodo",
     "figshare",
     "gin",
@@ -32,6 +33,7 @@ DIRECT_API_PROVIDERS = {
     "invenio",
     "bnci",
     "repository_html",
+    "web_landing",
 }
 PUBLIC_FILE_LISTING_METHODS = {
     "dandi": "dandi_api",
@@ -132,7 +134,12 @@ def plan_acquisition(record: DatasetRecord) -> AcquisitionPlan:
         rationale = "provider or inventory access status requires account approval before raw files can be fetched"
     elif provider in DIRECT_API_PROVIDERS:
         status = "direct_api"
-        rationale = "provider exposes a public API or stable file listing that can be automated"
+        if provider == "doi":
+            rationale = "DOI redirects can be resolved automatically before scraping the final file listing"
+        elif provider == "web_landing":
+            rationale = "public landing page can be scraped for direct signal files or archives"
+        else:
+            rationale = "provider exposes a public API or stable file listing that can be automated"
     elif provider in TOOLING_PROVIDERS:
         status = "tooling_required"
         rationale = "provider is automatable through a provider-specific CLI, git, or data client"
@@ -203,7 +210,14 @@ def detect_provider(record: DatasetRecord) -> str:
         provider = _provider_from_host(host)
         if provider != "unknown":
             return provider
-    return _provider_from_host(record.source_domain)
+    source_provider = _provider_from_host(record.source_domain)
+    if source_provider != "unknown":
+        return source_provider
+    if any(host and host != "doi.org" for host in hosts) or _host(record.source_domain):
+        return "web_landing"
+    if record.doi and re.search(r"\b10\.\d{4,9}/", record.doi):
+        return "doi"
+    return "unknown"
 
 
 def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCandidate]:
@@ -329,6 +343,13 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
         target = record.url or "https://bnci-horizon-2020.eu/database/data-sets"
         candidates.append(AcquisitionCandidate(provider, "bnci_index", target, "file_listing"))
     elif provider == "repository_html":
+        if record.url and _host(record.url) != "doi.org":
+            candidates.append(AcquisitionCandidate(provider, "http_landing", record.url, "file_listing"))
+        elif record.doi:
+            candidates.append(
+                AcquisitionCandidate(provider, "doi_resolver", f"https://doi.org/{record.doi}", "landing")
+            )
+    elif provider == "web_landing":
         if record.url and _host(record.url) != "doi.org":
             candidates.append(AcquisitionCandidate(provider, "http_landing", record.url, "file_listing"))
         elif record.doi:

@@ -94,6 +94,10 @@ STANFORD_SDR_HOSTS = {
     "purl.stanford.edu",
     "stacks.stanford.edu",
 }
+HTML_HTTP_FALLBACK_HOSTS = {
+    "archive.ics.uci.edu",
+    "www.archive.ics.uci.edu",
+}
 BNCI_DATASETS_URL = "https://bnci-horizon-2020.eu/database/data-sets"
 
 
@@ -1323,7 +1327,7 @@ def _fetch_json(url: str, *, timeout: float) -> Any:
         with urlopen(request, timeout=timeout) as response:
             return json.loads(response.read().decode("utf-8"))
     if url.startswith("html+landing://"):
-        target = parse_qs(urlparse(url).query).get("url", [""])[0]
+        target = _html_fetch_target(parse_qs(urlparse(url).query).get("url", [""])[0])
         request = Request(target, headers={"Accept": "text/html,*/*", "User-Agent": "NeuroCore/0.1 dataset-resolver"})
         with urlopen(request, timeout=timeout) as response:
             return response.read().decode("utf-8", "ignore")
@@ -1667,6 +1671,13 @@ def _scidb_publicly_accessible(metadata: dict[str, Any]) -> bool:
 
 def _html_landing_url(url: str) -> str:
     return "html+landing://?" + urlencode({"url": url})
+
+
+def _html_fetch_target(url: str) -> str:
+    parsed = urlparse(url)
+    if parsed.scheme == "https" and parsed.netloc.lower().removeprefix("www.") in HTML_HTTP_FALLBACK_HOSTS:
+        return parsed._replace(scheme="http").geturl()
+    return url
 
 
 def _is_figshare_host(host: str) -> bool:
