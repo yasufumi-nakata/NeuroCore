@@ -19,7 +19,7 @@ if str(BACKEND) not in sys.path:
 
 from neurocore.datasets import load_eeg_dataset_inventory, supported_signal_file_counts
 from neurocore.kernels import Bandpass, ReReference, Resample, SpectralFeatures, ValidateEEG
-from neurocore.loaders import load_csv
+from neurocore.loaders import load_csv, supported_extensions
 from neurocore.pipeline import Pipeline, PipelineExecutionError
 from neurocore.settings import NeuroCoreSettings
 
@@ -211,9 +211,12 @@ def evaluate_local_dataset_files(root: Path, *, skip_scan: bool) -> dict[str, An
         [
             Check("local_dataset_files.scanned", True, "scanned", len(files), "local_dataset_files"),
             Check(
-                "local_dataset_files.raw_signal_file_count",
-                sum(raw_signal_counts.values()) == 0,
-                "0 local raw EEG signal files in EEG-DATA inventory checkout",
+                "local_dataset_files.raw_signal_extensions_known",
+                all(
+                    extension in supported_extensions() or extension in {".eeg", ".fdt"}
+                    for extension in raw_signal_counts
+                ),
+                "known raw EEG extensions",
                 raw_signal_counts,
                 "local_dataset_files",
             ),
@@ -227,6 +230,7 @@ def evaluate_local_dataset_files(root: Path, *, skip_scan: bool) -> dict[str, An
             "file_count": len(files),
             "extension_counts": dict(extension_counts.most_common(30)),
             "raw_signal_file_counts": raw_signal_counts,
+            "supported_loader_extensions": supported_extensions(),
             "sample_csv_files": csv_files,
         },
     )
@@ -257,7 +261,8 @@ def render_markdown(report: dict[str, Any]) -> str:
             "## Notes",
             "",
             "- EEG-DATA is treated as a dataset inventory checkout unless local raw EEG files are present.",
-            "- NeuroCore only loads signal CSV files into `NeuroFrame`; dataset inventory CSV files are loaded through the inventory API.",
+            "- NeuroCore can normalize CSV, NumPy, MNE-supported EEG files, XDF, and generic MAT files into `NeuroFrame` when the relevant optional dependencies are installed.",
+            "- Dataset inventory CSV files are loaded through the inventory API, not treated as raw EEG signals.",
             "- Do not copy this report into public docs, releases, package metadata, or issue comments.",
         ]
     )

@@ -47,6 +47,24 @@ def test_eeg_dataset_inventory_loader_handles_japanese_bom_csv(tmp_path) -> None
     assert inventory.format_mentions()["xdf"] == 1
     assert inventory.format_mentions()["eeglab_set"] == 1
     assert inventory.format_mentions()["xlsx"] == 1
+    assert inventory.loader_coverage()["records_with_supported_signal_hint"] == 1
+    assert inventory.validate() == []
+
+
+def test_eeg_dataset_inventory_loader_accepts_english_columns(tmp_path) -> None:
+    path = tmp_path / "inventory.csv"
+    path.write_text(
+        "id,dataset_name,url,doi,source_domain,access_status,score,description\n"
+        "a1,English sample,https://example.test,,openneuro.org,open,4,EDF and BrainVision .vhdr dataset\n",
+        encoding="utf-8",
+    )
+
+    inventory = load_eeg_dataset_inventory(path)
+
+    assert len(inventory) == 1
+    assert inventory.records[0].name == "English sample"
+    assert inventory.format_mentions()["edf"] == 1
+    assert inventory.format_mentions()["vhdr"] == 1
     assert inventory.validate() == []
 
 
@@ -60,6 +78,8 @@ def test_dataset_inventory_cli_reports_summary(tmp_path, capsys) -> None:
 
     assert exit_code == 0
     assert payload["record_count"] == 2
+    assert payload["loader_coverage"]["records_with_supported_signal_hint"] == 1
+    assert ".edf" in payload["supported_loader_extensions"]
     assert len(payload["sample_records"]) == 1
     assert payload["sample_records"][0]["name"] == "SSVEP sample"
 

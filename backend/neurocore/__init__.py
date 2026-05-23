@@ -5,7 +5,18 @@ from .control import ControlAction, ControlRouter, IntentCommand
 from .datasets import DatasetInventory, DatasetRecord, load_eeg_dataset_inventory
 from .frame import Channel, Event, FrameValidationError, NeuroFrame, Timebase, ValidityIssue
 from .kernels import Bandpass, ReReference, Resample, SpectralFeatures, ValidateEEG
-from .loaders import load, load_csv
+from .loaders import (
+    can_load_extension,
+    load,
+    load_csv,
+    load_directory,
+    load_mat,
+    load_mne_raw,
+    load_numpy,
+    load_xdf,
+    find_supported_signal_files,
+    supported_extensions,
+)
 from .pipeline import Pipeline, PipelineExecutionError, PipelineReport, PipelineResult
 from .quality import SignalQualityReport, score_signal_quality
 from .settings import NeuroCoreSettings
@@ -44,6 +55,14 @@ __all__ = [
     "ValidityIssue",
     "load",
     "load_csv",
+    "load_directory",
     "load_eeg_dataset_inventory",
+    "load_mat",
+    "load_mne_raw",
+    "load_numpy",
+    "load_xdf",
+    "find_supported_signal_files",
     "score_signal_quality",
+    "can_load_extension",
+    "supported_extensions",
 ]

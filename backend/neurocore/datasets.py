@@ -29,21 +29,67 @@ EEG_DATA_JA_COLUMNS = {
     "検索ソース": "search_sources",
 }
 
-REQUIRED_EEG_DATA_COLUMNS = tuple(EEG_DATA_JA_COLUMNS)
+CANONICAL_FIELDS = tuple(EEG_DATA_JA_COLUMNS.values())
+
+COLUMN_ALIASES = {
+    "record_id": ("ID", "id", "record_id", "dataset_id"),
+    "legacy_id": ("旧ID", "legacy_id", "old_id"),
+    "name": ("データセット名", "dataset_name", "name", "title"),
+    "url": ("公開URL", "url", "public_url", "source_url"),
+    "doi": ("DOI", "doi"),
+    "source_domain": ("提供元ドメイン", "source_domain", "domain", "repository_domain"),
+    "access_status": ("アクセス区分", "access_status", "access", "availability"),
+    "score": ("評価点", "score", "rating"),
+    "size": ("サイズ", "size", "data_size"),
+    "participants": ("人数", "participants", "subjects", "n_participants"),
+    "duration": ("時間", "duration", "recording_duration"),
+    "stimulus": ("刺激の種類", "stimulus", "stimuli", "task"),
+    "equipment": ("観測機器", "equipment", "device", "hardware"),
+    "conditions": ("実験条件", "conditions", "condition"),
+    "year": ("公開年", "year", "published_year", "publication_year"),
+    "description": ("説明（日本語）", "description", "summary", "notes"),
+    "evidence": ("判定根拠", "evidence", "basis", "rationale"),
+    "search_sources": ("検索ソース", "search_sources", "sources", "references"),
+}
+
+REQUIRED_FIELDS = ("record_id", "name", "url", "doi", "source_domain", "access_status", "score", "description")
 
 FORMAT_PATTERNS = {
     "bids": (r"\bBIDS\b",),
     "bdf": (r"\.bdf\b", r"\bBDF\b"),
+    "cnt": (r"\.cnt\b", r"\bCNT\b"),
     "csv": (r"\.csv\b", r"\bCSV\b"),
     "edf": (r"\.edf\b", r"\bEDF\b"),
+    "egi": (r"\.egi\b", r"\bEGI\b"),
     "eeglab_set": (r"\.set\b", r"\bEEGLAB\b"),
     "fif": (r"\.fif\b", r"\bFIFF?\b"),
+    "gdf": (r"\.gdf\b", r"\bGDF\b"),
     "mat": (r"\.mat\b", r"\bMATLAB\b"),
+    "mff": (r"\.mff\b", r"\bMFF\b"),
     "npy_npz": (r"\.npy\b", r"\.npz\b"),
     "vhdr": (r"\.vhdr\b", r"\bBrainVision\b"),
     "xdf": (r"\.xdf\b", r"\bXDF\b"),
     "xlsx": (r"\.xlsx?\b", r"\bExcel\b", r"\bworkbook\b"),
 }
+
+SIGNAL_LOADER_FORMATS = {
+    "bdf",
+    "bids",
+    "cnt",
+    "csv",
+    "edf",
+    "egi",
+    "eeglab_set",
+    "fif",
+    "gdf",
+    "mat",
+    "mff",
+    "npy_npz",
+    "vhdr",
+    "xdf",
+}
+
+CONTAINER_OR_METADATA_FORMATS = {"xlsx"}
 
 
 @dataclass(frozen=True)
@@ -69,7 +115,7 @@ class DatasetRecord:
 
     @classmethod
     def from_row(cls, row: dict[str, str]) -> "DatasetRecord":
-        values = {field: row.get(column, "").strip() for column, field in EEG_DATA_JA_COLUMNS.items()}
+        values = {field: str(row.get(field, "") or "").strip() for field in CANONICAL_FIELDS}
         return cls(
             record_id=values["record_id"],
             legacy_id=values["legacy_id"],
@@ -155,9 +201,42 @@ class DatasetInventory:
                     counts[name] += 1
         return {name: count for name, count in counts.items() if count}
 
+    def loader_coverage(self) -> dict[str, Any]:
+        format_counts = self.format_mentions()
+        supported = {name: count for name, count in format_counts.items() if name in SIGNAL_LOADER_FORMATS}
+        container_or_metadata = {
+            name: count for name, count in format_counts.items() if name in CONTAINER_OR_METADATA_FORMATS
+        }
+        unsupported = {
+            name: count
+            for name, count in format_counts.items()
+            if name not in SIGNAL_LOADER_FORMATS and name not in CONTAINER_OR_METADATA_FORMATS
+        }
+        records_with_supported_signal_hint = 0
+        records_with_only_container_or_metadata_hint = 0
+        records_without_format_hint = 0
+        for record in self.records:
+            mentioned = _record_format_mentions(record)
+            if mentioned & SIGNAL_LOADER_FORMATS:
+                records_with_supported_signal_hint += 1
+            elif mentioned & CONTAINER_OR_METADATA_FORMATS:
+                records_with_only_container_or_metadata_hint += 1
+            else:
+                records_without_format_hint += 1
+        return {
+            "record_count": len(self.records),
+            "supported_signal_format_counts": supported,
+            "container_or_metadata_format_counts": container_or_metadata,
+            "unsupported_format_counts": unsupported,
+            "records_with_supported_signal_hint": records_with_supported_signal_hint,
+            "records_with_only_container_or_metadata_hint": records_with_only_container_or_metadata_hint,
+            "records_without_format_hint": records_without_format_hint,
+        }
+
     def validate(self) -> list[dict[str, Any]]:
         issues: list[dict[str, Any]] = []
-        missing_columns = [column for column in REQUIRED_EEG_DATA_COLUMNS if column not in self.header]
+        header_fields = set(_canonical_header_map(self.header))
+        missing_columns = [field for field in REQUIRED_FIELDS if field not in header_fields]
         if missing_columns:
             issues.append({"code": "missing_columns", "severity": "error", "columns": missing_columns})
         if not self.records:
@@ -193,6 +272,7 @@ class DatasetInventory:
             "access_status_counts": self.access_status_counts(),
             "top_domains": self.domain_counts(limit=10),
             "format_mentions": self.format_mentions(),
+            "loader_coverage": self.loader_coverage(),
             "issues": issues,
         }
 
@@ -204,15 +284,32 @@ def load_eeg_dataset_inventory(path: str | Path) -> DatasetInventory:
         if reader.fieldnames is None:
             raise ValueError("dataset inventory CSV is empty")
         header = tuple(item.strip() for item in reader.fieldnames)
-        missing_columns = [column for column in REQUIRED_EEG_DATA_COLUMNS if column not in header]
+        header_map = _canonical_header_map(header)
+        missing_columns = [field for field in REQUIRED_FIELDS if field not in header_map]
         if missing_columns:
-            raise ValueError(f"dataset inventory is missing required columns: {', '.join(missing_columns)}")
-        records = tuple(DatasetRecord.from_row(row) for row in reader)
+            raise ValueError(f"dataset inventory is missing required fields: {', '.join(missing_columns)}")
+        records = tuple(DatasetRecord.from_row(_canonical_row(row, header_map)) for row in reader)
     return DatasetInventory(source=resolved, records=records, header=header)
 
 
 def supported_signal_file_counts(paths: Iterable[Path]) -> dict[str, int]:
-    raw_extensions = {".bdf", ".edf", ".eeg", ".fdt", ".fif", ".mat", ".npy", ".npz", ".set", ".vhdr", ".xdf"}
+    raw_extensions = {
+        ".bdf",
+        ".cnt",
+        ".edf",
+        ".eeg",
+        ".egi",
+        ".fdt",
+        ".fif",
+        ".gdf",
+        ".mat",
+        ".mff",
+        ".npy",
+        ".npz",
+        ".set",
+        ".vhdr",
+        ".xdf",
+    }
     counts = Counter(path.suffix.lower() for path in paths if path.suffix.lower() in raw_extensions)
     return dict(sorted(counts.items()))
 
@@ -230,3 +327,32 @@ def _split_sources(value: str) -> tuple[str, ...]:
     if not value:
         return ()
     return tuple(item.strip() for item in re.split(r";\s*", value) if item.strip())
+
+
+def _canonical_header_map(header: tuple[str, ...]) -> dict[str, str]:
+    normalized = {_normalize_column_name(column): column for column in header}
+    header_map: dict[str, str] = {}
+    for field, aliases in COLUMN_ALIASES.items():
+        for alias in aliases:
+            column = normalized.get(_normalize_column_name(alias))
+            if column is not None:
+                header_map[field] = column
+                break
+    return header_map
+
+
+def _canonical_row(row: dict[str, str], header_map: dict[str, str]) -> dict[str, str]:
+    return {field: row.get(column, "") for field, column in header_map.items()}
+
+
+def _normalize_column_name(value: str) -> str:
+    return re.sub(r"[\s_\-（）()]+", "", value.strip().casefold())
+
+
+def _record_format_mentions(record: DatasetRecord) -> set[str]:
+    text = record.text_for_detection
+    return {
+        name
+        for name, patterns in FORMAT_PATTERNS.items()
+        if any(re.search(pattern, text, flags=re.IGNORECASE) for pattern in patterns)
+    }

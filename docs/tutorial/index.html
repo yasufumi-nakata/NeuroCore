@@ -37,7 +37,7 @@
           <h2>1. Install</h2>
           <pre class="terminal"><code>python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e ".[dev,server]"</code></pre>
+python -m pip install -e ".[dev,server,io]"</code></pre>
 
           <h2>2. Run the self-test</h2>
           <pre class="terminal"><code>neurocore self-test --json</code></pre>
@@ -47,9 +47,10 @@ python -m pip install -e ".[dev,server]"</code></pre>
           </p>
 
           <h2>3. Process a CSV fixture</h2>
-          <pre class="terminal"><code>neurocore run-csv samples/synthetic_eeg.csv --sampling-rate 250 --json</code></pre>
+          <pre class="terminal"><code>neurocore run-csv samples/synthetic_eeg.csv --sampling-rate 250 --json
+neurocore run-file samples/synthetic_eeg.csv --sampling-rate 250 --json</code></pre>
           <p>
-            CSV は samples x channels の形です。実デバイス loader を足す場合も、まず `NeuroFrame` へ正規化してから pipeline へ渡します。
+            CSV は samples x channels の形です。`run-file` は CSV / NumPy / MNE 対応形式 / XDF / MAT を `NeuroFrame` へ正規化してから pipeline へ渡します。
           </p>
 
           <h2>4. Inspect an EEG-DATA inventory</h2>
@@ -57,7 +58,7 @@ python -m pip install -e ".[dev,server]"</code></pre>
 python scripts/verify_dataset_loading.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv</code></pre>
           <p>
             EEG-DATA checkout は raw EEG そのものではなく、公開 dataset の metadata 目録として扱います。
-            実信号ファイルを取得した後は、形式ごとの loader で `NeuroFrame` に変換してから pipeline へ渡します。
+            目録 report は EDF/BDF、BrainVision、EEGLAB `.set`、FIF、BIDS 風 directory、XDF、MAT、NumPy、CSV などの loader coverage も返します。
           </p>
 
           <h2>5. Route decoded intents</h2>

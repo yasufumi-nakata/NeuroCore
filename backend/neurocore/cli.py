@@ -12,7 +12,7 @@ from . import __version__
 from .control import ControlRouter, IntentCommand
 from .frame import Channel
 from .kernels import Bandpass, ReReference, Resample, SpectralFeatures, ValidateEEG
-from .loaders import load_csv
+from .loaders import load, load_csv, supported_extensions
 from .pipeline import Pipeline, PipelineExecutionError
 from .quality import score_signal_quality
 from .selftest import run_self_tests
@@ -53,9 +53,16 @@ def cmd_run_csv(args: argparse.Namespace) -> int:
     return _run_reference_pipeline(frame, settings, json_mode=args.json)
 
 
+def cmd_run_file(args: argparse.Namespace) -> int:
+    settings = NeuroCoreSettings.load(args.settings) if args.settings else NeuroCoreSettings.default()
+    frame = load(args.path, sampling_rate=args.sampling_rate or settings.device.sampling_rate)
+    return _run_reference_pipeline(frame, settings, json_mode=args.json)
+
+
 def cmd_dataset_inventory(args: argparse.Namespace) -> int:
     inventory = load_eeg_dataset_inventory(args.csv)
     payload = inventory.summary()
+    payload["supported_loader_extensions"] = supported_extensions()
     payload["sample_records"] = [record.to_dict() for record in inventory.records[: args.limit]]
     _print(payload, json_mode=args.json)
     return 0 if not any(issue["severity"] == "error" for issue in payload["issues"]) else 1
@@ -191,6 +198,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_csv.add_argument("--sampling-rate", type=float, default=None)
     p_csv.add_argument("--json", action="store_true")
     p_csv.set_defaults(func=cmd_run_csv)
+
+    p_file = sub.add_parser("run-file", help="Run the reference pipeline on any supported EEG signal file")
+    p_file.add_argument("path", type=Path)
+    p_file.add_argument("--settings", type=Path, default=None)
+    p_file.add_argument(
+        "--sampling-rate", type=float, default=None, help="Required for raw numeric CSV/NPY when absent"
+    )
+    p_file.add_argument("--json", action="store_true")
+    p_file.set_defaults(func=cmd_run_file)
 
     p_inventory = sub.add_parser("dataset-inventory", help="Inspect an EEG-DATA Japanese dataset inventory CSV")
     p_inventory.add_argument("csv", type=Path)

@@ -6,7 +6,7 @@ The test strategy follows the same practical idea as OpenRI: do not only test th
 
 - Unit tests: frame validation, kernel planning, feature output, settings validation.
 - Fixture tests: CSV loading, EEG-DATA inventory loading, and synthetic EEG pipeline behavior.
-- Dataset checks: local EEG-DATA checkout is treated as an inventory unless raw EEG files are actually present.
+- Dataset checks: local EEG-DATA checkout is treated as an inventory unless raw EEG files are actually present; the inventory report also summarizes loader coverage for MNE-backed EEG formats, XDF, MAT, NumPy, and CSV.
 - Breakage tests: NaN/Inf contamination, invalid filter bands, insufficient channels, clock-drift warnings.
 - Safety tests: low-confidence commands, emergency stop, unbound intents, prompt-like agent payloads.
 - Streaming tests: overlapping window emission, shape validation, trimming behavior.
@@ -23,6 +23,7 @@ python -m pytest
 PYTHONPATH=backend python -m neurocore.cli self-test --json
 PYTHONPATH=backend python -m neurocore.cli stream-demo --json
 PYTHONPATH=backend python -m neurocore.cli simulate-intents samples/intent_commands.json --json
+PYTHONPATH=backend python -m neurocore.cli run-file samples/synthetic_eeg.csv --sampling-rate 250 --json
 PYTHONPATH=backend python -m neurocore.cli dataset-inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 PYTHONPATH=backend python scripts/verify_dataset_loading.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv
 ```
