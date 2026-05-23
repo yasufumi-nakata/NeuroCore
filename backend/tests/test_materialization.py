@@ -983,6 +983,68 @@ def test_materialize_remote_files_includes_loader_companions(tmp_path) -> None:
     ]
 
 
+def test_materialize_remote_files_preserves_relative_paths_for_sidecars(tmp_path) -> None:
+    plan = plan_acquisition(record(description="BrainVision EEG .vhdr files"))
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {
+                    "key": "sourcedata/sub-01/eeg/sub-01_task-test_eeg.vhdr",
+                    "size": 4,
+                    "links": {"self": "https://example.test/sub.vhdr"},
+                },
+                {
+                    "key": "sourcedata/sub-01/eeg/sub-01_task-test_eeg.eeg",
+                    "size": 4,
+                    "links": {"self": "https://example.test/sub.eeg"},
+                },
+                {
+                    "key": "sourcedata/sub-01/eeg/sub-01_task-test_eeg.vmrk",
+                    "size": 4,
+                    "links": {"self": "https://example.test/sub.vmrk"},
+                },
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    materialize_remote_files(resolution.files, tmp_path, fetch_bytes=lambda _url, _max_bytes: b"sidecar", max_bytes=10)
+
+    assert (tmp_path / "1" / "sourcedata" / "sub-01" / "eeg" / "sub-01_task-test_eeg.vhdr").read_bytes() == b"sidecar"
+    assert (tmp_path / "1" / "sourcedata" / "sub-01" / "eeg" / "sub-01_task-test_eeg.eeg").read_bytes() == b"sidecar"
+    assert (tmp_path / "1" / "sourcedata" / "sub-01" / "eeg" / "sub-01_task-test_eeg.vmrk").read_bytes() == b"sidecar"
+
+
+def test_materialize_remote_files_with_archives_skips_metadata_only_files(tmp_path) -> None:
+    plan = plan_acquisition(record(description="EEG archive"))
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {"key": "README.md", "size": 4, "links": {"self": "https://example.test/README.md"}},
+                {"key": "dataset.zip", "size": 4, "links": {"self": "https://example.test/dataset.zip"}},
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    downloaded: list[str] = []
+
+    def fetch_bytes(url: str, _max_bytes: int) -> bytes:
+        downloaded.append(url)
+        return b"PK"
+
+    results = materialize_remote_files(
+        resolution.files,
+        tmp_path,
+        fetch_bytes=fetch_bytes,
+        max_bytes=10,
+        direct_only=False,
+    )
+
+    assert [result.status for result in results] == ["skipped", "downloaded"]
+    assert downloaded == ["https://example.test/dataset.zip"]
+
+
 def test_archive_extraction_finds_supported_signal_files(tmp_path) -> None:
     archive = tmp_path / "dataset.zip"
     with zipfile.ZipFile(archive, "w") as handle:

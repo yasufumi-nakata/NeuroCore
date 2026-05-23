@@ -308,7 +308,7 @@ def materialize_remote_file(
             status="skipped",
             reason=f"remote file is larger than max_bytes ({file.size_bytes} > {max_bytes})",
         )
-    target = Path(cache_root).expanduser() / _safe_path_part(file.record_id) / _safe_filename(file.name, file.url)
+    target = Path(cache_root).expanduser() / _safe_path_part(file.record_id) / _safe_relative_path(file.name, file.url)
     if target.exists() and not overwrite:
         return MaterializationResult(
             record_id=file.record_id,
@@ -344,17 +344,17 @@ def materialize_remote_files(
 ) -> tuple[MaterializationResult, ...]:
     results: list[MaterializationResult] = []
     file_tuple = tuple(files)
-    selected_keys = _loader_materialization_keys(file_tuple) if direct_only else None
+    selected_keys = _actionable_materialization_keys(file_tuple, include_archives=not direct_only)
     selected_attempts = 0
     for file in file_tuple:
-        if selected_keys is not None and _file_key(file) not in selected_keys:
+        if _file_key(file) not in selected_keys:
             results.append(
                 MaterializationResult(
                     record_id=file.record_id,
                     name=file.name,
                     url=file.url,
                     status="skipped",
-                    reason="remote file is not needed for direct loader materialization",
+                    reason="remote file is not needed for loader materialization",
                 )
             )
             continue
@@ -1905,6 +1905,17 @@ def _loader_materialization_keys(files: tuple[RemoteFileCandidate, ...]) -> set[
     return selected
 
 
+def _actionable_materialization_keys(
+    files: tuple[RemoteFileCandidate, ...],
+    *,
+    include_archives: bool,
+) -> set[tuple[str, str]]:
+    selected = _loader_materialization_keys(files)
+    if include_archives:
+        selected.update(_file_key(file) for file in files if file.archive)
+    return selected
+
+
 def _loader_companion_names(name: str) -> tuple[str, ...]:
     normalized = name.replace("\\", "/")
     lower = normalized.lower()
@@ -1930,6 +1941,21 @@ def _safe_filename(name: str, url: str) -> str:
     candidate = Path(urlparse(url).path).name if not name else name
     cleaned = re.sub(r"[^A-Za-z0-9_.() -]+", "_", candidate).strip(" ._")
     return cleaned or "remote-file"
+
+
+def _safe_relative_path(name: str, url: str) -> Path:
+    candidate = name.replace("\\", "/").strip("/") if name else Path(urlparse(url).path).name
+    parts = []
+    for part in candidate.split("/"):
+        if part in {"", ".", ".."}:
+            continue
+        cleaned = _safe_filename(part, "")
+        if cleaned in {"", ".", ".."}:
+            continue
+        parts.append(cleaned)
+    if not parts:
+        parts.append("remote-file")
+    return Path(*parts)
 
 
 def _archive_stem(path: Path) -> str:

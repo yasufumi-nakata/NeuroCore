@@ -122,6 +122,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "sample_archive_extractions": [result.to_dict() for result in archive_extractions[: args.sample_limit]],
         "local_readiness_summary": summarize_readiness(readiness),
         "sample_local_readiness": readiness[: args.sample_limit],
+        "load_attempt_summary": summarize_load_attempts(load_attempts),
         "load_attempts": [attempt.to_dict() for attempt in load_attempts],
     }
 
@@ -163,6 +164,19 @@ def summarize_archive_extractions(results: list[Any]) -> dict[str, Any]:
         "result_count": len(results),
         "status_counts": status_counts,
         "signal_file_count": sum(result.signal_file_count for result in results),
+    }
+
+
+def summarize_load_attempts(attempts: list[LoadAttempt]) -> dict[str, Any]:
+    if not attempts:
+        return {"attempted": False, "result_count": 0, "status_counts": {}}
+    status_counts: dict[str, int] = {}
+    for attempt in attempts:
+        status_counts[attempt.status] = status_counts.get(attempt.status, 0) + 1
+    return {
+        "attempted": True,
+        "result_count": len(attempts),
+        "status_counts": status_counts,
     }
 
 
@@ -235,6 +249,12 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- checked: {readiness['checked']}",
         f"- records_with_local_signal_files: {readiness['records_with_local_signal_files']}",
         f"- local_signal_file_count: {readiness['local_signal_file_count']}",
+        "",
+        "## Load Attempts",
+        "",
+        f"- attempted: {report['load_attempt_summary']['attempted']}",
+        f"- result_count: {report['load_attempt_summary']['result_count']}",
+        f"- status_counts: `{json.dumps(report['load_attempt_summary']['status_counts'], ensure_ascii=False)}`",
         "",
         "## Notes",
         "",
@@ -317,6 +337,7 @@ def main() -> int:
                 "materialization_summary": report["materialization_summary"],
                 "archive_extraction_summary": report["archive_extraction_summary"],
                 "local_readiness_summary": report["local_readiness_summary"],
+                "load_attempt_summary": report["load_attempt_summary"],
             },
             indent=2,
             ensure_ascii=False,
