@@ -20,6 +20,7 @@ NeuroCore は、EEG を装着したユーザーがマウス、キーボード、
 - Audit log: 操作を OS に送らず dry-run で JSONL 監査ログ化。
 - Dataset inventory loader: EEG-DATA の日本語目録 CSV を、信号波形ではなく再利用候補の metadata として読み込み。
 - Universal file dispatch: CSV / NumPy に加えて、optional `io` extra で MNE 対応形式、XDF、MAT を `NeuroFrame` へ正規化。
+- Dataset acquisition planner: EEG-DATA の各行を Zenodo / OSF / OpenNeuro / Figshare / Dataverse などの取得経路へ分類。
 - `self-test`: 合成 EEG と破綻ケースで、NaN、Nyquist 超過、stream、signal quality、低 confidence、emergency stop、agent payload guard を自動検査。
 - Settings UI: device / signal / safety / route / agent / self-test を操作するローカル設定画面。
 - CI: Python tests、CLI self-test、frontend build を実行。
@@ -49,6 +50,7 @@ neurocore quality --json
 neurocore run-csv samples/synthetic_eeg.csv --sampling-rate 250 --json
 neurocore run-file samples/synthetic_eeg.csv --sampling-rate 250 --json
 neurocore dataset-inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --json
+neurocore dataset-acquisition-plan ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 neurocore route-intent select --confidence 0.92 --json
 neurocore simulate-intents samples/intent_commands.json --json
 ```
@@ -138,6 +140,15 @@ print(inventory.summary())
 
 この API はデータセット目録を読むためのものです。EEG の raw waveform は、各データセットを取得した後に `neurocore.load()` で `NeuroFrame` へ正規化してください。
 MNE 経由では EDF/BDF、BrainVision `.vhdr`、EEGLAB `.set`、FIF、CNT、GDF、EGI/MFF を扱います。BIDS 風 directory は内部の対応 raw file を探して読みます。XDF は `pyxdf`、MAT は `scipy` または `h5py` を使います。
+
+raw 本体取得計画とローカルキャッシュ検証:
+
+```bash
+python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv
+python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --cache-root private/raw-cache --load-local
+```
+
+この report は private 出力です。配布元の規約、アカウント要否、容量制限を無視して raw data を自動公開・自動再配布するものではありません。
 
 ## 設計資料
 

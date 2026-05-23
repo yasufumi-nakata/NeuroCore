@@ -6,6 +6,7 @@ import sys
 import time
 from pathlib import Path
 
+from .acquisition import plan_inventory_acquisition, summarize_acquisition_plans
 from .datasets import load_eeg_dataset_inventory
 from .audit import ActionAuditLog, DryRunActionSink
 from . import __version__
@@ -66,6 +67,15 @@ def cmd_dataset_inventory(args: argparse.Namespace) -> int:
     payload["sample_records"] = [record.to_dict() for record in inventory.records[: args.limit]]
     _print(payload, json_mode=args.json)
     return 0 if not any(issue["severity"] == "error" for issue in payload["issues"]) else 1
+
+
+def cmd_dataset_acquisition_plan(args: argparse.Namespace) -> int:
+    inventory = load_eeg_dataset_inventory(args.csv)
+    plans = plan_inventory_acquisition(inventory)
+    payload = summarize_acquisition_plans(plans)
+    payload["sample_plans"] = [plan.to_dict() for plan in plans[: args.limit]]
+    _print(payload, json_mode=args.json)
+    return 0
 
 
 def cmd_route(args: argparse.Namespace) -> int:
@@ -213,6 +223,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_inventory.add_argument("--limit", type=int, default=3, help="Number of sample records to include")
     p_inventory.add_argument("--json", action="store_true")
     p_inventory.set_defaults(func=cmd_dataset_inventory)
+
+    p_acquisition = sub.add_parser("dataset-acquisition-plan", help="Plan provider-specific raw EEG acquisition")
+    p_acquisition.add_argument("csv", type=Path)
+    p_acquisition.add_argument("--limit", type=int, default=10, help="Number of sample plans to include")
+    p_acquisition.add_argument("--json", action="store_true")
+    p_acquisition.set_defaults(func=cmd_dataset_acquisition_plan)
 
     p_route = sub.add_parser("route-intent", help="Route an externally decoded intent into a safe action envelope")
     p_route.add_argument("intent")

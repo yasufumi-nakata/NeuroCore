@@ -1,5 +1,13 @@
 from __future__ import annotations
 
+from .acquisition import (
+    AcquisitionCandidate,
+    AcquisitionPlan,
+    local_readiness_for_record,
+    plan_acquisition,
+    plan_inventory_acquisition,
+    summarize_acquisition_plans,
+)
 from .audit import ActionAuditLog, AuditEvent, DryRunActionSink
 from .control import ControlAction, ControlRouter, IntentCommand
 from .datasets import DatasetInventory, DatasetRecord, load_eeg_dataset_inventory
@@ -26,6 +34,8 @@ __version__ = "0.1.0"
 
 __all__ = [
     "__version__",
+    "AcquisitionCandidate",
+    "AcquisitionPlan",
     "ActionAuditLog",
     "AuditEvent",
     "Bandpass",
@@ -62,7 +72,11 @@ __all__ = [
     "load_numpy",
     "load_xdf",
     "find_supported_signal_files",
+    "local_readiness_for_record",
+    "plan_acquisition",
+    "plan_inventory_acquisition",
     "score_signal_quality",
+    "summarize_acquisition_plans",
     "can_load_extension",
     "supported_extensions",
 ]

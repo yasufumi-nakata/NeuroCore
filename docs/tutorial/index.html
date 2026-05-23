@@ -55,10 +55,13 @@ neurocore run-file samples/synthetic_eeg.csv --sampling-rate 250 --json</code></
 
           <h2>4. Inspect an EEG-DATA inventory</h2>
           <pre class="terminal"><code>neurocore dataset-inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --json
-python scripts/verify_dataset_loading.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv</code></pre>
+neurocore dataset-acquisition-plan ../EEG-DATA/eeg_dataset_summary_ja.csv --json
+python scripts/verify_dataset_loading.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv
+python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv</code></pre>
           <p>
             EEG-DATA checkout は raw EEG そのものではなく、公開 dataset の metadata 目録として扱います。
             目録 report は EDF/BDF、BrainVision、EEGLAB `.set`、FIF、BIDS 風 directory、XDF、MAT、NumPy、CSV などの loader coverage も返します。
+            acquisition report は配布元ごとに API 取得、provider CLI、アカウント必須、手動確認を分けます。
           </p>
 
           <h2>5. Route decoded intents</h2>
