@@ -134,11 +134,24 @@ def load_mne_raw(path: str | Path, *, preload: bool = True, unit: str = "uV") ->
     resolved = Path(path).expanduser()
     mne = _require_module("mne", extra="io")
     suffix = _loader_suffix(resolved)
-    reader_name = MNE_RAW_READERS.get(suffix)
-    if reader_name is None:
+    reader_names = _mne_reader_names_for_suffix(suffix, mne)
+    if not reader_names:
         raise ValueError(f"MNE raw loader does not support format: {resolved.suffix}")
-    reader = getattr(mne.io, reader_name)
-    raw = reader(str(resolved), preload=preload, verbose="ERROR")
+    raw = None
+    used_reader_name = ""
+    last_error: Exception | None = None
+    for reader_name in reader_names:
+        reader = getattr(mne.io, reader_name)
+        try:
+            raw = reader(str(resolved), preload=preload, verbose="ERROR")
+        except Exception as exc:
+            last_error = exc
+            continue
+        used_reader_name = reader_name
+        break
+    if raw is None:
+        assert last_error is not None
+        raise last_error
     data, names, types = _mne_raw_to_samples(raw)
     scale = 1_000_000.0 if unit == "uV" else 1.0
     return NeuroFrame(
@@ -148,7 +161,7 @@ def load_mne_raw(path: str | Path, *, preload: bool = True, unit: str = "uV") ->
         provenance={
             "source": "mne",
             "format": suffix.lstrip("."),
-            "reader": f"mne.io.{reader_name}",
+            "reader": f"mne.io.{used_reader_name}",
             "path": str(resolved),
             "native_unit": "V",
         },
@@ -318,6 +331,16 @@ def _require_module(name: str, *, extra: str):
         raise ImportError(
             f"loading this EEG format requires optional dependency {name!r}; install NeuroCore with the {extra!r} extra"
         ) from exc
+
+
+def _mne_reader_names_for_suffix(suffix: str, mne: Any) -> tuple[str, ...]:
+    reader_name = MNE_RAW_READERS.get(suffix)
+    if reader_name is None:
+        return ()
+    names = [reader_name]
+    if suffix == ".cnt" and hasattr(mne.io, "read_raw_ant"):
+        names.append("read_raw_ant")
+    return tuple(dict.fromkeys(names))
 
 
 def _mne_raw_to_samples(raw: Any) -> tuple[np.ndarray, tuple[str, ...], tuple[str, ...]]:

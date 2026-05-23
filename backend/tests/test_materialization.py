@@ -169,8 +169,8 @@ def test_openneuro_resolution_uses_latest_snapshot_and_urls() -> None:
 def test_doi_resolution_delegates_to_figshare_landing() -> None:
     plan = plan_acquisition(
         record(
-            url="https://doi.org/10.11583/dtu.30589397",
-            doi="10.11583/dtu.30589397",
+            url="https://doi.org/10.9999/example-landing",
+            doi="10.9999/example-landing",
             source_domain="doi.org",
             description="BDF EEG archive",
         )
@@ -195,6 +195,75 @@ def test_doi_resolution_delegates_to_figshare_landing() -> None:
     assert resolution.provider == "doi"
     assert resolution.files[0].provider == "figshare"
     assert resolution.files[0].archive is True
+
+
+def test_doi_resolution_delegates_to_figshare_compatible_landing() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://doi.org/10.4121/uuid:8e8cfaf2-ab00-45b2-90a0-623fabf75ca9",
+            doi="10.4121/uuid:8e8cfaf2-ab00-45b2-90a0-623fabf75ca9",
+            source_domain="doi.org",
+            description="EEG archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url.startswith("doi+resolve://"):
+            return {"url": "https://data.4tu.nl/articles/_/12707438/1"}
+        assert url == "https://api.figshare.com/v2/articles/12707438"
+        return {
+            "files": [
+                {
+                    "name": "eeg-data.zip",
+                    "size": 123,
+                    "download_url": "https://ndownloader.figshare.com/files/24061748",
+                }
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.status == "resolved"
+    assert resolution.files[0].provider == "figshare"
+    assert resolution.files[0].archive is True
+
+
+def test_doi_resolution_delegates_to_dataverse_compatible_landing() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://doi.org/10.5683/SP3/JJ2YZZ",
+            doi="10.5683/SP3/JJ2YZZ",
+            source_domain="doi.org",
+            description="BDF EEG archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url.startswith("doi+resolve://"):
+            return {"url": "https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP3/JJ2YZZ"}
+        assert url == "https://borealisdata.ca/api/datasets/:persistentId/?persistentId=doi%3A10.5683%2FSP3%2FJJ2YZZ"
+        return {
+            "data": {
+                "latestVersion": {
+                    "files": [
+                        {
+                            "dataFile": {
+                                "id": 99,
+                                "filename": "sub-01_task-drive_eeg.bdf",
+                                "filesize": 456,
+                                "contentType": "application/octet-stream",
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.status == "resolved"
+    assert resolution.files[0].provider == "dataverse"
+    assert resolution.files[0].directly_loadable is True
 
 
 def test_doi_resolution_falls_back_to_invenio_record_landing() -> None:

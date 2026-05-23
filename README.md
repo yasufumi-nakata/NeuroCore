@@ -21,7 +21,7 @@ NeuroCore は、EEG を装着したユーザーがマウス、キーボード、
 - Dataset inventory loader: EEG-DATA の日本語目録 CSV を、信号波形ではなく再利用候補の metadata として読み込み。
 - Universal file dispatch: CSV / NumPy に加えて、optional `io` extra で MNE 対応形式、XDF、MAT を `NeuroFrame` へ正規化。
 - Dataset acquisition planner: EEG-DATA の各行を Zenodo / OSF / OpenNeuro / Figshare / Dataverse などの取得経路へ分類。
-- Remote file resolver / materializer: Zenodo / Figshare / OSF / Dataverse / Dryad / Mendeley / ScienceDB に加えて、OpenNeuro / GitHub / Hugging Face / PhysioNet / DANDI / Gin / Kaggle / NEMAR / DOI landing delegation / generic HTML landing / InvenioRDM records の公開 file listing から raw 候補ファイルを列挙し、取得済み cache へ落とした直接読込可能ファイルだけを検証対象にできます。
+- Remote file resolver / materializer: Zenodo / Figshare-compatible repositories / OSF / Dataverse-compatible repositories / Dryad / Mendeley / ScienceDB に加えて、OpenNeuro / GitHub / Hugging Face / PhysioNet / DANDI / Gin / Kaggle / NEMAR / DOI landing delegation / generic HTML landing / InvenioRDM records の公開 file listing から raw 候補ファイルを列挙し、取得済み cache へ落とした直接読込可能ファイルだけを検証対象にできます。
 - `self-test`: 合成 EEG と破綻ケースで、NaN、Nyquist 超過、stream、signal quality、低 confidence、emergency stop、agent payload guard を自動検査。
 - Settings UI: device / signal / safety / route / agent / self-test を操作するローカル設定画面。
 - CI: Python tests、CLI self-test、frontend build を実行。
@@ -34,7 +34,7 @@ source .venv/bin/activate
 python -m pip install -e ".[dev,server]"
 ```
 
-EDF/BDF、BrainVision、EEGLAB `.set`、FIF、CNT/GDF/EGI/MFF、eXimia、Nicolet、Persyst、MEF3、NWB、BIDS 風 directory、XDF、MAT を読む環境では optional I/O 依存も入れます。
+EDF/BDF、BrainVision、EEGLAB `.set`、FIF、Neuroscan/ANT CNT、GDF/EGI/MFF、eXimia、Nicolet、Persyst、MEF3、NWB、BIDS 風 directory、XDF、MAT を読む環境では optional I/O 依存も入れます。
 
 ```bash
 python -m pip install -e ".[dev,server,io]"
@@ -55,6 +55,7 @@ neurocore dataset-acquisition-plan ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --limit 10 --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider openneuro --provider dandi --provider kaggle --provider nemar --limit 5 --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider scidb --limit 5 --json
+neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider figshare --provider dataverse --limit 5 --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider unknown --limit 5 --json
 neurocore route-intent select --confidence 0.92 --json
 neurocore simulate-intents samples/intent_commands.json --json

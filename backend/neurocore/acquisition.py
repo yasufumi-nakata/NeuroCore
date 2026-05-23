@@ -5,15 +5,34 @@ from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
-from urllib.parse import quote, urlparse
+from urllib.parse import parse_qs, quote, urlparse
 
 from .datasets import DatasetInventory, DatasetRecord
 from .loaders import find_supported_signal_files
 
 
-DIRECT_API_PROVIDERS = {"zenodo", "figshare", "osf", "dataverse", "dryad", "mendeley", "scidb"}
+DIRECT_API_PROVIDERS = {"zenodo", "figshare", "osf", "dataverse", "dryad", "mendeley", "scidb", "invenio"}
 TOOLING_PROVIDERS = {"openneuro", "gin", "github", "physionet", "dandi", "huggingface", "nemar", "kaggle"}
 ACCOUNT_PROVIDERS = {"pennsieve", "ieee_dataport", "nda"}
+FIGSHARE_COMPATIBLE_HOSTS = {
+    "data.4tu.nl",
+    "data.dtu.dk",
+    "bridges.monash.edu",
+}
+DATAVERSE_COMPATIBLE_HOSTS = {
+    "borealisdata.ca",
+    "dataverse.harvard.edu",
+    "researchdata.ntu.edu.sg",
+    "researchdata.lib.cityu.edu.hk",
+    "redu.unicamp.br",
+}
+INVENIO_COMPATIBLE_HOSTS = {
+    "openaccessrepository.it",
+    "www.openaccessrepository.it",
+    "fdr.uni-hamburg.de",
+    "www.fdr.uni-hamburg.de",
+    "fdat.uni-tuebingen.de",
+}
 
 
 @dataclass(frozen=True)
@@ -194,8 +213,8 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
         )
     elif provider == "dataverse":
         if record.doi:
-            host = _host(record.url) or "dataverse.harvard.edu"
-            encoded = quote(f"doi:{record.doi}", safe="")
+            host = _dataverse_host_for_record(record)
+            encoded = quote(_dataverse_persistent_id_for_record(record), safe="")
             candidates.append(
                 AcquisitionCandidate(
                     provider,
@@ -287,8 +306,12 @@ def _provider_from_host(host: str) -> str:
         return "osf"
     if "figshare.com" in host:
         return "figshare"
-    if "dataverse" in host:
+    if host in FIGSHARE_COMPATIBLE_HOSTS:
+        return "figshare"
+    if "dataverse" in host or host in DATAVERSE_COMPATIBLE_HOSTS:
         return "dataverse"
+    if host in INVENIO_COMPATIBLE_HOSTS:
+        return "invenio"
     if "mendeley.com" in host:
         return "mendeley"
     if "kaggle.com" in host:
@@ -326,6 +349,8 @@ def _doi_provider(value: str) -> str | None:
         return "zenodo"
     if "figshare" in text or "10.6084/m9.figshare" in text:
         return "figshare"
+    if any(prefix in text for prefix in ("10.11583/dtu", "10.4121/", "10.4225/03/")):
+        return "figshare"
     if "openneuro" in text or "10.18112/openneuro" in text:
         return "openneuro"
     if "10.17605/osf.io" in text:
@@ -333,6 +358,8 @@ def _doi_provider(value: str) -> str | None:
     if "10.17632/" in text:
         return "mendeley"
     if "10.7910/dvn/" in text:
+        return "dataverse"
+    if any(prefix in text for prefix in ("10.5683/sp3/", "10.21979/n9/", "10.25824/redu/", "10.82468/")):
         return "dataverse"
     if "10.5061/dryad" in text:
         return "dryad"
@@ -419,6 +446,32 @@ def _host(value: str) -> str:
         return ""
     parsed = urlparse(value if "://" in value else f"https://{value}")
     return parsed.netloc.lower()
+
+
+def _dataverse_host_for_record(record: DatasetRecord) -> str:
+    text = record.doi.lower()
+    if "10.5683/sp3/" in text:
+        return "borealisdata.ca"
+    if "10.21979/n9/" in text:
+        return "researchdata.ntu.edu.sg"
+    if "10.25824/redu/" in text:
+        return "redu.unicamp.br"
+    if "10.82468/" in text:
+        return "researchdata.lib.cityu.edu.hk"
+    for value in (record.url, *record.search_sources):
+        host = _host(value).removeprefix("www.")
+        if host and (host in DATAVERSE_COMPATIBLE_HOSTS or ("dataverse" in host and "." in host)):
+            return host
+    return "dataverse.harvard.edu"
+
+
+def _dataverse_persistent_id_for_record(record: DatasetRecord) -> str:
+    for value in (record.url, *record.search_sources):
+        parsed = urlparse(value if "://" in value else f"https://{value}")
+        persistent_values = parse_qs(parsed.query).get("persistentId", [])
+        if persistent_values:
+            return persistent_values[0]
+    return f"doi:{record.doi}"
 
 
 def _first_match(pattern: str, text: str) -> str | None:

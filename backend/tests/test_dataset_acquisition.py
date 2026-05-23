@@ -95,6 +95,54 @@ def test_plan_acquisition_treats_public_sciencedb_as_resolvable_api() -> None:
     assert plan.candidates[0].requires_auth is False
 
 
+def test_plan_acquisition_detects_figshare_compatible_repositories() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="7",
+            url="https://data.4tu.nl/articles/_/12707438/1",
+            doi="10.4121/uuid:8e8cfaf2-ab00-45b2-90a0-623fabf75ca9",
+            source_domain="data.4tu.nl",
+            access_status="すぐに使える",
+        )
+    )
+
+    assert plan.provider == "figshare"
+    assert plan.automation_status == "direct_api"
+    assert plan.candidates[0].method == "figshare_api"
+    assert plan.candidates[0].url == "https://api.figshare.com/v2/articles/12707438"
+
+
+def test_plan_acquisition_detects_dataverse_compatible_repositories() -> None:
+    borealis = plan_acquisition(
+        record(
+            record_id="8",
+            url="https://doi.org/10.5683/SP3/JJ2YZZ",
+            doi="10.5683/SP3/JJ2YZZ",
+            source_domain="doi.org",
+            access_status="すぐに使える",
+        )
+    )
+    ntu = plan_acquisition(
+        record(
+            record_id="9",
+            url="https://researchdata.ntu.edu.sg/citation?persistentId=doi%3A10.21979%2FN9%2FTITSXU",
+            doi="10.21979/n9/titsxu",
+            source_domain="researchdata.ntu.edu.sg",
+            access_status="すぐに使える",
+        )
+    )
+
+    assert borealis.provider == "dataverse"
+    assert borealis.automation_status == "direct_api"
+    assert borealis.candidates[0].method == "dataverse_api"
+    assert borealis.candidates[0].url.startswith("https://borealisdata.ca/api/datasets/:persistentId/")
+    assert ntu.provider == "dataverse"
+    assert ntu.candidates[0].url == (
+        "https://researchdata.ntu.edu.sg/api/datasets/:persistentId/"
+        "?persistentId=doi%3A10.21979%2FN9%2FTITSXU"
+    )
+
+
 def test_plan_inventory_acquisition_summary_counts() -> None:
     inventory = DatasetInventory(
         source="inventory.csv",

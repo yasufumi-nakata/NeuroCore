@@ -59,6 +59,18 @@ RESOLVABLE_METHODS = {
     "scidb_api",
     "zenodo_api",
 }
+FIGSHARE_COMPATIBLE_HOSTS = {
+    "data.4tu.nl",
+    "data.dtu.dk",
+    "bridges.monash.edu",
+}
+DATAVERSE_COMPATIBLE_HOSTS = {
+    "borealisdata.ca",
+    "dataverse.harvard.edu",
+    "researchdata.ntu.edu.sg",
+    "researchdata.lib.cityu.edu.hk",
+    "redu.unicamp.br",
+}
 
 
 @dataclass(frozen=True)
@@ -603,14 +615,20 @@ def _resolve_delegated_url(
                 "zenodo", "zenodo_api", f"https://zenodo.org/api/records/{record_id}", "file_listing"
             )
             return _resolve_zenodo(delegated_plan, delegated, fetcher)
-    if "figshare.com" in host or "data.dtu.dk" in host:
-        article_id = _first_match(r"articles/(?:dataset/)?[^/]+/(\d+)|articles/(\d+)", target)
+    if _is_figshare_host(host):
+        article_id = _figshare_article_id(target)
         if article_id:
             delegated_plan = replace(plan, provider="figshare")
             delegated = AcquisitionCandidate(
                 "figshare", "figshare_api", f"https://api.figshare.com/v2/articles/{article_id}", "file_listing"
             )
             return _resolve_figshare(delegated_plan, delegated, fetcher)
+    if _is_dataverse_host(host):
+        api_url = _dataverse_api_url_from_landing(target)
+        if api_url:
+            delegated_plan = replace(plan, provider="dataverse")
+            delegated = AcquisitionCandidate("dataverse", "dataverse_api", api_url, "file_listing")
+            return _resolve_dataverse(delegated_plan, delegated, fetcher)
     if "osf.io" in host:
         node_id = _first_match(r"osf\.io/([a-z0-9]{4,8})", target)
         if node_id:
@@ -1421,6 +1439,30 @@ def _scidb_publicly_accessible(metadata: dict[str, Any]) -> bool:
 
 def _html_landing_url(url: str) -> str:
     return "html+landing://?" + urlencode({"url": url})
+
+
+def _is_figshare_host(host: str) -> bool:
+    normalized = host.lower().removeprefix("www.")
+    return "figshare.com" in normalized or normalized in FIGSHARE_COMPATIBLE_HOSTS
+
+
+def _is_dataverse_host(host: str) -> bool:
+    normalized = host.lower().removeprefix("www.")
+    return "dataverse" in normalized or normalized in DATAVERSE_COMPATIBLE_HOSTS
+
+
+def _figshare_article_id(value: str) -> str | None:
+    return _first_match(r"articles/(?:dataset/)?[^/]+/(\d+)|articles/(\d+)", value)
+
+
+def _dataverse_api_url_from_landing(url: str) -> str:
+    parsed = urlparse(url)
+    if not parsed.scheme or not parsed.netloc:
+        return ""
+    persistent_id = _string(parse_qs(parsed.query).get("persistentId", [""])[0])
+    if not persistent_id:
+        return ""
+    return f"{parsed.scheme}://{parsed.netloc}/api/datasets/:persistentId/?{urlencode({'persistentId': persistent_id})}"
 
 
 def _invenio_api_record_url(url: str) -> str:

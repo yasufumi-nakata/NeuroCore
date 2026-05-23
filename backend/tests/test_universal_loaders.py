@@ -131,6 +131,50 @@ def test_mne_loader_dispatches_eeglab_and_edf_through_optional_adapter(tmp_path,
     assert calls[1][0] == "read_raw_eeglab"
 
 
+def test_mne_loader_falls_back_to_ant_cnt_reader(tmp_path, monkeypatch) -> None:
+    calls: list[str] = []
+
+    class FakeRaw:
+        info = {"sfreq": 250.0}
+        ch_names = ["Fz"]
+
+        def copy(self):
+            return self
+
+        def pick(self, picks):
+            assert picks == "data"
+            return self
+
+        def get_data(self):
+            return np.array([[1e-6, 2e-6]])
+
+        def get_channel_types(self):
+            return ["eeg"]
+
+    def read_raw_cnt(_path, *, preload, verbose):
+        calls.append("read_raw_cnt")
+        assert preload is False
+        assert verbose == "ERROR"
+        raise RuntimeError("WARNING: mne.io.read_raw_cnt supports Neuroscan CNT files only")
+
+    def read_raw_ant(_path, *, preload, verbose):
+        calls.append("read_raw_ant")
+        assert preload is False
+        assert verbose == "ERROR"
+        return FakeRaw()
+
+    fake_mne = SimpleNamespace(io=SimpleNamespace(read_raw_cnt=read_raw_cnt, read_raw_ant=read_raw_ant))
+    monkeypatch.setitem(sys.modules, "mne", fake_mne)
+    path = tmp_path / "sample.cnt"
+    path.write_text("", encoding="utf-8")
+
+    frame = load_mne_raw(path, preload=False)
+
+    assert calls == ["read_raw_cnt", "read_raw_ant"]
+    assert frame.data.shape == (2, 1)
+    assert frame.provenance["reader"] == "mne.io.read_raw_ant"
+
+
 def test_nwb_loader_reads_electrical_series_through_pynwb_adapter(tmp_path, monkeypatch) -> None:
     class FakeData:
         shape = (3, 2)
