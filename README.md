@@ -18,6 +18,7 @@ NeuroCore は、EEG を装着したユーザーがマウス、キーボード、
 - Stream buffer: リアルタイム入力を window / step に従って `NeuroFrame` に切り出し。
 - Signal quality: flatline や高振幅を検出する初期品質スコア。
 - Audit log: 操作を OS に送らず dry-run で JSONL 監査ログ化。
+- Dataset inventory loader: EEG-DATA の日本語目録 CSV を、信号波形ではなく再利用候補の metadata として読み込み。
 - `self-test`: 合成 EEG と破綻ケースで、NaN、Nyquist 超過、stream、signal quality、低 confidence、emergency stop、agent payload guard を自動検査。
 - Settings UI: device / signal / safety / route / agent / self-test を操作するローカル設定画面。
 - CI: Python tests、CLI self-test、frontend build を実行。
@@ -39,6 +40,7 @@ neurocore demo --json
 neurocore stream-demo --json
 neurocore quality --json
 neurocore run-csv samples/synthetic_eeg.csv --sampling-rate 250 --json
+neurocore dataset-inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 neurocore route-intent select --confidence 0.92 --json
 neurocore simulate-intents samples/intent_commands.json --json
 ```
@@ -116,6 +118,17 @@ buffer = StreamBuffer(
 )
 windows = buffer.append([[0.1, 0.2], [0.3, 0.4]])
 ```
+
+EEG-DATA 目録の確認:
+
+```python
+from neurocore import load_eeg_dataset_inventory
+
+inventory = load_eeg_dataset_inventory("../EEG-DATA/eeg_dataset_summary_ja.csv")
+print(inventory.summary())
+```
+
+この API はデータセット目録を読むためのものです。EEG の raw waveform は、各データセットを取得した後に専用 loader で `NeuroFrame` へ正規化してください。
 
 ## 設計資料
 

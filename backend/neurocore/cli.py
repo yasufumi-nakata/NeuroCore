@@ -6,6 +6,7 @@ import sys
 import time
 from pathlib import Path
 
+from .datasets import load_eeg_dataset_inventory
 from .audit import ActionAuditLog, DryRunActionSink
 from . import __version__
 from .control import ControlRouter, IntentCommand
@@ -40,7 +41,9 @@ def cmd_self_test(args: argparse.Namespace) -> int:
 
 def cmd_demo(args: argparse.Namespace) -> int:
     settings = NeuroCoreSettings.load(args.settings) if args.settings else NeuroCoreSettings.default()
-    frame = synthetic_eeg_frame(seconds=args.seconds, sampling_rate=settings.device.sampling_rate, channels=settings.device.channels)
+    frame = synthetic_eeg_frame(
+        seconds=args.seconds, sampling_rate=settings.device.sampling_rate, channels=settings.device.channels
+    )
     return _run_reference_pipeline(frame, settings, json_mode=args.json)
 
 
@@ -48,6 +51,14 @@ def cmd_run_csv(args: argparse.Namespace) -> int:
     settings = NeuroCoreSettings.load(args.settings) if args.settings else NeuroCoreSettings.default()
     frame = load_csv(args.csv, sampling_rate=args.sampling_rate or settings.device.sampling_rate)
     return _run_reference_pipeline(frame, settings, json_mode=args.json)
+
+
+def cmd_dataset_inventory(args: argparse.Namespace) -> int:
+    inventory = load_eeg_dataset_inventory(args.csv)
+    payload = inventory.summary()
+    payload["sample_records"] = [record.to_dict() for record in inventory.records[: args.limit]]
+    _print(payload, json_mode=args.json)
+    return 0 if not any(issue["severity"] == "error" for issue in payload["issues"]) else 1
 
 
 def cmd_route(args: argparse.Namespace) -> int:
@@ -83,14 +94,18 @@ def cmd_simulate(args: argparse.Namespace) -> int:
 
 def cmd_quality(args: argparse.Namespace) -> int:
     settings = NeuroCoreSettings.load(args.settings) if args.settings else NeuroCoreSettings.default()
-    frame = synthetic_eeg_frame(seconds=args.seconds, sampling_rate=settings.device.sampling_rate, channels=settings.device.channels)
+    frame = synthetic_eeg_frame(
+        seconds=args.seconds, sampling_rate=settings.device.sampling_rate, channels=settings.device.channels
+    )
     _print(score_signal_quality(frame).to_dict(), json_mode=args.json)
     return 0
 
 
 def cmd_stream_demo(args: argparse.Namespace) -> int:
     settings = NeuroCoreSettings.load(args.settings) if args.settings else NeuroCoreSettings.default()
-    frame = synthetic_eeg_frame(seconds=args.seconds, sampling_rate=settings.device.sampling_rate, channels=settings.device.channels)
+    frame = synthetic_eeg_frame(
+        seconds=args.seconds, sampling_rate=settings.device.sampling_rate, channels=settings.device.channels
+    )
     buffer = StreamBuffer(
         channels=tuple(Channel(name=name) for name in settings.device.channels),
         sampling_rate=settings.device.sampling_rate,
@@ -102,7 +117,9 @@ def cmd_stream_demo(args: argparse.Namespace) -> int:
     emitted = []
     for start in range(0, frame.samples, chunk_size):
         emitted.extend(buffer.append(frame.data[start : start + chunk_size]))
-    _print({"window_count": len(emitted), "windows": [window.to_summary() for window in emitted[:10]]}, json_mode=args.json)
+    _print(
+        {"window_count": len(emitted), "windows": [window.to_summary() for window in emitted[:10]]}, json_mode=args.json
+    )
     return 0
 
 
@@ -175,6 +192,12 @@ def build_parser() -> argparse.ArgumentParser:
     p_csv.add_argument("--json", action="store_true")
     p_csv.set_defaults(func=cmd_run_csv)
 
+    p_inventory = sub.add_parser("dataset-inventory", help="Inspect an EEG-DATA Japanese dataset inventory CSV")
+    p_inventory.add_argument("csv", type=Path)
+    p_inventory.add_argument("--limit", type=int, default=3, help="Number of sample records to include")
+    p_inventory.add_argument("--json", action="store_true")
+    p_inventory.set_defaults(func=cmd_dataset_inventory)
+
     p_route = sub.add_parser("route-intent", help="Route an externally decoded intent into a safe action envelope")
     p_route.add_argument("intent")
     p_route.add_argument("--confidence", type=float, default=1.0)
@@ -183,7 +206,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_route.add_argument("--json", action="store_true")
     p_route.set_defaults(func=cmd_route)
 
-    p_simulate = sub.add_parser("simulate-intents", help="Dry-run a JSON list of decoded intents and write an audit log")
+    p_simulate = sub.add_parser(
+        "simulate-intents", help="Dry-run a JSON list of decoded intents and write an audit log"
+    )
     p_simulate.add_argument("commands", type=Path, help="JSON file containing a list of intent command objects")
     p_simulate.add_argument("--out", type=Path, default=None, help="Optional JSONL audit log path")
     p_simulate.add_argument("--settings", type=Path, default=None)

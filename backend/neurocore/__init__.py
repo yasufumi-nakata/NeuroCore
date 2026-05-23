@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from .audit import ActionAuditLog, AuditEvent, DryRunActionSink
 from .control import ControlAction, ControlRouter, IntentCommand
+from .datasets import DatasetInventory, DatasetRecord, load_eeg_dataset_inventory
 from .frame import Channel, Event, FrameValidationError, NeuroFrame, Timebase, ValidityIssue
 from .kernels import Bandpass, ReReference, Resample, SpectralFeatures, ValidateEEG
 from .loaders import load, load_csv
@@ -20,6 +21,8 @@ __all__ = [
     "Channel",
     "ControlAction",
     "ControlRouter",
+    "DatasetInventory",
+    "DatasetRecord",
     "DryRunActionSink",
     "Event",
     "FrameValidationError",
@@ -41,5 +44,6 @@ __all__ = [
     "ValidityIssue",
     "load",
     "load_csv",
+    "load_eeg_dataset_inventory",
     "score_signal_quality",
 ]

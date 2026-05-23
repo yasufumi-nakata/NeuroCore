@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>NeuroCore Tutorial</title>
-    <meta name="description" content="NeuroCore の install、self-test、CSV pipeline、intent routing、settings UI を確認する tutorial です。">
+    <meta name="description" content="NeuroCore の install、self-test、CSV pipeline、dataset inventory、intent routing、settings UI を確認する tutorial です。">
     <link rel="stylesheet" href="../assets/neurocore-pages.css">
   </head>
   <body>
@@ -52,7 +52,15 @@ python -m pip install -e ".[dev,server]"</code></pre>
             CSV は samples x channels の形です。実デバイス loader を足す場合も、まず `NeuroFrame` へ正規化してから pipeline へ渡します。
           </p>
 
-          <h2>4. Route decoded intents</h2>
+          <h2>4. Inspect an EEG-DATA inventory</h2>
+          <pre class="terminal"><code>neurocore dataset-inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --json
+python scripts/verify_dataset_loading.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv</code></pre>
+          <p>
+            EEG-DATA checkout は raw EEG そのものではなく、公開 dataset の metadata 目録として扱います。
+            実信号ファイルを取得した後は、形式ごとの loader で `NeuroFrame` に変換してから pipeline へ渡します。
+          </p>
+
+          <h2>5. Route decoded intents</h2>
           <pre class="terminal"><code>neurocore route-intent select --confidence 0.92 --json
 neurocore simulate-intents samples/intent_commands.json --json</code></pre>
           <p>
@@ -60,7 +68,7 @@ neurocore simulate-intents samples/intent_commands.json --json</code></pre>
             実際の OS 操作や agent 実行は、この core package では行いません。
           </p>
 
-          <h2>5. Start the local API and settings UI</h2>
+          <h2>6. Start the local API and settings UI</h2>
           <pre class="terminal"><code>PYTHONPATH=backend uvicorn neurocore.api:app --reload --port 8010
 cd frontend
 npm install
@@ -70,7 +78,7 @@ npm run dev -- --host 127.0.0.1 --port 5174</code></pre>
             API が起動していない場合も UI は表示されますが、実運用前の検証では API self-test を通してください。
           </p>
 
-          <h2>6. Before adding a real EEG device</h2>
+          <h2>7. Before adding a real EEG device</h2>
           <ul>
             <li>decoder weights、training checkpoints、個人 EEG raw data はこの repository に入れません。</li>
             <li>device loader は timestamp、sampling rate、channel labels、unit を明示して `NeuroFrame` を作ります。</li>
