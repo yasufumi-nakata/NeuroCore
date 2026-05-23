@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import json
 import sys
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 
 import numpy as np
 
 from neurocore.cli import main
-from neurocore.loaders import find_supported_signal_files, load, load_mne_raw, supported_extensions
+from neurocore.loaders import find_supported_signal_files, load, load_mat, load_mne_raw, load_nwb, supported_extensions
 
 
 def test_numpy_npz_loader_uses_embedded_metadata(tmp_path) -> None:
@@ -25,6 +25,22 @@ def test_numpy_npz_loader_uses_embedded_metadata(tmp_path) -> None:
     assert frame.channel_names == ("Fz", "Cz")
     assert frame.timebase.sampling_rate == 250.0
     assert frame.provenance["source"] == "numpy"
+
+
+def test_mat_loader_flattens_multidimensional_eeg_array(tmp_path, monkeypatch) -> None:
+    path = tmp_path / "subject.mat"
+    payload = {
+        "eeg": np.zeros((12, 8, 1114, 15)),
+        "list_sub": np.arange(10).reshape(1, 10),
+        "fs": np.array([[256.0]]),
+    }
+    monkeypatch.setattr("neurocore.loaders._load_mat_payload", lambda _path: payload)
+
+    frame = load_mat(path)
+
+    assert frame.data.shape == (12 * 1114 * 15, 8)
+    assert frame.timebase.sampling_rate == 256.0
+    assert frame.channel_names == ("Ch1", "Ch2", "Ch3", "Ch4", "Ch5", "Ch6", "Ch7", "Ch8")
 
 
 def test_run_file_cli_accepts_existing_csv_fixture(capsys) -> None:
@@ -104,6 +120,60 @@ def test_mne_loader_dispatches_eeglab_and_edf_through_optional_adapter(tmp_path,
     assert calls[1][0] == "read_raw_eeglab"
 
 
+def test_nwb_loader_reads_electrical_series_through_pynwb_adapter(tmp_path, monkeypatch) -> None:
+    class FakeData:
+        shape = (3, 2)
+
+        def __getitem__(self, item):
+            assert item == slice(None, None, None)
+            return np.array([[1e-6, 2e-6], [3e-6, 4e-6], [5e-6, 6e-6]])
+
+    class FakeElectrodes:
+        def to_dataframe(self):
+            return {"label": SimpleNamespace(tolist=lambda: ["Fz", "Cz"])}
+
+    class FakeSeries:
+        name = "raw_voltage"
+        data = FakeData()
+        rate = 500.0
+        electrodes = FakeElectrodes()
+        unit = "volts"
+
+    class FakeNWBFile:
+        session_description = "fixture"
+        identifier = "nwb-fixture"
+        acquisition = {"raw_voltage": FakeSeries()}
+        processing = {}
+
+    class FakeNWBHDF5IO:
+        def __init__(self, path, mode):
+            assert mode == "r"
+            self.path = path
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return None
+
+        def read(self):
+            return FakeNWBFile()
+
+    fake_pynwb = ModuleType("pynwb")
+    fake_pynwb.NWBHDF5IO = FakeNWBHDF5IO
+    monkeypatch.setitem(sys.modules, "pynwb", fake_pynwb)
+    path = tmp_path / "sample.nwb"
+    path.write_text("", encoding="utf-8")
+
+    frame = load_nwb(path)
+
+    assert frame.data.shape == (3, 2)
+    assert frame.data[0, 0] == 1.0
+    assert frame.channel_names == ("Fz", "Cz")
+    assert frame.timebase.sampling_rate == 500.0
+    assert frame.provenance["series_name"] == "raw_voltage"
+
+
 def test_supported_extensions_include_major_eeg_formats() -> None:
     extensions = set(supported_extensions())
 
@@ -122,6 +192,7 @@ def test_supported_extensions_include_major_eeg_formats() -> None:
         ".lay",
         ".mefd",
         ".xdf",
+        ".nwb",
         ".mat",
         ".npy",
         ".npz",

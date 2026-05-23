@@ -7,7 +7,7 @@ The test strategy follows the same practical idea as OpenRI: do not only test th
 - Unit tests: frame validation, kernel planning, feature output, settings validation.
 - Fixture tests: CSV loading, EEG-DATA inventory loading, and synthetic EEG pipeline behavior.
 - Dataset checks: local EEG-DATA checkout is treated as an inventory unless raw EEG files are actually present; the inventory report also summarizes loader coverage for MNE-backed EEG formats, XDF, MAT, NumPy, and CSV.
-- Acquisition checks: provider-specific raw-data acquisition plans are generated for EEG-DATA rows, public provider APIs can be resolved to remote file candidates, and any local raw cache can be loaded through the same `NeuroFrame` path.
+- Acquisition checks: provider-specific raw-data acquisition plans are generated for EEG-DATA rows, public provider APIs and file indexes can be resolved to remote file candidates, and any local raw cache can be loaded through the same `NeuroFrame` path.
 - Breakage tests: NaN/Inf contamination, invalid filter bands, insufficient channels, clock-drift warnings.
 - Safety tests: low-confidence commands, emergency stop, unbound intents, prompt-like agent payloads.
 - Streaming tests: overlapping window emission, shape validation, trimming behavior.
@@ -28,6 +28,7 @@ PYTHONPATH=backend python -m neurocore.cli run-file samples/synthetic_eeg.csv --
 PYTHONPATH=backend python -m neurocore.cli dataset-inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 PYTHONPATH=backend python -m neurocore.cli dataset-acquisition-plan ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --limit 10 --json
+PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider openneuro --provider dandi --limit 5 --json
 PYTHONPATH=backend python scripts/verify_dataset_loading.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv
 PYTHONPATH=backend python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv
 PYTHONPATH=backend python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 10

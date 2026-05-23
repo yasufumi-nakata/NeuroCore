@@ -86,12 +86,15 @@ def cmd_dataset_resolve_files(args: argparse.Namespace) -> int:
         plans,
         limit=None if args.limit == 0 else args.limit,
         providers=set(args.provider) if args.provider else None,
-        automation_statuses=set(args.status) if args.status else {"direct_api"},
+        automation_statuses=set(args.status) if args.status else {"direct_api", "tooling_required"},
         timeout=args.http_timeout,
         max_pages=args.max_pages,
     )
     payload = summarize_remote_file_resolutions(resolutions)
-    payload["sample_resolutions"] = [resolution.to_dict() for resolution in resolutions[: args.sample_limit]]
+    file_limit = None if args.file_limit == 0 else args.file_limit
+    payload["sample_resolutions"] = [
+        resolution.to_dict(file_limit=file_limit) for resolution in resolutions[: args.sample_limit]
+    ]
     _print(payload, json_mode=args.json)
     return 0 if payload["error_count"] == 0 else 1
 
@@ -252,12 +255,13 @@ def build_parser() -> argparse.ArgumentParser:
     p_resolve.add_argument("csv", type=Path)
     p_resolve.add_argument("--limit", type=int, default=25, help="Maximum records to resolve; use 0 for all selected rows")
     p_resolve.add_argument("--sample-limit", type=int, default=10)
+    p_resolve.add_argument("--file-limit", type=int, default=50, help="Files to show per sample resolution; use 0 for all")
     p_resolve.add_argument("--provider", action="append", default=[], help="Provider filter; repeat for multiple providers")
     p_resolve.add_argument(
         "--status",
         action="append",
         default=[],
-        help="Automation status filter; defaults to direct_api",
+        help="Automation status filter; defaults to direct_api and tooling_required",
     )
     p_resolve.add_argument("--http-timeout", type=float, default=20.0)
     p_resolve.add_argument("--max-pages", type=int, default=30)

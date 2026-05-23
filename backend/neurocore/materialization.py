@@ -6,9 +6,10 @@ import tarfile
 import zipfile
 from collections import Counter
 from dataclasses import dataclass
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any, Callable, Iterable
-from urllib.parse import urljoin, urlparse
+from urllib.parse import parse_qs, quote, urlencode, urljoin, urlparse
 from urllib.request import Request, urlopen
 
 from .acquisition import AcquisitionCandidate, AcquisitionPlan
@@ -30,6 +31,7 @@ CONFIDENT_SIGNAL_SUFFIXES = {
     ".lay",
     ".mefd",
     ".mff",
+    ".nwb",
     ".nxe",
     ".set",
     ".vhdr",
@@ -38,10 +40,16 @@ CONFIDENT_SIGNAL_SUFFIXES = {
 GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz"}
 RESOLVABLE_METHODS = {
     "dataverse_api",
+    "dandi_client",
     "dryad_api",
     "figshare_api",
+    "gin_client",
+    "git_clone",
+    "huggingface_client",
     "mendeley_api",
+    "openneuro_cli",
     "osf_api",
+    "physionet_client",
     "zenodo_api",
 }
 
@@ -87,7 +95,8 @@ class RemoteFileResolution:
     files: tuple[RemoteFileCandidate, ...]
     errors: tuple[str, ...] = ()
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self, *, file_limit: int | None = None) -> dict[str, Any]:
+        files = self.files if file_limit is None else self.files[:file_limit]
         return {
             "record_id": self.record_id,
             "dataset_name": self.dataset_name,
@@ -96,7 +105,8 @@ class RemoteFileResolution:
             "file_count": len(self.files),
             "directly_loadable_count": sum(file.directly_loadable for file in self.files),
             "archive_count": sum(file.archive for file in self.files),
-            "files": [file.to_dict() for file in self.files],
+            "files": [file.to_dict() for file in files],
+            "files_truncated": file_limit is not None and len(self.files) > file_limit,
             "errors": list(self.errors),
         }
 
@@ -219,6 +229,7 @@ def summarize_remote_file_resolutions(resolutions: Iterable[RemoteFileResolution
         "provider_counts": dict(provider_counts.most_common(30)),
         "remote_file_count": len(remote_files),
         "directly_loadable_file_count": sum(file.directly_loadable for file in remote_files),
+        "loader_materialization_file_count": sum(len(_loader_materialization_keys(item.files)) for item in items),
         "archive_file_count": sum(file.archive for file in remote_files),
         "materialization_action_counts": dict(action_counts.most_common()),
         "error_count": sum(len(item.errors) for item in items),
@@ -285,9 +296,24 @@ def materialize_remote_files(
     fetch_bytes: ByteFetcher | None = None,
 ) -> tuple[MaterializationResult, ...]:
     results: list[MaterializationResult] = []
-    for file in files:
-        if max_files is not None and len(results) >= max_files:
+    file_tuple = tuple(files)
+    selected_keys = _loader_materialization_keys(file_tuple) if direct_only else None
+    selected_attempts = 0
+    for file in file_tuple:
+        if selected_keys is not None and _file_key(file) not in selected_keys:
+            results.append(
+                MaterializationResult(
+                    record_id=file.record_id,
+                    name=file.name,
+                    url=file.url,
+                    status="skipped",
+                    reason="remote file is not needed for direct loader materialization",
+                )
+            )
+            continue
+        if max_files is not None and selected_attempts >= max_files:
             break
+        selected_attempts += 1
         try:
             results.append(
                 materialize_remote_file(
@@ -296,7 +322,7 @@ def materialize_remote_files(
                     fetch_bytes=fetch_bytes,
                     max_bytes=max_bytes,
                     overwrite=overwrite,
-                    direct_only=direct_only,
+                    direct_only=False,
                 )
             )
         except Exception as exc:  # pragma: no cover - defensive path for network and filesystem errors
@@ -366,6 +392,18 @@ def _resolve_candidate(
         return _resolve_generic_following_file_links(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method == "mendeley_api":
         return _resolve_generic_following_file_links(plan, candidate, fetcher, max_pages=max_pages)
+    if candidate.method == "openneuro_cli":
+        return _resolve_openneuro(plan, candidate, fetcher)
+    if candidate.method == "git_clone":
+        return _resolve_github(plan, candidate, fetcher)
+    if candidate.method == "huggingface_client":
+        return _resolve_huggingface(plan, candidate, fetcher, max_pages=max_pages)
+    if candidate.method == "physionet_client":
+        return _resolve_physionet(plan, candidate, fetcher, max_pages=max_pages)
+    if candidate.method == "dandi_client":
+        return _resolve_dandi(plan, candidate, fetcher, max_pages=max_pages)
+    if candidate.method == "gin_client":
+        return _resolve_gin(plan, candidate, fetcher)
     return []
 
 
@@ -479,6 +517,230 @@ def _resolve_dataverse(
     return [file for file in files if file.name]
 
 
+def _resolve_openneuro(
+    plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetcher: JsonFetcher
+) -> list[RemoteFileCandidate]:
+    dataset_id = _first_match(r"(ds\d{6,})", candidate.url)
+    if not dataset_id:
+        return []
+    tag = _first_match(r"/versions/([A-Za-z0-9_.-]+)", candidate.url)
+    if not tag:
+        metadata = fetcher(_openneuro_graphql_url(_openneuro_dataset_query(dataset_id)))
+        snapshots = _list(_dict(_dict(metadata.get("data")).get("dataset")).get("snapshots"))
+        tagged = [item for item in snapshots if item.get("tag")]
+        if tagged:
+            tagged.sort(key=lambda item: str(item.get("created") or item.get("tag")))
+            tag = str(tagged[-1]["tag"])
+    if not tag:
+        tag = "1.0.0"
+    payload = fetcher(_openneuro_graphql_url(_openneuro_files_query(dataset_id, tag)))
+    snapshot = _dict(_dict(payload.get("data")).get("snapshot"))
+    files = []
+    for item in _list(snapshot.get("files")):
+        if item.get("directory"):
+            continue
+        urls = _list(item.get("urls"))
+        name = _string(item.get("filename"))
+        files.append(
+            _remote_file(
+                plan,
+                candidate,
+                name=name,
+                url=_string(urls[0] if urls else ""),
+                size_bytes=_int_or_none(item.get("size")),
+                checksum=_string(item.get("id")),
+                media_type="annexed" if item.get("annexed") else "git-object",
+                source_url=f"https://openneuro.org/datasets/{dataset_id}/versions/{tag}",
+            )
+        )
+    return [file for file in files if file.name and file.url]
+
+
+def _resolve_github(
+    plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetcher: JsonFetcher
+) -> list[RemoteFileCandidate]:
+    repo = _first_match(r"github\.com[:/]([^/\s]+/[^/\s?#]+)", candidate.url)
+    if not repo:
+        return []
+    repo = repo.removesuffix(".git")
+    payload = fetcher(f"https://api.github.com/repos/{repo}/git/trees/HEAD?recursive=1")
+    files = []
+    for item in _list(payload.get("tree")):
+        if item.get("type") != "blob":
+            continue
+        path = _string(item.get("path"))
+        files.append(
+            _remote_file(
+                plan,
+                candidate,
+                name=path,
+                url=f"https://raw.githubusercontent.com/{repo}/HEAD/{quote(path, safe='/')}",
+                size_bytes=_int_or_none(item.get("size")),
+                checksum=_string(item.get("sha")),
+                media_type="git-blob",
+                source_url=f"https://github.com/{repo}",
+            )
+        )
+    return [file for file in files if file.name]
+
+
+def _resolve_huggingface(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+    *,
+    max_pages: int = 30,
+) -> list[RemoteFileCandidate]:
+    repo = _first_match(r"huggingface\.co/datasets/([^/\s?#]+/[^/\s?#]+)", candidate.url)
+    if not repo:
+        return []
+    queue = [f"https://huggingface.co/api/datasets/{repo}/tree/main?recursive=1"]
+    seen: set[str] = set()
+    files = []
+    pages = 0
+    while queue and pages < max_pages:
+        url = queue.pop(0)
+        if url in seen:
+            continue
+        seen.add(url)
+        payload = fetcher(url)
+        pages += 1
+        for item in _list(payload):
+            path = _string(item.get("path"))
+            if not path:
+                continue
+            if item.get("type") == "directory":
+                queue.append(f"https://huggingface.co/api/datasets/{repo}/tree/main/{quote(path, safe='/')}")
+                continue
+            if item.get("type") not in {"file", "blob"}:
+                continue
+            files.append(
+                _remote_file(
+                    plan,
+                    candidate,
+                    name=path,
+                    url=f"https://huggingface.co/datasets/{repo}/resolve/main/{quote(path, safe='/')}",
+                    size_bytes=_int_or_none(item.get("size")),
+                    checksum=_string(item.get("oid")),
+                    media_type="huggingface-file",
+                    source_url=f"https://huggingface.co/datasets/{repo}",
+                )
+            )
+    return [file for file in files if file.name]
+
+
+def _resolve_physionet(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+    *,
+    max_pages: int,
+) -> list[RemoteFileCandidate]:
+    parsed = urlparse(candidate.url)
+    match = re.search(r"/content/([^/]+)/([^/]+)/?", parsed.path)
+    if not match:
+        return []
+    project, version = match.groups()
+    root = f"https://physionet.org/files/{project}/{version}/"
+    return _resolve_html_index(plan, candidate, fetcher, root, max_pages=max_pages)
+
+
+def _resolve_dandi(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+    *,
+    max_pages: int,
+) -> list[RemoteFileCandidate]:
+    dandiset_id = _first_match(r"dandiset/(\d{6})|DANDI:(\d{6})", candidate.url)
+    if not dandiset_id:
+        return []
+    version = _first_match(r"dandiset/\d{6}/([^/\s?#]+)", candidate.url) or "draft"
+    api_root = "https://api.dandiarchive.org/api"
+    next_url = f"{api_root}/dandisets/{dandiset_id}/versions/{version}/assets/?page_size=1000"
+    files: list[RemoteFileCandidate] = []
+    pages = 0
+    while next_url and pages < max_pages:
+        payload = fetcher(next_url)
+        pages += 1
+        for item in _list(payload.get("results")):
+            path = _string(item.get("path"))
+            asset_id = _string(item.get("asset_id"))
+            if not path or not asset_id:
+                continue
+            files.append(
+                _remote_file(
+                    plan,
+                    candidate,
+                    name=path,
+                    url=f"{api_root}/dandisets/{dandiset_id}/versions/{version}/assets/{asset_id}/download/",
+                    size_bytes=_int_or_none(item.get("size")),
+                    checksum=_string(item.get("blob") or item.get("zarr") or asset_id),
+                    media_type="dandi-asset",
+                    source_url=f"https://dandiarchive.org/dandiset/{dandiset_id}/{version}",
+                )
+            )
+        next_url = _string(payload.get("next"))
+    return files
+
+
+def _resolve_gin(plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetcher: JsonFetcher) -> list[RemoteFileCandidate]:
+    parsed = urlparse(candidate.url)
+    parts = [part for part in parsed.path.split("/") if part]
+    if len(parts) < 2:
+        return []
+    repo_path = "/".join(parts[:2])
+    base = f"{parsed.scheme}://{parsed.netloc}/{repo_path}"
+    files = [
+        _remote_file(plan, candidate, name="master.zip", url=f"{base}/archive/master.zip", source_url=base),
+        _remote_file(plan, candidate, name="master.tar.gz", url=f"{base}/archive/master.tar.gz", source_url=base),
+        _remote_file(plan, candidate, name="master.gin.zip", url=f"{base}/archive/master.gin.zip", source_url=base),
+    ]
+    try:
+        payload = fetcher(candidate.url)
+    except Exception:
+        return files
+    for href in _html_links(_string(payload)):
+        if "/raw/" not in href:
+            continue
+        name = href.rsplit("/", 1)[-1]
+        files.append(_remote_file(plan, candidate, name=name, url=urljoin(base, href), source_url=base))
+    return _dedupe_files(files)
+
+
+def _resolve_html_index(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+    root: str,
+    *,
+    max_pages: int,
+) -> list[RemoteFileCandidate]:
+    queue = [root]
+    seen: set[str] = set()
+    files: list[RemoteFileCandidate] = []
+    pages = 0
+    while queue and pages < max_pages:
+        url = queue.pop(0)
+        if url in seen:
+            continue
+        seen.add(url)
+        payload = fetcher(url)
+        pages += 1
+        for href in _html_links(_string(payload)):
+            if href.startswith(("#", "?")) or href in {"../", "./"}:
+                continue
+            target = urljoin(url, href)
+            if not target.startswith(root):
+                continue
+            if href.endswith("/"):
+                queue.append(target)
+                continue
+            name = target.removeprefix(root)
+            files.append(_remote_file(plan, candidate, name=name, url=target, source_url=root))
+    return _dedupe_files(files)
+
+
 def _resolve_generic_following_file_links(
     plan: AcquisitionPlan,
     candidate: AcquisitionCandidate,
@@ -559,7 +821,7 @@ def _remote_file(
     source_url: str | None = None,
 ) -> RemoteFileCandidate:
     archive = _is_archive_name(name)
-    directly_loadable = _is_directly_loadable_signal_name(name)
+    directly_loadable = _is_directly_loadable_signal_name(name) or _is_generic_signal_supported_by_plan(name, plan)
     if directly_loadable:
         action = "download_then_load"
     elif archive:
@@ -583,6 +845,24 @@ def _remote_file(
 
 
 def _fetch_json(url: str, *, timeout: float) -> Any:
+    if url.startswith("openneuro+graphql://"):
+        query = parse_qs(urlparse(url).query).get("query", [""])[0]
+        payload = json.dumps({"query": query}).encode("utf-8")
+        request = Request(
+            "https://openneuro.org/crn/graphql",
+            data=payload,
+            headers={
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "User-Agent": "NeuroCore/0.1 dataset-resolver",
+            },
+        )
+        with urlopen(request, timeout=timeout) as response:
+            return json.loads(response.read().decode("utf-8"))
+    if url.startswith("https://physionet.org/files/") or "gin.g-node.org" in url:
+        request = Request(url, headers={"Accept": "text/html", "User-Agent": "NeuroCore/0.1 dataset-resolver"})
+        with urlopen(request, timeout=timeout) as response:
+            return response.read().decode("utf-8", "ignore")
     request = Request(url, headers={"Accept": "application/json", "User-Agent": "NeuroCore/0.1 dataset-resolver"})
     with urlopen(request, timeout=timeout) as response:
         return json.loads(response.read().decode("utf-8"))
@@ -683,6 +963,25 @@ def _file_link_hrefs(value: Any, *, base_url: str) -> list[str]:
     return hrefs
 
 
+class _HrefParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.hrefs: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() != "a":
+            return
+        for key, value in attrs:
+            if key.lower() == "href" and value:
+                self.hrefs.append(value)
+
+
+def _html_links(html: str) -> list[str]:
+    parser = _HrefParser()
+    parser.feed(html)
+    return parser.hrefs
+
+
 def _json_api_data(payload: Any) -> list[dict[str, Any]]:
     data = payload.get("data") if isinstance(payload, dict) else []
     if isinstance(data, dict):
@@ -723,6 +1022,37 @@ def _int_or_none(value: Any) -> int | None:
         return None
 
 
+def _first_match(pattern: str, text: str) -> str | None:
+    match = re.search(pattern, text, flags=re.IGNORECASE)
+    if not match:
+        return None
+    for group in match.groups():
+        if group:
+            return group
+    return match.group(0)
+
+
+def _openneuro_graphql_url(query: str) -> str:
+    return "openneuro+graphql://?" + urlencode({"query": query})
+
+
+def _openneuro_dataset_query(dataset_id: str) -> str:
+    return (
+        "query datasetInfo { "
+        f'dataset(id: "{dataset_id}") {{ snapshots {{ tag created }} }}'
+        " }"
+    )
+
+
+def _openneuro_files_query(dataset_id: str, tag: str) -> str:
+    return (
+        "query snapshotFiles { "
+        f'snapshot(datasetId: "{dataset_id}", tag: "{tag}") '
+        "{ files(recursive: true) { filename size directory annexed id urls } }"
+        " }"
+    )
+
+
 def _is_archive_name(name: str) -> bool:
     normalized = name.lower()
     return any(normalized.endswith(suffix) for suffix in ARCHIVE_SUFFIXES)
@@ -739,6 +1069,58 @@ def _is_directly_loadable_signal_name(name: str) -> bool:
     if suffix in GENERIC_NUMERIC_SUFFIXES:
         return bool(re.search(r"(^|[_./ -])(eeg|raw|signal|signals|recording|subject|sub-[a-z0-9]+|ses-[a-z0-9]+|task-[a-z0-9]+)", name, re.IGNORECASE))
     return False
+
+
+def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bool:
+    suffix = Path(name.lower()).suffix
+    hints = set(plan.format_hints)
+    if suffix == ".mat" and "mat" in hints:
+        return _is_signal_like_generic_path(name)
+    if suffix in {".npy", ".npz"} and "numpy" in hints:
+        return _is_signal_like_generic_path(name)
+    if suffix == ".csv" and "csv" in hints:
+        return _is_signal_like_generic_path(name)
+    return False
+
+
+def _is_signal_like_generic_path(name: str) -> bool:
+    normalized = name.replace("\\", "/").lower()
+    basename = Path(normalized).name
+    if any(part in normalized for part in ("/eeg/", "/raw/", "/signal/", "/signals/", "filtered_data/", "segmented_data/")):
+        return True
+    if normalized.startswith(("data/", "raw/", "eeg/", "signals/")):
+        return True
+    return bool(re.search(r"^(sub-[a-z0-9]+|subject[_-]?\d+|s\d+[_-]|eeg|raw|signal)", basename))
+
+
+def _loader_materialization_keys(files: tuple[RemoteFileCandidate, ...]) -> set[tuple[str, str]]:
+    selected = {_file_key(file) for file in files if file.directly_loadable}
+    by_name = {file.name.replace("\\", "/").lower(): file for file in files}
+    for file in files:
+        if not file.directly_loadable:
+            continue
+        for companion_name in _loader_companion_names(file.name):
+            companion = by_name.get(companion_name)
+            if companion:
+                selected.add(_file_key(companion))
+    return selected
+
+
+def _loader_companion_names(name: str) -> tuple[str, ...]:
+    normalized = name.replace("\\", "/")
+    lower = normalized.lower()
+    if lower.endswith(".vhdr"):
+        stem = normalized[:-5]
+        return (f"{stem}.eeg".lower(), f"{stem}.dat".lower(), f"{stem}.vmrk".lower())
+    if lower.endswith(".set"):
+        return (f"{normalized[:-4]}.fdt".lower(),)
+    if lower.endswith(".lay"):
+        return (f"{normalized[:-4]}.dat".lower(),)
+    return ()
+
+
+def _file_key(file: RemoteFileCandidate) -> tuple[str, str]:
+    return (file.name, file.url)
 
 
 def _safe_path_part(value: str) -> str:

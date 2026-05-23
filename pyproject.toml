@@ -33,6 +33,7 @@ server = ["fastapi>=0.100", "uvicorn[standard]>=0.27"]
 io = [
     "h5py>=3.10",
     "mne>=1.7",
+    "pynwb>=2.7",
     "pyxdf>=1.16",
     "scipy>=1.11",
 ]

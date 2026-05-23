@@ -28,6 +28,7 @@ MNE_RAW_READERS = {
 
 SUPPORTED_EXTENSIONS = {
     ".csv",
+    ".nwb",
     ".npy",
     ".npz",
     ".mat",
@@ -55,6 +56,8 @@ def load(
         return load_mne_raw(resolved, preload=mne_preload)
     if suffix == ".xdf":
         return load_xdf(resolved)
+    if suffix == ".nwb":
+        return load_nwb(resolved)
     if suffix == ".npy":
         if sampling_rate is None:
             raise ValueError("sampling_rate is required when loading NPY EEG data")
@@ -162,6 +165,33 @@ def load_xdf(path: str | Path, *, stream_name: str | None = None, unit: str = "u
             "stream_type": _xdf_info_value(stream, "type"),
         },
     )
+
+
+def load_nwb(path: str | Path, *, series_name: str | None = None, unit: str = "uV") -> NeuroFrame:
+    resolved = Path(path).expanduser()
+    pynwb = _require_module("pynwb", extra="io")
+    with pynwb.NWBHDF5IO(str(resolved), mode="r") as io:
+        nwbfile = io.read()
+        series = _select_nwb_electrical_series(nwbfile, series_name=series_name)
+        data = np.asarray(series.data[:], dtype=float)
+        data = _samples_by_channels(data)
+        sampling_rate, timestamps = _nwb_timebase(series)
+        names = _nwb_channel_names(series, data.shape[1])
+        native_unit = str(getattr(series, "unit", "") or unit)
+        scale = _unit_scale(native_unit, unit)
+        return NeuroFrame(
+            data=data * scale,
+            channels=tuple(Channel(name=name, type="eeg", unit=unit) for name in names),
+            timebase=Timebase(sampling_rate=sampling_rate, timestamps=timestamps, clock_source="nwb"),
+            provenance={
+                "source": "nwb",
+                "path": str(resolved),
+                "series_name": str(getattr(series, "name", series_name or "")),
+                "native_unit": native_unit,
+                "session_description": str(getattr(nwbfile, "session_description", "")),
+                "identifier": str(getattr(nwbfile, "identifier", "")),
+            },
+        )
 
 
 def load_numpy(
@@ -332,6 +362,92 @@ def _xdf_channel_names(stream: dict[str, Any], count: int) -> tuple[str, ...]:
     return tuple(f"Ch{index + 1}" for index in range(count))
 
 
+def _select_nwb_electrical_series(nwbfile: Any, *, series_name: str | None) -> Any:
+    candidates = []
+    acquisition = getattr(nwbfile, "acquisition", {})
+    candidates.extend(_nwb_series_from_mapping(acquisition))
+    processing = getattr(nwbfile, "processing", {})
+    for module in _mapping_values(processing):
+        candidates.extend(_nwb_series_from_mapping(getattr(module, "data_interfaces", module)))
+    if series_name:
+        for series in candidates:
+            if str(getattr(series, "name", "")) == series_name:
+                return series
+        raise ValueError(f"NWB file does not contain an ElectricalSeries named {series_name!r}")
+    usable = [series for series in candidates if hasattr(series, "data")]
+    if not usable:
+        raise ValueError("NWB file does not contain an ElectricalSeries with data")
+    usable.sort(key=lambda item: len(getattr(getattr(item, "data", None), "shape", ())) == 2, reverse=True)
+    return usable[0]
+
+
+def _nwb_series_from_mapping(mapping: Any) -> list[Any]:
+    series = []
+    for value in _mapping_values(mapping):
+        if _looks_like_nwb_electrical_series(value):
+            series.append(value)
+        elif hasattr(value, "electrical_series"):
+            series.extend(_nwb_series_from_mapping(getattr(value, "electrical_series")))
+        elif hasattr(value, "data_interfaces"):
+            series.extend(_nwb_series_from_mapping(getattr(value, "data_interfaces")))
+    return series
+
+
+def _mapping_values(mapping: Any) -> list[Any]:
+    if isinstance(mapping, dict):
+        return list(mapping.values())
+    if hasattr(mapping, "values"):
+        return list(mapping.values())
+    if isinstance(mapping, (list, tuple)):
+        return list(mapping)
+    return []
+
+
+def _looks_like_nwb_electrical_series(value: Any) -> bool:
+    return hasattr(value, "data") and (hasattr(value, "electrodes") or "ElectricalSeries" in type(value).__name__)
+
+
+def _nwb_timebase(series: Any) -> tuple[float, tuple[float, ...] | None]:
+    rate = getattr(series, "rate", None)
+    if rate:
+        return float(rate), None
+    timestamps = getattr(series, "timestamps", None)
+    if timestamps is not None:
+        values = tuple(float(item) for item in np.asarray(timestamps[:]).reshape(-1))
+        if len(values) > 1:
+            duration = values[-1] - values[0]
+            if duration > 0:
+                return (len(values) - 1) / duration, values
+    raise ValueError("NWB ElectricalSeries does not expose rate or usable timestamps")
+
+
+def _nwb_channel_names(series: Any, count: int) -> tuple[str, ...]:
+    electrodes = getattr(series, "electrodes", None)
+    dataframe = None
+    if electrodes is not None and hasattr(electrodes, "to_dataframe"):
+        try:
+            dataframe = electrodes.to_dataframe()
+        except Exception:
+            dataframe = None
+    if dataframe is not None:
+        for column in ("label", "name", "electrode_name", "location"):
+            if column in dataframe:
+                names = tuple(str(item) for item in dataframe[column].tolist())
+                if len(names) == count and all(name and name != "nan" for name in names):
+                    return names
+    return tuple(f"Ch{index + 1}" for index in range(count))
+
+
+def _unit_scale(native_unit: str, target_unit: str) -> float:
+    native = native_unit.strip().casefold()
+    target = target_unit.strip().casefold()
+    if target in {"uv", "µv", "μv"} and native in {"v", "volt", "volts"}:
+        return 1_000_000.0
+    if target in {"v", "volt", "volts"} and native in {"uv", "µv", "μv"}:
+        return 0.000001
+    return 1.0
+
+
 def _samples_by_channels(data: np.ndarray) -> np.ndarray:
     array = np.asarray(data, dtype=float)
     if array.ndim != 2:
@@ -398,20 +514,78 @@ def _load_mat_payload(path: Path) -> dict[str, Any]:
 def _find_numeric_matrix(payload: dict[str, Any]) -> np.ndarray:
     preferred = ("data", "eeg", "EEG", "signal", "signals", "X", "x")
     for key in preferred:
-        if (
-            key in payload
-            and np.asarray(payload[key]).ndim == 2
-            and np.issubdtype(np.asarray(payload[key]).dtype, np.number)
-        ):
-            return np.asarray(payload[key], dtype=float)
-    matrices = [
-        np.asarray(value, dtype=float)
-        for value in payload.values()
-        if np.asarray(value).ndim == 2 and np.issubdtype(np.asarray(value).dtype, np.number)
-    ]
+        if key not in payload:
+            continue
+        try:
+            return _coerce_numeric_signal_array(payload[key])
+        except ValueError:
+            continue
+    matrices = []
+    for value in payload.values():
+        try:
+            matrices.append(_coerce_numeric_signal_array(value))
+        except ValueError:
+            continue
     if not matrices:
-        raise ValueError("MAT file does not contain a 2D numeric EEG matrix")
+        raise ValueError("MAT file does not contain a numeric EEG matrix")
     return max(matrices, key=lambda item: item.size)
+
+
+def _coerce_numeric_signal_array(value: Any) -> np.ndarray:
+    array = np.asarray(value)
+    if array.ndim < 2 or not np.issubdtype(array.dtype, np.number):
+        raise ValueError("value is not a numeric EEG array")
+    if array.ndim == 2:
+        return np.asarray(array, dtype=float)
+    channel_axis = _guess_channel_axis(array.shape)
+    moved = np.moveaxis(np.asarray(array, dtype=float), channel_axis, -1)
+    return moved.reshape(-1, moved.shape[-1])
+
+
+def _guess_channel_axis(shape: tuple[int, ...]) -> int:
+    common_counts = {
+        4,
+        8,
+        16,
+        18,
+        19,
+        20,
+        21,
+        22,
+        24,
+        32,
+        40,
+        48,
+        56,
+        64,
+        65,
+        72,
+        96,
+        128,
+        129,
+        160,
+        256,
+    }
+    sample_axis = max(range(len(shape)), key=lambda axis: shape[axis])
+
+    def score(axis: int) -> tuple[int, int, int]:
+        size = shape[axis]
+        value = 0
+        if axis == sample_axis:
+            value -= 100
+        if size in common_counts:
+            value += 8
+        if 4 <= size <= 256:
+            value += 4
+        if size <= 3:
+            value -= 4
+        if axis == 0:
+            value -= 2
+        if axis + 1 == sample_axis or axis - 1 == sample_axis:
+            value += 2
+        return (value, -size, -axis)
+
+    return max(range(len(shape)), key=score)
 
 
 def _find_sampling_rate(payload: dict[str, Any]) -> float | None:

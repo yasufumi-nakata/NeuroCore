@@ -226,8 +226,9 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
                 )
             )
     elif provider == "github":
-        repo = _first_match(r"github\.com/([^/\s]+/[^/\s]+)", " ".join(landing_urls))
+        repo = _first_match(r"github\.com[:/]([^/\s]+/[^/\s?#]+)", " ".join(landing_urls))
         if repo:
+            repo = repo.removesuffix(".git")
             candidates.append(
                 AcquisitionCandidate(provider, "git_clone", f"https://github.com/{repo}.git", "repository")
             )
@@ -373,6 +374,7 @@ def _format_hints(record: DatasetRecord) -> set[str]:
         "nicolet": (r"\.data\b", r"nicolet"),
         "persyst": (r"\.lay\b", r"persyst"),
         "mef": (r"\.mefd\b", r"\bmef3?\b"),
+        "nwb": (r"\.nwb\b", r"\bnwb\b", r"neurodata without borders"),
         "xdf": (r"\.xdf\b", r"\bxdf\b"),
         "mat": (r"\.mat\b", r"matlab"),
         "numpy": (r"\.npy\b", r"\.npz\b"),
