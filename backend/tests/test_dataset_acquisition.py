@@ -143,6 +143,34 @@ def test_plan_acquisition_detects_dataverse_compatible_repositories() -> None:
     )
 
 
+def test_plan_acquisition_detects_bnci_and_repository_html_sources() -> None:
+    bnci = plan_acquisition(
+        record(
+            record_id="10",
+            url="https://bnci-horizon-2020.eu/database/data-sets/001-2014/description.pdf",
+            doi="10.3389/fnins.2012.00055",
+            source_domain="bnci-horizon-2020.eu",
+            access_status="すぐに使える",
+        )
+    )
+    datashare = plan_acquisition(
+        record(
+            record_id="11",
+            url="https://datashare.ed.ac.uk/handle/10283/2100",
+            doi="10.7488/ds/1478",
+            source_domain="datashare.ed.ac.uk",
+            access_status="すぐに使える",
+        )
+    )
+
+    assert bnci.provider == "bnci"
+    assert bnci.automation_status == "direct_api"
+    assert bnci.candidates[0].method == "bnci_index"
+    assert datashare.provider == "repository_html"
+    assert datashare.automation_status == "direct_api"
+    assert datashare.candidates[0].method == "http_landing"
+
+
 def test_plan_inventory_acquisition_summary_counts() -> None:
     inventory = DatasetInventory(
         source="inventory.csv",

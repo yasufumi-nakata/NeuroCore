@@ -11,7 +11,18 @@ from .datasets import DatasetInventory, DatasetRecord
 from .loaders import find_supported_signal_files
 
 
-DIRECT_API_PROVIDERS = {"zenodo", "figshare", "osf", "dataverse", "dryad", "mendeley", "scidb", "invenio"}
+DIRECT_API_PROVIDERS = {
+    "zenodo",
+    "figshare",
+    "osf",
+    "dataverse",
+    "dryad",
+    "mendeley",
+    "scidb",
+    "invenio",
+    "bnci",
+    "repository_html",
+}
 TOOLING_PROVIDERS = {"openneuro", "gin", "github", "physionet", "dandi", "huggingface", "nemar", "kaggle"}
 ACCOUNT_PROVIDERS = {"pennsieve", "ieee_dataport", "nda"}
 FIGSHARE_COMPATIBLE_HOSTS = {
@@ -32,6 +43,10 @@ INVENIO_COMPATIBLE_HOSTS = {
     "fdr.uni-hamburg.de",
     "www.fdr.uni-hamburg.de",
     "fdat.uni-tuebingen.de",
+}
+REPOSITORY_HTML_HOSTS = {
+    "datashare.ed.ac.uk",
+    "deepblue.lib.umich.edu",
 }
 
 
@@ -262,6 +277,16 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
                     "file_listing",
                 )
             )
+    elif provider == "bnci":
+        target = record.url or "https://bnci-horizon-2020.eu/database/data-sets"
+        candidates.append(AcquisitionCandidate(provider, "bnci_index", target, "file_listing"))
+    elif provider == "repository_html":
+        if record.url and _host(record.url) != "doi.org":
+            candidates.append(AcquisitionCandidate(provider, "http_landing", record.url, "file_listing"))
+        elif record.doi:
+            candidates.append(
+                AcquisitionCandidate(provider, "doi_resolver", f"https://doi.org/{record.doi}", "landing")
+            )
     elif provider == "github":
         repo = _first_match(r"github\.com[:/]([^/\s]+/[^/\s?#]+)", " ".join(landing_urls))
         if repo:
@@ -312,6 +337,10 @@ def _provider_from_host(host: str) -> str:
         return "dataverse"
     if host in INVENIO_COMPATIBLE_HOSTS:
         return "invenio"
+    if "bnci-horizon-2020.eu" in host:
+        return "bnci"
+    if host in REPOSITORY_HTML_HOSTS:
+        return "repository_html"
     if "mendeley.com" in host:
         return "mendeley"
     if "kaggle.com" in host:
@@ -365,6 +394,8 @@ def _doi_provider(value: str) -> str | None:
         return "dryad"
     if "10.57760/sciencedb" in text or "sciencedb." in text:
         return "scidb"
+    if "10.7488/ds/" in text:
+        return "repository_html"
     return None
 
 

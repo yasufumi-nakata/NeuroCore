@@ -266,6 +266,81 @@ def test_doi_resolution_delegates_to_dataverse_compatible_landing() -> None:
     assert resolution.files[0].directly_loadable is True
 
 
+def test_bnci_resolution_filters_dataset_links_from_index() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://bnci-horizon-2020.eu/database/data-sets/001-2014/description.pdf",
+            doi="10.3389/fnins.2012.00055",
+            source_domain="bnci-horizon-2020.eu",
+            description="MAT EEG files",
+        )
+    )
+
+    def fetch_json(url: str):
+        assert url.startswith("html+landing://")
+        return """
+        <a href="/database/data-sets/001-2014/A01T.mat">A01T.mat</a>
+        <a href="/database/data-sets/001-2014/A01E.mat">A01E.mat</a>
+        <a href="/database/data-sets/002-2014/S01T.mat">S01T.mat</a>
+        <a href="/database/data-sets/001-2014/description.pdf">description.pdf</a>
+        """
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.status == "resolved"
+    assert [file.name for file in resolution.files] == ["A01T.mat", "A01E.mat"]
+    assert all(file.directly_loadable for file in resolution.files)
+
+
+def test_repository_html_resolution_uses_public_bitstream_links() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://datashare.ed.ac.uk/handle/10283/2100",
+            doi="10.7488/ds/1478",
+            source_domain="datashare.ed.ac.uk",
+            description="BDF EEG data",
+        )
+    )
+
+    def fetch_json(url: str):
+        assert url.startswith("html+landing://")
+        return """
+        <a href="/download/DS_10283_2100.zip">Download all</a>
+        <a href="/bitstream/handle/10283/2100/d1.bdf?sequence=37&isAllowed=y">d1.bdf</a>
+        <a href="/bitstream/handle/10283/2100/readme.txt?sequence=1&isAllowed=y">readme.txt</a>
+        """
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.status == "resolved"
+    assert resolution.files[0].archive is True
+    assert resolution.files[1].directly_loadable is True
+
+
+def test_http_landing_uses_link_text_when_download_url_has_no_extension() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://deepblue.lib.umich.edu/data/concern/data_sets/bg257f92t",
+            doi="10.7302/z29c6vnh",
+            source_domain="deepblue.lib.umich.edu",
+            description="EEG dataset archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        assert url.startswith("html+landing://")
+        return """
+        <a href="/data/downloads/vm40xs661">README.txt</a>
+        <a href="/data/downloads/t435gf09p">alice_eeg.zip</a>
+        """
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.status == "resolved"
+    assert resolution.files[0].name == "alice_eeg.zip"
+    assert resolution.files[0].archive is True
+
+
 def test_doi_resolution_falls_back_to_invenio_record_landing() -> None:
     plan = plan_acquisition(
         record(

@@ -569,16 +569,44 @@ def _find_numeric_matrix(payload: dict[str, Any]) -> np.ndarray:
         try:
             return _coerce_numeric_signal_array(payload[key])
         except ValueError:
-            continue
-    matrices = []
+            matrices = _nested_numeric_matrices(payload[key])
+            if matrices:
+                return max(matrices, key=lambda item: item.size)
+    matrices: list[np.ndarray] = []
     for value in payload.values():
-        try:
-            matrices.append(_coerce_numeric_signal_array(value))
-        except ValueError:
-            continue
+        matrices.extend(_nested_numeric_matrices(value))
     if not matrices:
         raise ValueError("MAT file does not contain a numeric EEG matrix")
     return max(matrices, key=lambda item: item.size)
+
+
+def _nested_numeric_matrices(value: Any, *, depth: int = 0) -> list[np.ndarray]:
+    if depth > 6:
+        return []
+    try:
+        return [_coerce_numeric_signal_array(value)]
+    except ValueError:
+        pass
+    matrices: list[np.ndarray] = []
+    field_names = getattr(value, "_fieldnames", None)
+    if field_names:
+        for field in field_names:
+            matrices.extend(_nested_numeric_matrices(getattr(value, field), depth=depth + 1))
+        return matrices
+    if isinstance(value, np.ndarray):
+        if value.dtype.names:
+            for field in value.dtype.names:
+                matrices.extend(_nested_numeric_matrices(value[field], depth=depth + 1))
+        elif value.dtype == object:
+            for item in value.flat:
+                matrices.extend(_nested_numeric_matrices(item, depth=depth + 1))
+    elif isinstance(value, dict):
+        for item in value.values():
+            matrices.extend(_nested_numeric_matrices(item, depth=depth + 1))
+    elif isinstance(value, (list, tuple)):
+        for item in value:
+            matrices.extend(_nested_numeric_matrices(item, depth=depth + 1))
+    return matrices
 
 
 def _coerce_numeric_signal_array(value: Any) -> np.ndarray:

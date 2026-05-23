@@ -54,6 +54,25 @@ def test_mat_loader_flattens_multidimensional_eeg_array(tmp_path, monkeypatch) -
     assert frame.channel_names == ("Ch1", "Ch2", "Ch3", "Ch4", "Ch5", "Ch6", "Ch7", "Ch8")
 
 
+def test_mat_loader_finds_numeric_matrix_inside_matlab_struct(tmp_path, monkeypatch) -> None:
+    class FakeStruct:
+        _fieldnames = ["train", "test"]
+
+        def __init__(self):
+            self.train = np.zeros((3, 10))
+            self.test = np.ones((3, 12))
+
+    path = tmp_path / "bnci.mat"
+    payload = {"s1": np.array([[FakeStruct()]], dtype=object)}
+    monkeypatch.setattr("neurocore.loaders._load_mat_payload", lambda _path: payload)
+
+    frame = load_mat(path, sampling_rate=250)
+
+    assert frame.data.shape == (12, 3)
+    assert frame.timebase.sampling_rate == 250.0
+    assert frame.data[0, 0] == 1.0
+
+
 def test_run_file_cli_accepts_existing_csv_fixture(capsys) -> None:
     exit_code = main(["run-file", "samples/synthetic_eeg.csv", "--sampling-rate", "250", "--json"])
     captured = capsys.readouterr()

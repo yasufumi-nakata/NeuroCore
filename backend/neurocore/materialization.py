@@ -41,6 +41,7 @@ CONFIDENT_SIGNAL_SUFFIXES = {
 }
 GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz"}
 RESOLVABLE_METHODS = {
+    "bnci_index",
     "dataverse_api",
     "dandi_client",
     "doi_resolver",
@@ -71,6 +72,11 @@ DATAVERSE_COMPATIBLE_HOSTS = {
     "researchdata.lib.cityu.edu.hk",
     "redu.unicamp.br",
 }
+REPOSITORY_HTML_HOSTS = {
+    "datashare.ed.ac.uk",
+    "deepblue.lib.umich.edu",
+}
+BNCI_DATASETS_URL = "https://bnci-horizon-2020.eu/database/data-sets"
 
 
 @dataclass(frozen=True)
@@ -431,6 +437,8 @@ def _resolve_candidate(
         return _resolve_nemar(plan, candidate, fetcher)
     if candidate.method == "scidb_api":
         return _resolve_scidb(plan, candidate, fetcher)
+    if candidate.method == "bnci_index":
+        return _resolve_bnci(plan, candidate, fetcher)
     if candidate.method == "http_landing":
         return _resolve_http_landing(plan, candidate, fetcher, max_pages=max_pages)
     return []
@@ -667,6 +675,14 @@ def _resolve_delegated_url(
         delegated_plan = replace(plan, provider="scidb")
         delegated = AcquisitionCandidate("scidb", "scidb_api", _scidb_candidate_url(target=target), "file_listing")
         return _resolve_scidb(delegated_plan, delegated, fetcher)
+    if "bnci-horizon-2020.eu" in host:
+        delegated_plan = replace(plan, provider="bnci")
+        delegated = AcquisitionCandidate("bnci", "bnci_index", target, "file_listing")
+        return _resolve_bnci(delegated_plan, delegated, fetcher)
+    if _is_repository_html_host(host):
+        delegated_plan = replace(plan, provider="repository_html")
+        delegated = AcquisitionCandidate("repository_html", "http_landing", target, "file_listing")
+        return _resolve_http_landing(delegated_plan, delegated, fetcher, max_pages=max_pages)
     delegated = AcquisitionCandidate(plan.provider, "http_landing", target, "landing")
     return _resolve_http_landing(plan, delegated, fetcher, max_pages=max_pages)
 
@@ -915,6 +931,36 @@ def _resolve_scidb(plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetch
     ]
 
 
+def _resolve_bnci(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+) -> list[RemoteFileCandidate]:
+    dataset_id = _bnci_dataset_id(candidate.url) or _bnci_dataset_id_from_name(plan.name)
+    if not dataset_id:
+        return []
+    html = _string(fetcher(_html_landing_url(BNCI_DATASETS_URL)))
+    files = []
+    for href in _html_links(html):
+        url = urljoin(BNCI_DATASETS_URL, unescape(href).replace("\\/", "/"))
+        parsed = urlparse(url)
+        if f"/database/data-sets/{dataset_id}/" not in parsed.path:
+            continue
+        name = _download_name(url)
+        if not name or not _is_resolvable_download_name(name, replace(plan, provider="bnci")):
+            continue
+        files.append(
+            _remote_file(
+                replace(plan, provider="bnci"),
+                candidate,
+                name=name,
+                url=url,
+                source_url=f"{BNCI_DATASETS_URL}/{dataset_id}",
+            )
+        )
+    return _dedupe_files(files)
+
+
 def _resolve_http_landing(
     plan: AcquisitionPlan,
     candidate: AcquisitionCandidate,
@@ -941,7 +987,7 @@ def _resolve_http_landing(
         return _dedupe_files(files)
 
     html = _string(payload)
-    for href in _html_links(html):
+    for href, label in _html_link_items(html):
         url = urljoin(candidate.url, unescape(href).replace("\\/", "/"))
         if not url.startswith(("http://", "https://")):
             continue
@@ -951,6 +997,8 @@ def _resolve_http_landing(
             name = "files-archive.zip"
         else:
             name = _download_name(url)
+        if not name or not _is_resolvable_download_name(name, plan):
+            name = _download_name_from_label(label)
         if not name or not _is_resolvable_download_name(name, plan):
             continue
         files.append(_remote_file(plan, candidate, name=name, url=url, source_url=candidate.url))
@@ -1281,6 +1329,8 @@ class _HrefParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__()
         self.hrefs: list[str] = []
+        self.links: list[tuple[str, str]] = []
+        self._active_links: list[tuple[str, list[str]]] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         if tag.lower() != "a":
@@ -1288,12 +1338,31 @@ class _HrefParser(HTMLParser):
         for key, value in attrs:
             if key.lower() == "href" and value:
                 self.hrefs.append(value)
+                self._active_links.append((value, []))
+                return
+
+    def handle_data(self, data: str) -> None:
+        if self._active_links:
+            self._active_links[-1][1].append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() == "a" and self._active_links:
+            href, parts = self._active_links.pop()
+            self.links.append((href, " ".join(part.strip() for part in parts if part.strip())))
 
 
 def _html_links(html: str) -> list[str]:
     parser = _HrefParser()
     parser.feed(html)
     return parser.hrefs
+
+
+def _html_link_items(html: str) -> list[tuple[str, str]]:
+    parser = _HrefParser()
+    parser.feed(html)
+    if parser.links:
+        return parser.links
+    return [(href, "") for href in parser.hrefs]
 
 
 def _nemar_download_links(html: str) -> list[str]:
@@ -1451,6 +1520,10 @@ def _is_dataverse_host(host: str) -> bool:
     return "dataverse" in normalized or normalized in DATAVERSE_COMPATIBLE_HOSTS
 
 
+def _is_repository_html_host(host: str) -> bool:
+    return host.lower().removeprefix("www.") in REPOSITORY_HTML_HOSTS
+
+
 def _figshare_article_id(value: str) -> str | None:
     return _first_match(r"articles/(?:dataset/)?[^/]+/(\d+)|articles/(\d+)", value)
 
@@ -1479,6 +1552,31 @@ def _download_name(url: str) -> str:
     if not path:
         return ""
     return path.rsplit("/", 1)[-1]
+
+
+def _download_name_from_label(label: str) -> str:
+    text = " ".join(unescape(label).replace("\n", " ").split())
+    if not text:
+        return ""
+    suffixes = sorted((*ARCHIVE_SUFFIXES, *CONFIDENT_SIGNAL_SUFFIXES, *GENERIC_NUMERIC_SUFFIXES), key=len, reverse=True)
+    suffix_pattern = "|".join(re.escape(suffix) for suffix in suffixes)
+    match = re.search(rf"([^\s()<>\"']+?(?:{suffix_pattern}))\b", text, flags=re.IGNORECASE)
+    if match:
+        return match.group(1).strip(" ,;:")
+    return text.strip(" ,;:")
+
+
+def _bnci_dataset_id(url: str) -> str:
+    return _first_match(r"/data-sets/(\d{3}-\d{4})(?:/|$)", urlparse(url).path) or ""
+
+
+def _bnci_dataset_id_from_name(name: str) -> str:
+    text = name.casefold()
+    if "bcic iv 2a" in text:
+        return "001-2014"
+    if "bcic iv 2b" in text:
+        return "004-2014"
+    return _first_match(r"\((\d{3}-\d{4})\)", name) or ""
 
 
 def _is_resolvable_direct_url(url: str, plan: AcquisitionPlan) -> bool:
@@ -1549,6 +1647,8 @@ def _is_directly_loadable_signal_name(name: str) -> bool:
 
 def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bool:
     suffix = Path(name.lower()).suffix
+    if plan.provider == "bnci" and suffix == ".mat":
+        return True
     hints = set(plan.format_hints)
     if suffix == ".mat" and "mat" in hints:
         return _is_signal_like_generic_path(name)
