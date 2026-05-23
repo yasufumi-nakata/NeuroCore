@@ -60,7 +60,9 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                 limit=None if args.resolve_limit == 0 else args.resolve_limit,
                 providers=set(args.resolve_provider) if args.resolve_provider else None,
                 automation_statuses=(
-                    set(args.resolve_status) if args.resolve_status else {"direct_api", "tooling_required", "doi_resolution_required"}
+                    set(args.resolve_status)
+                    if args.resolve_status
+                    else {"direct_api", "tooling_required", "doi_resolution_required", "manual_review", "account_required"}
                 ),
                 timeout=args.http_timeout,
                 max_pages=args.max_pages,
@@ -264,7 +266,7 @@ def main() -> int:
         "--resolve-status",
         action="append",
         default=[],
-        help="Restrict remote resolution to an automation status; defaults to direct_api, tooling_required, and doi_resolution_required.",
+        help="Restrict remote resolution to an automation status; defaults to every resolvable status, including manual/account rows with public candidates.",
     )
     parser.add_argument("--http-timeout", type=float, default=20.0)
     parser.add_argument("--max-pages", type=int, default=30)

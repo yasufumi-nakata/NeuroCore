@@ -197,6 +197,88 @@ def test_doi_resolution_delegates_to_figshare_landing() -> None:
     assert resolution.files[0].archive is True
 
 
+def test_doi_resolution_falls_back_to_invenio_record_landing() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://doi.org/10.15161/oar.it/cx0v8-k7w40",
+            doi="10.15161/oar.it/cx0v8-k7w40",
+            source_domain="doi.org",
+            description="raw EEG archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url.startswith("doi+resolve://"):
+            return {"url": "https://www.openaccessrepository.it/records/cx0v8-k7w40"}
+        assert url == "https://www.openaccessrepository.it/api/records/cx0v8-k7w40"
+        return {
+            "files": {
+                "entries": {
+                    "NeuroConn.zip": {
+                        "key": "NeuroConn.zip",
+                        "size": 123,
+                        "checksum": "md5:abc",
+                        "mimetype": "application/zip",
+                        "links": {"content": "https://example.test/api/records/cx0v8-k7w40/files/NeuroConn.zip/content"},
+                    }
+                }
+            }
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].name == "NeuroConn.zip"
+    assert resolution.files[0].archive is True
+
+
+def test_http_landing_resolves_invenio_record_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://www.openaccessrepository.it/records/cx0v8-k7w40",
+            doi="10.15161/oar.it/cx0v8-k7w40",
+            source_domain="www.openaccessrepository.it",
+            description="raw EEG archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        assert url == "https://www.openaccessrepository.it/api/records/cx0v8-k7w40"
+        return {
+            "files": {
+                "entries": {
+                    "NeuroConn.zip": {
+                        "key": "NeuroConn.zip",
+                        "links": {"content": "https://example.test/NeuroConn.zip"},
+                        "size": 123,
+                    }
+                }
+            }
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.status == "resolved"
+    assert resolution.files[0].url == "https://example.test/NeuroConn.zip"
+    assert resolution.files[0].archive is True
+
+
+def test_http_landing_scrapes_direct_file_links() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://example.test/dataset",
+            doi="",
+            source_domain="example.test",
+            description="EDF data",
+        )
+    )
+
+    html = '<a href="/files/sub-01_eeg.edf?download=1">download</a><a href="/login">login</a>'
+    resolution = resolve_remote_files(plan, fetch_json=lambda url: html if url.startswith("html+landing://") else {})
+
+    assert resolution.files[0].name == "sub-01_eeg.edf"
+    assert resolution.files[0].directly_loadable is True
+
+
 def test_github_resolution_uses_tree_api_and_raw_urls() -> None:
     plan = plan_acquisition(
         record(

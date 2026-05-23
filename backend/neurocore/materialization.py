@@ -48,6 +48,7 @@ RESOLVABLE_METHODS = {
     "gin_client",
     "git_clone",
     "huggingface_client",
+    "http_landing",
     "kaggle_client",
     "mendeley_api",
     "nemar_client",
@@ -414,6 +415,8 @@ def _resolve_candidate(
         return _resolve_kaggle(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method == "nemar_client":
         return _resolve_nemar(plan, candidate, fetcher)
+    if candidate.method == "http_landing":
+        return _resolve_http_landing(plan, candidate, fetcher, max_pages=max_pages)
     return []
 
 
@@ -638,7 +641,8 @@ def _resolve_delegated_url(
         delegated_plan = replace(plan, provider="nemar")
         delegated = AcquisitionCandidate("nemar", "nemar_client", target, "tool_download")
         return _resolve_nemar(delegated_plan, delegated, fetcher)
-    return []
+    delegated = AcquisitionCandidate(plan.provider, "http_landing", target, "landing")
+    return _resolve_http_landing(plan, delegated, fetcher, max_pages=max_pages)
 
 
 def _resolve_github(
@@ -848,6 +852,85 @@ def _resolve_nemar(plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetch
     return _dedupe_files(files)
 
 
+def _resolve_http_landing(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+    *,
+    max_pages: int,
+) -> list[RemoteFileCandidate]:
+    if _is_resolvable_direct_url(candidate.url, plan):
+        return [_remote_file(plan, candidate, name=_download_name(candidate.url), url=candidate.url, source_url=candidate.url)]
+
+    files: list[RemoteFileCandidate] = []
+    api_url = _invenio_api_record_url(candidate.url)
+    if api_url:
+        try:
+            files.extend(_resolve_invenio_record(plan, candidate, fetcher(api_url), source_url=candidate.url))
+        except Exception:
+            pass
+    if files:
+        return _dedupe_files(files)
+
+    payload = fetcher(_html_landing_url(candidate.url))
+    if isinstance(payload, dict):
+        files.extend(_resolve_invenio_record(plan, candidate, payload, source_url=candidate.url))
+        return _dedupe_files(files)
+
+    html = _string(payload)
+    for href in _html_links(html):
+        url = urljoin(candidate.url, unescape(href).replace("\\/", "/"))
+        if not url.startswith(("http://", "https://")):
+            continue
+        if _looks_like_non_download_url(url):
+            continue
+        if "/files-archive" in urlparse(url).path:
+            name = "files-archive.zip"
+        else:
+            name = _download_name(url)
+        if not name or not _is_resolvable_download_name(name, plan):
+            continue
+        files.append(_remote_file(plan, candidate, name=name, url=url, source_url=candidate.url))
+        if max_pages is not None and len(files) >= max_pages * 1000:
+            break
+    return _dedupe_files(files)
+
+
+def _resolve_invenio_record(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    payload: Any,
+    *,
+    source_url: str,
+) -> list[RemoteFileCandidate]:
+    data = _dict(payload)
+    files = _dict(_dict(data.get("files")).get("entries"))
+    resolved = []
+    for key, item in files.items():
+        entry = _dict(item)
+        links = _dict(entry.get("links"))
+        name = _string(entry.get("key") or key)
+        url = _string(links.get("content") or links.get("download") or links.get("self"))
+        if not name or not url:
+            continue
+        resolved.append(
+            _remote_file(
+                plan,
+                candidate,
+                name=name,
+                url=url,
+                size_bytes=_int_or_none(entry.get("size")),
+                checksum=_string(entry.get("checksum")),
+                media_type=_string(entry.get("mimetype")),
+                source_url=source_url,
+            )
+        )
+    archive = _string(_dict(data.get("links")).get("archive"))
+    if archive:
+        resolved.append(_remote_file(plan, candidate, name="files-archive.zip", url=archive, source_url=source_url))
+    return resolved
+
+
 def _resolve_html_index(
     plan: AcquisitionPlan,
     candidate: AcquisitionCandidate,
@@ -1004,6 +1087,11 @@ def _fetch_json(url: str, *, timeout: float) -> Any:
         )
         with urlopen(request, timeout=timeout) as response:
             return json.loads(response.read().decode("utf-8"))
+    if url.startswith("html+landing://"):
+        target = parse_qs(urlparse(url).query).get("url", [""])[0]
+        request = Request(target, headers={"Accept": "text/html,*/*", "User-Agent": "NeuroCore/0.1 dataset-resolver"})
+        with urlopen(request, timeout=timeout) as response:
+            return response.read().decode("utf-8", "ignore")
     if url.startswith("https://physionet.org/files/") or "gin.g-node.org" in url or "nemar.org/dataexplorer" in url:
         request = Request(url, headers={"Accept": "text/html", "User-Agent": "NeuroCore/0.1 dataset-resolver"})
         with urlopen(request, timeout=timeout) as response:
@@ -1208,6 +1296,57 @@ def _openneuro_graphql_url(query: str) -> str:
 
 def _doi_resolution_url(url: str) -> str:
     return "doi+resolve://?" + urlencode({"url": url})
+
+
+def _html_landing_url(url: str) -> str:
+    return "html+landing://?" + urlencode({"url": url})
+
+
+def _invenio_api_record_url(url: str) -> str:
+    parsed = urlparse(url)
+    match = re.search(r"/records/([^/?#]+)", parsed.path)
+    if not match or not parsed.scheme or not parsed.netloc:
+        return ""
+    return f"{parsed.scheme}://{parsed.netloc}/api/records/{match.group(1)}"
+
+
+def _download_name(url: str) -> str:
+    parsed = urlparse(url)
+    path = unescape(parsed.path).rstrip("/")
+    if not path:
+        return ""
+    return path.rsplit("/", 1)[-1]
+
+
+def _is_resolvable_direct_url(url: str, plan: AcquisitionPlan) -> bool:
+    return _is_resolvable_download_name(_download_name(url), plan)
+
+
+def _is_resolvable_download_name(name: str, plan: AcquisitionPlan) -> bool:
+    return (
+        _is_archive_name(name)
+        or _is_directly_loadable_signal_name(name)
+        or _is_generic_signal_supported_by_plan(name, plan)
+    )
+
+
+def _looks_like_non_download_url(url: str) -> bool:
+    parsed = urlparse(url)
+    lowered = parsed.path.lower()
+    if parsed.scheme not in {"http", "https"}:
+        return True
+    return any(
+        marker in lowered
+        for marker in (
+            "/login",
+            "/signup",
+            "/search",
+            "/preview/",
+            "/help",
+            "/communities",
+            "/statistics",
+        )
+    )
 
 
 def _openneuro_dataset_query(dataset_id: str) -> str:
