@@ -11,9 +11,9 @@ from .datasets import DatasetInventory, DatasetRecord
 from .loaders import find_supported_signal_files
 
 
-DIRECT_API_PROVIDERS = {"zenodo", "figshare", "osf", "dataverse", "dryad", "mendeley"}
+DIRECT_API_PROVIDERS = {"zenodo", "figshare", "osf", "dataverse", "dryad", "mendeley", "scidb"}
 TOOLING_PROVIDERS = {"openneuro", "gin", "github", "physionet", "dandi", "huggingface", "nemar", "kaggle"}
-ACCOUNT_PROVIDERS = {"pennsieve", "ieee_dataport", "nda", "scidb"}
+ACCOUNT_PROVIDERS = {"pennsieve", "ieee_dataport", "nda"}
 
 
 @dataclass(frozen=True)
@@ -225,6 +225,24 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
                     "file_listing",
                 )
             )
+    elif provider == "scidb":
+        data_set_id = _first_match(r"dataSetId=([a-z0-9]+)", " ".join(landing_urls))
+        params = {}
+        if data_set_id:
+            params["dataSetId"] = data_set_id
+        if record.doi:
+            params["doi"] = record.doi
+        if record.url:
+            params["landing"] = record.url
+        if params:
+            candidates.append(
+                AcquisitionCandidate(
+                    provider,
+                    "scidb_api",
+                    "scidb+resolve://?" + "&".join(f"{key}={quote(value, safe='')}" for key, value in params.items()),
+                    "file_listing",
+                )
+            )
     elif provider == "github":
         repo = _first_match(r"github\.com[:/]([^/\s]+/[^/\s?#]+)", " ".join(landing_urls))
         if repo:
@@ -318,6 +336,8 @@ def _doi_provider(value: str) -> str | None:
         return "dataverse"
     if "10.5061/dryad" in text:
         return "dryad"
+    if "10.57760/sciencedb" in text or "sciencedb." in text:
+        return "scidb"
     return None
 
 

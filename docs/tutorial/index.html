@@ -61,6 +61,7 @@ neurocore run-file samples/synthetic_eeg.csv --sampling-rate 250 --json</code></
 neurocore dataset-acquisition-plan ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --limit 10 --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider openneuro --provider dandi --provider kaggle --provider nemar --limit 5 --json
+neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider scidb --limit 5 --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider unknown --limit 5 --json
 python scripts/verify_dataset_loading.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv
 python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv
@@ -70,7 +71,7 @@ python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset
             EEG-DATA checkout は raw EEG そのものではなく、公開 dataset の metadata 目録として扱います。
             目録 report は EDF/BDF、BrainVision、EEGLAB `.set`、FIF、CNT/GDF、EGI/MFF、eXimia、Nicolet、Persyst、MEF3、NWB、BIDS 風 directory、XDF、MAT、NumPy、CSV などの loader coverage も返します。
             acquisition report は配布元ごとに API 取得、provider CLI、アカウント必須、手動確認を分け、公開 API や file index で解決できるものは remote file candidate として `download_then_load` / `download_extract_then_scan` / `metadata_or_manual_review` に分類します。
-            対応 resolver は Zenodo、Figshare、OSF、Dataverse、Dryad、Mendeley、OpenNeuro、GitHub、Hugging Face、PhysioNet、DANDI、Gin、Kaggle、NEMAR、DOI landing delegation、generic HTML landing、InvenioRDM records です。
+            対応 resolver は Zenodo、Figshare、OSF、Dataverse、Dryad、Mendeley、ScienceDB、OpenNeuro、GitHub、Hugging Face、PhysioNet、DANDI、Gin、Kaggle、NEMAR、DOI landing delegation、generic HTML landing、InvenioRDM records です。
             archive を materialize した場合は zip/tar を安全に展開し、展開後の対応 raw file を再スキャンして loader に渡します。
           </p>
 

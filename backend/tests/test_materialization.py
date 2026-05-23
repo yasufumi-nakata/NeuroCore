@@ -442,6 +442,86 @@ def test_nemar_resolution_extracts_download_links_from_detail_page() -> None:
     assert resolution.files[1].directly_loadable is True
 
 
+def test_scidb_resolution_uses_public_zip_endpoint() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://www.scidb.cn/en/detail?dataSetId=9cacad83bdaa45d08a264c7f2d21a222",
+            doi="10.57760/sciencedb.23155",
+            source_domain="www.scidb.cn",
+            description="EEG archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url.startswith("head+metadata://"):
+            return {"status": 200, "content_length": "42647254461"}
+        assert url == "https://www.scidb.cn/api/sdb-openapi-service/json?doi=10.57760%2Fsciencedb.23155"
+        return {
+            "@id": "https://doi.org/10.57760/sciencedb.23155",
+            "conditionsOfAccess": "unrestricted",
+            "isAccessibleForFree": True,
+            "version": "V2",
+            "size": {"value": 42647254461, "unitText": "bytes"},
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.status == "resolved"
+    assert resolution.files[0].name == "9cacad83bdaa45d08a264c7f2d21a222_V2.zip"
+    assert resolution.files[0].url.endswith("dataSetId=9cacad83bdaa45d08a264c7f2d21a222&version=V2")
+    assert resolution.files[0].size_bytes == 42647254461
+    assert resolution.files[0].archive is True
+
+
+def test_scidb_resolution_can_resolve_dataset_id_from_doi_landing() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://doi.org/10.57760/sciencedb.23155",
+            doi="10.57760/sciencedb.23155",
+            source_domain="doi.org",
+            description="EEG archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url == "https://www.scidb.cn/api/sdb-openapi-service/json?doi=10.57760%2Fsciencedb.23155":
+            return {"conditionsOfAccess": "PUBLIC", "version": "2.0.0"}
+        if url.startswith("doi+resolve://"):
+            return {"url": "https://www.scidb.cn/en/detail?dataSetId=9cacad83bdaa45d08a264c7f2d21a222"}
+        if url.startswith("head+metadata://"):
+            return {"status": 200}
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.status == "resolved"
+    assert resolution.files[0].name.endswith("_V2.zip")
+    assert resolution.files[0].provider == "scidb"
+
+
+def test_scidb_resolution_skips_archives_that_require_auth() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://www.scidb.cn/detail?dataSetId=de4b079329404152919b0f26fd9996ff",
+            doi="10.57760/sciencedb.psych.00751",
+            source_domain="www.scidb.cn",
+            description="EEG archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url == "https://www.scidb.cn/api/sdb-openapi-service/json?doi=10.57760%2Fsciencedb.psych.00751":
+            return {"conditionsOfAccess": "PUBLIC", "version": "V1"}
+        if url.startswith("head+metadata://"):
+            return {"status": 401}
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.status == "empty"
+    assert resolution.files == ()
+
+
 def test_materialize_remote_files_downloads_direct_files_only(tmp_path) -> None:
     plan = plan_acquisition(record())
 

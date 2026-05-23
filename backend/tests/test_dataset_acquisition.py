@@ -78,6 +78,23 @@ def test_plan_acquisition_understands_english_access_statuses() -> None:
     assert unavailable.automation_status == "unusable"
 
 
+def test_plan_acquisition_treats_public_sciencedb_as_resolvable_api() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="6",
+            url="https://www.scidb.cn/en/detail?dataSetId=9cacad83bdaa45d08a264c7f2d21a222",
+            doi="10.57760/sciencedb.23155",
+            source_domain="www.scidb.cn",
+            access_status="すぐに使える",
+        )
+    )
+
+    assert plan.provider == "scidb"
+    assert plan.automation_status == "direct_api"
+    assert plan.candidates[0].method == "scidb_api"
+    assert plan.candidates[0].requires_auth is False
+
+
 def test_plan_inventory_acquisition_summary_counts() -> None:
     inventory = DatasetInventory(
         source="inventory.csv",

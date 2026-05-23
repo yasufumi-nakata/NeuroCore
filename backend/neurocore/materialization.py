@@ -10,6 +10,7 @@ from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any, Callable, Iterable
+from urllib.error import HTTPError
 from urllib.parse import parse_qs, quote, urlencode, urljoin, urlparse
 from urllib.request import Request, urlopen
 
@@ -55,6 +56,7 @@ RESOLVABLE_METHODS = {
     "openneuro_cli",
     "osf_api",
     "physionet_client",
+    "scidb_api",
     "zenodo_api",
 }
 
@@ -415,6 +417,8 @@ def _resolve_candidate(
         return _resolve_kaggle(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method == "nemar_client":
         return _resolve_nemar(plan, candidate, fetcher)
+    if candidate.method == "scidb_api":
+        return _resolve_scidb(plan, candidate, fetcher)
     if candidate.method == "http_landing":
         return _resolve_http_landing(plan, candidate, fetcher, max_pages=max_pages)
     return []
@@ -641,6 +645,10 @@ def _resolve_delegated_url(
         delegated_plan = replace(plan, provider="nemar")
         delegated = AcquisitionCandidate("nemar", "nemar_client", target, "tool_download")
         return _resolve_nemar(delegated_plan, delegated, fetcher)
+    if "scidb.cn" in host:
+        delegated_plan = replace(plan, provider="scidb")
+        delegated = AcquisitionCandidate("scidb", "scidb_api", _scidb_candidate_url(target=target), "file_listing")
+        return _resolve_scidb(delegated_plan, delegated, fetcher)
     delegated = AcquisitionCandidate(plan.provider, "http_landing", target, "landing")
     return _resolve_http_landing(plan, delegated, fetcher, max_pages=max_pages)
 
@@ -850,6 +858,43 @@ def _resolve_nemar(plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetch
             )
         )
     return _dedupe_files(files)
+
+
+def _resolve_scidb(plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetcher: JsonFetcher) -> list[RemoteFileCandidate]:
+    params = parse_qs(urlparse(candidate.url).query)
+    landing = _string(params.get("landing", [""])[0])
+    data_set_id = _string(params.get("dataSetId", [""])[0]) or _scidb_dataset_id(landing)
+    doi = _string(params.get("doi", [""])[0])
+    metadata: dict[str, Any] = {}
+    if doi:
+        metadata = _dict(fetcher(_scidb_openapi_json_url(doi)))
+    if not data_set_id and doi:
+        resolved = _dict(fetcher(_doi_resolution_url(f"https://doi.org/{doi}")))
+        target = _string(resolved.get("url"))
+        data_set_id = _scidb_dataset_id(target)
+        landing = landing or target
+    if not data_set_id:
+        data_set_id = _scidb_dataset_id(_string(metadata.get("url") or metadata.get("@id") or metadata.get("identifier")))
+    if not data_set_id or not _scidb_publicly_accessible(metadata):
+        return []
+    version = _scidb_download_version(_string(metadata.get("version")))
+    url = _scidb_zip_url(data_set_id, version)
+    head = _dict(fetcher(_head_metadata_url(url)))
+    if _int_or_none(head.get("status")) not in range(200, 300):
+        return []
+    size = _scidb_size_bytes(metadata) or _int_or_none(head.get("content_length"))
+    name = f"{data_set_id}_{version}.zip"
+    return [
+        _remote_file(
+            plan,
+            candidate,
+            name=name,
+            url=url,
+            size_bytes=size,
+            media_type="application/zip",
+            source_url=landing or _string(metadata.get("url") or metadata.get("@id")) or candidate.url,
+        )
+    ]
 
 
 def _resolve_http_landing(
@@ -1073,6 +1118,24 @@ def _fetch_json(url: str, *, timeout: float) -> Any:
         request = Request(target, method="HEAD", headers={"Accept": "*/*", "User-Agent": "NeuroCore/0.1 dataset-resolver"})
         with urlopen(request, timeout=timeout) as response:
             return {"url": response.geturl(), "content_type": response.headers.get("Content-Type", "")}
+    if url.startswith("head+metadata://"):
+        target = parse_qs(urlparse(url).query).get("url", [""])[0]
+        request = Request(target, method="HEAD", headers={"Accept": "*/*", "User-Agent": "NeuroCore/0.1 dataset-resolver"})
+        try:
+            with urlopen(request, timeout=timeout) as response:
+                return {
+                    "url": response.geturl(),
+                    "status": response.status,
+                    "content_length": response.headers.get("Content-Length", ""),
+                    "content_type": response.headers.get("Content-Type", ""),
+                }
+        except HTTPError as exc:
+            return {
+                "url": target,
+                "status": exc.code,
+                "content_length": exc.headers.get("Content-Length", ""),
+                "content_type": exc.headers.get("Content-Type", ""),
+            }
     if url.startswith("openneuro+graphql://"):
         query = parse_qs(urlparse(url).query).get("query", [""])[0]
         payload = json.dumps({"query": query}).encode("utf-8")
@@ -1296,6 +1359,64 @@ def _openneuro_graphql_url(query: str) -> str:
 
 def _doi_resolution_url(url: str) -> str:
     return "doi+resolve://?" + urlencode({"url": url})
+
+
+def _head_metadata_url(url: str) -> str:
+    return "head+metadata://?" + urlencode({"url": url})
+
+
+def _scidb_candidate_url(*, target: str) -> str:
+    params = {"landing": target}
+    data_set_id = _scidb_dataset_id(target)
+    if data_set_id:
+        params["dataSetId"] = data_set_id
+    return "scidb+resolve://?" + urlencode(params)
+
+
+def _scidb_openapi_json_url(doi: str) -> str:
+    return "https://www.scidb.cn/api/sdb-openapi-service/json?" + urlencode({"doi": doi})
+
+
+def _scidb_zip_url(data_set_id: str, version: str) -> str:
+    return "https://china.scidb.cn/getZipFile?" + urlencode({"dataSetId": data_set_id, "version": version})
+
+
+def _scidb_dataset_id(value: str) -> str:
+    return _first_match(r"dataSetId=([A-Za-z0-9]+)", value) or ""
+
+
+def _scidb_download_version(value: str) -> str:
+    text = value.strip()
+    if not text:
+        return "V1"
+    if re.fullmatch(r"V\d+", text, flags=re.IGNORECASE):
+        return text.upper()
+    match = re.match(r"(\d+)(?:\.\d+)*", text)
+    if match:
+        return f"V{match.group(1)}"
+    return text
+
+
+def _scidb_size_bytes(metadata: dict[str, Any]) -> int | None:
+    size = metadata.get("size")
+    if isinstance(size, dict):
+        return _int_or_none(size.get("value"))
+    return _int_or_none(size)
+
+
+def _scidb_publicly_accessible(metadata: dict[str, Any]) -> bool:
+    if not metadata:
+        return True
+    text = " ".join(
+        _string(value)
+        for value in (
+            metadata.get("conditionsOfAccess"),
+            metadata.get("accessRights"),
+            metadata.get("isAccessibleForFree"),
+        )
+    ).casefold()
+    restricted_text = text.replace("unrestricted", "")
+    return "restricted" not in restricted_text and "protected" not in restricted_text and "false" not in restricted_text
 
 
 def _html_landing_url(url: str) -> str:
