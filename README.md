@@ -21,7 +21,7 @@ NeuroCore は、EEG を装着したユーザーがマウス、キーボード、
 - Dataset inventory loader: EEG-DATA の日本語目録 CSV を、信号波形ではなく再利用候補の metadata として読み込み。
 - Universal file dispatch: CSV / NumPy に加えて、optional `io` extra で MNE 対応形式、XDF、MAT を `NeuroFrame` へ正規化。
 - Dataset acquisition planner: EEG-DATA の各行を Zenodo / OSF / OpenNeuro / Figshare / Dataverse などの取得経路へ分類。
-- Remote file resolver / materializer: Zenodo / Figshare / OSF / Dataverse / Dryad / Mendeley に加えて、OpenNeuro / GitHub / Hugging Face / PhysioNet / DANDI / Gin の公開 file listing から raw 候補ファイルを列挙し、取得済み cache へ落とした直接読込可能ファイルだけを検証対象にできます。
+- Remote file resolver / materializer: Zenodo / Figshare / OSF / Dataverse / Dryad / Mendeley に加えて、OpenNeuro / GitHub / Hugging Face / PhysioNet / DANDI / Gin / Kaggle / NEMAR / DOI landing delegation の公開 file listing から raw 候補ファイルを列挙し、取得済み cache へ落とした直接読込可能ファイルだけを検証対象にできます。
 - `self-test`: 合成 EEG と破綻ケースで、NaN、Nyquist 超過、stream、signal quality、低 confidence、emergency stop、agent payload guard を自動検査。
 - Settings UI: device / signal / safety / route / agent / self-test を操作するローカル設定画面。
 - CI: Python tests、CLI self-test、frontend build を実行。
@@ -53,7 +53,7 @@ neurocore run-file samples/synthetic_eeg.csv --sampling-rate 250 --json
 neurocore dataset-inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 neurocore dataset-acquisition-plan ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --limit 10 --json
-neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider openneuro --provider dandi --limit 5 --json
+neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider openneuro --provider dandi --provider kaggle --provider nemar --limit 5 --json
 neurocore route-intent select --confidence 0.92 --json
 neurocore simulate-intents samples/intent_commands.json --json
 ```
@@ -142,7 +142,7 @@ print(inventory.summary())
 ```
 
 この API はデータセット目録を読むためのものです。EEG の raw waveform は、各データセットを取得した後に `neurocore.load()` で `NeuroFrame` へ正規化してください。
-MNE 経由では EDF/BDF、BrainVision `.vhdr`、EEGLAB `.set`、FIF、CNT、GDF、EGI/MFF、eXimia `.nxe`、Nicolet `.data`、Persyst `.lay`、MEF3 `.mefd` を扱います。NWB は `pynwb` で `ElectricalSeries` を読みます。BIDS 風 directory は内部の対応 raw file を探して読みます。XDF は `pyxdf`、MAT は `scipy` または `h5py` を使います。
+MNE 経由では EDF/BDF、BrainVision `.vhdr`、EEGLAB `.set`、FIF、CNT、GDF、EGI/MFF、eXimia `.nxe`、Nicolet `.data`、Persyst `.lay`、MEF3 `.mefd` を扱います。NWB は `pynwb` で `ElectricalSeries` を読みます。BIDS 風 directory は内部の対応 raw file を探して読みます。XDF は `pyxdf`、MAT は `scipy` または `h5py` を使います。CSV はラベル列などの非数値列を落とし、数値列だけを `NeuroFrame` の channel matrix として読み込めます。
 
 raw 本体取得計画とローカルキャッシュ検証:
 

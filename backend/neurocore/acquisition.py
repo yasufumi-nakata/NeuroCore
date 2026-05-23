@@ -12,8 +12,8 @@ from .loaders import find_supported_signal_files
 
 
 DIRECT_API_PROVIDERS = {"zenodo", "figshare", "osf", "dataverse", "dryad", "mendeley"}
-TOOLING_PROVIDERS = {"openneuro", "gin", "github", "physionet", "dandi", "huggingface", "nemar"}
-ACCOUNT_PROVIDERS = {"kaggle", "pennsieve", "ieee_dataport", "nda", "scidb"}
+TOOLING_PROVIDERS = {"openneuro", "gin", "github", "physionet", "dandi", "huggingface", "nemar", "kaggle"}
+ACCOUNT_PROVIDERS = {"pennsieve", "ieee_dataport", "nda", "scidb"}
 
 
 @dataclass(frozen=True)

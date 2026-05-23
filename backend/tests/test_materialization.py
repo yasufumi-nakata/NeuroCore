@@ -166,6 +166,37 @@ def test_openneuro_resolution_uses_latest_snapshot_and_urls() -> None:
     assert resolution.files[0].source_url.endswith("/versions/1.0.0")
 
 
+def test_doi_resolution_delegates_to_figshare_landing() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://doi.org/10.11583/dtu.30589397",
+            doi="10.11583/dtu.30589397",
+            source_domain="doi.org",
+            description="BDF EEG archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url.startswith("doi+resolve://"):
+            return {"url": "https://data.dtu.dk/articles/dataset/example/30589397"}
+        assert url == "https://api.figshare.com/v2/articles/30589397"
+        return {
+            "files": [
+                {
+                    "name": "bdf_NH.zip",
+                    "size": 100,
+                    "download_url": "https://ndownloader.figshare.com/files/1",
+                }
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.provider == "doi"
+    assert resolution.files[0].provider == "figshare"
+    assert resolution.files[0].archive is True
+
+
 def test_github_resolution_uses_tree_api_and_raw_urls() -> None:
     plan = plan_acquisition(
         record(
@@ -276,6 +307,57 @@ def test_gin_resolution_provides_extractable_archives() -> None:
 
     assert resolution.files[0].archive is True
     assert resolution.files[0].url == "https://gin.g-node.org/doi/example-dataset/archive/master.zip"
+
+
+def test_kaggle_resolution_lists_archived_public_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://www.kaggle.com/datasets/example/eeg-dataset",
+            doi="",
+            source_domain="kaggle.com",
+            description="CSV EEG files",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url == "https://www.kaggle.com/api/v1/datasets/list/example/eeg-dataset":
+            return {
+                "datasetFiles": [{"name": "sub-01/eeg.csv", "totalBytes": 42}],
+                "nextPageToken": "next",
+            }
+        if url.endswith("pageToken=next"):
+            return {"datasetFiles": [{"name": "metadata.txt", "totalBytes": 4}]}
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].name == "sub-01/eeg.csv.zip"
+    assert "file_name=sub-01%2Feeg.csv" in resolution.files[0].url
+    assert resolution.files[0].archive is True
+
+
+def test_nemar_resolution_extracts_download_links_from_detail_page() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://nemar.org/dataexplorer/detail?dataset_id=nm000113",
+            doi="10.82901/nemar.nm000113",
+            source_domain="nemar.org",
+            description="EDF BIDS dataset",
+        )
+    )
+
+    html = """
+    <a href="/dataexplorer/download?filepath=/data/nemar/openneuro//zip_files/nm000113.zip">zip</a>
+    <script>
+    download_file('\\/dataexplorer\\/download?filepath=\\/data\\/nemar\\/openneuro\\/\\/nm000113\\/sub-01\\/eeg\\/sub-01_eeg.edf');
+    </script>
+    """
+
+    resolution = resolve_remote_files(plan, fetch_json=lambda _url: html)
+
+    assert [file.name for file in resolution.files] == ["nm000113.zip", "sub-01/eeg/sub-01_eeg.edf"]
+    assert resolution.files[0].archive is True
+    assert resolution.files[1].directly_loadable is True
 
 
 def test_materialize_remote_files_downloads_direct_files_only(tmp_path) -> None:

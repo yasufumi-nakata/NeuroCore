@@ -100,21 +100,33 @@ def load_csv(
         names = [item.strip() for item in header if item.strip()]
         if channel_names is not None:
             names = [str(item).strip() for item in channel_names]
-        rows: list[list[float]] = []
+        raw_rows: list[list[str]] = []
         for line_number, row in enumerate(reader, start=2):
-            if len(row) != len(names):
-                raise ValueError(f"CSV row {line_number} has {len(row)} values, expected {len(names)}")
-            try:
-                rows.append([float(item) for item in row])
-            except ValueError as exc:
-                raise ValueError(f"CSV row {line_number} contains a non-numeric value") from exc
+            if len(row) != len(header):
+                raise ValueError(f"CSV row {line_number} has {len(row)} values, expected {len(header)}")
+            raw_rows.append(row)
+    if not raw_rows:
+        raise ValueError("CSV file contains no samples")
+    if channel_names is not None:
+        if len(names) != len(header):
+            raise ValueError(f"channel_names has {len(names)} values, expected {len(header)}")
+        numeric_indices = tuple(range(len(header)))
+    else:
+        names, numeric_indices = _csv_numeric_columns(header, raw_rows)
+    rows: list[list[float]] = []
+    for line_number, row in enumerate(raw_rows, start=2):
+        try:
+            rows.append([float(row[index]) for index in numeric_indices])
+        except ValueError as exc:
+            raise ValueError(f"CSV row {line_number} contains a non-numeric value in selected columns") from exc
     if not rows:
         raise ValueError("CSV file contains no samples")
+    dropped_columns = len(header) - len(numeric_indices)
     return NeuroFrame(
         data=np.asarray(rows, dtype=float),
         channels=tuple(Channel(name=name, type=channel_type, unit=unit) for name in names),
         timebase=Timebase(sampling_rate=sampling_rate),
-        provenance={"source": "csv", "path": str(resolved)},
+        provenance={"source": "csv", "path": str(resolved), "dropped_non_numeric_columns": dropped_columns},
     )
 
 
@@ -141,6 +153,21 @@ def load_mne_raw(path: str | Path, *, preload: bool = True, unit: str = "uV") ->
             "native_unit": "V",
         },
     )
+
+
+def _csv_numeric_columns(header: list[str], rows: list[list[str]]) -> tuple[list[str], tuple[int, ...]]:
+    names = [item.strip() or f"Col{index + 1}" for index, item in enumerate(header)]
+    numeric_indices = []
+    for index in range(len(header)):
+        try:
+            for row in rows:
+                float(row[index])
+        except ValueError:
+            continue
+        numeric_indices.append(index)
+    if not numeric_indices:
+        raise ValueError("CSV file does not contain numeric EEG columns")
+    return [names[index] for index in numeric_indices], tuple(numeric_indices)
 
 
 def load_xdf(path: str | Path, *, stream_name: str | None = None, unit: str = "uV") -> NeuroFrame:

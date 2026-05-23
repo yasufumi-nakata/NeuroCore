@@ -5,7 +5,8 @@ import re
 import tarfile
 import zipfile
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any, Callable, Iterable
@@ -41,12 +42,15 @@ GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz"}
 RESOLVABLE_METHODS = {
     "dataverse_api",
     "dandi_client",
+    "doi_resolver",
     "dryad_api",
     "figshare_api",
     "gin_client",
     "git_clone",
     "huggingface_client",
+    "kaggle_client",
     "mendeley_api",
+    "nemar_client",
     "openneuro_cli",
     "osf_api",
     "physionet_client",
@@ -392,6 +396,8 @@ def _resolve_candidate(
         return _resolve_generic_following_file_links(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method == "mendeley_api":
         return _resolve_generic_following_file_links(plan, candidate, fetcher, max_pages=max_pages)
+    if candidate.method == "doi_resolver":
+        return _resolve_doi(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method == "openneuro_cli":
         return _resolve_openneuro(plan, candidate, fetcher)
     if candidate.method == "git_clone":
@@ -404,6 +410,10 @@ def _resolve_candidate(
         return _resolve_dandi(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method == "gin_client":
         return _resolve_gin(plan, candidate, fetcher)
+    if candidate.method == "kaggle_client":
+        return _resolve_kaggle(plan, candidate, fetcher, max_pages=max_pages)
+    if candidate.method == "nemar_client":
+        return _resolve_nemar(plan, candidate, fetcher)
     return []
 
 
@@ -554,6 +564,81 @@ def _resolve_openneuro(
             )
         )
     return [file for file in files if file.name and file.url]
+
+
+def _resolve_doi(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+    *,
+    max_pages: int,
+) -> list[RemoteFileCandidate]:
+    payload = _dict(fetcher(_doi_resolution_url(candidate.url)))
+    target = _string(payload.get("url") or candidate.url)
+    if not target or target == candidate.url:
+        return []
+    return _resolve_delegated_url(plan, target, fetcher, max_pages=max_pages)
+
+
+def _resolve_delegated_url(
+    plan: AcquisitionPlan,
+    target: str,
+    fetcher: JsonFetcher,
+    *,
+    max_pages: int,
+) -> list[RemoteFileCandidate]:
+    host = urlparse(target).netloc.lower()
+    if "zenodo.org" in host:
+        record_id = _first_match(r"zenodo\.(\d+)|records/(\d+)", target)
+        if record_id:
+            delegated_plan = replace(plan, provider="zenodo")
+            delegated = AcquisitionCandidate(
+                "zenodo", "zenodo_api", f"https://zenodo.org/api/records/{record_id}", "file_listing"
+            )
+            return _resolve_zenodo(delegated_plan, delegated, fetcher)
+    if "figshare.com" in host or "data.dtu.dk" in host:
+        article_id = _first_match(r"articles/(?:dataset/)?[^/]+/(\d+)|articles/(\d+)", target)
+        if article_id:
+            delegated_plan = replace(plan, provider="figshare")
+            delegated = AcquisitionCandidate(
+                "figshare", "figshare_api", f"https://api.figshare.com/v2/articles/{article_id}", "file_listing"
+            )
+            return _resolve_figshare(delegated_plan, delegated, fetcher)
+    if "osf.io" in host:
+        node_id = _first_match(r"osf\.io/([a-z0-9]{4,8})", target)
+        if node_id:
+            delegated_plan = replace(plan, provider="osf")
+            delegated = AcquisitionCandidate("osf", "osf_api", f"https://api.osf.io/v2/nodes/{node_id}/files/", "file_listing")
+            return _resolve_osf(delegated_plan, delegated, fetcher, max_pages=max_pages)
+    if "openneuro.org" in host:
+        delegated_plan = replace(plan, provider="openneuro")
+        delegated = AcquisitionCandidate("openneuro", "openneuro_cli", target, "tool_download")
+        return _resolve_openneuro(delegated_plan, delegated, fetcher)
+    if "github.com" in host:
+        delegated_plan = replace(plan, provider="github")
+        delegated = AcquisitionCandidate("github", "git_clone", target, "repository")
+        return _resolve_github(delegated_plan, delegated, fetcher)
+    if "physionet.org" in host:
+        delegated_plan = replace(plan, provider="physionet")
+        delegated = AcquisitionCandidate("physionet", "physionet_client", target, "tool_download")
+        return _resolve_physionet(delegated_plan, delegated, fetcher, max_pages=max_pages)
+    if "dandiarchive.org" in host:
+        delegated_plan = replace(plan, provider="dandi")
+        delegated = AcquisitionCandidate("dandi", "dandi_client", target, "tool_download")
+        return _resolve_dandi(delegated_plan, delegated, fetcher, max_pages=max_pages)
+    if "huggingface.co" in host:
+        delegated_plan = replace(plan, provider="huggingface")
+        delegated = AcquisitionCandidate("huggingface", "huggingface_client", target, "tool_download")
+        return _resolve_huggingface(delegated_plan, delegated, fetcher, max_pages=max_pages)
+    if "kaggle.com" in host:
+        delegated_plan = replace(plan, provider="kaggle")
+        delegated = AcquisitionCandidate("kaggle", "kaggle_client", target, "tool_download")
+        return _resolve_kaggle(delegated_plan, delegated, fetcher, max_pages=max_pages)
+    if "nemar.org" in host:
+        delegated_plan = replace(plan, provider="nemar")
+        delegated = AcquisitionCandidate("nemar", "nemar_client", target, "tool_download")
+        return _resolve_nemar(delegated_plan, delegated, fetcher)
+    return []
 
 
 def _resolve_github(
@@ -708,6 +793,61 @@ def _resolve_gin(plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetcher
     return _dedupe_files(files)
 
 
+def _resolve_kaggle(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+    *,
+    max_pages: int,
+) -> list[RemoteFileCandidate]:
+    ref = _first_match(r"kaggle\.com/(?:datasets/)?([^/\s?#]+/[^/\s?#]+)", candidate.url)
+    if not ref:
+        return []
+    url = f"https://www.kaggle.com/api/v1/datasets/list/{ref}"
+    files: list[RemoteFileCandidate] = []
+    pages = 0
+    while url and pages < max_pages:
+        payload = fetcher(url)
+        pages += 1
+        for item in _list(_dict(payload).get("datasetFiles")):
+            name = _string(item.get("name") or item.get("nameNullable"))
+            if not name:
+                continue
+            archive_name = name if _is_archive_name(name) else f"{name}.zip"
+            files.append(
+                _remote_file(
+                    plan,
+                    candidate,
+                    name=archive_name,
+                    url=f"https://www.kaggle.com/api/v1/datasets/download/{ref}?{urlencode({'file_name': name})}",
+                    size_bytes=_int_or_none(item.get("totalBytes")),
+                    media_type="kaggle-file",
+                    source_url=f"https://www.kaggle.com/datasets/{ref}",
+                )
+            )
+        token = _string(_dict(payload).get("nextPageToken"))
+        url = f"https://www.kaggle.com/api/v1/datasets/list/{ref}?{urlencode({'pageToken': token})}" if token else ""
+    return _dedupe_files(files)
+
+
+def _resolve_nemar(plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetcher: JsonFetcher) -> list[RemoteFileCandidate]:
+    html = _string(fetcher(candidate.url))
+    files = []
+    for link in _nemar_download_links(html):
+        filepath = _string(parse_qs(urlparse(link).query).get("filepath", [""])[0])
+        name = _nemar_file_name(filepath) or Path(urlparse(link).path).name
+        files.append(
+            _remote_file(
+                plan,
+                candidate,
+                name=name,
+                url=urljoin("https://nemar.org", link),
+                source_url=candidate.url,
+            )
+        )
+    return _dedupe_files(files)
+
+
 def _resolve_html_index(
     plan: AcquisitionPlan,
     candidate: AcquisitionCandidate,
@@ -845,6 +985,11 @@ def _remote_file(
 
 
 def _fetch_json(url: str, *, timeout: float) -> Any:
+    if url.startswith("doi+resolve://"):
+        target = parse_qs(urlparse(url).query).get("url", [""])[0]
+        request = Request(target, method="HEAD", headers={"Accept": "*/*", "User-Agent": "NeuroCore/0.1 dataset-resolver"})
+        with urlopen(request, timeout=timeout) as response:
+            return {"url": response.geturl(), "content_type": response.headers.get("Content-Type", "")}
     if url.startswith("openneuro+graphql://"):
         query = parse_qs(urlparse(url).query).get("query", [""])[0]
         payload = json.dumps({"query": query}).encode("utf-8")
@@ -859,7 +1004,7 @@ def _fetch_json(url: str, *, timeout: float) -> Any:
         )
         with urlopen(request, timeout=timeout) as response:
             return json.loads(response.read().decode("utf-8"))
-    if url.startswith("https://physionet.org/files/") or "gin.g-node.org" in url:
+    if url.startswith("https://physionet.org/files/") or "gin.g-node.org" in url or "nemar.org/dataexplorer" in url:
         request = Request(url, headers={"Accept": "text/html", "User-Agent": "NeuroCore/0.1 dataset-resolver"})
         with urlopen(request, timeout=timeout) as response:
             return response.read().decode("utf-8", "ignore")
@@ -982,6 +1127,31 @@ def _html_links(html: str) -> list[str]:
     return parser.hrefs
 
 
+def _nemar_download_links(html: str) -> list[str]:
+    links = []
+    for href in _html_links(html):
+        if "/dataexplorer/download?" in href:
+            links.append(href)
+    for match in re.finditer(r"download_file\('([^']+)'\)", html):
+        links.append(match.group(1))
+    cleaned = []
+    for link in links:
+        value = unescape(link).replace("\\/", "/")
+        if "/dataexplorer/download?" in value:
+            cleaned.append(value)
+    return list(dict.fromkeys(cleaned))
+
+
+def _nemar_file_name(filepath: str) -> str:
+    if not filepath:
+        return ""
+    normalized = filepath.replace("\\", "/")
+    match = re.search(r"/openneuro/+([^/]+)/(.+)$", normalized)
+    if match:
+        return match.group(2)
+    return normalized.rsplit("/", 1)[-1]
+
+
 def _json_api_data(payload: Any) -> list[dict[str, Any]]:
     data = payload.get("data") if isinstance(payload, dict) else []
     if isinstance(data, dict):
@@ -1034,6 +1204,10 @@ def _first_match(pattern: str, text: str) -> str | None:
 
 def _openneuro_graphql_url(query: str) -> str:
     return "openneuro+graphql://?" + urlencode({"query": query})
+
+
+def _doi_resolution_url(url: str) -> str:
+    return "doi+resolve://?" + urlencode({"url": url})
 
 
 def _openneuro_dataset_query(dataset_id: str) -> str:

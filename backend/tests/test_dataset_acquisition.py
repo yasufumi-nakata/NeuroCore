@@ -57,7 +57,8 @@ def test_plan_acquisition_detects_public_api_and_account_paths() -> None:
     assert zenodo.automation_status == "direct_api"
     assert zenodo.candidates[0].method == "zenodo_api"
     assert kaggle.provider == "kaggle"
-    assert kaggle.automation_status == "account_required"
+    assert kaggle.automation_status == "tooling_required"
+    assert kaggle.candidates[0].method == "kaggle_client"
     assert unusable.automation_status == "unusable"
 
 

@@ -381,9 +381,31 @@ def evaluate_loaders() -> dict[str, Any]:
     details.append({"name": "sample_csv", "shape": frame.to_summary()["shape"]})
     with tempfile.TemporaryDirectory() as temp_dir:
         temp = Path(temp_dir)
+        mixed = temp / "mixed_label.csv"
+        mixed.write_text("Fz,Cz,label\n1.0,2.0,NEGATIVE\n3.0,4.0,POSITIVE\n", encoding="utf-8")
+        mixed_frame = load_csv(mixed, sampling_rate=250)
+        checks.extend(
+            [
+                Check(
+                    "mixed_label_csv.shape",
+                    mixed_frame.to_summary()["shape"] == [2, 2],
+                    [2, 2],
+                    mixed_frame.to_summary()["shape"],
+                    "loaders",
+                ),
+                Check(
+                    "mixed_label_csv.dropped_columns",
+                    mixed_frame.provenance.get("dropped_non_numeric_columns") == 1,
+                    1,
+                    mixed_frame.provenance.get("dropped_non_numeric_columns"),
+                    "loaders",
+                ),
+            ]
+        )
+        details.append({"name": "mixed_label_csv", "shape": mixed_frame.to_summary()["shape"]})
         files = {
             "empty_csv": ("", "CSV file is empty"),
-            "non_numeric_csv": ("Fz,Cz\n1.0,oops\n", "non-numeric"),
+            "non_numeric_csv": ("label,state\nNEGATIVE,trial\n", "does not contain numeric"),
             "width_mismatch_csv": ("Fz,Cz\n1.0\n", "expected 2"),
         }
         for name, (content, expected_message) in files.items():
@@ -399,7 +421,7 @@ def evaluate_loaders() -> dict[str, Any]:
                 passed = False
             checks.append(Check(f"{name}.error_category", passed, expected_message, actual, "loaders"))
             details.append({"name": name, "expected_error": expected_message, "actual": actual})
-    return summarize_checks("loaders", checks, {"case_count": 4, "cases": details})
+    return summarize_checks("loaders", checks, {"case_count": 5, "cases": details})
 
 
 def evaluate_streaming() -> dict[str, Any]:

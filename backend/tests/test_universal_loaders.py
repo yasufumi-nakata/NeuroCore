@@ -27,6 +27,17 @@ def test_numpy_npz_loader_uses_embedded_metadata(tmp_path) -> None:
     assert frame.provenance["source"] == "numpy"
 
 
+def test_csv_loader_drops_non_numeric_label_columns(tmp_path) -> None:
+    path = tmp_path / "features.csv"
+    path.write_text("Fz,Cz,label\n1.0,2.0,NEGATIVE\n3.0,4.0,POSITIVE\n", encoding="utf-8")
+
+    frame = load(path, sampling_rate=250)
+
+    assert frame.data.shape == (2, 2)
+    assert frame.channel_names == ("Fz", "Cz")
+    assert frame.provenance["dropped_non_numeric_columns"] == 1
+
+
 def test_mat_loader_flattens_multidimensional_eeg_array(tmp_path, monkeypatch) -> None:
     path = tmp_path / "subject.mat"
     payload = {
