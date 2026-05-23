@@ -52,6 +52,7 @@ neurocore run-csv samples/synthetic_eeg.csv --sampling-rate 250 --json
 neurocore run-file samples/synthetic_eeg.csv --sampling-rate 250 --json
 neurocore dataset-inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 neurocore dataset-acquisition-plan ../EEG-DATA/eeg_dataset_summary_ja.csv --json
+neurocore dataset-exercise ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --limit 10 --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider openneuro --provider dandi --provider kaggle --provider nemar --limit 5 --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider github --provider huggingface --provider physionet --provider gin --limit 5 --json
@@ -154,6 +155,7 @@ raw 本体取得計画とローカルキャッシュ検証:
 
 ```bash
 python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv
+neurocore dataset-exercise ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 25 --json
 python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --cache-root private/raw-cache --load-local
 python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 25
 python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-provider zenodo --cache-root private/raw-cache --materialize --max-download-bytes 50000000 --load-local

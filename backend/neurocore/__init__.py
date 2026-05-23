@@ -11,6 +11,7 @@ from .acquisition import (
 from .audit import ActionAuditLog, AuditEvent, DryRunActionSink
 from .control import ControlAction, ControlRouter, IntentCommand
 from .datasets import DatasetInventory, DatasetRecord, load_eeg_dataset_inventory
+from .exercise import DatasetExerciseRecord, exercise_dataset_records, summarize_dataset_exercise
 from .frame import Channel, Event, FrameValidationError, NeuroFrame, Timebase, ValidityIssue
 from .kernels import Bandpass, ReReference, Resample, SpectralFeatures, ValidateEEG
 from .loaders import (
@@ -57,6 +58,7 @@ __all__ = [
     "ControlAction",
     "ControlRouter",
     "DatasetInventory",
+    "DatasetExerciseRecord",
     "DatasetRecord",
     "DryRunActionSink",
     "Event",
@@ -90,6 +92,7 @@ __all__ = [
     "load_numpy",
     "load_xdf",
     "extract_supported_signal_files_from_archive",
+    "exercise_dataset_records",
     "materialize_remote_file",
     "materialize_remote_files",
     "find_supported_signal_files",
@@ -100,6 +103,7 @@ __all__ = [
     "resolve_remote_files",
     "score_signal_quality",
     "summarize_acquisition_plans",
+    "summarize_dataset_exercise",
     "summarize_remote_file_resolutions",
     "can_load_extension",
     "supported_extensions",

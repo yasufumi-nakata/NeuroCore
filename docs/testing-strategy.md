@@ -27,6 +27,7 @@ PYTHONPATH=backend python -m neurocore.cli simulate-intents samples/intent_comma
 PYTHONPATH=backend python -m neurocore.cli run-file samples/synthetic_eeg.csv --sampling-rate 250 --json
 PYTHONPATH=backend python -m neurocore.cli dataset-inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 PYTHONPATH=backend python -m neurocore.cli dataset-acquisition-plan ../EEG-DATA/eeg_dataset_summary_ja.csv --json
+PYTHONPATH=backend python -m neurocore.cli dataset-exercise ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --limit 10 --json
 PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider openneuro --provider dandi --provider kaggle --provider nemar --limit 5 --json
 PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider github --provider huggingface --provider physionet --provider gin --limit 5 --json
@@ -37,6 +38,7 @@ PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg
 PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider doi --provider web_landing --limit 5 --json
 PYTHONPATH=backend python scripts/verify_dataset_loading.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv
 PYTHONPATH=backend python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv
+PYTHONPATH=backend python -m neurocore.cli dataset-exercise ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 25 --json
 PYTHONPATH=backend python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --resolve-remote-files --resolve-limit 10
 PYTHONPATH=backend python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --cache-root private/raw-cache --max-local-files-per-record 0 --max-loads 0 --load-local
 ```

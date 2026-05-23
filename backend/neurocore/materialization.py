@@ -440,7 +440,7 @@ def _resolve_candidate(
     if candidate.method == "dryad_api":
         return _resolve_generic_following_file_links(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method == "mendeley_api":
-        return _resolve_generic_following_file_links(plan, candidate, fetcher, max_pages=max_pages)
+        return _resolve_mendeley(plan, candidate, fetcher)
     if candidate.method == "doi_resolver":
         return _resolve_doi(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method in {"openneuro_api", "openneuro_cli"}:
@@ -531,14 +531,14 @@ def _resolve_osf(
         for item in _json_api_data(payload):
             attributes = _dict(item.get("attributes"))
             links = _dict(item.get("links"))
-            name = _string(attributes.get("name") or attributes.get("materialized_path")).strip("/")
+            name = _string(attributes.get("materialized_path") or attributes.get("name")).strip("/")
             download_url = _string(links.get("download") or attributes.get("download_url"))
             if attributes.get("kind") == "file" and download_url:
                 files.append(
                     _remote_file(
                         plan,
                         candidate,
-                        name=Path(name).name,
+                        name=name,
                         url=download_url,
                         size_bytes=_int_or_none(attributes.get("size")),
                         media_type=_string(attributes.get("contentType")),
@@ -578,6 +578,27 @@ def _resolve_dataverse(
             )
         )
     return [file for file in files if file.name]
+
+
+def _resolve_mendeley(
+    plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetcher: JsonFetcher
+) -> list[RemoteFileCandidate]:
+    payload = _dict(fetcher(candidate.url))
+    files = []
+    for item in _list(payload.get("files")):
+        content = _dict(item.get("content_details"))
+        files.append(
+            _remote_file(
+                plan,
+                candidate,
+                name=_string(item.get("filename")),
+                url=_string(content.get("download_url")),
+                size_bytes=_int_or_none(item.get("size") or content.get("size")),
+                checksum=f"sha256:{content['sha256_hash']}" if content.get("sha256_hash") else "",
+                media_type=_string(content.get("content_type")),
+            )
+        )
+    return [file for file in files if file.name and file.url]
 
 
 def _resolve_openneuro(
@@ -1242,7 +1263,7 @@ def _generic_remote_files(
             _remote_file(
                 plan,
                 candidate,
-                name=Path(name).name,
+                name=name.strip("/"),
                 url=urljoin(source_url, url),
                 size_bytes=_int_or_none(item.get("size") or item.get("sizeBytes") or item.get("filesize")),
                 checksum=_string(item.get("md5") or item.get("checksum")),
@@ -1846,11 +1867,27 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
 def _is_signal_like_generic_path(name: str) -> bool:
     normalized = name.replace("\\", "/").lower()
     basename = Path(normalized).name
+    if any(
+        token in normalized
+        for token in (
+            "behavior",
+            "behaviour",
+            "questionnaire",
+            "readme",
+            "stimuli",
+            "stimulus",
+        )
+    ):
+        return False
     if any(part in normalized for part in ("/eeg/", "/raw/", "/signal/", "/signals/", "filtered_data/", "segmented_data/")):
+        return True
+    if any(part in normalized for part in ("eeg_csv/", "raw muse data/", "raw_muse_data/")):
         return True
     if normalized.startswith(("raw/", "eeg/", "signals/")):
         return True
     if "eeg" in basename:
+        return True
+    if "oddball" in basename:
         return True
     return bool(re.search(r"^(sub-[a-z0-9]+|subject[_-]?\d+|eeg|raw|signal)", basename))
 

@@ -11,6 +11,7 @@ from .datasets import load_eeg_dataset_inventory
 from .audit import ActionAuditLog, DryRunActionSink
 from . import __version__
 from .control import ControlRouter, IntentCommand
+from .exercise import exercise_dataset_records, summarize_dataset_exercise
 from .frame import Channel
 from .kernels import Bandpass, ReReference, Resample, SpectralFeatures, ValidateEEG
 from .loaders import load, load_csv, supported_extensions
@@ -99,6 +100,27 @@ def cmd_dataset_resolve_files(args: argparse.Namespace) -> int:
     payload["sample_resolutions"] = [
         resolution.to_dict(file_limit=file_limit) for resolution in resolutions[: args.sample_limit]
     ]
+    _print(payload, json_mode=args.json)
+    return 0 if payload["error_count"] == 0 else 1
+
+
+def cmd_dataset_exercise(args: argparse.Namespace) -> int:
+    inventory = load_eeg_dataset_inventory(args.csv)
+    plans = plan_inventory_acquisition(inventory)
+    resolutions = ()
+    if args.resolve_remote_files:
+        resolutions = resolve_inventory_remote_files(
+            plans,
+            limit=None if args.resolve_limit == 0 else args.resolve_limit,
+            providers=set(args.provider) if args.provider else None,
+            automation_statuses=set(args.status) if args.status else {"direct_api", "tooling_required"},
+            timeout=args.http_timeout,
+            max_pages=args.max_pages,
+        )
+    exercise_records = exercise_dataset_records(plans, remote_resolutions=resolutions)
+    payload = summarize_dataset_exercise(exercise_records)
+    payload["remote_file_resolution_summary"] = summarize_remote_file_resolutions(resolutions)
+    payload["sample_records"] = [record.to_dict() for record in exercise_records[: args.sample_limit]]
     _print(payload, json_mode=args.json)
     return 0 if payload["error_count"] == 0 else 1
 
@@ -271,6 +293,21 @@ def build_parser() -> argparse.ArgumentParser:
     p_resolve.add_argument("--max-pages", type=int, default=30)
     p_resolve.add_argument("--json", action="store_true")
     p_resolve.set_defaults(func=cmd_dataset_resolve_files)
+
+    p_exercise = sub.add_parser(
+        "dataset-exercise",
+        help="Classify every EEG-DATA row by raw-readiness state and optional remote resolution evidence",
+    )
+    p_exercise.add_argument("csv", type=Path)
+    p_exercise.add_argument("--resolve-remote-files", action="store_true")
+    p_exercise.add_argument("--resolve-limit", type=int, default=25, help="Maximum records to resolve; use 0 for all")
+    p_exercise.add_argument("--sample-limit", type=int, default=10)
+    p_exercise.add_argument("--provider", action="append", default=[], help="Provider filter for remote resolution")
+    p_exercise.add_argument("--status", action="append", default=[], help="Automation status filter for remote resolution")
+    p_exercise.add_argument("--http-timeout", type=float, default=20.0)
+    p_exercise.add_argument("--max-pages", type=int, default=30)
+    p_exercise.add_argument("--json", action="store_true")
+    p_exercise.set_defaults(func=cmd_dataset_exercise)
 
     p_route = sub.add_parser("route-intent", help="Route an externally decoded intent into a safe action envelope")
     p_route.add_argument("intent")

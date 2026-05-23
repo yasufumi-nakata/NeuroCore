@@ -167,6 +167,47 @@ def test_openneuro_resolution_uses_latest_snapshot_and_urls() -> None:
     assert resolution.files[0].source_url.endswith("/versions/1.0.0")
 
 
+def test_osf_resolution_preserves_materialized_path_for_raw_detection() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://osf.io/d5yrf/",
+            doi="10.17605/osf.io/d5yrf",
+            source_domain="osf.io",
+            description="EEG CSV recordings",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "data": [
+                {
+                    "attributes": {
+                        "kind": "file",
+                        "name": "eeg01.csv",
+                        "materialized_path": "/EEG_CSV/eeg01.csv",
+                        "size": 10,
+                    },
+                    "links": {"download": "https://osf.io/download/eeg01/"},
+                },
+                {
+                    "attributes": {
+                        "kind": "file",
+                        "name": "stimuli_eeg01.txt",
+                        "materialized_path": "/EEG_stimuli_TXT/stimuli_eeg01.txt",
+                        "size": 10,
+                    },
+                    "links": {"download": "https://osf.io/download/stimuli/"},
+                },
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].name == "EEG_CSV/eeg01.csv"
+    assert resolution.files[0].directly_loadable is True
+    assert resolution.files[1].directly_loadable is False
+
+
 def test_doi_resolution_delegates_to_figshare_landing() -> None:
     plan = plan_acquisition(
         record(
@@ -265,6 +306,39 @@ def test_doi_resolution_delegates_to_dataverse_compatible_landing() -> None:
     assert resolution.status == "resolved"
     assert resolution.files[0].provider == "dataverse"
     assert resolution.files[0].directly_loadable is True
+
+
+def test_mendeley_resolution_uses_content_detail_download_urls() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://data.mendeley.com/datasets/rckc8c7mh9/1",
+            doi="10.17632/rckc8c7mh9.1",
+            source_domain="data.mendeley.com",
+            description="EEG archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        assert url == "https://data.mendeley.com/public-api/datasets/rckc8c7mh9"
+        return {
+            "files": [
+                {
+                    "filename": "ADMCI.zip",
+                    "size": 4509699,
+                    "content_details": {
+                        "download_url": "https://data.mendeley.com/public-files/datasets/rckc8c7mh9/files/file/file_downloaded",
+                        "sha256_hash": "abc",
+                        "content_type": "application/zip",
+                    },
+                }
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.status == "resolved"
+    assert resolution.files[0].archive is True
+    assert resolution.files[0].checksum == "sha256:abc"
 
 
 def test_stanford_purl_resolution_reads_cocina_file_manifest() -> None:
@@ -379,6 +453,42 @@ def test_generic_mat_detection_avoids_behavior_only_files() -> None:
     assert by_name["data/behavior/S01_behresults.mat"].directly_loadable is False
     assert by_name["data/eeg/S01_eeg.mat"].directly_loadable is True
     assert by_name["data/clean/CleanEEG_stim01.mat"].directly_loadable is True
+
+
+def test_generic_csv_detection_uses_raw_task_paths_without_treating_stimuli_as_raw() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://osf.io/5m24j/",
+            doi="10.17605/osf.io/5m24j",
+            source_domain="osf.io",
+            description="raw Muse EEG CSV recordings",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "data": [
+                {
+                    "attributes": {
+                        "kind": "file",
+                        "materialized_path": "/Raw Muse Data/KL_018_postinside_oddball.csv",
+                    },
+                    "links": {"download": "https://osf.io/download/raw/"},
+                },
+                {
+                    "attributes": {
+                        "kind": "file",
+                        "materialized_path": "/EEG_stimuli_TXT/stimuli_eeg01.txt",
+                    },
+                    "links": {"download": "https://osf.io/download/stimuli/"},
+                },
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].directly_loadable is True
+    assert resolution.files[1].directly_loadable is False
 
 
 def test_bnci_resolution_filters_dataset_links_from_index() -> None:

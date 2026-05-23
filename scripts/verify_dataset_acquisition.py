@@ -16,6 +16,7 @@ if str(BACKEND) not in sys.path:
 
 from neurocore.acquisition import local_readiness_for_record, plan_inventory_acquisition, summarize_acquisition_plans
 from neurocore.datasets import load_eeg_dataset_inventory
+from neurocore.exercise import exercise_dataset_records, summarize_dataset_exercise
 from neurocore.loaders import load
 from neurocore.materialization import (
     extract_supported_signal_files_from_archive,
@@ -103,6 +104,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             max_files=None if args.max_loads == 0 else args.max_loads,
             sampling_rate=args.sampling_rate,
         )
+    exercise_records = exercise_dataset_records(plans, remote_resolutions=remote_resolutions, local_readiness=readiness)
     return {
         "confidentiality": CONFIDENTIALITY,
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -110,6 +112,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "cache_root": str(args.cache_root) if args.cache_root else None,
         "plan_summary": plan_summary,
         "sample_plans": [plan.to_dict() for plan in plans[: args.sample_limit]],
+        "dataset_exercise_summary": summarize_dataset_exercise(exercise_records),
+        "sample_dataset_exercise_records": [record.to_dict() for record in exercise_records[: args.sample_limit]],
         "remote_file_resolution_summary": summarize_remote_file_resolutions(remote_resolutions),
         "sample_remote_file_resolutions": [resolution.to_dict() for resolution in remote_resolutions[: args.sample_limit]],
         "materialization_summary": summarize_materialization(materialization_results),
@@ -202,6 +206,11 @@ def render_markdown(report: dict[str, Any]) -> str:
         "",
         "## Remote File Resolution",
         "",
+        f"- exercise_state_counts: `{json.dumps(report['dataset_exercise_summary']['state_counts'], ensure_ascii=False)}`",
+        f"- records_with_actionable_raw_path: {report['dataset_exercise_summary']['records_with_actionable_raw_path']}",
+        f"- records_with_external_blocker: {report['dataset_exercise_summary']['records_with_external_blocker']}",
+        f"- records_needing_resolver_work: {report['dataset_exercise_summary']['records_needing_resolver_work']}",
+        f"- records_not_yet_remotely_exercised: {report['dataset_exercise_summary']['records_not_yet_remotely_exercised']}",
         f"- records_resolved: {report['remote_file_resolution_summary']['records_resolved']}",
         f"- remote_file_count: {report['remote_file_resolution_summary']['remote_file_count']}",
         f"- directly_loadable_file_count: {report['remote_file_resolution_summary']['directly_loadable_file_count']}",
@@ -303,6 +312,7 @@ def main() -> int:
         json.dumps(
             {
                 "plan_summary": report["plan_summary"],
+                "dataset_exercise_summary": report["dataset_exercise_summary"],
                 "remote_file_resolution_summary": report["remote_file_resolution_summary"],
                 "materialization_summary": report["materialization_summary"],
                 "archive_extraction_summary": report["archive_extraction_summary"],
