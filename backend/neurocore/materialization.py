@@ -43,6 +43,7 @@ GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz"}
 RESOLVABLE_METHODS = {
     "bnci_index",
     "dataverse_api",
+    "data_ru_landing",
     "dandi_api",
     "dandi_client",
     "doi_resolver",
@@ -66,6 +67,7 @@ RESOLVABLE_METHODS = {
     "physionet_index",
     "physionet_client",
     "scidb_api",
+    "stanford_purl_json",
     "zenodo_api",
 }
 FIGSHARE_COMPATIBLE_HOSTS = {
@@ -83,6 +85,14 @@ DATAVERSE_COMPATIBLE_HOSTS = {
 REPOSITORY_HTML_HOSTS = {
     "datashare.ed.ac.uk",
     "deepblue.lib.umich.edu",
+}
+DATA_RU_HOSTS = {
+    "data.ru.nl",
+    "webdav.data.ru.nl",
+}
+STANFORD_SDR_HOSTS = {
+    "purl.stanford.edu",
+    "stacks.stanford.edu",
 }
 BNCI_DATASETS_URL = "https://bnci-horizon-2020.eu/database/data-sets"
 
@@ -421,6 +431,8 @@ def _resolve_candidate(
         return _resolve_osf(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method == "dataverse_api":
         return _resolve_dataverse(plan, candidate, fetcher)
+    if candidate.method == "data_ru_landing":
+        return _resolve_data_ru(plan, candidate, fetcher)
     if candidate.method == "dryad_api":
         return _resolve_generic_following_file_links(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method == "mendeley_api":
@@ -445,6 +457,8 @@ def _resolve_candidate(
         return _resolve_nemar(plan, candidate, fetcher)
     if candidate.method == "scidb_api":
         return _resolve_scidb(plan, candidate, fetcher)
+    if candidate.method == "stanford_purl_json":
+        return _resolve_stanford_purl(plan, candidate, fetcher)
     if candidate.method == "bnci_index":
         return _resolve_bnci(plan, candidate, fetcher)
     if candidate.method == "http_landing":
@@ -645,6 +659,21 @@ def _resolve_delegated_url(
             delegated_plan = replace(plan, provider="dataverse")
             delegated = AcquisitionCandidate("dataverse", "dataverse_api", api_url, "file_listing")
             return _resolve_dataverse(delegated_plan, delegated, fetcher)
+    if _is_data_ru_host(host):
+        delegated_plan = replace(plan, provider="data_ru")
+        delegated = AcquisitionCandidate("data_ru", "data_ru_landing", target, "file_listing")
+        return _resolve_data_ru(delegated_plan, delegated, fetcher)
+    if _is_stanford_sdr_host(host):
+        druid = _stanford_druid(target)
+        if druid:
+            delegated_plan = replace(plan, provider="stanford_sdr")
+            delegated = AcquisitionCandidate(
+                "stanford_sdr",
+                "stanford_purl_json",
+                f"https://purl.stanford.edu/{druid}.json",
+                "file_listing",
+            )
+            return _resolve_stanford_purl(delegated_plan, delegated, fetcher)
     if "osf.io" in host:
         node_id = _first_match(r"osf\.io/([a-z0-9]{4,8})", target)
         if node_id:
@@ -937,6 +966,75 @@ def _resolve_scidb(plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetch
             source_url=landing or _string(metadata.get("url") or metadata.get("@id")) or candidate.url,
         )
     ]
+
+
+def _resolve_stanford_purl(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+) -> list[RemoteFileCandidate]:
+    payload = _dict(fetcher(candidate.url))
+    druid = _stanford_druid(candidate.url) or _stanford_druid(_string(payload.get("purl")))
+    if not druid:
+        return []
+    files = []
+    for item in _cocina_files(payload):
+        if _string(_dict(item.get("access")).get("download")) not in {"world", "stanford"}:
+            continue
+        filename = _string(item.get("filename"))
+        if not filename:
+            continue
+        digests = _list(item.get("hasMessageDigests"))
+        checksum = ""
+        if digests:
+            first_digest = _dict(digests[0])
+            checksum = ":".join(part for part in (_string(first_digest.get("type")), _string(first_digest.get("digest"))) if part)
+        files.append(
+            _remote_file(
+                replace(plan, provider="stanford_sdr"),
+                candidate,
+                name=filename,
+                url=f"https://stacks.stanford.edu/file/druid:{druid}/{quote(filename, safe='/')}",
+                size_bytes=_int_or_none(item.get("size")),
+                checksum=checksum,
+                media_type=_string(item.get("hasMimeType")),
+                source_url=f"https://purl.stanford.edu/{druid}",
+            )
+        )
+    return _dedupe_files(files)
+
+
+def _resolve_data_ru(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+) -> list[RemoteFileCandidate]:
+    landing_html = _string(fetcher(_html_landing_url(candidate.url)))
+    content_url = _data_ru_content_url(landing_html)
+    if not content_url:
+        return []
+    root = content_url.rstrip("/")
+    manifest = _string(fetcher(_html_landing_url(f"{root}/MANIFEST.txt")))
+    files = []
+    for line in manifest.splitlines():
+        line = line.strip().lstrip("\ufeff")
+        if not line:
+            continue
+        checksum, _, relative_path = line.partition(" ")
+        relative_path = relative_path.strip()
+        if not relative_path:
+            continue
+        files.append(
+            _remote_file(
+                replace(plan, provider="data_ru"),
+                candidate,
+                name=relative_path,
+                url=f"{root}/{quote(relative_path, safe='/')}",
+                checksum=f"sha256:{checksum}" if checksum else "",
+                source_url=candidate.url,
+            )
+        )
+    return _dedupe_files(files)
 
 
 def _resolve_bnci(
@@ -1333,6 +1431,19 @@ def _file_link_hrefs(value: Any, *, base_url: str) -> list[str]:
     return hrefs
 
 
+def _cocina_files(value: Any) -> list[dict[str, Any]]:
+    files: list[dict[str, Any]] = []
+    if isinstance(value, dict):
+        if _string(value.get("type")).endswith("/file") and value.get("filename"):
+            files.append(value)
+        for item in value.values():
+            files.extend(_cocina_files(item))
+    elif isinstance(value, list):
+        for item in value:
+            files.extend(_cocina_files(item))
+    return files
+
+
 class _HrefParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__()
@@ -1371,6 +1482,46 @@ def _html_link_items(html: str) -> list[tuple[str, str]]:
     if parser.links:
         return parser.links
     return [(href, "") for href in parser.hrefs]
+
+
+def _json_ld_objects(html: str) -> list[dict[str, Any]]:
+    objects = []
+    for match in re.finditer(
+        r"<script[^>]+type=[\"']application/ld\+json[\"'][^>]*>(.*?)</script>",
+        html,
+        flags=re.IGNORECASE | re.DOTALL,
+    ):
+        try:
+            payload = json.loads(unescape(match.group(1)).strip())
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict):
+            objects.append(payload)
+        elif isinstance(payload, list):
+            objects.extend(item for item in payload if isinstance(item, dict))
+    return objects
+
+
+def _data_ru_content_url(html: str) -> str:
+    for item in _json_ld_objects(html):
+        for value in _recursive_values_for_key(item, "contentUrl"):
+            text = _string(value)
+            if "webdav.data.ru.nl" in text:
+                return text
+    return _first_match(r'"contentUrl"\s*:\s*"([^"]*webdav\.data\.ru\.nl[^"]+)"', html) or ""
+
+
+def _recursive_values_for_key(value: Any, key: str) -> list[Any]:
+    found = []
+    if isinstance(value, dict):
+        for item_key, item_value in value.items():
+            if item_key == key:
+                found.append(item_value)
+            found.extend(_recursive_values_for_key(item_value, key))
+    elif isinstance(value, list):
+        for item in value:
+            found.extend(_recursive_values_for_key(item, key))
+    return found
 
 
 def _nemar_download_links(html: str) -> list[str]:
@@ -1528,6 +1679,14 @@ def _is_dataverse_host(host: str) -> bool:
     return "dataverse" in normalized or normalized in DATAVERSE_COMPATIBLE_HOSTS
 
 
+def _is_data_ru_host(host: str) -> bool:
+    return host.lower().removeprefix("www.") in DATA_RU_HOSTS
+
+
+def _is_stanford_sdr_host(host: str) -> bool:
+    return host.lower().removeprefix("www.") in STANFORD_SDR_HOSTS
+
+
 def _is_repository_html_host(host: str) -> bool:
     return host.lower().removeprefix("www.") in REPOSITORY_HTML_HOSTS
 
@@ -1585,6 +1744,10 @@ def _bnci_dataset_id_from_name(name: str) -> str:
     if "bcic iv 2b" in text:
         return "004-2014"
     return _first_match(r"\((\d{3}-\d{4})\)", name) or ""
+
+
+def _stanford_druid(value: str) -> str:
+    return _first_match(r"(?:purl\.stanford\.edu/|10\.25740/)([a-z]{2}\d{3}[a-z]{2}\d{4})", value) or ""
 
 
 def _is_resolvable_direct_url(url: str, plan: AcquisitionPlan) -> bool:
@@ -1649,6 +1812,8 @@ def _is_directly_loadable_signal_name(name: str) -> bool:
     if suffix in CONFIDENT_SIGNAL_SUFFIXES:
         return True
     if suffix in GENERIC_NUMERIC_SUFFIXES:
+        if "eeg" in Path(name.lower()).stem:
+            return True
         return bool(re.search(r"(^|[_./ -])(eeg|raw|signal|signals|recording|subject|sub-[a-z0-9]+|ses-[a-z0-9]+|task-[a-z0-9]+)", name, re.IGNORECASE))
     return False
 
@@ -1672,9 +1837,11 @@ def _is_signal_like_generic_path(name: str) -> bool:
     basename = Path(normalized).name
     if any(part in normalized for part in ("/eeg/", "/raw/", "/signal/", "/signals/", "filtered_data/", "segmented_data/")):
         return True
-    if normalized.startswith(("data/", "raw/", "eeg/", "signals/")):
+    if normalized.startswith(("raw/", "eeg/", "signals/")):
         return True
-    return bool(re.search(r"^(sub-[a-z0-9]+|subject[_-]?\d+|s\d+[_-]|eeg|raw|signal)", basename))
+    if "eeg" in basename:
+        return True
+    return bool(re.search(r"^(sub-[a-z0-9]+|subject[_-]?\d+|eeg|raw|signal)", basename))
 
 
 def _loader_materialization_keys(files: tuple[RemoteFileCandidate, ...]) -> set[tuple[str, str]]:

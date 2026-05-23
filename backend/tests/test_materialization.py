@@ -266,6 +266,120 @@ def test_doi_resolution_delegates_to_dataverse_compatible_landing() -> None:
     assert resolution.files[0].directly_loadable is True
 
 
+def test_stanford_purl_resolution_reads_cocina_file_manifest() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://purl.stanford.edu/pp371jh5722",
+            doi="10.25740/pp371jh5722",
+            source_domain="purl.stanford.edu",
+            description="MATLAB RawEEG files",
+        )
+    )
+
+    def fetch_json(url: str):
+        assert url == "https://purl.stanford.edu/pp371jh5722.json"
+        return {
+            "purl": "https://purl.stanford.edu/pp371jh5722",
+            "structural": {
+                "contains": [
+                    {
+                        "structural": {
+                            "contains": [
+                                {
+                                    "type": "https://cocina.sul.stanford.edu/models/file",
+                                    "filename": "CleanEEG_stim01.mat",
+                                    "size": 123,
+                                    "hasMimeType": "application/octet-stream",
+                                    "hasMessageDigests": [{"type": "md5", "digest": "abc"}],
+                                    "access": {"download": "world"},
+                                },
+                                {
+                                    "type": "https://cocina.sul.stanford.edu/models/file",
+                                    "filename": "restricted.mat",
+                                    "access": {"download": "none"},
+                                },
+                            ]
+                        }
+                    }
+                ]
+            },
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.status == "resolved"
+    assert resolution.files[0].provider == "stanford_sdr"
+    assert resolution.files[0].url == "https://stacks.stanford.edu/file/druid:pp371jh5722/CleanEEG_stim01.mat"
+    assert resolution.files[0].directly_loadable is True
+
+
+def test_data_ru_resolution_uses_json_ld_webdav_manifest() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://data.ru.nl/collections/di/dcc/DSC_2022.00139_820",
+            doi="10.34973/6dw9-0924",
+            source_domain="data.ru.nl",
+            description="BrainVision EEG data",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url.startswith("html+landing://") and "MANIFEST.txt" not in url:
+            return """
+            <script type="application/ld+json">
+            {"@type":"Dataset","distribution":{"@type":"DataDownload","contentUrl":"https://webdav.data.ru.nl/dcc/DSC_2022.00139_820_v1"}}
+            </script>
+            """
+        if url.startswith("html+landing://") and "MANIFEST.txt" in url:
+            return """
+            sha1 README.md
+            sha2 sourcedata/sub-01/eeg/sub-01_task-rest_eeg.vhdr
+            sha3 sourcedata/sub-01/eeg/sub-01_task-rest_eeg.eeg
+            sha4 sourcedata/sub-01/eeg/sub-01_task-rest_eeg.vmrk
+            """
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.status == "resolved"
+    assert resolution.files[1].provider == "data_ru"
+    assert resolution.files[1].directly_loadable is True
+    assert resolution.files[1].url.endswith("sourcedata/sub-01/eeg/sub-01_task-rest_eeg.vhdr")
+
+
+def test_generic_mat_detection_avoids_behavior_only_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://data.ru.nl/collections/di/dcc/DSC_2022.00139_820",
+            doi="10.34973/6dw9-0924",
+            source_domain="data.ru.nl",
+            description="MATLAB EEG files",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url.startswith("html+landing://") and "MANIFEST.txt" not in url:
+            return """
+            <script type="application/ld+json">
+            {"distribution":{"contentUrl":"https://webdav.data.ru.nl/dcc/example_v1"}}
+            </script>
+            """
+        if url.startswith("html+landing://") and "MANIFEST.txt" in url:
+            return """
+            sha1 data/behavior/S01_behresults.mat
+            sha2 data/eeg/S01_eeg.mat
+            sha3 data/clean/CleanEEG_stim01.mat
+            """
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    by_name = {file.name: file for file in resolution.files}
+    assert by_name["data/behavior/S01_behresults.mat"].directly_loadable is False
+    assert by_name["data/eeg/S01_eeg.mat"].directly_loadable is True
+    assert by_name["data/clean/CleanEEG_stim01.mat"].directly_loadable is True
+
+
 def test_bnci_resolution_filters_dataset_links_from_index() -> None:
     plan = plan_acquisition(
         record(

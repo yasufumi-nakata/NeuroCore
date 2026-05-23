@@ -13,6 +13,7 @@ from .loaders import find_supported_signal_files
 
 DIRECT_API_PROVIDERS = {
     "dandi",
+    "data_ru",
     "zenodo",
     "figshare",
     "gin",
@@ -27,6 +28,7 @@ DIRECT_API_PROVIDERS = {
     "openneuro",
     "physionet",
     "scidb",
+    "stanford_sdr",
     "invenio",
     "bnci",
     "repository_html",
@@ -63,6 +65,14 @@ INVENIO_COMPATIBLE_HOSTS = {
 REPOSITORY_HTML_HOSTS = {
     "datashare.ed.ac.uk",
     "deepblue.lib.umich.edu",
+}
+DATA_RU_HOSTS = {
+    "data.ru.nl",
+    "webdav.data.ru.nl",
+}
+STANFORD_SDR_HOSTS = {
+    "purl.stanford.edu",
+    "stacks.stanford.edu",
 }
 
 
@@ -254,6 +264,13 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
                     "file_listing",
                 )
             )
+    elif provider == "data_ru":
+        if record.url and _host(record.url) != "doi.org":
+            candidates.append(AcquisitionCandidate(provider, "data_ru_landing", record.url, "file_listing"))
+        elif record.doi:
+            candidates.append(
+                AcquisitionCandidate(provider, "doi_resolver", f"https://doi.org/{record.doi}", "landing")
+            )
     elif provider == "dryad":
         if record.doi:
             candidates.append(
@@ -292,6 +309,21 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
                     "scidb+resolve://?" + "&".join(f"{key}={quote(value, safe='')}" for key, value in params.items()),
                     "file_listing",
                 )
+            )
+    elif provider == "stanford_sdr":
+        druid = _stanford_druid(" ".join([record.url, record.doi, *record.search_sources]))
+        if druid:
+            candidates.append(
+                AcquisitionCandidate(
+                    provider,
+                    "stanford_purl_json",
+                    f"https://purl.stanford.edu/{druid}.json",
+                    "file_listing",
+                )
+            )
+        elif record.doi:
+            candidates.append(
+                AcquisitionCandidate(provider, "doi_resolver", f"https://doi.org/{record.doi}", "landing")
             )
     elif provider == "bnci":
         target = record.url or "https://bnci-horizon-2020.eu/database/data-sets"
@@ -356,6 +388,10 @@ def _provider_from_host(host: str) -> str:
         return "figshare"
     if "dataverse" in host or host in DATAVERSE_COMPATIBLE_HOSTS:
         return "dataverse"
+    if host in DATA_RU_HOSTS:
+        return "data_ru"
+    if host in STANFORD_SDR_HOSTS:
+        return "stanford_sdr"
     if host in INVENIO_COMPATIBLE_HOSTS:
         return "invenio"
     if "bnci-horizon-2020.eu" in host:
@@ -411,6 +447,10 @@ def _doi_provider(value: str) -> str | None:
         return "dataverse"
     if any(prefix in text for prefix in ("10.5683/sp3/", "10.21979/n9/", "10.25824/redu/", "10.82468/")):
         return "dataverse"
+    if "10.34973/" in text:
+        return "data_ru"
+    if "10.25740/" in text:
+        return "stanford_sdr"
     if "10.5061/dryad" in text:
         return "dryad"
     if "10.57760/sciencedb" in text or "sciencedb." in text:
@@ -524,6 +564,11 @@ def _dataverse_persistent_id_for_record(record: DatasetRecord) -> str:
         if persistent_values:
             return persistent_values[0]
     return f"doi:{record.doi}"
+
+
+def _stanford_druid(value: str) -> str:
+    text = value.strip()
+    return _first_match(r"(?:purl\.stanford\.edu/|10\.25740/)([a-z]{2}\d{3}[a-z]{2}\d{4})", text) or ""
 
 
 def _first_match(pattern: str, text: str) -> str | None:

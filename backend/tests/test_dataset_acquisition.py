@@ -144,10 +144,39 @@ def test_plan_acquisition_detects_dataverse_compatible_repositories() -> None:
     )
 
 
+def test_plan_acquisition_detects_stanford_and_data_ru_repositories() -> None:
+    stanford = plan_acquisition(
+        record(
+            record_id="10",
+            url="https://purl.stanford.edu/pp371jh5722",
+            doi="10.25740/pp371jh5722",
+            source_domain="purl.stanford.edu",
+            access_status="すぐに使える",
+        )
+    )
+    data_ru = plan_acquisition(
+        record(
+            record_id="11",
+            url="https://data.ru.nl/collections/di/dcc/DSC_2022.00139_820",
+            doi="10.34973/6dw9-0924",
+            source_domain="data.ru.nl",
+            access_status="すぐに使える",
+        )
+    )
+
+    assert stanford.provider == "stanford_sdr"
+    assert stanford.automation_status == "direct_api"
+    assert stanford.candidates[0].method == "stanford_purl_json"
+    assert stanford.candidates[0].url == "https://purl.stanford.edu/pp371jh5722.json"
+    assert data_ru.provider == "data_ru"
+    assert data_ru.automation_status == "direct_api"
+    assert data_ru.candidates[0].method == "data_ru_landing"
+
+
 def test_plan_acquisition_detects_bnci_and_repository_html_sources() -> None:
     bnci = plan_acquisition(
         record(
-            record_id="10",
+            record_id="12",
             url="https://bnci-horizon-2020.eu/database/data-sets/001-2014/description.pdf",
             doi="10.3389/fnins.2012.00055",
             source_domain="bnci-horizon-2020.eu",
@@ -156,7 +185,7 @@ def test_plan_acquisition_detects_bnci_and_repository_html_sources() -> None:
     )
     datashare = plan_acquisition(
         record(
-            record_id="11",
+            record_id="13",
             url="https://datashare.ed.ac.uk/handle/10283/2100",
             doi="10.7488/ds/1478",
             source_domain="datashare.ed.ac.uk",
