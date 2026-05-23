@@ -12,18 +12,34 @@ from .loaders import find_supported_signal_files
 
 
 DIRECT_API_PROVIDERS = {
+    "dandi",
     "zenodo",
     "figshare",
+    "gin",
+    "github",
     "osf",
     "dataverse",
     "dryad",
+    "huggingface",
+    "kaggle",
     "mendeley",
+    "nemar",
+    "openneuro",
+    "physionet",
     "scidb",
     "invenio",
     "bnci",
     "repository_html",
 }
-TOOLING_PROVIDERS = {"openneuro", "gin", "github", "physionet", "dandi", "huggingface", "nemar", "kaggle"}
+PUBLIC_FILE_LISTING_METHODS = {
+    "dandi": "dandi_api",
+    "gin": "gin_index",
+    "huggingface": "huggingface_api",
+    "kaggle": "kaggle_api",
+    "nemar": "nemar_index",
+    "physionet": "physionet_index",
+}
+TOOLING_PROVIDERS: set[str] = set()
 ACCOUNT_PROVIDERS = {"pennsieve", "ieee_dataport", "nda"}
 FIGSHARE_COMPATIBLE_HOSTS = {
     "data.4tu.nl",
@@ -220,10 +236,10 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
         candidates.append(
             AcquisitionCandidate(
                 provider,
-                "openneuro_cli",
+                "openneuro_api",
                 f"openneuro://{target}",
-                "tool_download",
-                notes=("use openneuro-py or datalad for full dataset materialization",),
+                "file_listing",
+                notes=("provider tools may still be useful for bulk mirroring very large datasets",),
             )
         )
     elif provider == "dataverse":
@@ -292,9 +308,14 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
         if repo:
             repo = repo.removesuffix(".git")
             candidates.append(
-                AcquisitionCandidate(provider, "git_clone", f"https://github.com/{repo}.git", "repository")
+                AcquisitionCandidate(provider, "github_tree_api", f"https://github.com/{repo}.git", "file_listing")
             )
-    elif provider in TOOLING_PROVIDERS | ACCOUNT_PROVIDERS:
+    elif provider in PUBLIC_FILE_LISTING_METHODS:
+        if record.url:
+            candidates.append(
+                AcquisitionCandidate(provider, PUBLIC_FILE_LISTING_METHODS[provider], record.url, "file_listing")
+            )
+    elif provider in ACCOUNT_PROVIDERS:
         if record.url:
             candidates.append(
                 AcquisitionCandidate(

@@ -29,6 +29,7 @@ PYTHONPATH=backend python -m neurocore.cli dataset-inventory ../EEG-DATA/eeg_dat
 PYTHONPATH=backend python -m neurocore.cli dataset-acquisition-plan ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --limit 10 --json
 PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider openneuro --provider dandi --provider kaggle --provider nemar --limit 5 --json
+PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider github --provider huggingface --provider physionet --provider gin --limit 5 --json
 PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider scidb --limit 5 --json
 PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider figshare --provider dataverse --limit 5 --json
 PYTHONPATH=backend python -m neurocore.cli dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider bnci --provider repository_html --limit 5 --json

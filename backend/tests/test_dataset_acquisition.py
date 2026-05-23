@@ -57,8 +57,9 @@ def test_plan_acquisition_detects_public_api_and_account_paths() -> None:
     assert zenodo.automation_status == "direct_api"
     assert zenodo.candidates[0].method == "zenodo_api"
     assert kaggle.provider == "kaggle"
-    assert kaggle.automation_status == "tooling_required"
-    assert kaggle.candidates[0].method == "kaggle_client"
+    assert kaggle.automation_status == "direct_api"
+    assert kaggle.candidates[0].method == "kaggle_api"
+    assert kaggle.candidates[0].role == "file_listing"
     assert unusable.automation_status == "unusable"
 
 
@@ -171,6 +172,26 @@ def test_plan_acquisition_detects_bnci_and_repository_html_sources() -> None:
     assert datashare.candidates[0].method == "http_landing"
 
 
+def test_plan_acquisition_treats_public_file_listing_providers_as_direct_api() -> None:
+    cases = [
+        ("openneuro", "https://openneuro.org/datasets/ds000001", "openneuro.org", "openneuro_api"),
+        ("github", "https://github.com/example/eeg-data", "github.com", "github_tree_api"),
+        ("huggingface", "https://huggingface.co/datasets/example/eeg-set", "huggingface.co", "huggingface_api"),
+        ("physionet", "https://physionet.org/content/auditory-eeg/1.0.0", "physionet.org", "physionet_index"),
+        ("dandi", "https://dandiarchive.org/dandiset/000055", "dandiarchive.org", "dandi_api"),
+        ("gin", "https://gin.g-node.org/doi/example-dataset", "gin.g-node.org", "gin_index"),
+        ("nemar", "https://nemar.org/dataexplorer/detail?dataset_id=nm000113", "nemar.org", "nemar_index"),
+    ]
+
+    for provider, url, domain, method in cases:
+        plan = plan_acquisition(record(record_id=provider, url=url, doi="", source_domain=domain))
+
+        assert plan.provider == provider
+        assert plan.automation_status == "direct_api"
+        assert plan.candidates[0].method == method
+        assert plan.candidates[0].role == "file_listing"
+
+
 def test_plan_inventory_acquisition_summary_counts() -> None:
     inventory = DatasetInventory(
         source="inventory.csv",
@@ -185,8 +206,8 @@ def test_plan_inventory_acquisition_summary_counts() -> None:
     summary = summarize_acquisition_plans(plans)
 
     assert detect_provider(inventory.records[1]) == "openneuro"
-    assert summary["automation_status_counts"]["direct_api"] == 1
-    assert summary["automation_status_counts"]["tooling_required"] == 1
+    assert summary["automation_status_counts"]["direct_api"] == 2
+    assert summary["automation_status_counts"].get("tooling_required", 0) == 0
     assert summary["automation_status_counts"]["manual_review"] == 1
 
 

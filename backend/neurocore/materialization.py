@@ -43,19 +43,27 @@ GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz"}
 RESOLVABLE_METHODS = {
     "bnci_index",
     "dataverse_api",
+    "dandi_api",
     "dandi_client",
     "doi_resolver",
     "dryad_api",
     "figshare_api",
+    "gin_index",
     "gin_client",
+    "github_tree_api",
     "git_clone",
+    "huggingface_api",
     "huggingface_client",
     "http_landing",
+    "kaggle_api",
     "kaggle_client",
     "mendeley_api",
+    "nemar_index",
     "nemar_client",
+    "openneuro_api",
     "openneuro_cli",
     "osf_api",
+    "physionet_index",
     "physionet_client",
     "scidb_api",
     "zenodo_api",
@@ -419,21 +427,21 @@ def _resolve_candidate(
         return _resolve_generic_following_file_links(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method == "doi_resolver":
         return _resolve_doi(plan, candidate, fetcher, max_pages=max_pages)
-    if candidate.method == "openneuro_cli":
+    if candidate.method in {"openneuro_api", "openneuro_cli"}:
         return _resolve_openneuro(plan, candidate, fetcher)
-    if candidate.method == "git_clone":
+    if candidate.method in {"github_tree_api", "git_clone"}:
         return _resolve_github(plan, candidate, fetcher)
-    if candidate.method == "huggingface_client":
+    if candidate.method in {"huggingface_api", "huggingface_client"}:
         return _resolve_huggingface(plan, candidate, fetcher, max_pages=max_pages)
-    if candidate.method == "physionet_client":
+    if candidate.method in {"physionet_index", "physionet_client"}:
         return _resolve_physionet(plan, candidate, fetcher, max_pages=max_pages)
-    if candidate.method == "dandi_client":
+    if candidate.method in {"dandi_api", "dandi_client"}:
         return _resolve_dandi(plan, candidate, fetcher, max_pages=max_pages)
-    if candidate.method == "gin_client":
+    if candidate.method in {"gin_index", "gin_client"}:
         return _resolve_gin(plan, candidate, fetcher)
-    if candidate.method == "kaggle_client":
+    if candidate.method in {"kaggle_api", "kaggle_client"}:
         return _resolve_kaggle(plan, candidate, fetcher, max_pages=max_pages)
-    if candidate.method == "nemar_client":
+    if candidate.method in {"nemar_index", "nemar_client"}:
         return _resolve_nemar(plan, candidate, fetcher)
     if candidate.method == "scidb_api":
         return _resolve_scidb(plan, candidate, fetcher)
@@ -645,31 +653,31 @@ def _resolve_delegated_url(
             return _resolve_osf(delegated_plan, delegated, fetcher, max_pages=max_pages)
     if "openneuro.org" in host:
         delegated_plan = replace(plan, provider="openneuro")
-        delegated = AcquisitionCandidate("openneuro", "openneuro_cli", target, "tool_download")
+        delegated = AcquisitionCandidate("openneuro", "openneuro_api", target, "file_listing")
         return _resolve_openneuro(delegated_plan, delegated, fetcher)
     if "github.com" in host:
         delegated_plan = replace(plan, provider="github")
-        delegated = AcquisitionCandidate("github", "git_clone", target, "repository")
+        delegated = AcquisitionCandidate("github", "github_tree_api", target, "file_listing")
         return _resolve_github(delegated_plan, delegated, fetcher)
     if "physionet.org" in host:
         delegated_plan = replace(plan, provider="physionet")
-        delegated = AcquisitionCandidate("physionet", "physionet_client", target, "tool_download")
+        delegated = AcquisitionCandidate("physionet", "physionet_index", target, "file_listing")
         return _resolve_physionet(delegated_plan, delegated, fetcher, max_pages=max_pages)
     if "dandiarchive.org" in host:
         delegated_plan = replace(plan, provider="dandi")
-        delegated = AcquisitionCandidate("dandi", "dandi_client", target, "tool_download")
+        delegated = AcquisitionCandidate("dandi", "dandi_api", target, "file_listing")
         return _resolve_dandi(delegated_plan, delegated, fetcher, max_pages=max_pages)
     if "huggingface.co" in host:
         delegated_plan = replace(plan, provider="huggingface")
-        delegated = AcquisitionCandidate("huggingface", "huggingface_client", target, "tool_download")
+        delegated = AcquisitionCandidate("huggingface", "huggingface_api", target, "file_listing")
         return _resolve_huggingface(delegated_plan, delegated, fetcher, max_pages=max_pages)
     if "kaggle.com" in host:
         delegated_plan = replace(plan, provider="kaggle")
-        delegated = AcquisitionCandidate("kaggle", "kaggle_client", target, "tool_download")
+        delegated = AcquisitionCandidate("kaggle", "kaggle_api", target, "file_listing")
         return _resolve_kaggle(delegated_plan, delegated, fetcher, max_pages=max_pages)
     if "nemar.org" in host:
         delegated_plan = replace(plan, provider="nemar")
-        delegated = AcquisitionCandidate("nemar", "nemar_client", target, "tool_download")
+        delegated = AcquisitionCandidate("nemar", "nemar_index", target, "file_listing")
         return _resolve_nemar(delegated_plan, delegated, fetcher)
     if "scidb.cn" in host:
         delegated_plan = replace(plan, provider="scidb")

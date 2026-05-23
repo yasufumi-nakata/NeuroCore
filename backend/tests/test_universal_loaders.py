@@ -38,6 +38,22 @@ def test_csv_loader_drops_non_numeric_label_columns(tmp_path) -> None:
     assert frame.provenance["dropped_non_numeric_columns"] == 1
 
 
+def test_csv_loader_drops_index_and_timestamp_metadata_columns(tmp_path) -> None:
+    path = tmp_path / "raw.csv"
+    path.write_text(
+        ",unixTimestamp,CP3,C3\n"
+        "0,1674926223312,-318.8,1.1\n"
+        "1,1674926223316,-1881.0,4.7\n",
+        encoding="utf-8",
+    )
+
+    frame = load(path, sampling_rate=250)
+
+    assert frame.channel_names == ("CP3", "C3")
+    assert frame.data.shape == (2, 2)
+    assert frame.provenance["dropped_metadata_columns"] == 2
+
+
 def test_mat_loader_flattens_multidimensional_eeg_array(tmp_path, monkeypatch) -> None:
     path = tmp_path / "subject.mat"
     payload = {
