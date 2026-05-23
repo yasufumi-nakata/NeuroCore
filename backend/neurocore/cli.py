@@ -14,6 +14,7 @@ from .control import ControlRouter, IntentCommand
 from .frame import Channel
 from .kernels import Bandpass, ReReference, Resample, SpectralFeatures, ValidateEEG
 from .loaders import load, load_csv, supported_extensions
+from .materialization import resolve_inventory_remote_files, summarize_remote_file_resolutions
 from .pipeline import Pipeline, PipelineExecutionError
 from .quality import score_signal_quality
 from .selftest import run_self_tests
@@ -76,6 +77,23 @@ def cmd_dataset_acquisition_plan(args: argparse.Namespace) -> int:
     payload["sample_plans"] = [plan.to_dict() for plan in plans[: args.limit]]
     _print(payload, json_mode=args.json)
     return 0
+
+
+def cmd_dataset_resolve_files(args: argparse.Namespace) -> int:
+    inventory = load_eeg_dataset_inventory(args.csv)
+    plans = plan_inventory_acquisition(inventory)
+    resolutions = resolve_inventory_remote_files(
+        plans,
+        limit=None if args.limit == 0 else args.limit,
+        providers=set(args.provider) if args.provider else None,
+        automation_statuses=set(args.status) if args.status else {"direct_api"},
+        timeout=args.http_timeout,
+        max_pages=args.max_pages,
+    )
+    payload = summarize_remote_file_resolutions(resolutions)
+    payload["sample_resolutions"] = [resolution.to_dict() for resolution in resolutions[: args.sample_limit]]
+    _print(payload, json_mode=args.json)
+    return 0 if payload["error_count"] == 0 else 1
 
 
 def cmd_route(args: argparse.Namespace) -> int:
@@ -229,6 +247,22 @@ def build_parser() -> argparse.ArgumentParser:
     p_acquisition.add_argument("--limit", type=int, default=10, help="Number of sample plans to include")
     p_acquisition.add_argument("--json", action="store_true")
     p_acquisition.set_defaults(func=cmd_dataset_acquisition_plan)
+
+    p_resolve = sub.add_parser("dataset-resolve-files", help="Resolve provider API file lists for EEG-DATA rows")
+    p_resolve.add_argument("csv", type=Path)
+    p_resolve.add_argument("--limit", type=int, default=25, help="Maximum records to resolve; use 0 for all selected rows")
+    p_resolve.add_argument("--sample-limit", type=int, default=10)
+    p_resolve.add_argument("--provider", action="append", default=[], help="Provider filter; repeat for multiple providers")
+    p_resolve.add_argument(
+        "--status",
+        action="append",
+        default=[],
+        help="Automation status filter; defaults to direct_api",
+    )
+    p_resolve.add_argument("--http-timeout", type=float, default=20.0)
+    p_resolve.add_argument("--max-pages", type=int, default=30)
+    p_resolve.add_argument("--json", action="store_true")
+    p_resolve.set_defaults(func=cmd_dataset_resolve_files)
 
     p_route = sub.add_parser("route-intent", help="Route an externally decoded intent into a safe action envelope")
     p_route.add_argument("intent")

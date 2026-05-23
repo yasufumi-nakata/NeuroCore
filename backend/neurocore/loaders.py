@@ -20,6 +20,10 @@ MNE_RAW_READERS = {
     ".gdf": "read_raw_gdf",
     ".egi": "read_raw_egi",
     ".mff": "read_raw_egi",
+    ".nxe": "read_raw_eximia",
+    ".data": "read_raw_nicolet",
+    ".lay": "read_raw_persyst",
+    ".mefd": "read_raw_mef",
 }
 
 SUPPORTED_EXTENSIONS = {
@@ -242,7 +246,7 @@ def _signal_file_sort_key(path: Path) -> tuple[int, int, str]:
     parts = {part.lower() for part in path.parts}
     suffix = _loader_suffix(path)
     eeg_dir_rank = 0 if "eeg" in parts else 1
-    preferred = [".vhdr", ".edf", ".bdf", ".set", ".fif", ".xdf", ".mat", ".npz", ".npy", ".csv"]
+    preferred = [".vhdr", ".edf", ".bdf", ".set", ".fif", ".gdf", ".cnt", ".egi", ".mff", ".xdf", ".mat", ".npz", ".npy", ".csv"]
     try:
         suffix_rank = preferred.index(suffix)
     except ValueError:

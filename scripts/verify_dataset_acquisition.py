@@ -17,6 +17,12 @@ if str(BACKEND) not in sys.path:
 from neurocore.acquisition import local_readiness_for_record, plan_inventory_acquisition, summarize_acquisition_plans
 from neurocore.datasets import load_eeg_dataset_inventory
 from neurocore.loaders import load
+from neurocore.materialization import (
+    extract_supported_signal_files_from_archive,
+    materialize_remote_files,
+    resolve_inventory_remote_files,
+    summarize_remote_file_resolutions,
+)
 
 
 CONFIDENTIALITY = (
@@ -44,12 +50,55 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     inventory = load_eeg_dataset_inventory(args.inventory)
     plans = plan_inventory_acquisition(inventory)
     plan_summary = summarize_acquisition_plans(plans)
+    remote_resolutions = []
+    materialization_results = []
+    archive_extractions = []
+    if args.resolve_remote_files:
+        remote_resolutions = list(
+            resolve_inventory_remote_files(
+                plans,
+                limit=None if args.resolve_limit == 0 else args.resolve_limit,
+                providers=set(args.resolve_provider) if args.resolve_provider else None,
+                automation_statuses=set(args.resolve_status) if args.resolve_status else {"direct_api"},
+                timeout=args.http_timeout,
+                max_pages=args.max_pages,
+            )
+        )
+    if args.materialize and args.cache_root:
+        remote_files = [file for resolution in remote_resolutions for file in resolution.files]
+        materialization_results = list(
+            materialize_remote_files(
+                remote_files,
+                args.cache_root,
+                max_files=None if args.max_downloads == 0 else args.max_downloads,
+                max_bytes=args.max_download_bytes,
+                direct_only=not args.include_archives,
+            )
+        )
+    if args.extract_archives:
+        archive_extractions = [
+            extract_supported_signal_files_from_archive(
+                result.path,
+                max_members=args.max_archive_members,
+                max_member_bytes=args.max_archive_member_bytes,
+            )
+            for result in materialization_results
+            if result.path and result.path.lower().endswith((".zip", ".tar", ".tar.gz", ".tgz"))
+        ]
     readiness = []
     if args.cache_root:
-        readiness = [local_readiness_for_record(record, args.cache_root) for record in inventory.records]
+        max_local_files = None if args.max_local_files_per_record == 0 else args.max_local_files_per_record
+        readiness = [
+            local_readiness_for_record(record, args.cache_root, max_files=max_local_files)
+            for record in inventory.records
+        ]
     load_attempts = []
     if args.load_local and args.cache_root:
-        load_attempts = attempt_local_loads(readiness, max_files=args.max_loads, sampling_rate=args.sampling_rate)
+        load_attempts = attempt_local_loads(
+            readiness,
+            max_files=None if args.max_loads == 0 else args.max_loads,
+            sampling_rate=args.sampling_rate,
+        )
     return {
         "confidentiality": CONFIDENTIALITY,
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -57,6 +106,12 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "cache_root": str(args.cache_root) if args.cache_root else None,
         "plan_summary": plan_summary,
         "sample_plans": [plan.to_dict() for plan in plans[: args.sample_limit]],
+        "remote_file_resolution_summary": summarize_remote_file_resolutions(remote_resolutions),
+        "sample_remote_file_resolutions": [resolution.to_dict() for resolution in remote_resolutions[: args.sample_limit]],
+        "materialization_summary": summarize_materialization(materialization_results),
+        "sample_materialization_results": [result.to_dict() for result in materialization_results[: args.sample_limit]],
+        "archive_extraction_summary": summarize_archive_extractions(archive_extractions),
+        "sample_archive_extractions": [result.to_dict() for result in archive_extractions[: args.sample_limit]],
         "local_readiness_summary": summarize_readiness(readiness),
         "sample_local_readiness": readiness[: args.sample_limit],
         "load_attempts": [attempt.to_dict() for attempt in load_attempts],
@@ -75,16 +130,44 @@ def summarize_readiness(readiness: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def summarize_materialization(results: list[Any]) -> dict[str, Any]:
+    if not results:
+        return {"attempted": False, "result_count": 0, "status_counts": {}}
+    status_counts: dict[str, int] = {}
+    for result in results:
+        status_counts[result.status] = status_counts.get(result.status, 0) + 1
+    return {
+        "attempted": True,
+        "result_count": len(results),
+        "status_counts": status_counts,
+        "bytes_written": sum(result.bytes_written for result in results),
+    }
+
+
+def summarize_archive_extractions(results: list[Any]) -> dict[str, Any]:
+    if not results:
+        return {"attempted": False, "result_count": 0, "status_counts": {}, "signal_file_count": 0}
+    status_counts: dict[str, int] = {}
+    for result in results:
+        status_counts[result.status] = status_counts.get(result.status, 0) + 1
+    return {
+        "attempted": True,
+        "result_count": len(results),
+        "status_counts": status_counts,
+        "signal_file_count": sum(result.signal_file_count for result in results),
+    }
+
+
 def attempt_local_loads(
     readiness: list[dict[str, Any]],
     *,
-    max_files: int,
+    max_files: int | None,
     sampling_rate: float,
 ) -> list[LoadAttempt]:
     attempts: list[LoadAttempt] = []
     for item in readiness:
         for path in item["local_signal_files"]:
-            if len(attempts) >= max_files:
+            if max_files is not None and len(attempts) >= max_files:
                 return attempts
             try:
                 frame = load(path, sampling_rate=sampling_rate)
@@ -113,6 +196,27 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- records_without_candidates: {summary['records_without_candidates']}",
         f"- automation_status_counts: `{json.dumps(summary['automation_status_counts'], ensure_ascii=False)}`",
         "",
+        "## Remote File Resolution",
+        "",
+        f"- records_resolved: {report['remote_file_resolution_summary']['records_resolved']}",
+        f"- remote_file_count: {report['remote_file_resolution_summary']['remote_file_count']}",
+        f"- directly_loadable_file_count: {report['remote_file_resolution_summary']['directly_loadable_file_count']}",
+        f"- archive_file_count: {report['remote_file_resolution_summary']['archive_file_count']}",
+        f"- error_count: {report['remote_file_resolution_summary']['error_count']}",
+        "",
+        "## Materialization",
+        "",
+        f"- attempted: {report['materialization_summary']['attempted']}",
+        f"- result_count: {report['materialization_summary']['result_count']}",
+        f"- status_counts: `{json.dumps(report['materialization_summary']['status_counts'], ensure_ascii=False)}`",
+        "",
+        "## Archive Extraction",
+        "",
+        f"- attempted: {report['archive_extraction_summary']['attempted']}",
+        f"- result_count: {report['archive_extraction_summary']['result_count']}",
+        f"- signal_file_count: {report['archive_extraction_summary']['signal_file_count']}",
+        f"- status_counts: `{json.dumps(report['archive_extraction_summary']['status_counts'], ensure_ascii=False)}`",
+        "",
         "## Local Readiness",
         "",
         f"- checked: {readiness['checked']}",
@@ -133,8 +237,50 @@ def main() -> int:
     parser.add_argument("--inventory", type=Path, default=DEFAULT_INVENTORY)
     parser.add_argument("--cache-root", type=Path, default=None, help="Local raw dataset cache root to scan.")
     parser.add_argument("--load-local", action="store_true", help="Attempt to load local cached signal files.")
-    parser.add_argument("--max-loads", type=int, default=25)
+    parser.add_argument("--max-loads", type=int, default=25, help="Maximum local files to load; use 0 for every listed file.")
+    parser.add_argument(
+        "--max-local-files-per-record",
+        type=int,
+        default=20,
+        help="Maximum local signal file paths to include per dataset; use 0 when auditing every cached file.",
+    )
     parser.add_argument("--sampling-rate", type=float, default=250.0, help="Fallback rate for raw numeric files.")
+    parser.add_argument("--resolve-remote-files", action="store_true", help="Query public provider APIs for file lists.")
+    parser.add_argument(
+        "--resolve-limit",
+        type=int,
+        default=25,
+        help="Maximum records to resolve remotely; use 0 to attempt every selected record.",
+    )
+    parser.add_argument(
+        "--resolve-provider",
+        action="append",
+        default=[],
+        help="Restrict remote resolution to a provider; repeat for multiple providers.",
+    )
+    parser.add_argument(
+        "--resolve-status",
+        action="append",
+        default=[],
+        help="Restrict remote resolution to an automation status; defaults to direct_api.",
+    )
+    parser.add_argument("--http-timeout", type=float, default=20.0)
+    parser.add_argument("--max-pages", type=int, default=30)
+    parser.add_argument(
+        "--materialize",
+        action="store_true",
+        help="Download resolved files into --cache-root. Defaults to directly loadable files only.",
+    )
+    parser.add_argument("--max-downloads", type=int, default=5, help="Maximum resolved files to download; use 0 for no cap.")
+    parser.add_argument("--max-download-bytes", type=int, default=100_000_000)
+    parser.add_argument(
+        "--include-archives",
+        action="store_true",
+        help="Allow archive downloads. Archives still need extraction before raw files can be loaded.",
+    )
+    parser.add_argument("--extract-archives", action="store_true", help="Extract downloaded zip/tar archives safely.")
+    parser.add_argument("--max-archive-members", type=int, default=20_000)
+    parser.add_argument("--max-archive-member-bytes", type=int, default=2_000_000_000)
     parser.add_argument("--sample-limit", type=int, default=10)
     parser.add_argument("--output", type=Path, default=None)
     parser.add_argument("--markdown-output", type=Path, default=None)
@@ -151,7 +297,13 @@ def main() -> int:
     print(f"wrote private Markdown report: {markdown_output}")
     print(
         json.dumps(
-            {"plan_summary": report["plan_summary"], "local_readiness_summary": report["local_readiness_summary"]},
+            {
+                "plan_summary": report["plan_summary"],
+                "remote_file_resolution_summary": report["remote_file_resolution_summary"],
+                "materialization_summary": report["materialization_summary"],
+                "archive_extraction_summary": report["archive_extraction_summary"],
+                "local_readiness_summary": report["local_readiness_summary"],
+            },
             indent=2,
             ensure_ascii=False,
         )

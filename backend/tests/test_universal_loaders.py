@@ -107,4 +107,22 @@ def test_mne_loader_dispatches_eeglab_and_edf_through_optional_adapter(tmp_path,
 def test_supported_extensions_include_major_eeg_formats() -> None:
     extensions = set(supported_extensions())
 
-    assert {".edf", ".bdf", ".vhdr", ".set", ".fif", ".xdf", ".mat", ".npy", ".npz"}.issubset(extensions)
+    assert {
+        ".edf",
+        ".bdf",
+        ".vhdr",
+        ".set",
+        ".fif",
+        ".cnt",
+        ".gdf",
+        ".egi",
+        ".mff",
+        ".nxe",
+        ".data",
+        ".lay",
+        ".mefd",
+        ".xdf",
+        ".mat",
+        ".npy",
+        ".npz",
+    }.issubset(extensions)

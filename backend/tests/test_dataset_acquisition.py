@@ -12,6 +12,7 @@ from neurocore.acquisition import (
 )
 from neurocore.cli import main
 from neurocore.datasets import DatasetRecord, DatasetInventory
+from neurocore.materialization import RemoteFileResolution
 
 
 def record(**overrides) -> DatasetRecord:
@@ -58,6 +59,22 @@ def test_plan_acquisition_detects_public_api_and_account_paths() -> None:
     assert kaggle.provider == "kaggle"
     assert kaggle.automation_status == "account_required"
     assert unusable.automation_status == "unusable"
+
+
+def test_plan_acquisition_understands_english_access_statuses() -> None:
+    restricted = plan_acquisition(
+        record(
+            record_id="4",
+            url="https://zenodo.org/records/123456",
+            doi="10.5281/zenodo.123456",
+            source_domain="zenodo.org",
+            access_status="restricted; request access",
+        )
+    )
+    unavailable = plan_acquisition(record(record_id="5", access_status="metadata only; no raw data available"))
+
+    assert restricted.automation_status == "account_required"
+    assert unavailable.automation_status == "unusable"
 
 
 def test_plan_inventory_acquisition_summary_counts() -> None:
@@ -107,6 +124,28 @@ def test_dataset_acquisition_plan_cli_reports_summary(tmp_path, capsys) -> None:
     assert payload["record_count"] == 1
     assert payload["automation_status_counts"]["direct_api"] == 1
     assert payload["sample_plans"][0]["candidates"][0]["method"] == "zenodo_api"
+
+
+def test_dataset_resolve_files_cli_reports_summary_without_network(tmp_path, capsys, monkeypatch) -> None:
+    csv_path = tmp_path / "inventory.csv"
+    csv_path.write_text(
+        "id,dataset_name,url,doi,source_domain,access_status,score,description\n"
+        "1,sample,https://zenodo.org/records/123456,10.5281/zenodo.123456,zenodo.org,すぐに使える,5,raw EEG .edf file\n",
+        encoding="utf-8",
+    )
+
+    def fake_resolve(*_args, **_kwargs):
+        return (RemoteFileResolution("1", "sample", "zenodo", "resolved", ()),)
+
+    monkeypatch.setattr("neurocore.cli.resolve_inventory_remote_files", fake_resolve)
+
+    exit_code = main(["dataset-resolve-files", str(csv_path), "--json"])
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+
+    assert exit_code == 0
+    assert payload["records_resolved"] == 1
+    assert payload["sample_resolutions"][0]["provider"] == "zenodo"
 
 
 def test_dataset_acquisition_verifier_writes_private_report(tmp_path) -> None:

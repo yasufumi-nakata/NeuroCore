@@ -64,10 +64,10 @@ def plan_acquisition(record: DatasetRecord) -> AcquisitionPlan:
     provider = detect_provider(record)
     format_hints = tuple(sorted(_format_hints(record)))
     candidates = tuple(_candidate_urls(record, provider))
-    if "利用困難" in record.access_status:
+    if _access_unusable(record.access_status):
         status = "unusable"
         rationale = "inventory marks the dataset as difficult to reuse"
-    elif "要アカウント" in record.access_status or provider in ACCOUNT_PROVIDERS:
+    elif _access_requires_account(record.access_status) or provider in ACCOUNT_PROVIDERS:
         status = "account_required"
         rationale = "provider or inventory access status requires account approval before raw files can be fetched"
     elif provider in DIRECT_API_PROVIDERS:
@@ -111,18 +111,25 @@ def summarize_acquisition_plans(plans: tuple[AcquisitionPlan, ...]) -> dict[str,
     }
 
 
-def local_readiness_for_record(record: DatasetRecord, cache_root: str | Path) -> dict[str, Any]:
+def local_readiness_for_record(
+    record: DatasetRecord,
+    cache_root: str | Path,
+    *,
+    max_files: int | None = 20,
+) -> dict[str, Any]:
     root = Path(cache_root).expanduser()
     candidates = []
     for key in _record_cache_keys(record):
         directory = root / key
         candidates.extend(find_supported_signal_files(directory))
+    selected = candidates if max_files is None else candidates[:max_files]
     return {
         "record_id": record.record_id,
         "name": record.name,
         "cache_keys": _record_cache_keys(record),
         "local_signal_file_count": len(candidates),
-        "local_signal_files": [str(path) for path in candidates[:20]],
+        "local_signal_files": [str(path) for path in selected],
+        "local_signal_files_truncated": max_files is not None and len(candidates) > max_files,
     }
 
 
@@ -313,6 +320,42 @@ def _doi_provider(value: str) -> str | None:
     return None
 
 
+def _access_unusable(value: str) -> bool:
+    text = value.casefold()
+    return any(
+        marker in text
+        for marker in (
+            "利用困難",
+            "unusable",
+            "unavailable",
+            "not available",
+            "not reusable",
+            "withdrawn",
+            "metadata only",
+            "no raw",
+        )
+    )
+
+
+def _access_requires_account(value: str) -> bool:
+    text = value.casefold()
+    return any(
+        marker in text
+        for marker in (
+            "要アカウント",
+            "利用登録",
+            "account",
+            "registration",
+            "login",
+            "approval",
+            "request access",
+            "restricted",
+            "controlled access",
+            "credential",
+        )
+    )
+
+
 def _format_hints(record: DatasetRecord) -> set[str]:
     text = record.text_for_detection.lower()
     hints: set[str] = set()
@@ -323,6 +366,13 @@ def _format_hints(record: DatasetRecord) -> set[str]:
         "eeglab_set": (r"\.set\b", r"\beeglab\b"),
         "brainvision": (r"\.vhdr\b", r"brainvision"),
         "fif": (r"\.fif\b",),
+        "gdf": (r"\.gdf\b", r"\bgdf\b"),
+        "cnt": (r"\.cnt\b", r"\bcnt\b"),
+        "egi": (r"\.egi\b", r"\bmff\b", r"\begi\b"),
+        "eximia": (r"\.nxe\b", r"eximia"),
+        "nicolet": (r"\.data\b", r"nicolet"),
+        "persyst": (r"\.lay\b", r"persyst"),
+        "mef": (r"\.mefd\b", r"\bmef3?\b"),
         "xdf": (r"\.xdf\b", r"\bxdf\b"),
         "mat": (r"\.mat\b", r"matlab"),
         "numpy": (r"\.npy\b", r"\.npz\b"),
