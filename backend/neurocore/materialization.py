@@ -34,6 +34,10 @@ ARCHIVE_SUFFIXES = (
     ".7z",
     ".rar",
 )
+SPLIT_ARCHIVE_PATTERN = re.compile(
+    r"\.(?:7z|zip|rar|tar|tar\.gz|tgz|tar\.xz|txz|tar\.bz2|tbz2)\.\d{3}$",
+    re.IGNORECASE,
+)
 CONFIDENT_SIGNAL_SUFFIXES = {
     ".bdf",
     ".cnt",
@@ -59,6 +63,7 @@ RESOLVABLE_METHODS = {
     "dandi_api",
     "dandi_client",
     "doi_resolver",
+    "dspace_api",
     "dryad_api",
     "figshare_api",
     "gin_index",
@@ -455,8 +460,10 @@ def _resolve_candidate(
         return _resolve_dataverse(plan, candidate, fetcher)
     if candidate.method == "data_ru_landing":
         return _resolve_data_ru(plan, candidate, fetcher)
+    if candidate.method == "dspace_api":
+        return _resolve_dspace(plan, candidate, fetcher)
     if candidate.method == "dryad_api":
-        return _resolve_generic_following_file_links(plan, candidate, fetcher, max_pages=max_pages)
+        return _resolve_dryad(plan, candidate, fetcher)
     if candidate.method == "mendeley_api":
         return _resolve_mendeley(plan, candidate, fetcher)
     if candidate.method == "doi_resolver":
@@ -759,6 +766,10 @@ def _resolve_delegated_url(
         delegated_plan = replace(plan, provider="bnci")
         delegated = AcquisitionCandidate("bnci", "bnci_index", target, "file_listing")
         return _resolve_bnci(delegated_plan, delegated, fetcher)
+    if "research-collection.ethz.ch" in host:
+        delegated_plan = replace(plan, provider="dspace")
+        delegated = AcquisitionCandidate("dspace", "dspace_api", target, "file_listing")
+        return _resolve_dspace(delegated_plan, delegated, fetcher)
     if _is_repository_html_host(host):
         delegated_plan = replace(plan, provider="repository_html")
         delegated = AcquisitionCandidate("repository_html", "http_landing", target, "file_listing")
@@ -1087,6 +1098,95 @@ def _resolve_data_ru(
                 source_url=candidate.url,
             )
         )
+    return _dedupe_files(files)
+
+
+def _resolve_dryad(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+) -> list[RemoteFileCandidate]:
+    dataset = _dict(fetcher(candidate.url))
+    version_url = _link_href(dataset, "stash:version")
+    version = _dict(fetcher(urljoin(candidate.url, version_url))) if version_url else dataset
+    files_url = _link_href(version, "stash:files")
+    if not files_url:
+        return []
+    payload = _dict(fetcher(urljoin(candidate.url, files_url)))
+    items = _dict(payload.get("_embedded")).get("stash:files") or []
+    files = []
+    iterable = items if isinstance(items, list) else []
+    for item in iterable:
+        if not isinstance(item, dict):
+            continue
+        name = _string(item.get("path") or item.get("name") or item.get("filename"))
+        download = _link_href(item, "stash:download")
+        if not name or not download:
+            continue
+        digest = _string(item.get("digest"))
+        digest_type = _string(item.get("digestType")).lower()
+        checksum = f"{digest_type}:{digest}" if digest and digest_type else digest
+        files.append(
+            _remote_file(
+                replace(plan, provider="dryad"),
+                candidate,
+                name=name,
+                url=urljoin(candidate.url, download),
+                size_bytes=_int_or_none(item.get("size")),
+                checksum=checksum,
+                media_type=_string(item.get("mimeType")),
+                source_url=candidate.url,
+            )
+        )
+    return _dedupe_files(files)
+
+
+def _resolve_dspace(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+) -> list[RemoteFileCandidate]:
+    parsed = urlparse(candidate.url)
+    base = f"{parsed.scheme}://{parsed.netloc}" if parsed.scheme and parsed.netloc else ""
+    if not base and "10.3929/ethz-b" in candidate.url.lower():
+        base = "https://www.research-collection.ethz.ch"
+    if not base:
+        return []
+    item_url = _dspace_item_url(plan, candidate.url, base, fetcher)
+    if not item_url:
+        return []
+    item = _dict(fetcher(item_url))
+    bundles_url = _link_href(item, "bundles") or f"{item_url.rstrip('/')}/bundles"
+    bundles_payload = _dict(fetcher(urljoin(item_url, bundles_url)))
+    bundles = _embedded_list(bundles_payload, "bundles")
+    files = []
+    for bundle in bundles:
+        if _string(bundle.get("name")).upper() != "ORIGINAL":
+            continue
+        bitstreams_url = _link_href(bundle, "bitstreams")
+        if not bitstreams_url:
+            continue
+        bitstreams_payload = _dict(fetcher(urljoin(item_url, bitstreams_url)))
+        for bitstream in _embedded_list(bitstreams_payload, "bitstreams"):
+            name = _string(bitstream.get("name"))
+            content = _link_href(bitstream, "content")
+            if not name or not content:
+                continue
+            checksum_payload = _dict(bitstream.get("checkSum"))
+            algorithm = _string(checksum_payload.get("checkSumAlgorithm")).lower()
+            digest = _string(checksum_payload.get("value"))
+            checksum = f"{algorithm}:{digest}" if algorithm and digest else digest
+            files.append(
+                _remote_file(
+                    replace(plan, provider="dspace"),
+                    candidate,
+                    name=name,
+                    url=urljoin(item_url, content),
+                    size_bytes=_int_or_none(bitstream.get("sizeBytes")),
+                    checksum=checksum,
+                    source_url=item_url,
+                )
+            )
     return _dedupe_files(files)
 
 
@@ -1513,6 +1613,50 @@ def _file_link_hrefs(value: Any, *, base_url: str) -> list[str]:
     return hrefs
 
 
+def _dspace_item_url(
+    plan: AcquisitionPlan,
+    target: str,
+    base: str,
+    fetcher: JsonFetcher,
+) -> str:
+    handle = _first_match(r"/handle/([^?#]+)", target)
+    search_queries = [query for query in (handle, plan.name) if query]
+    for query in search_queries:
+        payload = _dict(fetcher(f"{base}/server/api/discover/search/objects?{urlencode({'query': query})}"))
+        for item in _dspace_search_objects(payload):
+            embedded = _dict(_dict(item.get("_embedded")).get("indexableObject"))
+            if handle and _string(embedded.get("handle")) and _string(embedded.get("handle")) != handle:
+                continue
+            href = _link_href(item, "indexableObject") or _link_href(embedded, "self")
+            if href:
+                return urljoin(base, href)
+    return ""
+
+
+def _dspace_search_objects(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    search_result = _dict(_dict(_dict(payload.get("_embedded")).get("searchResult")).get("_embedded"))
+    objects = search_result.get("objects") or []
+    return [item for item in objects if isinstance(item, dict)]
+
+
+def _link_href(value: Any, key: str) -> str:
+    links = _dict(_dict(value).get("_links"))
+    link = links.get(key)
+    if isinstance(link, dict):
+        return _string(link.get("href"))
+    if isinstance(link, list):
+        for item in link:
+            href = _string(_dict(item).get("href"))
+            if href:
+                return href
+    return ""
+
+
+def _embedded_list(value: dict[str, Any], key: str) -> list[dict[str, Any]]:
+    items = _dict(value.get("_embedded")).get(key) or []
+    return [item for item in items if isinstance(item, dict)] if isinstance(items, list) else []
+
+
 def _cocina_files(value: Any) -> list[dict[str, Any]]:
     files: list[dict[str, Any]] = []
     if isinstance(value, dict):
@@ -1911,7 +2055,7 @@ def _openneuro_download_url(urls: list[Any], filename: str) -> str:
 
 def _is_archive_name(name: str) -> bool:
     normalized = name.lower()
-    return any(normalized.endswith(suffix) for suffix in ARCHIVE_SUFFIXES)
+    return any(normalized.endswith(suffix) for suffix in ARCHIVE_SUFFIXES) or bool(SPLIT_ARCHIVE_PATTERN.search(normalized))
 
 
 def _is_directly_loadable_signal_name(name: str) -> bool:
@@ -1983,10 +2127,14 @@ def _is_signal_like_generic_path(name: str) -> bool:
         return True
     if re.search(r"^(data[_-]?s\d+|s\d+[_-]?data|subject[_-]?\d+[_-]?data)", basename):
         return True
+    if re.search(r"^data[_-][a-z0-9]+[_-]sub[_-]?\d+", basename):
+        return True
     if any(
         token in stem
         for token in ("calibration", "singleplayer", "multiplayer", "recording", "session", "trial", "task")
     ):
+        return True
+    if stem in {"dataica", "ica_data", "icadata"}:
         return True
     if stem in {"ad", "mci", "normal", "control", "healthy", "hc"}:
         return True
@@ -2061,6 +2209,9 @@ def _safe_relative_path(name: str, url: str) -> Path:
 
 def _archive_stem(path: Path) -> str:
     name = path.name
+    split_match = SPLIT_ARCHIVE_PATTERN.search(name)
+    if split_match:
+        return name[: split_match.start()]
     for suffix in (".tar.gz", ".tgz", ".tar.xz", ".txz", ".tar.bz2", ".tbz2", ".zip", ".tar", ".gz", ".7z", ".rar"):
         if name.lower().endswith(suffix):
             return name[: -len(suffix)]

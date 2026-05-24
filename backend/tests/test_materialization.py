@@ -579,6 +579,11 @@ def test_generic_mat_detection_accepts_session_and_group_names_but_skips_derived
                 },
                 {"filename": "AD.mat", "content_details": {"download_url": "https://example.test/AD.mat"}},
                 {
+                    "filename": "Data_Design_Sub_1.mat",
+                    "content_details": {"download_url": "https://example.test/Data_Design_Sub_1.mat"},
+                },
+                {"filename": "dataica.mat", "content_details": {"download_url": "https://example.test/dataica.mat"}},
+                {
                     "filename": "Central_alpha_fft_rest.mat",
                     "content_details": {"download_url": "https://example.test/Central_alpha_fft_rest.mat"},
                 },
@@ -591,7 +596,145 @@ def test_generic_mat_detection_accepts_session_and_group_names_but_skips_derived
     assert by_name["1_calibration.mat"].directly_loadable is True
     assert by_name["10_singleplayer.mat"].directly_loadable is True
     assert by_name["AD.mat"].directly_loadable is True
+    assert by_name["Data_Design_Sub_1.mat"].directly_loadable is True
+    assert by_name["dataica.mat"].directly_loadable is True
     assert by_name["Central_alpha_fft_rest.mat"].directly_loadable is False
+
+
+def test_dryad_resolution_follows_version_files_and_marks_archive() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://doi.org/10.5061/dryad.46786",
+            doi="10.5061/dryad.46786",
+            source_domain="doi.org",
+            description="EGI and MAT EEG archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url == "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.46786":
+            return {"_links": {"stash:version": {"href": "/api/v2/versions/19362"}}}
+        if url == "https://datadryad.org/api/v2/versions/19362":
+            return {"_links": {"stash:files": {"href": "/api/v2/versions/19362/files"}}}
+        if url == "https://datadryad.org/api/v2/versions/19362/files":
+            return {
+                "_embedded": {
+                    "stash:files": [
+                        {
+                            "path": "ftonsets.zip",
+                            "size": 10600732436,
+                            "mimeType": "application/zip",
+                            "digest": "4b953232184a1821313fe420ebf11162",
+                            "digestType": "md5",
+                            "_links": {"stash:download": {"href": "/api/v2/files/65462/download"}},
+                        },
+                        {
+                            "path": "README_for_ftonsets.txt",
+                            "size": 3718,
+                            "mimeType": "text/plain",
+                            "_links": {"stash:download": {"href": "/api/v2/files/65463/download"}},
+                        },
+                    ]
+                }
+            }
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    by_name = {file.name: file for file in resolution.files}
+
+    assert resolution.status == "resolved"
+    assert by_name["ftonsets.zip"].archive is True
+    assert by_name["ftonsets.zip"].materialization_action == "download_extract_then_scan"
+    assert by_name["ftonsets.zip"].checksum == "md5:4b953232184a1821313fe420ebf11162"
+    assert by_name["README_for_ftonsets.txt"].materialization_action == "metadata_or_manual_review"
+
+
+def test_dspace_resolution_follows_item_bundles_and_bitstreams_from_doi() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://doi.org/10.3929/ethz-b-000458693",
+            doi="10.3929/ethz-b-000458693",
+            source_domain="doi.org",
+            description="CYBATHLON EEG ZIP archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url.startswith("doi+resolve://"):
+            return {"url": "https://www.research-collection.ethz.ch/handle/20.500.11850/458693"}
+        if url.startswith("https://www.research-collection.ethz.ch/server/api/discover/search/objects?"):
+            return {
+                "_embedded": {
+                    "searchResult": {
+                        "_embedded": {
+                            "objects": [
+                                {
+                                    "_links": {
+                                        "indexableObject": {
+                                            "href": "https://www.research-collection.ethz.ch/server/api/core/items/item-1"
+                                        }
+                                    },
+                                    "_embedded": {
+                                        "indexableObject": {"handle": "20.500.11850/458693"}
+                                    },
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        if url == "https://www.research-collection.ethz.ch/server/api/core/items/item-1":
+            return {"_links": {"bundles": {"href": "https://www.research-collection.ethz.ch/server/api/core/items/item-1/bundles"}}}
+        if url == "https://www.research-collection.ethz.ch/server/api/core/items/item-1/bundles":
+            return {
+                "_embedded": {
+                    "bundles": [
+                        {
+                            "name": "ORIGINAL",
+                            "_links": {
+                                "bitstreams": {
+                                    "href": "https://www.research-collection.ethz.ch/server/api/core/bundles/original/bitstreams"
+                                }
+                            },
+                        },
+                        {
+                            "name": "LICENSE",
+                            "_links": {
+                                "bitstreams": {
+                                    "href": "https://www.research-collection.ethz.ch/server/api/core/bundles/license/bitstreams"
+                                }
+                            },
+                        },
+                    ]
+                }
+            }
+        if url == "https://www.research-collection.ethz.ch/server/api/core/bundles/original/bitstreams":
+            return {
+                "_embedded": {
+                    "bitstreams": [
+                        {
+                            "name": "ReadMe.docx",
+                            "sizeBytes": 14683,
+                            "_links": {"content": {"href": "https://www.research-collection.ethz.ch/server/api/core/bitstreams/readme/content"}},
+                        },
+                        {
+                            "name": "Cybathlon_Data.zip",
+                            "sizeBytes": 3151378269,
+                            "checkSum": {"checkSumAlgorithm": "MD5", "value": "9edd0803863bb5a3448cf0063a4b9f9c"},
+                            "_links": {"content": {"href": "https://www.research-collection.ethz.ch/server/api/core/bitstreams/data/content"}},
+                        },
+                    ]
+                }
+            }
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    by_name = {file.name: file for file in resolution.files}
+
+    assert resolution.status == "resolved"
+    assert by_name["Cybathlon_Data.zip"].archive is True
+    assert by_name["Cybathlon_Data.zip"].checksum == "md5:9edd0803863bb5a3448cf0063a4b9f9c"
+    assert by_name["ReadMe.docx"].materialization_action == "metadata_or_manual_review"
 
 
 def test_generic_csv_detection_uses_raw_task_paths_without_treating_stimuli_as_raw() -> None:
@@ -648,6 +791,37 @@ def test_xz_tarballs_are_classified_as_extractable_archives() -> None:
 
     assert resolution.files[0].archive is True
     assert resolution.files[0].materialization_action == "download_extract_then_scan"
+
+
+def test_split_7z_parts_are_classified_as_archive_candidates() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://data.mendeley.com/datasets/zwcx948yjc",
+            doi="10.17632/zwcx948yjc",
+            source_domain="data.mendeley.com",
+            equipment="EDF",
+            description="telemetry EEG split 7z archives",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {
+                    "filename": "A05_GD_MDZ3.7z.001",
+                    "content_details": {"download_url": "https://example.test/A05_GD_MDZ3.7z.001"},
+                },
+                {
+                    "filename": "A05_GD_MDZ3.7z.002",
+                    "content_details": {"download_url": "https://example.test/A05_GD_MDZ3.7z.002"},
+                },
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert all(file.archive for file in resolution.files)
+    assert {file.materialization_action for file in resolution.files} == {"download_extract_then_scan"}
 
 
 def test_bnci_resolution_filters_dataset_links_from_index() -> None:

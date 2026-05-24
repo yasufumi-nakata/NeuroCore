@@ -21,6 +21,7 @@ DIRECT_API_PROVIDERS = {
     "github",
     "osf",
     "dataverse",
+    "dspace",
     "dryad",
     "huggingface",
     "kaggle",
@@ -287,14 +288,19 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
             )
     elif provider == "dryad":
         if record.doi:
+            identifier = record.doi if record.doi.lower().startswith("doi:") else f"doi:{record.doi}"
             candidates.append(
                 AcquisitionCandidate(
                     provider,
                     "dryad_api",
-                    f"https://datadryad.org/api/v2/datasets/{quote(record.doi, safe='')}",
+                    f"https://datadryad.org/api/v2/datasets/{quote(identifier, safe='')}",
                     "file_listing",
                 )
             )
+    elif provider == "dspace":
+        target = record.url or (f"https://doi.org/{record.doi}" if record.doi else "")
+        if target:
+            candidates.append(AcquisitionCandidate(provider, "dspace_api", target, "file_listing"))
     elif provider == "mendeley":
         dataset_id = _first_match(
             r"data\.mendeley\.com/datasets/([a-z0-9]+)|10\.17632/([a-z0-9]+)(?:\.\d+)?",
@@ -432,6 +438,8 @@ def _provider_from_host(host: str) -> str:
         return "ieee_dataport"
     if "datadryad.org" in host:
         return "dryad"
+    if "research-collection.ethz.ch" in host:
+        return "dspace"
     if "gin.g-node.org" in host:
         return "gin"
     if "github.com" in host:

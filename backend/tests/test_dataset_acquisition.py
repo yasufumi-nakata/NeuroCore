@@ -95,6 +95,38 @@ def test_plan_acquisition_treats_generic_doi_as_automatable() -> None:
     assert plan.candidates[0].method == "doi_resolver"
 
 
+def test_plan_acquisition_uses_dryad_doi_identifier_for_api() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="dryad",
+            url="https://doi.org/10.5061/dryad.46786",
+            doi="10.5061/dryad.46786",
+            source_domain="doi.org",
+            description="EGI MAT raw EEG archive",
+        )
+    )
+
+    assert plan.provider == "dryad"
+    assert plan.candidates[0].method == "dryad_api"
+    assert plan.candidates[0].url == "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.46786"
+
+
+def test_plan_acquisition_detects_dspace_research_collection() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="dspace",
+            url="https://www.research-collection.ethz.ch/handle/20.500.11850/458693",
+            doi="10.3929/ethz-b-000458693",
+            source_domain="research-collection.ethz.ch",
+            description="public EEG archive",
+        )
+    )
+
+    assert plan.provider == "dspace"
+    assert plan.automation_status == "direct_api"
+    assert plan.candidates[0].method == "dspace_api"
+
+
 def test_plan_acquisition_treats_public_unknown_hosts_as_web_landing() -> None:
     plan = plan_acquisition(
         record(
