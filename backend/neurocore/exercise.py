@@ -133,6 +133,8 @@ def _state_from_resolution(resolution: RemoteFileResolution) -> tuple[str, str]:
         return "remote_direct_raw_ready", "download direct raw files and load with NeuroCore loaders"
     if archives:
         return "remote_archive_requires_extraction", "download archive, extract safely, scan for raw signal files"
+    if any(file.materialization_action == "download_with_companion_metadata" for file in resolution.files):
+        return "remote_raw_body_requires_metadata", "download raw body files and locate matching header metadata before loading"
     if resolution.files:
         return "remote_metadata_only", "inspect remote files and add format-specific raw detection"
     if resolution.status == "skipped":

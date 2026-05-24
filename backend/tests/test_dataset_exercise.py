@@ -61,6 +61,35 @@ def test_dataset_exercise_marks_direct_remote_raw_candidates() -> None:
     assert summary["records_with_direct_raw_candidates"] == 1
 
 
+def test_dataset_exercise_marks_raw_bodies_that_need_companion_metadata() -> None:
+    plan = plan_acquisition(record(description="BrainVision EEG files"))
+    resolution = RemoteFileResolution(
+        record_id="1",
+        dataset_name="sample",
+        provider="osf",
+        status="resolved",
+        files=(
+            RemoteFileCandidate(
+                record_id="1",
+                dataset_name="sample",
+                provider="osf",
+                name="EEG_data/Older_Adults/369.eeg",
+                url="https://example.test/369.eeg",
+                source_url="https://osf.io/qm37x",
+                directly_loadable=False,
+                materialization_action="download_with_companion_metadata",
+            ),
+        ),
+    )
+
+    exercise = exercise_dataset_records((plan,), remote_resolutions=(resolution,))
+    summary = summarize_dataset_exercise(exercise)
+
+    assert exercise[0].state == "remote_raw_body_requires_metadata"
+    assert summary["records_with_actionable_raw_path"] == 0
+    assert summary["records_needing_resolver_work"] == 0
+
+
 def test_dataset_exercise_separates_external_blockers_and_unexercised_rows() -> None:
     account = plan_acquisition(
         record(

@@ -55,7 +55,7 @@ CONFIDENT_SIGNAL_SUFFIXES = {
     ".vhdr",
     ".xdf",
 }
-GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz", ".pt", ".pth", ".tab", ".tsv"}
+GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz", ".pt", ".pth", ".tab", ".ts", ".tsv"}
 TEXT_SIGNAL_SUFFIXES = {".txt", ".tab", ".tsv"}
 RESOLVABLE_METHODS = {
     "bnci_index",
@@ -1509,6 +1509,8 @@ def _remote_file(
         action = "download_then_load"
     elif archive:
         action = "download_extract_then_scan"
+    elif _is_raw_body_requiring_metadata(name, plan):
+        action = "download_with_companion_metadata"
     else:
         action = "metadata_or_manual_review"
     return RemoteFileCandidate(
@@ -2179,6 +2181,8 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
         return _is_signal_like_generic_path(name)
     if suffix in {".pt", ".pth"}:
         return _is_torch_signal_file(name, plan)
+    if suffix == ".ts" and "ts" in hints:
+        return _is_time_series_classification_signal_file(name, plan)
     if suffix == ".csv" and "csv" in hints:
         return (
             _is_signal_like_generic_path(name)
@@ -2210,7 +2214,35 @@ def _is_torch_signal_file(name: str, plan: AcquisitionPlan) -> bool:
     text = f"{plan.name} {' '.join(plan.format_hints)}".lower()
     if not re.search(r"\b(eeg|sleep|polysomnography|preclinical)\b", text):
         return False
+    if Path(name.lower()).stem in {"train", "val", "valid", "validation", "test"}:
+        return True
     return _is_signal_like_generic_path(name)
+
+
+def _is_time_series_classification_signal_file(name: str, plan: AcquisitionPlan) -> bool:
+    text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)}".lower()
+    stem = Path(name.lower()).stem
+    neural_context = re.search(r"\b(eeg|sleep|brain|neural)\b", text) or any(
+        token in text for token in ("seizure", "epilep")
+    )
+    if neural_context and re.search(r"(?:^|[_-])(train|test|val|valid|validation)(?:$|[_-])", stem):
+        return True
+    return _is_signal_like_generic_path(name)
+
+
+def _is_raw_body_requiring_metadata(name: str, plan: AcquisitionPlan) -> bool:
+    normalized = name.replace("\\", "/").lower()
+    suffix = Path(normalized).suffix
+    if suffix not in {".eeg", ".fdt"}:
+        return False
+    text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)}".lower()
+    return (
+        "eeg" in text
+        or "brainvision" in text
+        or "eeglab" in text
+        or "/eeg" in normalized
+        or "eeg_" in normalized
+    )
 
 
 def _is_signal_like_generic_path(name: str) -> bool:
@@ -2285,6 +2317,10 @@ def _is_signal_like_generic_path(name: str) -> bool:
     if stem.startswith(("opto_", "tfus_")):
         return True
     if re.search(r"^s\d+_[0-9]+_kmi$", stem):
+        return True
+    if re.fullmatch(r"s\d+d\d+", stem):
+        return True
+    if re.fullmatch(r"s[ct]\d{4}[a-z]\d+", stem):
         return True
     if re.search(r"^user\d+_[0-9]+_[0-9]+$", stem):
         return True

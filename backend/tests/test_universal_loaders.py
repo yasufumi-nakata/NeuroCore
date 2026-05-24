@@ -127,6 +127,44 @@ def test_tsv_and_tab_loaders_use_delimited_numeric_eeg_columns(tmp_path) -> None
     assert ".tab" in supported_extensions()
 
 
+def test_time_series_classification_loader_reads_univariate_eeg_cases(tmp_path) -> None:
+    path = tmp_path / "EpilepticSeizures_TRAIN.ts"
+    path.write_text(
+        "@problemName EpilepticSeizures\n"
+        "@timestamps false\n"
+        "@univariate true\n"
+        "@classLabel true nonseizure seizure\n"
+        "@data\n"
+        "1.0,2.0,3.0:nonseizure\n"
+        "4.0,5.0,6.0:seizure\n",
+        encoding="utf-8",
+    )
+
+    frame = load(path, sampling_rate=178)
+
+    assert frame.data.shape == (6, 1)
+    assert frame.channel_names == ("Ch1",)
+    assert frame.timebase.sampling_rate == 178
+    assert frame.provenance["source"] == "ts"
+    assert ".ts" in supported_extensions()
+
+
+def test_time_series_classification_loader_reads_multivariate_timestamped_cases(tmp_path) -> None:
+    path = tmp_path / "subject_train.ts"
+    path.write_text(
+        "@timestamps true\n"
+        "@classLabel true left right\n"
+        "@data\n"
+        "(0,1.0),(1,2.0):(0,3.0),(1,4.0):left\n",
+        encoding="utf-8",
+    )
+
+    frame = load(path, sampling_rate=250, channel_names=["Fz", "Cz"])
+
+    assert frame.data.tolist() == [[1.0, 3.0], [2.0, 4.0]]
+    assert frame.channel_names == ("Fz", "Cz")
+
+
 def test_mat_loader_flattens_multidimensional_eeg_array(tmp_path, monkeypatch) -> None:
     path = tmp_path / "subject.mat"
     payload = {

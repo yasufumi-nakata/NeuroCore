@@ -613,6 +613,7 @@ def _format_hints(record: DatasetRecord) -> set[str]:
         "mat": (r"\.mat\b", r"\bmat\b", r"matlab"),
         "numpy": (r"\.npy\b", r"\.npz\b"),
         "torch": (r"\.pt\b", r"\.pth\b", r"pytorch"),
+        "ts": (r"\.ts\b", r"time series classification"),
         "csv": (r"\.csv\b", r"\bcsv\b"),
         "text": (r"\.txt\b", r"\btext files?\b"),
     }.items():

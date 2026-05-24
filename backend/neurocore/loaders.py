@@ -30,6 +30,7 @@ MNE_RAW_READERS = {
 SUPPORTED_EXTENSIONS = {
     ".csv",
     ".tab",
+    ".ts",
     ".txt",
     ".tsv",
     ".nwb",
@@ -58,6 +59,10 @@ def load(
         if sampling_rate is None:
             raise ValueError("sampling_rate is required when loading delimited EEG data")
         return load_csv(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
+    if suffix == ".ts":
+        if sampling_rate is None:
+            raise ValueError("sampling_rate is required when loading Time Series Classification EEG data")
+        return load_ts(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix in MNE_RAW_READERS:
         return load_mne_raw(resolved, preload=mne_preload)
     if suffix == ".xdf":
@@ -142,6 +147,100 @@ def load_csv(
             "header_inferred": headerless,
         },
     )
+
+
+def load_ts(
+    path: str | Path,
+    *,
+    sampling_rate: float,
+    channel_names: tuple[str, ...] | list[str] | None = None,
+    channel_type: str = "eeg",
+    unit: str = "uV",
+) -> NeuroFrame:
+    resolved = Path(path).expanduser()
+    lines = [
+        line.strip()
+        for line in resolved.read_text(encoding="utf-8", errors="replace").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    data_start = next((index + 1 for index, line in enumerate(lines) if line.lower() == "@data"), 0)
+    metadata_lines = lines[: data_start - 1] if data_start else [line for line in lines if line.startswith("@")]
+    has_class_label = _ts_has_class_label(metadata_lines)
+    rows = lines[data_start:] if data_start else [line for line in lines if not line.startswith("@")]
+    series_rows = [_parse_ts_row(row, has_class_label=has_class_label) for row in rows if row and not row.startswith("@")]
+    if not series_rows:
+        raise ValueError("TS file does not contain EEG time-series rows")
+    channel_count = len(series_rows[0])
+    if any(len(row) != channel_count for row in series_rows):
+        raise ValueError("TS file rows do not expose a consistent channel count")
+    sample_blocks = []
+    for row in series_rows:
+        lengths = {len(channel) for channel in row}
+        if len(lengths) != 1:
+            raise ValueError("TS file contains channels with inconsistent sample counts")
+        sample_blocks.append(np.asarray(row, dtype=float).T)
+    data = np.vstack(sample_blocks)
+    names = channel_names or [f"Ch{index + 1}" for index in range(channel_count)]
+    return NeuroFrame(
+        data=data,
+        channels=_channels_for_data(data, names, channel_type=channel_type, unit=unit),
+        timebase=Timebase(sampling_rate=float(sampling_rate)),
+        provenance={
+            "source": "ts",
+            "path": str(resolved),
+            "trial_count": len(series_rows),
+        },
+    )
+
+
+def _ts_has_class_label(metadata_lines: list[str]) -> bool | None:
+    for line in metadata_lines:
+        if line.lower().startswith("@classlabel"):
+            return line.lower().split()[1:2] == ["true"]
+    return None
+
+
+def _parse_ts_row(row: str, *, has_class_label: bool | None) -> list[list[float]]:
+    parts = [part.strip() for part in row.split(":")]
+    if len(parts) > 1 and (has_class_label is True or (has_class_label is None and _looks_like_ts_class_label(parts[-1]))):
+        parts = parts[:-1]
+    channels = [_parse_ts_channel(part) for part in parts if part]
+    if not channels:
+        raise ValueError("TS row does not contain numeric channel data")
+    return channels
+
+
+def _looks_like_ts_class_label(value: str) -> bool:
+    text = value.strip()
+    if not text:
+        return False
+    if "," in text or "(" in text or ")" in text:
+        return False
+    try:
+        float(text)
+    except ValueError:
+        return True
+    return True
+
+
+def _parse_ts_channel(value: str) -> list[float]:
+    timestamped = re.findall(r"\([^,()]+,\s*([^()]+?)\)", value)
+    tokens = timestamped or value.split(",")
+    samples = []
+    for token in tokens:
+        item = token.strip().strip("()")
+        if not item:
+            continue
+        if item == "?":
+            samples.append(float("nan"))
+            continue
+        try:
+            samples.append(float(item))
+        except ValueError as exc:
+            raise ValueError("TS channel contains a non-numeric sample") from exc
+    if not samples:
+        raise ValueError("TS channel does not contain numeric samples")
+    return samples
 
 
 def load_mne_raw(path: str | Path, *, preload: bool = True, unit: str = "uV") -> NeuroFrame:
@@ -442,6 +541,7 @@ def _signal_file_sort_key(path: Path) -> tuple[int, int, str]:
         ".npz",
         ".npy",
         ".csv",
+        ".ts",
         ".tsv",
         ".tab",
         ".txt",

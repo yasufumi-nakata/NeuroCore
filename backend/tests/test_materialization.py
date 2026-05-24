@@ -446,6 +446,154 @@ def test_sleep_stage_torch_samples_can_be_raw_signal_files() -> None:
     assert resolution.files[0].materialization_action == "download_then_load"
 
 
+def test_sleep_edf_split_torch_files_can_be_raw_signal_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://researchdata.ntu.edu.sg/dataset.xhtml?persistentId=doi:10.21979/N9/TITSXU",
+            doi="10.21979/N9/TITSXU",
+            source_domain="researchdata.ntu.edu.sg",
+            name="Preprocessed SLeep-EDF dataset",
+            description="single-channel EEG Fpz-Cz sleep epochs in public train.pt, val.pt, and test.pt files",
+            equipment="EEG Fpz-Cz",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "data": {
+                "latestVersion": {
+                    "files": [
+                        {"dataFile": {"id": 1, "filename": "train.pt"}},
+                        {"dataFile": {"id": 2, "filename": "val.pt"}},
+                        {"dataFile": {"id": 3, "filename": "test.pt"}},
+                    ]
+                }
+            }
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert all(file.directly_loadable for file in resolution.files)
+
+
+def test_sleep_edf_npz_recordings_can_be_raw_signal_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://researchdata.ntu.edu.sg/dataset.xhtml?persistentId=doi:10.21979/N9/MA1AVG",
+            doi="10.21979/N9/MA1AVG",
+            source_domain="researchdata.ntu.edu.sg",
+            name="Preprocessed Sleep-EDF-20 dataset",
+            description="Sleep-EDF EEG Fpz-Cz 100Hz recordings distributed as SC4001E0.npz files.",
+            equipment="EEG Fpz-Cz",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "data": {
+                "latestVersion": {
+                    "files": [
+                        {"dataFile": {"id": 1, "filename": "SC4001E0.npz"}},
+                        {"dataFile": {"id": 2, "filename": "SC4192E0.npz"}},
+                    ]
+                }
+            }
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert all(file.directly_loadable for file in resolution.files)
+
+
+def test_motor_imagery_session_mat_names_can_be_raw_signal_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/251NOW",
+            doi="10.7910/DVN/251NOW",
+            source_domain="dataverse.harvard.edu",
+            name="A cross-session motor imagery EEG dataset",
+            description="Subject-session MATLAB EEG files S01D1.mat through S14D2.mat.",
+            equipment="Neuroscan SynAmps2 EEG",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "data": {
+                "latestVersion": {
+                    "files": [
+                        {"dataFile": {"id": 1, "filename": "S01D1.mat"}},
+                        {"dataFile": {"id": 2, "filename": "S14D2.mat"}},
+                    ]
+                }
+            }
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert all(file.directly_loadable for file in resolution.files)
+
+
+def test_time_series_classification_ts_files_can_be_raw_signal_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/18956117",
+            doi="10.5281/zenodo.18956117",
+            source_domain="zenodo.org",
+            name="EpilepticSeizures",
+            description="single-channel EEG seizure benchmark distributed as Time Series Classification .ts files",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {
+                    "key": "EpilepticSeizures_TRAIN.ts",
+                    "links": {"self": "https://example.test/EpilepticSeizures_TRAIN.ts"},
+                },
+                {
+                    "key": "EpilepticSeizures_TEST.ts",
+                    "links": {"self": "https://example.test/EpilepticSeizures_TEST.ts"},
+                },
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert all(file.directly_loadable for file in resolution.files)
+
+
+def test_eeg_binary_bodies_are_flagged_as_companion_metadata_required() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://osf.io/qm37x",
+            doi="10.17605/osf.io/qm37x",
+            source_domain="osf.io",
+            name="Learning through socio-emotional feedback and age differences: An ERP study",
+            description="EEG_data folders expose .eeg raw body files without BrainVision headers.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "data": [
+                {
+                    "attributes": {
+                        "kind": "file",
+                        "materialized_path": "/EEG_data/Older_Adults/369.eeg",
+                    },
+                    "links": {"download": "https://osf.io/download/369/"},
+                }
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].directly_loadable is False
+    assert resolution.files[0].materialization_action == "download_with_companion_metadata"
+
+
 def test_nitrc_frs_resolution_extracts_raw_eeg_archives_from_download_links() -> None:
     plan = plan_acquisition(
         record(
