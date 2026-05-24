@@ -302,6 +302,87 @@ def test_hdf5_eeg_session_files_can_be_loader_material() -> None:
     assert resolution.files[0].materialization_action == "download_then_load"
 
 
+def test_huggingface_parquet_eeg_splits_can_be_loader_material() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://huggingface.co/datasets/JuniorThap/EEG-relaxation-concentration",
+            doi="",
+            source_domain="huggingface.co",
+            name="JuniorThap/EEG-relaxation-concentration",
+            equipment="Parquet EEG",
+            description="Hugging Face dataset split into train and test Parquet EEG tables.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return [
+            {"path": "data/train-00000-of-00002.parquet", "type": "file"},
+            {"path": "data/test-00000-of-00001.parquet", "type": "file"},
+            {"path": "README.md", "type": "file"},
+        ]
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    by_name = {file.name: file for file in resolution.files}
+    assert by_name["data/train-00000-of-00002.parquet"].directly_loadable is True
+    assert by_name["data/test-00000-of-00001.parquet"].materialization_action == "download_then_load"
+    assert by_name["README.md"].directly_loadable is False
+
+
+def test_huggingface_torch_batch_files_can_be_loader_material() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://huggingface.co/datasets/conorhassan/fast-autoregressive-inference-eeg",
+            doi="",
+            source_domain="huggingface.co",
+            name="conorhassan/fast-autoregressive-inference-eeg",
+            equipment="PyTorch EEG",
+            description="Hugging Face train batch PT files for EEG inference.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return [
+            {"path": "train/batch_000000.pt", "type": "file"},
+            {"path": "train/batch_000001.pt", "type": "file"},
+            {"path": ".gitattributes", "type": "file"},
+        ]
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    by_name = {file.name: file for file in resolution.files}
+    assert by_name["train/batch_000000.pt"].directly_loadable is True
+    assert by_name["train/batch_000001.pt"].materialization_action == "download_then_load"
+    assert by_name[".gitattributes"].directly_loadable is False
+
+
+def test_huggingface_numpy_sentence_files_can_be_loader_material() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://huggingface.co/datasets/PromiseZ5Q2SQ/EEG-Hallucination",
+            doi="",
+            source_domain="huggingface.co",
+            name="PromiseZ5Q2SQ/EEG-Hallucination",
+            equipment="NumPy EEG",
+            description="EEG sentence-level NPY arrays with paired JSON labels.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return [
+            {"path": "dataset/0_sen.npy", "type": "file"},
+            {"path": "dataset/0_sen.json", "type": "file"},
+            {"path": "img/AMBER_103.jpg", "type": "file"},
+        ]
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    by_name = {file.name: file for file in resolution.files}
+    assert by_name["dataset/0_sen.npy"].directly_loadable is True
+    assert by_name["dataset/0_sen.npy"].materialization_action == "download_then_load"
+    assert by_name["dataset/0_sen.json"].directly_loadable is False
+
+
 def test_music_eeg_subject_episode_mat_files_can_be_raw_signal_files() -> None:
     plan = plan_acquisition(
         record(

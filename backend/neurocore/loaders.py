@@ -44,6 +44,7 @@ SUPPORTED_EXTENSIONS = {
     ".nwb",
     ".npy",
     ".npz",
+    ".parquet",
     ".pickle",
     ".pkl",
     ".mat",
@@ -91,6 +92,8 @@ def load(
         return load_numpy(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix == ".npz":
         return load_numpy(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
+    if suffix == ".parquet":
+        return load_parquet(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix == ".mat":
         return load_mat(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix in {".pickle", ".pkl"}:
@@ -281,6 +284,31 @@ def load_hdf5(
         channels=_channels_for_data(data, names, channel_type=channel_type, unit=unit),
         timebase=Timebase(sampling_rate=float(sampling_rate)),
         provenance={"source": "hdf5", "path": str(resolved), "format": resolved.suffix.lower().lstrip(".")},
+    )
+
+
+def load_parquet(
+    path: str | Path,
+    *,
+    sampling_rate: float | None = None,
+    channel_names: tuple[str, ...] | list[str] | None = None,
+    channel_type: str = "eeg",
+    unit: str = "uV",
+) -> NeuroFrame:
+    resolved = Path(path).expanduser()
+    pandas = _require_module("pandas", extra="io")
+    payload = {"data": pandas.read_parquet(resolved)}
+    data = _find_numeric_matrix(payload)
+    sampling_rate = sampling_rate or _find_sampling_rate(payload)
+    if sampling_rate is None:
+        raise ValueError("sampling_rate is required when the Parquet file does not expose fs/sfreq/sampling_rate")
+    names = channel_names or _find_channel_names(payload)
+    data = _samples_by_channels(data)
+    return NeuroFrame(
+        data=data,
+        channels=_channels_for_data(data, names, channel_type=channel_type, unit=unit),
+        timebase=Timebase(sampling_rate=float(sampling_rate)),
+        provenance={"source": "parquet", "path": str(resolved), "format": "parquet"},
     )
 
 
@@ -655,6 +683,7 @@ def _signal_file_sort_key(path: Path) -> tuple[int, int, str]:
         ".mat",
         ".h5",
         ".hdf5",
+        ".parquet",
         ".rds",
         ".rda",
         ".rdata",
@@ -694,6 +723,15 @@ def _looks_like_supported_signal_file(path: Path) -> bool:
             any(token in text for token in ("eeg", "ecog", "ieeg", "seeg", "raw", "signal", "nix"))
             or bool(re.search(r"data[_-]subject[_-]?\d+[_-]session[_-]?\d+", text))
             or bool(re.search(r"(^|[/_-])(subj?|subject|user|s)\d+", text))
+        )
+    if _loader_suffix(path) == ".parquet":
+        text = path.as_posix().casefold()
+        if any(token in text for token in ("participants", "questionnaire", "stimuli", "metadata", "readme")):
+            return False
+        return (
+            any(token in text for token in ("eeg", "ecog", "ieeg", "seeg", "raw", "signal", "channel"))
+            or bool(re.search(r"(^|[/_-])(train|test|val|valid|validation)-", text))
+            or bool(re.search(r"(^|[/_-])s\d+g\d+all(?:raw)?channels", text))
         )
     if _loader_suffix(path) not in {".tab", ".txt", ".tsv"}:
         return True

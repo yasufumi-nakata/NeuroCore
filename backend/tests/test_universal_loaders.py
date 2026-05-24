@@ -16,6 +16,7 @@ from neurocore.loaders import (
     load_mne_raw,
     load_nwb,
     load_pickle,
+    load_parquet,
     load_r,
     load_spreadsheet,
     supported_extensions,
@@ -297,6 +298,26 @@ def test_hdf5_loader_reads_numeric_eeg_payloads(tmp_path, monkeypatch) -> None:
     assert ".hdf5" in supported_extensions()
 
 
+def test_parquet_loader_reads_numeric_eeg_payloads(tmp_path, monkeypatch) -> None:
+    path = tmp_path / "S01G1AllRawChannels.parquet"
+    path.write_bytes(b"placeholder")
+    fake_pandas = ModuleType("pandas")
+    fake_pandas.read_parquet = lambda _path: {
+        "eeg": np.array([[1.0, 2.0], [3.0, 4.0]]),
+        "sampling_rate": np.array([128.0]),
+        "channel_names": np.array(["AF3", "AF4"]),
+    }
+    monkeypatch.setitem(sys.modules, "pandas", fake_pandas)
+
+    frame = load_parquet(path)
+
+    assert frame.data.shape == (2, 2)
+    assert frame.channel_names == ("AF3", "AF4")
+    assert frame.timebase.sampling_rate == 128.0
+    assert frame.provenance["source"] == "parquet"
+    assert ".parquet" in supported_extensions()
+
+
 def test_mat_loader_finds_numeric_matrix_inside_matlab_struct(tmp_path, monkeypatch) -> None:
     class FakeStruct:
         _fieldnames = ["train", "test"]
@@ -523,6 +544,7 @@ def test_supported_extensions_include_major_eeg_formats() -> None:
         ".mat",
         ".npy",
         ".npz",
+        ".parquet",
         ".pkl",
         ".rds",
         ".xlsx",

@@ -57,6 +57,7 @@ CONFIDENT_SIGNAL_SUFFIXES = {
 }
 GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz", ".pt", ".pth", ".tab", ".ts", ".tsv"}
 HDF5_SUFFIXES = {".h5", ".hdf5"}
+PARQUET_SUFFIXES = {".parquet"}
 R_DATA_SUFFIXES = {".rda", ".rdata", ".rds"}
 PICKLE_SUFFIXES = {".pickle", ".pkl"}
 SPREADSHEET_SUFFIXES = {".xls", ".xlsx"}
@@ -2113,6 +2114,7 @@ def _download_name_from_label(label: str) -> str:
             *CONFIDENT_SIGNAL_SUFFIXES,
             *GENERIC_NUMERIC_SUFFIXES,
             *HDF5_SUFFIXES,
+            *PARQUET_SUFFIXES,
             *R_DATA_SUFFIXES,
             *PICKLE_SUFFIXES,
             *SPREADSHEET_SUFFIXES,
@@ -2251,10 +2253,12 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
         if "mat" not in hints and not _is_neural_mat_path(name, plan):
             return False
         return _is_signal_like_generic_path(name) or _is_neural_mat_path(name, plan)
-    if suffix in {".npy", ".npz"} and "numpy" in hints:
-        return _is_signal_like_generic_path(name)
+    if suffix in {".npy", ".npz"}:
+        return _is_numpy_signal_file(name, plan)
     if suffix in HDF5_SUFFIXES:
         return _is_hdf5_signal_file(name, plan)
+    if suffix in PARQUET_SUFFIXES:
+        return _is_parquet_signal_file(name, plan)
     if suffix in {".pt", ".pth"}:
         return _is_torch_signal_file(name, plan)
     if suffix in R_DATA_SUFFIXES:
@@ -2297,7 +2301,26 @@ def _is_torch_signal_file(name: str, plan: AcquisitionPlan) -> bool:
     text = f"{plan.name} {' '.join(plan.format_hints)}".lower()
     if not re.search(r"\b(eeg|sleep|polysomnography|preclinical)\b", text):
         return False
+    normalized = name.replace("\\", "/").lower()
     if Path(name.lower()).stem in {"train", "val", "valid", "validation", "test"}:
+        return True
+    if re.search(r"(?:^|/)(?:train|test|val|valid|validation)/batch[_-]?\d+", normalized):
+        return True
+    return _is_signal_like_generic_path(name)
+
+
+def _is_parquet_signal_file(name: str, plan: AcquisitionPlan) -> bool:
+    normalized = name.replace("\\", "/").lower()
+    text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)} {normalized}".lower()
+    if not _has_neural_context(text):
+        return False
+    if any(token in normalized for token in ("participant", "questionnaire", "stimuli", "metadata", "readme")):
+        return False
+    if any(token in normalized for token in ("eeg", "ecog", "ieeg", "seeg", "raw", "signal", "channel")):
+        return True
+    if re.search(r"(?:^|/)(?:train|test|val|valid|validation)-\d+", normalized):
+        return True
+    if re.search(r"(?:^|/)(?:train|test|val|valid|validation)/", normalized):
         return True
     return _is_signal_like_generic_path(name)
 
@@ -2308,6 +2331,19 @@ def _is_hdf5_signal_file(name: str, plan: AcquisitionPlan) -> bool:
         return False
     if {"hdf5", "nwb"}.intersection(plan.format_hints):
         return _is_signal_like_generic_path(name)
+    return _is_signal_like_generic_path(name)
+
+
+def _is_numpy_signal_file(name: str, plan: AcquisitionPlan) -> bool:
+    normalized = name.replace("\\", "/").lower()
+    text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)} {normalized}".lower()
+    neural_context = _has_neural_context(text) or re.search(r"\b(sleep|polysomnography|brain)\b", text)
+    if not neural_context:
+        return False
+    if "numpy" in plan.format_hints:
+        return _is_signal_like_generic_path(name)
+    if re.search(r"(?:^|/)dataset/\d+[_-](?:sen|eeg|raw|signal)", normalized):
+        return True
     return _is_signal_like_generic_path(name)
 
 
