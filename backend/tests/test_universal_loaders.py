@@ -7,7 +7,7 @@ from types import ModuleType, SimpleNamespace
 import numpy as np
 
 from neurocore.cli import main
-from neurocore.loaders import find_supported_signal_files, load, load_mat, load_mne_raw, load_nwb, supported_extensions
+from neurocore.loaders import find_supported_signal_files, load, load_mat, load_mne_raw, load_nwb, load_r, supported_extensions
 
 
 def test_numpy_npz_loader_uses_embedded_metadata(tmp_path) -> None:
@@ -198,6 +198,29 @@ def test_torch_loader_uses_safe_tensor_payloads(tmp_path, monkeypatch) -> None:
     assert frame.channel_names == ("EEG1", "EEG2")
     assert frame.provenance["source"] == "torch"
     assert ".pth" in supported_extensions()
+
+
+def test_r_loader_reads_pyreadr_numeric_payloads(tmp_path, monkeypatch) -> None:
+    path = tmp_path / "HUPData_HUP082_5.rds"
+    path.write_bytes(b"placeholder")
+
+    fake_pyreadr = ModuleType("pyreadr")
+    fake_pyreadr.read_r = lambda _path: {
+        "HUPData": {
+            "eeg": np.array([[1.0, 2.0], [3.0, 4.0]]),
+            "sampling_rate": np.array([512.0]),
+            "channel_names": np.array(["E1", "E2"]),
+        }
+    }
+    monkeypatch.setitem(sys.modules, "pyreadr", fake_pyreadr)
+
+    frame = load_r(path)
+
+    assert frame.data.shape == (2, 2)
+    assert frame.channel_names == ("E1", "E2")
+    assert frame.timebase.sampling_rate == 512.0
+    assert frame.provenance["source"] == "r"
+    assert ".rds" in supported_extensions()
 
 
 def test_mat_loader_finds_numeric_matrix_inside_matlab_struct(tmp_path, monkeypatch) -> None:
@@ -424,4 +447,5 @@ def test_supported_extensions_include_major_eeg_formats() -> None:
         ".mat",
         ".npy",
         ".npz",
+        ".rds",
     }.issubset(extensions)

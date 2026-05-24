@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import zipfile
+from urllib.error import HTTPError
 from urllib.parse import unquote
 
 from neurocore.acquisition import plan_acquisition
 from neurocore.datasets import DatasetRecord
 from neurocore.materialization import (
+    _doi_resolution_url,
+    _fetch_json,
     extract_supported_signal_files_from_archive,
     materialize_remote_files,
     resolve_inventory_remote_files,
@@ -594,6 +597,36 @@ def test_eeg_binary_bodies_are_flagged_as_companion_metadata_required() -> None:
     assert resolution.files[0].materialization_action == "download_with_companion_metadata"
 
 
+def test_rds_ecog_files_can_be_raw_signal_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://osf.io/4vdyu",
+            doi="",
+            source_domain="osf.io",
+            name="HUP (peri-seizure ECoG RDS release)",
+            description="iEEG and ECoG peri-seizure data distributed as RDS files.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "data": [
+                {
+                    "attributes": {
+                        "kind": "file",
+                        "materialized_path": "/HUPData_HUP082_5.rds",
+                    },
+                    "links": {"download": "https://osf.io/download/HUPData_HUP082_5/"},
+                }
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].directly_loadable is True
+    assert resolution.files[0].materialization_action == "download_then_load"
+
+
 def test_nitrc_frs_resolution_extracts_raw_eeg_archives_from_download_links() -> None:
     plan = plan_acquisition(
         record(
@@ -880,6 +913,37 @@ def test_doi_resolution_delegates_to_dataverse_compatible_landing() -> None:
     assert resolution.status == "resolved"
     assert resolution.files[0].provider == "dataverse"
     assert resolution.files[0].directly_loadable is True
+
+
+def test_doi_resolution_fetcher_falls_back_to_range_get_when_head_is_forbidden(monkeypatch) -> None:
+    calls = []
+
+    class FakeResponse:
+        status = 206
+        headers = {"Content-Type": "text/html"}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def geturl(self):
+            return "https://neurodata.riken.jp/id/20240220-001"
+
+    def fake_urlopen(request, timeout):
+        calls.append((request.get_method(), dict(request.header_items()), timeout))
+        if len(calls) == 1:
+            raise HTTPError(request.full_url, 403, "Forbidden", {}, None)
+        return FakeResponse()
+
+    monkeypatch.setattr("neurocore.materialization.urlopen", fake_urlopen)
+
+    payload = _fetch_json(_doi_resolution_url("https://doi.org/10.60178/cbs.20240220-001"), timeout=7)
+
+    assert payload["url"] == "https://neurodata.riken.jp/id/20240220-001"
+    assert calls[0][0] == "HEAD"
+    assert calls[1][1]["Range"] == "bytes=0-0"
 
 
 def test_mendeley_resolution_uses_content_detail_download_urls() -> None:
@@ -1565,6 +1629,24 @@ def test_http_landing_uses_link_text_when_download_url_has_no_extension() -> Non
     assert resolution.status == "resolved"
     assert resolution.files[0].name == "alice_eeg.zip"
     assert resolution.files[0].archive is True
+
+
+def test_http_landing_uses_aria_label_when_download_url_has_no_extension() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://depositonce.tu-berlin.de/handle/11303/10934.2",
+            doi="10.14279/depositonce-9827.2",
+            source_domain="depositonce.tu-berlin.de",
+            description="MAT motor imagery EEG files",
+        )
+    )
+
+    html = '<a href="/bitstreams/abc/download" aria-label="Download pp1.mat"></a>'
+    resolution = resolve_remote_files(plan, fetch_json=lambda url: html if url.startswith("html+landing://") else {})
+
+    assert resolution.files[0].name == "pp1.mat"
+    assert resolution.files[0].url == "https://depositonce.tu-berlin.de/bitstreams/abc/download"
+    assert resolution.files[0].directly_loadable is True
 
 
 def test_doi_resolution_falls_back_to_invenio_record_landing() -> None:

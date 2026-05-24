@@ -29,6 +29,9 @@ MNE_RAW_READERS = {
 
 SUPPORTED_EXTENSIONS = {
     ".csv",
+    ".rda",
+    ".rdata",
+    ".rds",
     ".tab",
     ".ts",
     ".txt",
@@ -59,6 +62,8 @@ def load(
         if sampling_rate is None:
             raise ValueError("sampling_rate is required when loading delimited EEG data")
         return load_csv(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
+    if suffix in {".rda", ".rdata", ".rds"}:
+        return load_r(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix == ".ts":
         if sampling_rate is None:
             raise ValueError("sampling_rate is required when loading Time Series Classification EEG data")
@@ -190,6 +195,30 @@ def load_ts(
             "path": str(resolved),
             "trial_count": len(series_rows),
         },
+    )
+
+
+def load_r(
+    path: str | Path,
+    *,
+    sampling_rate: float | None = None,
+    channel_names: tuple[str, ...] | list[str] | None = None,
+    channel_type: str = "eeg",
+    unit: str = "uV",
+) -> NeuroFrame:
+    resolved = Path(path).expanduser()
+    payload = _load_r_payload(resolved)
+    data = _find_numeric_matrix(payload)
+    sampling_rate = sampling_rate or _find_sampling_rate(payload)
+    if sampling_rate is None:
+        raise ValueError("sampling_rate is required when the R data file does not expose fs/sfreq/sampling_rate")
+    names = channel_names or _find_channel_names(payload)
+    data = _samples_by_channels(data)
+    return NeuroFrame(
+        data=data,
+        channels=_channels_for_data(data, names, channel_type=channel_type, unit=unit),
+        timebase=Timebase(sampling_rate=float(sampling_rate)),
+        provenance={"source": "r", "path": str(resolved), "format": resolved.suffix.lower().lstrip(".")},
     )
 
 
@@ -538,6 +567,9 @@ def _signal_file_sort_key(path: Path) -> tuple[int, int, str]:
         ".mff",
         ".xdf",
         ".mat",
+        ".rds",
+        ".rda",
+        ".rdata",
         ".npz",
         ".npy",
         ".csv",
@@ -809,6 +841,11 @@ def _load_torch_payload(path: Path) -> Any:
         raise ValueError("PyTorch EEG loading requires torch.load(..., weights_only=True) support") from exc
 
 
+def _load_r_payload(path: Path) -> dict[str, Any]:
+    pyreadr = _require_module("pyreadr", extra="io")
+    return dict(pyreadr.read_r(str(path)))
+
+
 def _find_numeric_matrix(payload: dict[str, Any]) -> np.ndarray:
     preferred = ("data", "eeg", "EEG", "signal", "signals", "X", "x")
     for key in preferred:
@@ -871,6 +908,10 @@ def _coerce_numeric_signal_array(value: Any) -> np.ndarray:
 def _as_numpy_array(value: Any) -> np.ndarray:
     if all(hasattr(value, attr) for attr in ("detach", "cpu", "numpy")):
         return np.asarray(value.detach().cpu().numpy())
+    if hasattr(value, "select_dtypes") and hasattr(value, "to_numpy"):
+        numeric = value.select_dtypes(include=["number"])
+        if getattr(numeric, "shape", (0, 0))[1] > 0:
+            return np.asarray(numeric.to_numpy())
     return np.asarray(value)
 
 
@@ -924,6 +965,10 @@ def _find_sampling_rate(payload: dict[str, Any]) -> float | None:
     for key in ("sampling_rate", "sfreq", "fs", "srate"):
         if key in payload:
             return float(_as_numpy_array(payload[key]).reshape(-1)[0])
+    for value in payload.values():
+        nested = _nested_sampling_rate(value)
+        if nested is not None:
+            return nested
     return None
 
 
@@ -931,4 +976,80 @@ def _find_channel_names(payload: dict[str, Any]) -> tuple[str, ...] | None:
     for key in ("channel_names", "channels", "ch_names"):
         if key in payload:
             return tuple(str(item) for item in _as_numpy_array(payload[key]).reshape(-1))
+    for value in payload.values():
+        nested = _nested_channel_names(value)
+        if nested is not None:
+            return nested
+    return None
+
+
+def _nested_sampling_rate(value: Any, *, depth: int = 0) -> float | None:
+    if depth > 6:
+        return None
+    if isinstance(value, dict):
+        for key in ("sampling_rate", "sfreq", "fs", "srate"):
+            if key in value:
+                return float(_as_numpy_array(value[key]).reshape(-1)[0])
+        for item in value.values():
+            found = _nested_sampling_rate(item, depth=depth + 1)
+            if found is not None:
+                return found
+    field_names = getattr(value, "_fieldnames", None)
+    if field_names:
+        for field in field_names:
+            found = _nested_sampling_rate(getattr(value, field), depth=depth + 1)
+            if found is not None:
+                return found
+    if isinstance(value, np.ndarray):
+        if value.dtype.names:
+            for field in value.dtype.names:
+                found = _nested_sampling_rate(value[field], depth=depth + 1)
+                if found is not None:
+                    return found
+        elif value.dtype == object:
+            for item in value.flat:
+                found = _nested_sampling_rate(item, depth=depth + 1)
+                if found is not None:
+                    return found
+    elif isinstance(value, (list, tuple)):
+        for item in value:
+            found = _nested_sampling_rate(item, depth=depth + 1)
+            if found is not None:
+                return found
+    return None
+
+
+def _nested_channel_names(value: Any, *, depth: int = 0) -> tuple[str, ...] | None:
+    if depth > 6:
+        return None
+    if isinstance(value, dict):
+        for key in ("channel_names", "channels", "ch_names"):
+            if key in value:
+                return tuple(str(item) for item in _as_numpy_array(value[key]).reshape(-1))
+        for item in value.values():
+            found = _nested_channel_names(item, depth=depth + 1)
+            if found is not None:
+                return found
+    field_names = getattr(value, "_fieldnames", None)
+    if field_names:
+        for field in field_names:
+            found = _nested_channel_names(getattr(value, field), depth=depth + 1)
+            if found is not None:
+                return found
+    if isinstance(value, np.ndarray):
+        if value.dtype.names:
+            for field in value.dtype.names:
+                found = _nested_channel_names(value[field], depth=depth + 1)
+                if found is not None:
+                    return found
+        elif value.dtype == object:
+            for item in value.flat:
+                found = _nested_channel_names(item, depth=depth + 1)
+                if found is not None:
+                    return found
+    elif isinstance(value, (list, tuple)):
+        for item in value:
+            found = _nested_channel_names(item, depth=depth + 1)
+            if found is not None:
+                return found
     return None

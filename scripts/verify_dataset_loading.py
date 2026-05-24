@@ -261,7 +261,7 @@ def render_markdown(report: dict[str, Any]) -> str:
             "## Notes",
             "",
             "- EEG-DATA is treated as a dataset inventory checkout unless local raw EEG files are present.",
-            "- NeuroCore can normalize CSV, NumPy, MNE-supported EEG files, XDF, and generic MAT files into `NeuroFrame` when the relevant optional dependencies are installed.",
+            "- NeuroCore can normalize CSV/TXT, NumPy, MNE-supported EEG files, XDF, generic MAT, PyTorch, R data, and Time Series Classification files into `NeuroFrame` when the relevant optional dependencies are installed.",
             "- Dataset inventory CSV files are loaded through the inventory API, not treated as raw EEG signals.",
             "- Do not copy this report into public docs, releases, package metadata, or issue comments.",
         ]

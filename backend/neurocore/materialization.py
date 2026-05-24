@@ -56,6 +56,7 @@ CONFIDENT_SIGNAL_SUFFIXES = {
     ".xdf",
 }
 GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz", ".pt", ".pth", ".tab", ".ts", ".tsv"}
+R_DATA_SUFFIXES = {".rda", ".rdata", ".rds"}
 TEXT_SIGNAL_SUFFIXES = {".txt", ".tab", ".tsv"}
 RESOLVABLE_METHODS = {
     "bnci_index",
@@ -1533,8 +1534,22 @@ def _fetch_json(url: str, *, timeout: float) -> Any:
     if url.startswith("doi+resolve://"):
         target = parse_qs(urlparse(url).query).get("url", [""])[0]
         request = Request(target, method="HEAD", headers={"Accept": "*/*", "User-Agent": "NeuroCore/0.1 dataset-resolver"})
-        with urlopen(request, timeout=timeout) as response:
-            return {"url": response.geturl(), "content_type": response.headers.get("Content-Type", "")}
+        try:
+            with urlopen(request, timeout=timeout) as response:
+                return {"url": response.geturl(), "content_type": response.headers.get("Content-Type", "")}
+        except HTTPError as exc:
+            if exc.code not in {403, 405}:
+                raise
+            fallback = Request(
+                target,
+                headers={
+                    "Accept": "text/html,*/*",
+                    "Range": "bytes=0-0",
+                    "User-Agent": "NeuroCore/0.1 dataset-resolver",
+                },
+            )
+            with urlopen(fallback, timeout=timeout) as response:
+                return {"url": response.geturl(), "content_type": response.headers.get("Content-Type", "")}
     if url.startswith("head+metadata://"):
         target = parse_qs(urlparse(url).query).get("url", [""])[0]
         request = Request(target, method="HEAD", headers={"Accept": "*/*", "User-Agent": "NeuroCore/0.1 dataset-resolver"})
@@ -1743,10 +1758,11 @@ class _HrefParser(HTMLParser):
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         if tag.lower() != "a":
             return
+        label_parts = [value for key, value in attrs if key.lower() in {"aria-label", "title", "download"} and value]
         for key, value in attrs:
             if key.lower() == "href" and value:
                 self.hrefs.append(value)
-                self._active_links.append((value, []))
+                self._active_links.append((value, label_parts))
                 return
 
     def handle_data(self, data: str) -> None:
@@ -2045,7 +2061,7 @@ def _download_name_from_label(label: str) -> str:
     if not text:
         return ""
     suffixes = sorted(
-        (*ARCHIVE_SUFFIXES, *CONFIDENT_SIGNAL_SUFFIXES, *GENERIC_NUMERIC_SUFFIXES, *TEXT_SIGNAL_SUFFIXES),
+        (*ARCHIVE_SUFFIXES, *CONFIDENT_SIGNAL_SUFFIXES, *GENERIC_NUMERIC_SUFFIXES, *R_DATA_SUFFIXES, *TEXT_SIGNAL_SUFFIXES),
         key=len,
         reverse=True,
     )
@@ -2181,6 +2197,8 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
         return _is_signal_like_generic_path(name)
     if suffix in {".pt", ".pth"}:
         return _is_torch_signal_file(name, plan)
+    if suffix in R_DATA_SUFFIXES:
+        return _is_r_signal_file(name, plan)
     if suffix == ".ts" and "ts" in hints:
         return _is_time_series_classification_signal_file(name, plan)
     if suffix == ".csv" and "csv" in hints:
@@ -2226,6 +2244,18 @@ def _is_time_series_classification_signal_file(name: str, plan: AcquisitionPlan)
         token in text for token in ("seizure", "epilep")
     )
     if neural_context and re.search(r"(?:^|[_-])(train|test|val|valid|validation)(?:$|[_-])", stem):
+        return True
+    return _is_signal_like_generic_path(name)
+
+
+def _is_r_signal_file(name: str, plan: AcquisitionPlan) -> bool:
+    normalized = name.replace("\\", "/").lower()
+    stem = Path(normalized).stem
+    text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)}".lower()
+    neural_context = re.search(r"\b(eeg|ecog|seeg|ieeg|neural|seizure|fragility)\b", text)
+    if not neural_context:
+        return False
+    if stem.startswith(("hupdata_", "fragilitydata_")):
         return True
     return _is_signal_like_generic_path(name)
 
@@ -2319,6 +2349,8 @@ def _is_signal_like_generic_path(name: str) -> bool:
     if re.search(r"^s\d+_[0-9]+_kmi$", stem):
         return True
     if re.fullmatch(r"s\d+d\d+", stem):
+        return True
+    if re.fullmatch(r"pp\d+", stem):
         return True
     if re.fullmatch(r"s[ct]\d{4}[a-z]\d+", stem):
         return True
