@@ -80,6 +80,7 @@ RESOLVABLE_METHODS = {
     "mendeley_api",
     "nemar_index",
     "nemar_client",
+    "nitrc_frs",
     "openneuro_api",
     "openneuro_cli",
     "osf_api",
@@ -93,6 +94,7 @@ FIGSHARE_COMPATIBLE_HOSTS = {
     "data.4tu.nl",
     "data.dtu.dk",
     "bridges.monash.edu",
+    "drum.um.edu.mt",
 }
 DATAVERSE_COMPATIBLE_HOSTS = {
     "borealisdata.ca",
@@ -489,6 +491,8 @@ def _resolve_candidate(
         return _resolve_kaggle(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method in {"nemar_index", "nemar_client"}:
         return _resolve_nemar(plan, candidate, fetcher)
+    if candidate.method == "nitrc_frs":
+        return _resolve_nitrc_frs(plan, candidate, fetcher)
     if candidate.method == "scidb_api":
         return _resolve_scidb(plan, candidate, fetcher)
     if candidate.method == "stanford_purl_json":
@@ -1026,6 +1030,28 @@ def _resolve_nemar(plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetch
                 source_url=candidate.url,
             )
         )
+    return _dedupe_files(files)
+
+
+def _resolve_nitrc_frs(
+    plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetcher: JsonFetcher
+) -> list[RemoteFileCandidate]:
+    html = _string(fetcher(_html_landing_url(candidate.url)))
+    files: list[RemoteFileCandidate] = []
+    for href, label in _html_link_items(html):
+        target = urljoin(candidate.url, unescape(href).replace("\\/", "/"))
+        path = urlparse(target).path.lower()
+        if "/frs/download.php/" in path:
+            name = _download_name(target)
+        elif "/frs/downloadlink.php/" in path:
+            name = _download_name_from_label(label)
+            if name and "." not in Path(name).name:
+                name = f"{name}.zip"
+        else:
+            continue
+        if not name or not _is_resolvable_download_name(name, plan):
+            continue
+        files.append(_remote_file(plan, candidate, name=name, url=target, source_url=candidate.url))
     return _dedupe_files(files)
 
 
@@ -2104,7 +2130,11 @@ def _openneuro_download_url(urls: list[Any], filename: str) -> str:
 
 def _is_archive_name(name: str) -> bool:
     normalized = name.lower()
-    return any(normalized.endswith(suffix) for suffix in ARCHIVE_SUFFIXES) or bool(SPLIT_ARCHIVE_PATTERN.search(normalized))
+    return (
+        any(normalized.endswith(suffix) for suffix in ARCHIVE_SUFFIXES)
+        or bool(SPLIT_ARCHIVE_PATTERN.search(normalized))
+        or bool(re.fullmatch(r"rawdata[_-]?part[_-]?\d+", Path(normalized).name))
+    )
 
 
 def _is_directly_loadable_signal_name(name: str) -> bool:
@@ -2132,7 +2162,11 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
     if suffix in {".npy", ".npz"} and "numpy" in hints:
         return _is_signal_like_generic_path(name)
     if suffix == ".csv" and "csv" in hints:
-        return _is_signal_like_generic_path(name) or _is_eeg_condition_delimited_file(name, plan)
+        return (
+            _is_signal_like_generic_path(name)
+            or _is_eeg_condition_delimited_file(name, plan)
+            or _is_eeg_device_delimited_file(name, plan)
+        )
     if suffix in TEXT_SIGNAL_SUFFIXES and "text" in hints:
         return _is_signal_like_generic_path(name)
     if suffix in {".tab", ".tsv"} and hints.intersection({"csv", "text"}):
@@ -2145,6 +2179,13 @@ def _is_eeg_condition_delimited_file(name: str, plan: AcquisitionPlan) -> bool:
         return False
     stem = Path(name.lower()).stem
     return stem in {"c", "ec", "eo", "et", "f", "h", "m", "r", "s"}
+
+
+def _is_eeg_device_delimited_file(name: str, plan: AcquisitionPlan) -> bool:
+    if not re.search(r"\b(eeg|electroencephalogram)\b", plan.name, flags=re.IGNORECASE):
+        return False
+    stem = Path(name.lower()).stem
+    return bool(re.search(r"(?:^|[_-])(?:openbci|gtec|g\.tec)(?:[_-]|$)", stem))
 
 
 def _is_signal_like_generic_path(name: str) -> bool:
@@ -2192,6 +2233,14 @@ def _is_signal_like_generic_path(name: str) -> bool:
     if re.fullmatch(r"s\d+", stem):
         return True
     if re.search(r"^data[_-][a-z0-9]+[_-]sub[_-]?\d+", basename):
+        return True
+    if re.fullmatch(r"[a-z]{0,3}sub\d+", stem):
+        return True
+    if re.fullmatch(r"s\d+x?_[ab]\d+", stem):
+        return True
+    if re.fullmatch(r"p\d+[a-z]?_babble_ar", stem):
+        return True
+    if stem.startswith(("opto_", "tfus_")):
         return True
     if re.search(r"^s\d+_[0-9]+_kmi$", stem):
         return True

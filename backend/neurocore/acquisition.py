@@ -27,6 +27,7 @@ DIRECT_API_PROVIDERS = {
     "kaggle",
     "mendeley",
     "nemar",
+    "nitrc",
     "openneuro",
     "physionet",
     "scidb",
@@ -50,6 +51,7 @@ FIGSHARE_COMPATIBLE_HOSTS = {
     "data.4tu.nl",
     "data.dtu.dk",
     "bridges.monash.edu",
+    "drum.um.edu.mt",
 }
 DATAVERSE_COMPATIBLE_HOSTS = {
     "borealisdata.ca",
@@ -383,6 +385,17 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
     elif provider == "bnci":
         target = record.url or "https://bnci-horizon-2020.eu/database/data-sets"
         candidates.append(AcquisitionCandidate(provider, "bnci_index", target, "file_listing"))
+    elif provider == "nitrc":
+        frs_urls = [
+            url for url in landing_urls if re.search(r"nitrc\.org/frs/?(?:[?#]|$)", url, flags=re.IGNORECASE)
+        ]
+        project_urls = [
+            url
+            for url in landing_urls
+            if re.search(r"nitrc\.org/projects/[^/?#]+", url, flags=re.IGNORECASE)
+        ]
+        for url in frs_urls or project_urls or ([record.url] if record.url else []):
+            candidates.append(AcquisitionCandidate(provider, "nitrc_frs", url, "file_listing"))
     elif provider == "repository_html":
         if record.url and _host(record.url) != "doi.org":
             candidates.append(AcquisitionCandidate(provider, "http_landing", record.url, "file_listing"))
@@ -484,6 +497,8 @@ def _provider_from_host(host: str) -> str:
         return "huggingface"
     if "nemar.org" in host:
         return "nemar"
+    if "nitrc.org" in host:
+        return "nitrc"
     if "scidb.cn" in host:
         return "scidb"
     if "nda.nih.gov" in host:
@@ -499,7 +514,7 @@ def _doi_provider(value: str) -> str | None:
         return "zenodo"
     if "figshare" in text or "10.6084/m9.figshare" in text:
         return "figshare"
-    if any(prefix in text for prefix in ("10.11583/dtu", "10.4121/", "10.4225/03/")):
+    if any(prefix in text for prefix in ("10.60809/drum.", "10.11583/dtu", "10.4121/", "10.4225/03/")):
         return "figshare"
     if "10.1184/r1/" in text:
         return "figshare"
@@ -589,7 +604,7 @@ def _format_hints(record: DatasetRecord) -> set[str]:
         "mef": (r"\.mefd\b", r"\bmef3?\b"),
         "nwb": (r"\.nwb\b", r"\bnwb\b", r"neurodata without borders"),
         "xdf": (r"\.xdf\b", r"\bxdf\b"),
-        "mat": (r"\.mat\b", r"matlab"),
+        "mat": (r"\.mat\b", r"\bmat\b", r"matlab"),
         "numpy": (r"\.npy\b", r"\.npz\b"),
         "csv": (r"\.csv\b", r"\bcsv\b"),
         "text": (r"\.txt\b", r"\btext files?\b"),

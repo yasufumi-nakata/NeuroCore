@@ -159,6 +159,118 @@ def test_mendeley_short_condition_csv_names_can_be_raw_eeg() -> None:
     assert resolution.files[1].directly_loadable is False
 
 
+def test_device_named_csv_files_can_be_raw_eeg_when_dataset_is_eeg() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/5879794",
+            doi="10.5281/zenodo.5879794",
+            source_domain="zenodo.org",
+            name="Motor Cortex EEG from OpenBCI and g.tec devices",
+            description="CSV EEG recordings from OpenBCI and g.tec Unicorn devices.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {
+                    "key": "M_Gtec_20211214_130448-walk.csv",
+                    "links": {"self": "https://example.test/M_Gtec_20211214_130448-walk.csv"},
+                },
+                {
+                    "key": "A_openbci_20211218_140648-walk.csv",
+                    "links": {"self": "https://example.test/A_openbci_20211218_140648-walk.csv"},
+                },
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert [file.materialization_action for file in resolution.files] == ["download_then_load", "download_then_load"]
+
+
+def test_subject_and_experiment_named_mat_files_can_be_raw_eeg() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/123456",
+            doi="10.5281/zenodo.123456",
+            source_domain="zenodo.org",
+            name="Wireless EEG recordings and object category EEG dataset",
+            description="MAT raw and preprocessed EEG files.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {"key": "ACSub1.mat", "links": {"self": "https://example.test/ACSub1.mat"}},
+                {"key": "S10_a1.mat", "links": {"self": "https://example.test/S10_a1.mat"}},
+                {"key": "P101C_BABBLE_AR.mat", "links": {"self": "https://example.test/P101C_BABBLE_AR.mat"}},
+                {"key": "tFUS_rest_WT_m1.mat", "links": {"self": "https://example.test/tFUS_rest_WT_m1.mat"}},
+                {"key": "opto_base_PV_r1.mat", "links": {"self": "https://example.test/opto_base_PV_r1.mat"}},
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert all(file.directly_loadable for file in resolution.files)
+
+
+def test_extensionless_rawdata_parts_are_treated_as_archives() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/15760254",
+            doi="10.5281/zenodo.15760254",
+            source_domain="zenodo.org",
+            name="MaskedFacePerception",
+            description="Raw EEG dataset split into RawData_part files.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {
+                    "key": "RawData_part_1",
+                    "links": {"self": "https://example.test/RawData_part_1"},
+                }
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].archive is True
+    assert resolution.files[0].materialization_action == "download_extract_then_scan"
+
+
+def test_nitrc_frs_resolution_extracts_raw_eeg_archives_from_download_links() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://www.nitrc.org/frs/?group_id=1223",
+            doi="",
+            source_domain="nitrc.org",
+            name="VEP EEG raw data",
+            description="EEGLAB ESS raw archive",
+        )
+    )
+
+    def fetch_json(url: str):
+        assert url.startswith("html+landing://")
+        return """
+        <a href="/frs/download.php/10376/README.md" title="README.md">README.md</a>
+        <a href="/frs/downloadlink.php/10377">VEP raw EEG containerized</a>
+        <a href="/frs/downloadlink.php/10378">VEP EEG cleaned with MARA</a>
+        """
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert [file.name for file in resolution.files] == [
+        "VEP raw EEG containerized.zip",
+        "VEP EEG cleaned with MARA.zip",
+    ]
+    assert all(file.archive for file in resolution.files)
+
+
 def test_dataverse_resolution_builds_access_datafile_urls() -> None:
     plan = plan_acquisition(
         record(

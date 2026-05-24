@@ -143,6 +143,23 @@ def test_plan_acquisition_resolves_figshare_collection_api() -> None:
     assert plan.candidates[0].url == "https://api.figshare.com/v2/collections/5769449/articles?page_size=100"
 
 
+def test_plan_acquisition_resolves_drum_figshare_doi_from_search_source() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="drum",
+            url="https://doi.org/10.60809/drum.24465871",
+            doi="10.60809/drum.24465871",
+            source_domain="doi.org",
+            description="Motor and speech imagery EEG MAT dataset",
+            search_sources=("https://drum.um.edu.mt/articles/dataset/Motor_and_Speech_Imagery_EEG_Dataset/24465871",),
+        )
+    )
+
+    assert plan.provider == "figshare"
+    assert plan.candidates[0].method == "figshare_api"
+    assert plan.candidates[0].url == "https://api.figshare.com/v2/articles/24465871"
+
+
 def test_plan_acquisition_detects_dspace_research_collection() -> None:
     plan = plan_acquisition(
         record(
@@ -357,6 +374,7 @@ def test_plan_acquisition_treats_public_file_listing_providers_as_direct_api() -
         ("dandi", "https://dandiarchive.org/dandiset/000055", "dandiarchive.org", "dandi_api"),
         ("gin", "https://gin.g-node.org/doi/example-dataset", "gin.g-node.org", "gin_index"),
         ("nemar", "https://nemar.org/dataexplorer/detail?dataset_id=nm000113", "nemar.org", "nemar_index"),
+        ("nitrc", "https://www.nitrc.org/frs/?group_id=1223", "nitrc.org", "nitrc_frs"),
     ]
 
     for provider, url, domain, method in cases:
@@ -366,6 +384,22 @@ def test_plan_acquisition_treats_public_file_listing_providers_as_direct_api() -
         assert plan.automation_status == "direct_api"
         assert plan.candidates[0].method == method
         assert plan.candidates[0].role == "file_listing"
+
+
+def test_plan_acquisition_prefers_nitrc_file_release_source() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="nitrc-frs",
+            url="https://nitrc.org/projects/vep_eeg_raw",
+            doi="",
+            source_domain="nitrc.org",
+            search_sources=("https://www.nitrc.org/frs/?group_id=1223",),
+        )
+    )
+
+    assert plan.provider == "nitrc"
+    assert plan.candidates[0].method == "nitrc_frs"
+    assert plan.candidates[0].url == "https://www.nitrc.org/frs/?group_id=1223"
 
 
 def test_plan_inventory_acquisition_summary_counts() -> None:
