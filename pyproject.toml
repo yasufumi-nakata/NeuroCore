@@ -34,11 +34,14 @@ io = [
     "antio>=0.5",
     "h5py>=3.10",
     "mne>=1.7",
+    "openpyxl>=3.1",
+    "pandas>=2.0",
     "pynwb>=2.7",
     "pyreadr>=0.5",
     "pyxdf>=1.16",
     "scipy>=1.11",
     "torch>=2.1",
+    "xlrd>=2.0",
 ]
 dev = [
     "pytest>=8.0",

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import importlib
+import pickle
 import re
 from pathlib import Path
 from typing import Any
@@ -36,9 +37,13 @@ SUPPORTED_EXTENSIONS = {
     ".ts",
     ".txt",
     ".tsv",
+    ".xls",
+    ".xlsx",
     ".nwb",
     ".npy",
     ".npz",
+    ".pickle",
+    ".pkl",
     ".mat",
     ".pt",
     ".pth",
@@ -62,6 +67,8 @@ def load(
         if sampling_rate is None:
             raise ValueError("sampling_rate is required when loading delimited EEG data")
         return load_csv(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
+    if suffix in {".xls", ".xlsx"}:
+        return load_spreadsheet(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix in {".rda", ".rdata", ".rds"}:
         return load_r(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix == ".ts":
@@ -82,6 +89,8 @@ def load(
         return load_numpy(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix == ".mat":
         return load_mat(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
+    if suffix in {".pickle", ".pkl"}:
+        return load_pickle(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix in {".pt", ".pth"}:
         return load_torch(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     raise ValueError(f"unsupported input format: {resolved.suffix}")
@@ -151,6 +160,31 @@ def load_csv(
             "dropped_metadata_columns": dropped_metadata_columns,
             "header_inferred": headerless,
         },
+    )
+
+
+def load_spreadsheet(
+    path: str | Path,
+    *,
+    sampling_rate: float | None = None,
+    channel_names: tuple[str, ...] | list[str] | None = None,
+    channel_type: str = "eeg",
+    unit: str = "uV",
+) -> NeuroFrame:
+    resolved = Path(path).expanduser()
+    pandas = _require_module("pandas", extra="io")
+    payload = pandas.read_excel(resolved, sheet_name=None)
+    data = _find_numeric_matrix(payload if isinstance(payload, dict) else {"sheet": payload})
+    sampling_rate = sampling_rate or _find_sampling_rate(payload if isinstance(payload, dict) else {})
+    if sampling_rate is None:
+        raise ValueError("sampling_rate is required when the spreadsheet does not expose fs/sfreq/sampling_rate")
+    names = channel_names or _find_channel_names(payload if isinstance(payload, dict) else {})
+    data = _samples_by_channels(data)
+    return NeuroFrame(
+        data=data,
+        channels=_channels_for_data(data, names, channel_type=channel_type, unit=unit),
+        timebase=Timebase(sampling_rate=float(sampling_rate)),
+        provenance={"source": "spreadsheet", "path": str(resolved), "format": resolved.suffix.lower().lstrip(".")},
     )
 
 
@@ -526,6 +560,30 @@ def load_torch(
     )
 
 
+def load_pickle(
+    path: str | Path,
+    *,
+    sampling_rate: float | None = None,
+    channel_names: tuple[str, ...] | list[str] | None = None,
+    channel_type: str = "eeg",
+    unit: str = "uV",
+) -> NeuroFrame:
+    resolved = Path(path).expanduser()
+    payload = _load_pickle_payload(resolved)
+    data = _find_numeric_matrix({"payload": payload})
+    sampling_rate = sampling_rate or _find_sampling_rate(payload if isinstance(payload, dict) else {})
+    if sampling_rate is None:
+        raise ValueError("sampling_rate is required when the pickle file does not expose fs/sfreq/sampling_rate")
+    names = channel_names or _find_channel_names(payload if isinstance(payload, dict) else {})
+    data = _samples_by_channels(data)
+    return NeuroFrame(
+        data=data,
+        channels=_channels_for_data(data, names, channel_type=channel_type, unit=unit),
+        timebase=Timebase(sampling_rate=float(sampling_rate)),
+        provenance={"source": "pickle", "path": str(resolved), "format": resolved.suffix.lower().lstrip(".")},
+    )
+
+
 def can_load_extension(path: str | Path) -> bool:
     return _loader_suffix(Path(path)) in SUPPORTED_EXTENSIONS
 
@@ -588,6 +646,13 @@ def _signal_file_sort_key(path: Path) -> tuple[int, int, str]:
 def _looks_like_supported_signal_file(path: Path) -> bool:
     if not can_load_extension(path):
         return False
+    if _loader_suffix(path) in {".xls", ".xlsx"}:
+        text = path.as_posix().casefold()
+        if any(token in text for token in ("participants", "questionnaire", "stimuli", "metadata", "readme")):
+            return False
+        return "eeg" in text or "raw" in text or "signal" in text or bool(
+            re.search(r"(^|[/_-])(subj?|subject|user|s)\d+", text)
+        )
     if _loader_suffix(path) not in {".tab", ".txt", ".tsv"}:
         return True
     text = path.as_posix().casefold()
@@ -839,6 +904,11 @@ def _load_torch_payload(path: Path) -> Any:
         return torch.load(str(path), map_location="cpu", weights_only=True)
     except TypeError as exc:
         raise ValueError("PyTorch EEG loading requires torch.load(..., weights_only=True) support") from exc
+
+
+def _load_pickle_payload(path: Path) -> Any:
+    with path.open("rb") as handle:
+        return pickle.load(handle)
 
 
 def _load_r_payload(path: Path) -> dict[str, Any]:

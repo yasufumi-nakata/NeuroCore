@@ -57,6 +57,8 @@ CONFIDENT_SIGNAL_SUFFIXES = {
 }
 GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz", ".pt", ".pth", ".tab", ".ts", ".tsv"}
 R_DATA_SUFFIXES = {".rda", ".rdata", ".rds"}
+PICKLE_SUFFIXES = {".pickle", ".pkl"}
+SPREADSHEET_SUFFIXES = {".xls", ".xlsx"}
 TEXT_SIGNAL_SUFFIXES = {".txt", ".tab", ".tsv"}
 RESOLVABLE_METHODS = {
     "bnci_index",
@@ -2105,7 +2107,15 @@ def _download_name_from_label(label: str) -> str:
     if not text:
         return ""
     suffixes = sorted(
-        (*ARCHIVE_SUFFIXES, *CONFIDENT_SIGNAL_SUFFIXES, *GENERIC_NUMERIC_SUFFIXES, *R_DATA_SUFFIXES, *TEXT_SIGNAL_SUFFIXES),
+        (
+            *ARCHIVE_SUFFIXES,
+            *CONFIDENT_SIGNAL_SUFFIXES,
+            *GENERIC_NUMERIC_SUFFIXES,
+            *R_DATA_SUFFIXES,
+            *PICKLE_SUFFIXES,
+            *SPREADSHEET_SUFFIXES,
+            *TEXT_SIGNAL_SUFFIXES,
+        ),
         key=len,
         reverse=True,
     )
@@ -2235,7 +2245,9 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
     if plan.provider == "bnci" and suffix == ".mat":
         return True
     hints = set(plan.format_hints)
-    if suffix == ".mat" and "mat" in hints:
+    if suffix == ".mat":
+        if "mat" not in hints and not _is_neural_mat_path(name, plan):
+            return False
         return _is_signal_like_generic_path(name) or _is_neural_mat_path(name, plan)
     if suffix in {".npy", ".npz"} and "numpy" in hints:
         return _is_signal_like_generic_path(name)
@@ -2243,6 +2255,10 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
         return _is_torch_signal_file(name, plan)
     if suffix in R_DATA_SUFFIXES:
         return _is_r_signal_file(name, plan)
+    if suffix in PICKLE_SUFFIXES:
+        return _is_pickle_signal_file(name, plan)
+    if suffix in SPREADSHEET_SUFFIXES:
+        return _is_spreadsheet_signal_file(name, plan)
     if suffix == ".ts" and "ts" in hints:
         return _is_time_series_classification_signal_file(name, plan)
     if suffix == ".csv" and "csv" in hints:
@@ -2250,6 +2266,7 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
             _is_signal_like_generic_path(name)
             or _is_eeg_condition_delimited_file(name, plan)
             or _is_eeg_device_delimited_file(name, plan)
+            or _is_neural_numeric_delimited_file(name, plan)
         )
     if suffix in TEXT_SIGNAL_SUFFIXES and ("text" in hints or _is_neural_text_signal_file(name, plan)):
         return _is_signal_like_generic_path(name)
@@ -2303,6 +2320,33 @@ def _is_r_signal_file(name: str, plan: AcquisitionPlan) -> bool:
     return _is_signal_like_generic_path(name)
 
 
+def _is_pickle_signal_file(name: str, plan: AcquisitionPlan) -> bool:
+    normalized = name.replace("\\", "/").lower()
+    stem = Path(normalized).stem
+    text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)} {normalized}".lower()
+    if not _has_neural_context(text):
+        return False
+    if stem in {"data", "all_data", "eeg", "ecog", "ieeg", "seeg"}:
+        return True
+    return _is_signal_like_generic_path(name)
+
+
+def _is_spreadsheet_signal_file(name: str, plan: AcquisitionPlan) -> bool:
+    normalized = name.replace("\\", "/").lower()
+    basename = Path(normalized).name
+    stem = Path(normalized).stem
+    if any(token in normalized for token in ("participant", "questionnaire", "stimuli", "metadata", "readme")):
+        return False
+    if any(token in normalized for token in ("table", "fig", "figure", "supplement", "behavior", "behaviour")):
+        return False
+    text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)} {normalized}".lower()
+    if not _has_neural_context(text):
+        return False
+    if "eeg" in basename or "raw" in basename or "signal" in basename:
+        return True
+    return bool(re.fullmatch(r"s\d+[_-].+", stem))
+
+
 def _is_raw_body_requiring_metadata(name: str, plan: AcquisitionPlan) -> bool:
     normalized = name.replace("\\", "/").lower()
     suffix = Path(normalized).suffix
@@ -2328,7 +2372,13 @@ def _is_neural_mat_path(name: str, plan: AcquisitionPlan) -> bool:
         return True
     if re.fullmatch(r"s\d+[_-]e\d+", stem):
         return True
+    if re.fullmatch(r"s\d+_(?:intervention|restingstate|session)\d*", stem):
+        return True
     if re.fullmatch(r"\d{2}(?:[_-]\d{2})+", stem):
+        return True
+    if stem in {"dataset", "unbalanced_dataset"}:
+        return True
+    if re.fullmatch(r"(?:alz|controls?|dep|mci|schiz)[a-z0-9_-]*", stem):
         return True
     if "bci" in context or "brain-computer" in context:
         if re.fullmatch(r"x\d+", stem):
@@ -2341,6 +2391,14 @@ def _is_neural_mat_path(name: str, plan: AcquisitionPlan) -> bool:
 def _is_neural_text_signal_file(name: str, plan: AcquisitionPlan) -> bool:
     text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)} {name}".lower()
     return _has_neural_context(text)
+
+
+def _is_neural_numeric_delimited_file(name: str, plan: AcquisitionPlan) -> bool:
+    text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)}".lower()
+    if "raw" not in text and not _has_neural_context(text):
+        return False
+    stem = Path(name.lower()).stem
+    return bool(re.fullmatch(r"\d{5,}(?:[-_]\d+)+", stem))
 
 
 def _has_neural_context(text: str) -> bool:

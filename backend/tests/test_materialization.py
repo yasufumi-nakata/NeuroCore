@@ -420,6 +420,151 @@ def test_named_eeg_text_file_can_be_raw_signal_without_inventory_text_hint() -> 
     assert by_name["readme.txt"].directly_loadable is False
 
 
+def test_resting_state_session_and_dataset_mat_files_can_be_raw_signal_files() -> None:
+    session_plan = plan_acquisition(
+        record(
+            url="https://figshare.com/articles/dataset/example/21644429",
+            doi="10.6084/m9.figshare.21644429",
+            source_domain="figshare.com",
+            name="EEG Dataset for short-term meditation and sensorimotor rhythm BCI performance",
+            description="MAT EEG subject intervention, resting state, and session files.",
+        )
+    )
+    driver_plan = plan_acquisition(
+        record(
+            url="https://figshare.com/articles/dataset/example/14273687",
+            doi="10.6084/m9.figshare.14273687",
+            source_domain="figshare.com",
+            name="EEG driver drowsiness dataset",
+            equipment="MAT",
+            description="MAT EEG driver drowsiness dataset.",
+        )
+    )
+
+    def fetch_session(_url: str):
+        return {
+            "files": [
+                {"name": "S01_Intervention1.mat", "download_url": "https://example.test/S01_Intervention1.mat"},
+                {"name": "S01_RestingState.mat", "download_url": "https://example.test/S01_RestingState.mat"},
+                {"name": "S01_Session2.mat", "download_url": "https://example.test/S01_Session2.mat"},
+                {"name": "IntervalData.xlsx", "download_url": "https://example.test/IntervalData.xlsx"},
+            ]
+        }
+
+    def fetch_driver(_url: str):
+        return {
+            "files": [
+                {"name": "dataset.mat", "download_url": "https://example.test/dataset.mat"},
+                {"name": "unbalanced_dataset.mat", "download_url": "https://example.test/unbalanced_dataset.mat"},
+            ]
+        }
+
+    session_resolution = resolve_remote_files(session_plan, fetch_json=fetch_session)
+    driver_resolution = resolve_remote_files(driver_plan, fetch_json=fetch_driver)
+    session_by_name = {file.name: file for file in session_resolution.files}
+
+    assert session_by_name["S01_Intervention1.mat"].directly_loadable is True
+    assert session_by_name["S01_RestingState.mat"].directly_loadable is True
+    assert session_by_name["S01_Session2.mat"].directly_loadable is True
+    assert session_by_name["IntervalData.xlsx"].directly_loadable is False
+    assert all(file.directly_loadable for file in driver_resolution.files)
+
+
+def test_group_named_mat_and_numeric_csv_raw_exports_can_be_signal_files() -> None:
+    mat_plan = plan_acquisition(
+        record(
+            url="https://figshare.com/articles/dataset/example/31403512",
+            doi="10.6084/m9.figshare.31403512",
+            source_domain="figshare.com",
+            name="EEG p-adic quantum potential accurately identifies depression and schizophrenia",
+            description="MAT EEG disease cohort data.",
+        )
+    )
+    csv_plan = plan_acquisition(
+        record(
+            url="https://figshare.com/articles/dataset/example/31403511",
+            doi="10.6084/m9.figshare.31403511",
+            source_domain="figshare.com",
+            name="EEG RAW data",
+            description="Raw EEG CSV exports.",
+        )
+    )
+
+    def fetch_mat(_url: str):
+        return {
+            "files": [
+                {"name": "alz_c1_new.mat", "download_url": "https://example.test/alz_c1_new.mat"},
+                {"name": "controls_c1_new.mat", "download_url": "https://example.test/controls_c1_new.mat"},
+                {"name": "AUTHOR_DATASET_SHOR_BENNINGER.txt", "download_url": "https://example.test/readme.txt"},
+            ]
+        }
+
+    def fetch_csv(_url: str):
+        return {
+            "files": [
+                {"name": "260114-2-8.CSV", "download_url": "https://example.test/260114-2-8.CSV"},
+                {"name": "README.txt", "download_url": "https://example.test/README.txt"},
+            ]
+        }
+
+    mat_resolution = resolve_remote_files(mat_plan, fetch_json=fetch_mat)
+    csv_resolution = resolve_remote_files(csv_plan, fetch_json=fetch_csv)
+    mat_by_name = {file.name: file for file in mat_resolution.files}
+    csv_by_name = {file.name: file for file in csv_resolution.files}
+
+    assert mat_by_name["alz_c1_new.mat"].directly_loadable is True
+    assert mat_by_name["controls_c1_new.mat"].directly_loadable is True
+    assert mat_by_name["AUTHOR_DATASET_SHOR_BENNINGER.txt"].directly_loadable is False
+    assert csv_by_name["260114-2-8.CSV"].directly_loadable is True
+    assert csv_by_name["README.txt"].directly_loadable is False
+
+
+def test_pickle_ecog_container_can_be_raw_signal_file() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/15220273",
+            doi="10.5281/zenodo.15220273",
+            source_domain="zenodo.org",
+            name="ECoG Data of 8 Subjects Listening to a Podcast",
+            description="Python pickle container with ECoG signal data.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {"files": [{"key": "all_data.pkl", "links": {"self": "https://example.test/all_data.pkl"}}]}
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].directly_loadable is True
+    assert resolution.files[0].materialization_action == "download_then_load"
+
+
+def test_eeg_named_spreadsheets_can_be_signal_files_without_marking_tables() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://data.mendeley.com/datasets/sbyj5f6c3k",
+            doi="10.17632/sbyj5f6c3k",
+            source_domain="data.mendeley.com",
+            name="EEG data: anxiety patients & control group",
+            description="Spreadsheet EEG data.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {"filename": "EEG data.xlsx", "content_details": {"download_url": "https://example.test/EEG data.xlsx"}},
+                {"filename": "Table_1.xls", "content_details": {"download_url": "https://example.test/Table_1.xls"}},
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    by_name = {file.name: file for file in resolution.files}
+
+    assert by_name["EEG data.xlsx"].directly_loadable is True
+    assert by_name["Table_1.xls"].directly_loadable is False
+
+
 def test_extensionless_rawdata_parts_are_treated_as_archives() -> None:
     plan = plan_acquisition(
         record(

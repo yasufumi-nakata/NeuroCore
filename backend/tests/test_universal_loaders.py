@@ -1,13 +1,24 @@
 from __future__ import annotations
 
 import json
+import pickle
 import sys
 from types import ModuleType, SimpleNamespace
 
 import numpy as np
 
 from neurocore.cli import main
-from neurocore.loaders import find_supported_signal_files, load, load_mat, load_mne_raw, load_nwb, load_r, supported_extensions
+from neurocore.loaders import (
+    find_supported_signal_files,
+    load,
+    load_mat,
+    load_mne_raw,
+    load_nwb,
+    load_pickle,
+    load_r,
+    load_spreadsheet,
+    supported_extensions,
+)
 
 
 def test_numpy_npz_loader_uses_embedded_metadata(tmp_path) -> None:
@@ -79,6 +90,27 @@ def test_txt_loader_uses_delimited_numeric_eeg_columns(tmp_path) -> None:
     assert frame.channel_names == ("AF3", "F7")
     assert frame.data.shape == (2, 2)
     assert frame.provenance["source"] == "csv"
+
+
+def test_spreadsheet_loader_reads_numeric_sheet_payloads(tmp_path, monkeypatch) -> None:
+    path = tmp_path / "EEG data.xlsx"
+    path.write_bytes(b"placeholder")
+    fake_pandas = ModuleType("pandas")
+    fake_pandas.read_excel = lambda _path, sheet_name=None: {
+        "Sheet1": {
+            "eeg": np.array([[1.0, 2.0], [3.0, 4.0]]),
+            "channel_names": np.array(["F3", "F4"]),
+        }
+    }
+    monkeypatch.setitem(sys.modules, "pandas", fake_pandas)
+
+    frame = load_spreadsheet(path, sampling_rate=250)
+
+    assert frame.data.shape == (2, 2)
+    assert frame.channel_names == ("F3", "F4")
+    assert frame.timebase.sampling_rate == 250.0
+    assert frame.provenance["source"] == "spreadsheet"
+    assert ".xlsx" in supported_extensions()
 
 
 def test_delimited_loader_keeps_headerless_numeric_csv_rows(tmp_path) -> None:
@@ -198,6 +230,27 @@ def test_torch_loader_uses_safe_tensor_payloads(tmp_path, monkeypatch) -> None:
     assert frame.channel_names == ("EEG1", "EEG2")
     assert frame.provenance["source"] == "torch"
     assert ".pth" in supported_extensions()
+
+
+def test_pickle_loader_reads_numeric_eeg_payloads(tmp_path) -> None:
+    path = tmp_path / "all_data.pkl"
+    with path.open("wb") as handle:
+        pickle.dump(
+            {
+                "ecog": np.array([[1.0, 2.0], [3.0, 4.0]]),
+                "sampling_rate": np.array([1000.0]),
+                "channel_names": np.array(["ECoG1", "ECoG2"]),
+            },
+            handle,
+        )
+
+    frame = load_pickle(path)
+
+    assert frame.data.shape == (2, 2)
+    assert frame.channel_names == ("ECoG1", "ECoG2")
+    assert frame.timebase.sampling_rate == 1000.0
+    assert frame.provenance["source"] == "pickle"
+    assert ".pkl" in supported_extensions()
 
 
 def test_r_loader_reads_pyreadr_numeric_payloads(tmp_path, monkeypatch) -> None:
@@ -447,5 +500,7 @@ def test_supported_extensions_include_major_eeg_formats() -> None:
         ".mat",
         ".npy",
         ".npz",
+        ".pkl",
         ".rds",
+        ".xlsx",
     }.issubset(extensions)
