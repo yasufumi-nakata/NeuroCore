@@ -219,6 +219,83 @@ def test_subject_and_experiment_named_mat_files_can_be_raw_eeg() -> None:
     assert all(file.directly_loadable for file in resolution.files)
 
 
+def test_music_eeg_subject_episode_mat_files_can_be_raw_signal_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://purl.stanford.edu/rz763kn3821",
+            doi="10.25740/rz763kn3821",
+            source_domain="purl.stanford.edu",
+            name="Naturalistic Music EEG Dataset - Rhythm Pilot",
+            equipment="EGI MAT",
+            description="EEG MAT recordings by subject and experiment episode.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "externalIdentifier": "druid:rz763kn3821",
+            "structural": {
+                "contains": [
+                    {
+                        "structural": {
+                            "contains": [
+                                {
+                                    "type": "https://cocina.sul.stanford.edu/models/file",
+                                    "filename": "S01_E01.mat",
+                                    "access": {"download": "world"},
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].directly_loadable is True
+    assert resolution.files[0].materialization_action == "download_then_load"
+
+
+def test_seeg_segment_mat_paths_can_be_raw_signal_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://osf.io/b7n5c",
+            doi="10.17605/osf.io/b7n5c",
+            source_domain="osf.io",
+            name="Functional Mapping of Movement and Speech Using Task-Based Electrophysiological Changes in Stereoelectroencephalography",
+            equipment="MAT",
+            description="Task-based sEEG MATLAB data.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "data": [
+                {
+                    "attributes": {
+                        "kind": "file",
+                        "materialized_path": "/data/AML/AML_language_noun_seg.mat",
+                    },
+                    "links": {"download": "https://osf.io/download/seg/"},
+                },
+                {
+                    "attributes": {
+                        "kind": "file",
+                        "materialized_path": "/data/AML/AML_stim_lang_elecs.mat",
+                    },
+                    "links": {"download": "https://osf.io/download/stim/"},
+                },
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    by_name = {file.name: file for file in resolution.files}
+
+    assert by_name["data/AML/AML_language_noun_seg.mat"].directly_loadable is True
+    assert by_name["data/AML/AML_stim_lang_elecs.mat"].directly_loadable is False
+
+
 def test_extensionless_rawdata_parts_are_treated_as_archives() -> None:
     plan = plan_acquisition(
         record(

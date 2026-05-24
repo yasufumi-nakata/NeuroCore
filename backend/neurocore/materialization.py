@@ -2192,7 +2192,7 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
         return True
     hints = set(plan.format_hints)
     if suffix == ".mat" and "mat" in hints:
-        return _is_signal_like_generic_path(name)
+        return _is_signal_like_generic_path(name) or _is_neural_mat_path(name, plan)
     if suffix in {".npy", ".npz"} and "numpy" in hints:
         return _is_signal_like_generic_path(name)
     if suffix in {".pt", ".pth"}:
@@ -2273,6 +2273,19 @@ def _is_raw_body_requiring_metadata(name: str, plan: AcquisitionPlan) -> bool:
         or "/eeg" in normalized
         or "eeg_" in normalized
     )
+
+
+def _is_neural_mat_path(name: str, plan: AcquisitionPlan) -> bool:
+    normalized = name.replace("\\", "/").lower()
+    stem = Path(normalized).stem
+    context = f"{plan.name} {plan.access_status} {plan.rationale} {' '.join(plan.format_hints)}".lower()
+    if not re.search(r"\b(eeg|ecog|seeg|ieeg|electrocorticography|stereoelectroencephalography)\b", context):
+        return False
+    if re.fullmatch(r"s\d+[_-]e\d+", stem):
+        return True
+    if (normalized.startswith("data/") or "/data/" in normalized) and re.fullmatch(r"[a-z0-9]{2,8}_.+_seg", stem):
+        return True
+    return False
 
 
 def _is_signal_like_generic_path(name: str) -> bool:
