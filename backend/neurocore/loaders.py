@@ -37,6 +37,8 @@ SUPPORTED_EXTENSIONS = {
     ".ts",
     ".txt",
     ".tsv",
+    ".h5",
+    ".hdf5",
     ".xls",
     ".xlsx",
     ".nwb",
@@ -71,6 +73,8 @@ def load(
         return load_spreadsheet(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix in {".rda", ".rdata", ".rds"}:
         return load_r(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
+    if suffix in {".h5", ".hdf5"}:
+        return load_hdf5(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix == ".ts":
         if sampling_rate is None:
             raise ValueError("sampling_rate is required when loading Time Series Classification EEG data")
@@ -253,6 +257,30 @@ def load_r(
         channels=_channels_for_data(data, names, channel_type=channel_type, unit=unit),
         timebase=Timebase(sampling_rate=float(sampling_rate)),
         provenance={"source": "r", "path": str(resolved), "format": resolved.suffix.lower().lstrip(".")},
+    )
+
+
+def load_hdf5(
+    path: str | Path,
+    *,
+    sampling_rate: float | None = None,
+    channel_names: tuple[str, ...] | list[str] | None = None,
+    channel_type: str = "eeg",
+    unit: str = "uV",
+) -> NeuroFrame:
+    resolved = Path(path).expanduser()
+    payload = _load_hdf5_payload(resolved)
+    data = _find_numeric_matrix(payload)
+    sampling_rate = sampling_rate or _find_sampling_rate(payload)
+    if sampling_rate is None:
+        raise ValueError("sampling_rate is required when the HDF5 file does not expose fs/sfreq/sampling_rate")
+    names = channel_names or _find_channel_names(payload)
+    data = _samples_by_channels(data)
+    return NeuroFrame(
+        data=data,
+        channels=_channels_for_data(data, names, channel_type=channel_type, unit=unit),
+        timebase=Timebase(sampling_rate=float(sampling_rate)),
+        provenance={"source": "hdf5", "path": str(resolved), "format": resolved.suffix.lower().lstrip(".")},
     )
 
 
@@ -625,6 +653,8 @@ def _signal_file_sort_key(path: Path) -> tuple[int, int, str]:
         ".mff",
         ".xdf",
         ".mat",
+        ".h5",
+        ".hdf5",
         ".rds",
         ".rda",
         ".rdata",
@@ -652,6 +682,18 @@ def _looks_like_supported_signal_file(path: Path) -> bool:
             return False
         return "eeg" in text or "raw" in text or "signal" in text or bool(
             re.search(r"(^|[/_-])(subj?|subject|user|s)\d+", text)
+        )
+    if _loader_suffix(path) in {".h5", ".hdf5"}:
+        text = path.as_posix().casefold()
+        if any(
+            token in text
+            for token in ("participants", "questionnaire", "stimuli", "stimulus", "metadata", "readme", "behavior")
+        ):
+            return False
+        return (
+            any(token in text for token in ("eeg", "ecog", "ieeg", "seeg", "raw", "signal", "nix"))
+            or bool(re.search(r"data[_-]subject[_-]?\d+[_-]session[_-]?\d+", text))
+            or bool(re.search(r"(^|[/_-])(subj?|subject|user|s)\d+", text))
         )
     if _loader_suffix(path) not in {".tab", ".txt", ".tsv"}:
         return True
@@ -911,9 +953,31 @@ def _load_pickle_payload(path: Path) -> Any:
         return pickle.load(handle)
 
 
+def _load_hdf5_payload(path: Path) -> dict[str, Any]:
+    h5py = _require_module("h5py", extra="io")
+    payload: dict[str, Any] = {}
+    with h5py.File(path, "r") as handle:
+        payload.update(_hdf5_attrs(handle.attrs))
+
+        def collect(name: str, item: Any) -> None:
+            key = name.strip("/") or "data"
+            for attr_key, attr_value in _hdf5_attrs(item.attrs).items():
+                payload.setdefault(attr_key, attr_value)
+                payload[f"{key}/{attr_key}"] = attr_value
+            if hasattr(item, "shape") and hasattr(item, "dtype"):
+                payload[key] = np.asarray(item)
+
+        handle.visititems(collect)
+    return payload
+
+
 def _load_r_payload(path: Path) -> dict[str, Any]:
     pyreadr = _require_module("pyreadr", extra="io")
     return dict(pyreadr.read_r(str(path)))
+
+
+def _hdf5_attrs(attrs: Any) -> dict[str, Any]:
+    return {str(key): value for key, value in attrs.items()}
 
 
 def _find_numeric_matrix(payload: dict[str, Any]) -> np.ndarray:

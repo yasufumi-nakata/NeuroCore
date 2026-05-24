@@ -149,7 +149,7 @@ print(inventory.summary())
 ```
 
 この API はデータセット目録を読むためのものです。EEG の raw waveform は、各データセットを取得した後に `neurocore.load()` で `NeuroFrame` へ正規化してください。
-MNE 経由では EDF/BDF、BrainVision `.vhdr`、EEGLAB `.set`、FIF、CNT、GDF、EGI/MFF、eXimia `.nxe`、Nicolet `.data`、Persyst `.lay`、MEF3 `.mefd` を扱います。NWB は `pynwb` で `ElectricalSeries` を読みます。BIDS 風 directory は内部の対応 raw file を探して読みます。XDF は `pyxdf`、MAT は `scipy` または `h5py` を使います。PyTorch `.pt` / `.pth` は `torch.load(..., weights_only=True)` で tensor payload だけを読みます。R `.rds` / `.rda` / `.RData` は `pyreadr` で数値 payload を抽出します。Time Series Classification `.ts` は univariate / multivariate の trial rows を samples x channels に正規化します。CSV/TXT はヘッダーなし数値行や空白区切りにも対応し、ラベル列などの非数値列を落として数値列だけを `NeuroFrame` の channel matrix として読み込めます。
+MNE 経由では EDF/BDF、BrainVision `.vhdr`、EEGLAB `.set`、FIF、CNT、GDF、EGI/MFF、eXimia `.nxe`、Nicolet `.data`、Persyst `.lay`、MEF3 `.mefd` を扱います。NWB は `pynwb` で `ElectricalSeries` を読みます。BIDS 風 directory は内部の対応 raw file を探して読みます。XDF は `pyxdf`、MAT は `scipy` または `h5py` を使います。HDF5 `.h5` / `.hdf5` は EEG/NIX 系の numeric payload を探索して読みます。PyTorch `.pt` / `.pth` は `torch.load(..., weights_only=True)` で tensor payload だけを読みます。R `.rds` / `.rda` / `.RData` は `pyreadr` で数値 payload を抽出します。Time Series Classification `.ts` は univariate / multivariate の trial rows を samples x channels に正規化します。CSV/TXT はヘッダーなし数値行や空白区切りにも対応し、ラベル列などの非数値列を落として数値列だけを `NeuroFrame` の channel matrix として読み込めます。
 
 raw 本体取得計画とローカルキャッシュ検証:
 

@@ -56,6 +56,7 @@ CONFIDENT_SIGNAL_SUFFIXES = {
     ".xdf",
 }
 GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz", ".pt", ".pth", ".tab", ".ts", ".tsv"}
+HDF5_SUFFIXES = {".h5", ".hdf5"}
 R_DATA_SUFFIXES = {".rda", ".rdata", ".rds"}
 PICKLE_SUFFIXES = {".pickle", ".pkl"}
 SPREADSHEET_SUFFIXES = {".xls", ".xlsx"}
@@ -2111,6 +2112,7 @@ def _download_name_from_label(label: str) -> str:
             *ARCHIVE_SUFFIXES,
             *CONFIDENT_SIGNAL_SUFFIXES,
             *GENERIC_NUMERIC_SUFFIXES,
+            *HDF5_SUFFIXES,
             *R_DATA_SUFFIXES,
             *PICKLE_SUFFIXES,
             *SPREADSHEET_SUFFIXES,
@@ -2251,6 +2253,8 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
         return _is_signal_like_generic_path(name) or _is_neural_mat_path(name, plan)
     if suffix in {".npy", ".npz"} and "numpy" in hints:
         return _is_signal_like_generic_path(name)
+    if suffix in HDF5_SUFFIXES:
+        return _is_hdf5_signal_file(name, plan)
     if suffix in {".pt", ".pth"}:
         return _is_torch_signal_file(name, plan)
     if suffix in R_DATA_SUFFIXES:
@@ -2295,6 +2299,15 @@ def _is_torch_signal_file(name: str, plan: AcquisitionPlan) -> bool:
         return False
     if Path(name.lower()).stem in {"train", "val", "valid", "validation", "test"}:
         return True
+    return _is_signal_like_generic_path(name)
+
+
+def _is_hdf5_signal_file(name: str, plan: AcquisitionPlan) -> bool:
+    text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)} {name}".lower()
+    if not _has_neural_context(text):
+        return False
+    if {"hdf5", "nwb"}.intersection(plan.format_hints):
+        return _is_signal_like_generic_path(name)
     return _is_signal_like_generic_path(name)
 
 
@@ -2377,6 +2390,8 @@ def _is_neural_mat_path(name: str, plan: AcquisitionPlan) -> bool:
     if re.fullmatch(r"\d{2}(?:[_-]\d{2})+", stem):
         return True
     if stem in {"dataset", "unbalanced_dataset"}:
+        return True
+    if "adhd" in context and stem in {"adhd", "fadhd", "madhd", "fc", "mc"}:
         return True
     if re.fullmatch(r"(?:alz|controls?|dep|mci|schiz)[a-z0-9_-]*", stem):
         return True
@@ -2462,6 +2477,8 @@ def _is_signal_like_generic_path(name: str) -> bool:
     if re.search(r"^data[_-][a-z0-9]+[_-]sub[_-]?\d+", basename):
         return True
     if re.fullmatch(r"[a-z]{0,3}sub\d+", stem):
+        return True
+    if re.search(r"(?:^|[-_])sub\d+[_-]?(?:preprocessed|processed|clean|raw)$", stem):
         return True
     if re.fullmatch(r"s\d+x?_[ab]\d+", stem):
         return True

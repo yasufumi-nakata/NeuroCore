@@ -11,6 +11,7 @@ from neurocore.cli import main
 from neurocore.loaders import (
     find_supported_signal_files,
     load,
+    load_hdf5,
     load_mat,
     load_mne_raw,
     load_nwb,
@@ -276,6 +277,26 @@ def test_r_loader_reads_pyreadr_numeric_payloads(tmp_path, monkeypatch) -> None:
     assert ".rds" in supported_extensions()
 
 
+def test_hdf5_loader_reads_numeric_eeg_payloads(tmp_path, monkeypatch) -> None:
+    path = tmp_path / "Data_Subject_01_Session_01.h5"
+    path.write_bytes(b"placeholder")
+    payload = {
+        "eeg/signals": np.array([[1.0, 2.0], [3.0, 4.0]]),
+        "sampling_rate": np.array([200.0]),
+        "channel_names": np.array(["Fz", "Cz"]),
+    }
+    monkeypatch.setattr("neurocore.loaders._load_hdf5_payload", lambda _path: payload)
+
+    frame = load_hdf5(path)
+
+    assert frame.data.shape == (2, 2)
+    assert frame.channel_names == ("Fz", "Cz")
+    assert frame.timebase.sampling_rate == 200.0
+    assert frame.provenance["source"] == "hdf5"
+    assert ".h5" in supported_extensions()
+    assert ".hdf5" in supported_extensions()
+
+
 def test_mat_loader_finds_numeric_matrix_inside_matlab_struct(tmp_path, monkeypatch) -> None:
     class FakeStruct:
         _fieldnames = ["train", "test"]
@@ -497,6 +518,8 @@ def test_supported_extensions_include_major_eeg_formats() -> None:
         ".mefd",
         ".xdf",
         ".nwb",
+        ".h5",
+        ".hdf5",
         ".mat",
         ".npy",
         ".npz",

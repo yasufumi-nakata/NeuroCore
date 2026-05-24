@@ -610,6 +610,7 @@ def _format_hints(record: DatasetRecord) -> set[str]:
         "mef": (r"\.mefd\b", r"\bmef3?\b"),
         "nwb": (r"\.nwb\b", r"\bnwb\b", r"neurodata without borders"),
         "xdf": (r"\.xdf\b", r"\bxdf\b"),
+        "hdf5": (r"\.h5\b", r"\.hdf5\b", r"\bhdf5\b", r"\bhdf\b"),
         "mat": (r"\.mat\b", r"\bmat\b", r"matlab"),
         "numpy": (r"\.npy\b", r"\.npz\b"),
         "torch": (r"\.pt\b", r"\.pth\b", r"pytorch"),

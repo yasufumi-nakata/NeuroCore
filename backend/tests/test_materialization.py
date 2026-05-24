@@ -219,6 +219,89 @@ def test_subject_and_experiment_named_mat_files_can_be_raw_eeg() -> None:
     assert all(file.directly_loadable for file in resolution.files)
 
 
+def test_adhd_group_mat_files_can_be_raw_eeg() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://data.mendeley.com/datasets/example",
+            doi="10.17632/example.1",
+            source_domain="data.mendeley.com",
+            name="A Dataset of EEG Signals from Adults with ADHD and Healthy Controls",
+            description="Resting state, cognitive challenge, and auditory stimulus raw EEG MAT files.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {"filename": "FADHD.mat", "content_details": {"download_url": "https://example.test/FADHD.mat"}},
+                {"filename": "FC.mat", "content_details": {"download_url": "https://example.test/FC.mat"}},
+                {"filename": "MADHD.mat", "content_details": {"download_url": "https://example.test/MADHD.mat"}},
+                {"filename": "MC.mat", "content_details": {"download_url": "https://example.test/MC.mat"}},
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert all(file.directly_loadable for file in resolution.files)
+    assert {file.materialization_action for file in resolution.files} == {"download_then_load"}
+
+
+def test_subject_preprocessed_mat_files_can_be_loader_material() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/11058711",
+            doi="10.5281/zenodo.11058711",
+            source_domain="zenodo.org",
+            name="Audiovisual, Gaze-controlled Auditory Attention Decoding Dataset KU Leuven",
+            equipment="MAT EEG",
+            description="Subject-level preprocessed EEG MAT signals.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {
+                    "key": "2024-AV-GC-AAD-sub15_preprocessed.mat",
+                    "links": {"self": "https://example.test/sub15_preprocessed.mat"},
+                }
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].directly_loadable is True
+    assert resolution.files[0].materialization_action == "download_then_load"
+
+
+def test_hdf5_eeg_session_files_can_be_loader_material() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/123456",
+            doi="10.12751/g-node.d76994",
+            source_domain="zenodo.org",
+            name="Simultaneous scalp EEG and intracranial EEG during verbal working memory",
+            equipment="NIX HDF5",
+            description="Data_Subject_*_Session_*.h5 files with scalp EEG and iEEG signals.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {
+                    "key": "data_nix/Data_Subject_01_Session_01.h5",
+                    "links": {"self": "https://example.test/data_nix/Data_Subject_01_Session_01.h5"},
+                }
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].directly_loadable is True
+    assert resolution.files[0].materialization_action == "download_then_load"
+
+
 def test_music_eeg_subject_episode_mat_files_can_be_raw_signal_files() -> None:
     plan = plan_acquisition(
         record(
