@@ -21,7 +21,19 @@ from .loaders import can_load_extension, find_supported_signal_files
 JsonFetcher = Callable[[str], Any]
 ByteFetcher = Callable[[str, int], bytes]
 
-ARCHIVE_SUFFIXES = (".zip", ".tar", ".tar.gz", ".tgz", ".gz", ".7z", ".rar")
+ARCHIVE_SUFFIXES = (
+    ".zip",
+    ".tar",
+    ".tar.gz",
+    ".tgz",
+    ".tar.xz",
+    ".txz",
+    ".tar.bz2",
+    ".tbz2",
+    ".gz",
+    ".7z",
+    ".rar",
+)
 CONFIDENT_SIGNAL_SUFFIXES = {
     ".bdf",
     ".cnt",
@@ -838,9 +850,19 @@ def _resolve_physionet(
     parsed = urlparse(candidate.url)
     match = re.search(r"/content/([^/]+)/([^/]+)/?", parsed.path)
     if not match:
-        return []
-    project, version = match.groups()
+        project = _first_match(r"/content/([^/]+)/?", parsed.path)
+        if not project:
+            return []
+        html = _string(fetcher(_html_landing_url(candidate.url)))
+        version = _physionet_version_from_landing(html, project)
+        if not version:
+            return []
+    else:
+        project, version = match.groups()
     root = f"https://physionet.org/files/{project}/{version}/"
+    manifest_files = _resolve_physionet_sha256_manifest(plan, candidate, fetcher, root)
+    if manifest_files:
+        return manifest_files
     return _resolve_html_index(plan, candidate, fetcher, root, max_pages=max_pages)
 
 
@@ -1209,6 +1231,35 @@ def _resolve_html_index(
                 continue
             name = target.removeprefix(root)
             files.append(_remote_file(plan, candidate, name=name, url=target, source_url=root))
+    return _dedupe_files(files)
+
+
+def _resolve_physionet_sha256_manifest(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+    root: str,
+) -> list[RemoteFileCandidate]:
+    try:
+        manifest = _string(fetcher(f"{root}SHA256SUMS.txt"))
+    except Exception:
+        return []
+    files = []
+    for line in manifest.splitlines():
+        checksum, _, name = line.strip().partition(" ")
+        name = name.strip()
+        if not checksum or not name:
+            continue
+        files.append(
+            _remote_file(
+                plan,
+                candidate,
+                name=name,
+                url=f"{root}{quote(name, safe='/')}",
+                checksum=f"sha256:{checksum}",
+                source_url=root,
+            )
+        )
     return _dedupe_files(files)
 
 
@@ -1836,6 +1887,16 @@ def _openneuro_files_query(dataset_id: str, tag: str) -> str:
     )
 
 
+def _physionet_version_from_landing(html: str, project: str) -> str:
+    escaped = re.escape(project)
+    return (
+        _first_match(rf"/content/{escaped}/([^/\"'?#]+)/", html)
+        or _first_match(rf"/files/{escaped}/([^/\"'?#]+)/", html)
+        or _first_match(r"Version:\s*([0-9][A-Za-z0-9_.-]*)", html)
+        or ""
+    )
+
+
 def _openneuro_download_url(urls: list[Any], filename: str) -> str:
     candidates = [_string(url) for url in urls if _string(url)]
     normalized_name = filename.replace("\\", "/").lstrip("/")
@@ -1885,6 +1946,7 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
 def _is_signal_like_generic_path(name: str) -> bool:
     normalized = name.replace("\\", "/").lower()
     basename = Path(normalized).name
+    stem = Path(basename).stem
     if any(
         token in normalized
         for token in (
@@ -1894,6 +1956,18 @@ def _is_signal_like_generic_path(name: str) -> bool:
             "readme",
             "stimuli",
             "stimulus",
+            "score",
+            "scores",
+            "result",
+            "results",
+            "plasma",
+            "spectra",
+            "spectrum",
+            "fft",
+            "fooof",
+            "statistic",
+            "statistics",
+            "table",
         )
     ):
         return False
@@ -1906,6 +1980,15 @@ def _is_signal_like_generic_path(name: str) -> bool:
     if "eeg" in basename:
         return True
     if "oddball" in basename:
+        return True
+    if re.search(r"^(data[_-]?s\d+|s\d+[_-]?data|subject[_-]?\d+[_-]?data)", basename):
+        return True
+    if any(
+        token in stem
+        for token in ("calibration", "singleplayer", "multiplayer", "recording", "session", "trial", "task")
+    ):
+        return True
+    if stem in {"ad", "mci", "normal", "control", "healthy", "hc"}:
         return True
     return bool(re.search(r"^(sub-[a-z0-9]+|subject[_-]?\d+|eeg|raw|signal)", basename))
 
@@ -1978,7 +2061,7 @@ def _safe_relative_path(name: str, url: str) -> Path:
 
 def _archive_stem(path: Path) -> str:
     name = path.name
-    for suffix in (".tar.gz", ".tgz", ".zip", ".tar", ".gz", ".7z", ".rar"):
+    for suffix in (".tar.gz", ".tgz", ".tar.xz", ".txz", ".tar.bz2", ".tbz2", ".zip", ".tar", ".gz", ".7z", ".rar"):
         if name.lower().endswith(suffix):
             return name[: -len(suffix)]
     return path.stem

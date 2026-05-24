@@ -128,6 +128,23 @@ def test_plan_acquisition_treats_public_sciencedb_as_resolvable_api() -> None:
     assert plan.candidates[0].requires_auth is False
 
 
+def test_plan_acquisition_resolves_mendeley_dataset_id_from_doi() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="mendeley-doi",
+            url="https://doi.org/10.17632/v6346g59xh",
+            doi="10.17632/v6346g59xh",
+            source_domain="doi.org",
+            access_status="すぐに使える",
+        )
+    )
+
+    assert plan.provider == "mendeley"
+    assert plan.automation_status == "direct_api"
+    assert plan.candidates[0].method == "mendeley_api"
+    assert plan.candidates[0].url == "https://data.mendeley.com/public-api/datasets/v6346g59xh"
+
+
 def test_plan_acquisition_detects_figshare_compatible_repositories() -> None:
     plan = plan_acquisition(
         record(

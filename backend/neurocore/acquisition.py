@@ -296,7 +296,10 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
                 )
             )
     elif provider == "mendeley":
-        dataset_id = _first_match(r"data\.mendeley\.com/datasets/([a-z0-9]+)", " ".join(landing_urls))
+        dataset_id = _first_match(
+            r"data\.mendeley\.com/datasets/([a-z0-9]+)|10\.17632/([a-z0-9]+)(?:\.\d+)?",
+            " ".join(landing_urls + [record.doi]),
+        )
         if dataset_id:
             candidates.append(
                 AcquisitionCandidate(

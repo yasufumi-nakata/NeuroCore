@@ -534,6 +534,66 @@ def test_generic_mat_detection_avoids_behavior_only_files() -> None:
     assert by_name["data/clean/CleanEEG_stim01.mat"].directly_loadable is True
 
 
+def test_generic_mat_detection_accepts_subject_data_names_when_plan_hints_mat() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://figshare.com/articles/dataset/example/23641017",
+            doi="10.6084/m9.figshare.23641017",
+            source_domain="figshare.com",
+            description="SSVEP EEG MATLAB dataset",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {"name": "data_s1_64.mat", "download_url": "https://example.test/data_s1_64.mat"},
+                {"name": "Sub_score.mat", "download_url": "https://example.test/Sub_score.mat"},
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    by_name = {file.name: file for file in resolution.files}
+
+    assert by_name["data_s1_64.mat"].directly_loadable is True
+    assert by_name["Sub_score.mat"].directly_loadable is False
+
+
+def test_generic_mat_detection_accepts_session_and_group_names_but_skips_derived_tables() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://data.mendeley.com/datasets/skw8hhmjnx/1",
+            doi="10.17632/skw8hhmjnx.1",
+            source_domain="data.mendeley.com",
+            description="MATLAB EEG calibration and gameplay recordings",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {"filename": "1_calibration.mat", "content_details": {"download_url": "https://example.test/1_calibration.mat"}},
+                {
+                    "filename": "10_singleplayer.mat",
+                    "content_details": {"download_url": "https://example.test/10_singleplayer.mat"},
+                },
+                {"filename": "AD.mat", "content_details": {"download_url": "https://example.test/AD.mat"}},
+                {
+                    "filename": "Central_alpha_fft_rest.mat",
+                    "content_details": {"download_url": "https://example.test/Central_alpha_fft_rest.mat"},
+                },
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    by_name = {file.name: file for file in resolution.files}
+
+    assert by_name["1_calibration.mat"].directly_loadable is True
+    assert by_name["10_singleplayer.mat"].directly_loadable is True
+    assert by_name["AD.mat"].directly_loadable is True
+    assert by_name["Central_alpha_fft_rest.mat"].directly_loadable is False
+
+
 def test_generic_csv_detection_uses_raw_task_paths_without_treating_stimuli_as_raw() -> None:
     plan = plan_acquisition(
         record(
@@ -568,6 +628,26 @@ def test_generic_csv_detection_uses_raw_task_paths_without_treating_stimuli_as_r
 
     assert resolution.files[0].directly_loadable is True
     assert resolution.files[1].directly_loadable is False
+
+
+def test_xz_tarballs_are_classified_as_extractable_archives() -> None:
+    plan = plan_acquisition(record(description="EEG FIF archive"))
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {
+                    "key": "EEG.tar.xz",
+                    "size": 123,
+                    "links": {"self": "https://example.test/EEG.tar.xz"},
+                }
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].archive is True
+    assert resolution.files[0].materialization_action == "download_extract_then_scan"
 
 
 def test_bnci_resolution_filters_dataset_links_from_index() -> None:
@@ -818,6 +898,8 @@ def test_physionet_resolution_walks_html_index() -> None:
     )
 
     def fetch_json(url: str):
+        if url.endswith("/SHA256SUMS.txt"):
+            return ""
         if url.endswith("/1.0.0/"):
             return '<a href="sub-01/">sub-01/</a>'
         if url.endswith("/sub-01/"):
@@ -827,6 +909,57 @@ def test_physionet_resolution_walks_html_index() -> None:
     resolution = resolve_remote_files(plan, fetch_json=fetch_json)
 
     assert resolution.files[0].name == "sub-01/sub-01_eeg.edf"
+    assert resolution.files[0].directly_loadable is True
+
+
+def test_physionet_resolution_discovers_version_from_project_landing() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://physionet.org/content/bigp3bci/",
+            doi="",
+            source_domain="physionet.org",
+            description="EDF recordings",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url.startswith("html+landing://"):
+            return '<title>bigP3BCI v1.0.0</title><a href="/content/bigp3bci/1.0.0/">version</a>'
+        if url.endswith("/SHA256SUMS.txt"):
+            return ""
+        if url.endswith("/1.0.0/"):
+            return '<a href="sub-01/">sub-01/</a>'
+        if url.endswith("/sub-01/"):
+            return '<a href="../">../</a><a href="sub-01_eeg.edf">sub-01_eeg.edf</a>'
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].name == "sub-01/sub-01_eeg.edf"
+    assert resolution.files[0].directly_loadable is True
+
+
+def test_physionet_resolution_prefers_sha256_manifest_when_available() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://physionet.org/content/bigp3bci/",
+            doi="",
+            source_domain="physionet.org",
+            description="EDF recordings",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url.startswith("html+landing://"):
+            return '<a href="/content/bigp3bci/1.0.0/">version</a>'
+        if url.endswith("/SHA256SUMS.txt"):
+            return "abc123 bigP3BCI-data/StudyA/A_01/SE001/Test/CB/A_01_SE001_CB_Test06.edf\n"
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json, max_pages=1)
+
+    assert resolution.files[0].name == "bigP3BCI-data/StudyA/A_01/SE001/Test/CB/A_01_SE001_CB_Test06.edf"
+    assert resolution.files[0].checksum == "sha256:abc123"
     assert resolution.files[0].directly_loadable is True
 
 
