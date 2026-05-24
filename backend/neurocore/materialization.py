@@ -2336,6 +2336,7 @@ def _is_hdf5_signal_file(name: str, plan: AcquisitionPlan) -> bool:
 
 def _is_numpy_signal_file(name: str, plan: AcquisitionPlan) -> bool:
     normalized = name.replace("\\", "/").lower()
+    stem = Path(normalized).stem
     text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)} {normalized}".lower()
     neural_context = _has_neural_context(text) or re.search(r"\b(sleep|polysomnography|brain)\b", text)
     if not neural_context:
@@ -2343,6 +2344,8 @@ def _is_numpy_signal_file(name: str, plan: AcquisitionPlan) -> bool:
     if "numpy" in plan.format_hints:
         return _is_signal_like_generic_path(name)
     if re.search(r"(?:^|/)dataset/\d+[_-](?:sen|eeg|raw|signal)", normalized):
+        return True
+    if "ssvep" in text and re.fullmatch(r"\d{1,4}", stem):
         return True
     return _is_signal_like_generic_path(name)
 
@@ -2431,10 +2434,16 @@ def _is_neural_mat_path(name: str, plan: AcquisitionPlan) -> bool:
         return True
     if re.fullmatch(r"(?:alz|controls?|dep|mci|schiz)[a-z0-9_-]*", stem):
         return True
-    if "bci" in context or "brain-computer" in context:
+    if "bci" in context or "brain-computer" in context or "brain computer" in context:
         if re.fullmatch(r"x\d+", stem):
             return True
+        if re.fullmatch(r"parsed_p\d+[et]", stem):
+            return True
     if (normalized.startswith("data/") or "/data/" in normalized) and re.fullmatch(r"[a-z0-9]{2,8}_.+_seg", stem):
+        return True
+    if (normalized.startswith("data/") or "/data/" in normalized) and re.fullmatch(r"s\d+", stem):
+        return True
+    if "example data" in context and re.fullmatch(r"data\d+(?:_w)?", stem):
         return True
     return False
 
@@ -2455,7 +2464,7 @@ def _is_neural_numeric_delimited_file(name: str, plan: AcquisitionPlan) -> bool:
 def _has_neural_context(text: str) -> bool:
     return bool(
         re.search(
-            r"\b(eeg|ecog|seeg|ieeg|erp|p300|bci|fnirs|neural|seizure|fragility|brainvision|brain-computer|electrocorticography|stereoelectroencephalography)\b",
+            r"\b(eeg|ecog|seeg|ieeg|erp|p300|bci|ssvep|motor imagery|fnirs|neural|seizure|fragility|brainvision|brain[- ]computer|electrocorticography|stereoelectroencephalography)\b",
             text,
         )
     )

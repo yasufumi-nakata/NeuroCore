@@ -822,6 +822,107 @@ def test_ssvep_trial_csv_and_text_names_can_be_raw_signal_files() -> None:
     assert text_resolution.files[0].directly_loadable is True
 
 
+def test_ssvep_numeric_numpy_files_can_be_raw_signal_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://github.com/hosseinhamidi92/SSVEP-Dataset",
+            doi="",
+            source_domain="github.com",
+            name="hosseinhamidi92/SSVEP-Dataset",
+            description="SSVEP EEG NumPy arrays by subject.",
+            equipment="NumPy",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "tree": [
+                {"path": "1.npy", "type": "blob", "size": 10, "sha": "abc"},
+                {"path": "README.md", "type": "blob", "size": 10, "sha": "def"},
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    by_name = {file.name: file for file in resolution.files}
+
+    assert by_name["1.npy"].directly_loadable is True
+    assert by_name["1.npy"].materialization_action == "download_then_load"
+    assert by_name["README.md"].directly_loadable is False
+
+
+def test_bci_and_example_data_mat_names_can_be_raw_signal_files() -> None:
+    bci_plan = plan_acquisition(
+        record(
+            url="https://github.com/example/bci-challenge",
+            doi="",
+            source_domain="github.com",
+            name="Clinical Brain Computer Interfaces Challenge WCCI 2020 Glasgow",
+            description="BCI MATLAB training and evaluation files.",
+            equipment="MAT",
+        )
+    )
+    example_plan = plan_acquisition(
+        record(
+            url="https://purl.stanford.edu/dg856vy8753",
+            doi="10.25740/dg856vy8753",
+            source_domain="purl.stanford.edu",
+            name="Example Data for SENSI EEG PREPROC - Bad Channel Detection Module",
+            description="Example data MAT files for EEG preprocessing.",
+            equipment="MAT",
+        )
+    )
+    data_plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/123456",
+            doi="10.5281/zenodo.123456",
+            source_domain="zenodo.org",
+            name="High density EEG measurement",
+            description="High density EEG MATLAB data.",
+            equipment="MAT",
+        )
+    )
+
+    bci_resolution = resolve_remote_files(
+        bci_plan,
+        fetch_json=lambda _url: {
+            "tree": [
+                {"path": "parsed_P01T.mat", "type": "blob", "size": 10, "sha": "abc"},
+                {"path": "eeglab_chan12_mod.locs", "type": "blob", "size": 10, "sha": "def"},
+            ]
+        },
+    )
+    example_resolution = resolve_remote_files(
+        example_plan,
+        fetch_json=lambda _url: {
+            "externalIdentifier": "druid:dg856vy8753",
+            "structural": {
+                "contains": [
+                    {
+                        "type": "https://cocina.sul.stanford.edu/models/file",
+                        "filename": "data1_W.mat",
+                        "access": {"download": "world"},
+                    }
+                ]
+            },
+        },
+    )
+    data_resolution = resolve_remote_files(
+        data_plan,
+        fetch_json=lambda _url: {
+            "files": [
+                {"key": "data/S1.mat", "links": {"self": "https://example.test/data/S1.mat"}},
+                {"key": "Scripts/head256.loc", "links": {"self": "https://example.test/Scripts/head256.loc"}},
+            ]
+        },
+    )
+
+    assert bci_resolution.files[0].directly_loadable is True
+    assert bci_resolution.files[1].directly_loadable is False
+    assert example_resolution.files[0].directly_loadable is True
+    assert data_resolution.files[0].directly_loadable is True
+    assert data_resolution.files[1].directly_loadable is False
+
+
 def test_epoch_cohort_and_sleep_numpy_names_can_be_raw_signal_files() -> None:
     plan = plan_acquisition(
         record(
