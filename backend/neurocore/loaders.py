@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import importlib
+import re
 from pathlib import Path
 from typing import Any
 
@@ -28,6 +29,7 @@ MNE_RAW_READERS = {
 
 SUPPORTED_EXTENSIONS = {
     ".csv",
+    ".txt",
     ".nwb",
     ".npy",
     ".npz",
@@ -48,9 +50,9 @@ def load(
     if resolved.is_dir():
         return load_directory(resolved, sampling_rate=sampling_rate, mne_preload=mne_preload)
     suffix = _loader_suffix(resolved)
-    if suffix == ".csv":
+    if suffix in {".csv", ".txt"}:
         if sampling_rate is None:
-            raise ValueError("sampling_rate is required when loading CSV EEG data")
+            raise ValueError("sampling_rate is required when loading delimited EEG data")
         return load_csv(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix in MNE_RAW_READERS:
         return load_mne_raw(resolved, preload=mne_preload)
@@ -92,7 +94,13 @@ def load_csv(
 ) -> NeuroFrame:
     resolved = Path(path).expanduser()
     with resolved.open("r", encoding="utf-8", newline="") as handle:
-        reader = csv.reader(handle)
+        sample = handle.read(4096)
+        handle.seek(0)
+        try:
+            dialect = csv.Sniffer().sniff(sample, delimiters=",\t; ")
+        except csv.Error:
+            dialect = csv.excel
+        reader = csv.reader(handle, dialect=dialect)
         try:
             header = next(reader)
         except StopIteration as exc:
@@ -347,7 +355,7 @@ def find_supported_signal_files(path: str | Path) -> tuple[Path, ...]:
         return (resolved,) if can_load_extension(resolved) else ()
     if not resolved.is_dir():
         return ()
-    files = [item for item in resolved.rglob("*") if item.is_file() and can_load_extension(item)]
+    files = [item for item in resolved.rglob("*") if item.is_file() and _looks_like_supported_signal_file(item)]
     return tuple(sorted(files, key=_signal_file_sort_key))
 
 
@@ -362,12 +370,39 @@ def _signal_file_sort_key(path: Path) -> tuple[int, int, str]:
     parts = {part.lower() for part in path.parts}
     suffix = _loader_suffix(path)
     eeg_dir_rank = 0 if "eeg" in parts else 1
-    preferred = [".vhdr", ".edf", ".bdf", ".set", ".fif", ".gdf", ".cnt", ".egi", ".mff", ".xdf", ".mat", ".npz", ".npy", ".csv"]
+    preferred = [
+        ".vhdr",
+        ".edf",
+        ".bdf",
+        ".set",
+        ".fif",
+        ".gdf",
+        ".cnt",
+        ".egi",
+        ".mff",
+        ".xdf",
+        ".mat",
+        ".npz",
+        ".npy",
+        ".csv",
+        ".txt",
+    ]
     try:
         suffix_rank = preferred.index(suffix)
     except ValueError:
         suffix_rank = len(preferred)
     return eeg_dir_rank, suffix_rank, str(path)
+
+
+def _looks_like_supported_signal_file(path: Path) -> bool:
+    if not can_load_extension(path):
+        return False
+    if _loader_suffix(path) != ".txt":
+        return True
+    text = path.as_posix().casefold()
+    if any(token in text for token in ("readme", "license", "stimuli", "stimulus", "questionnaire", "metadata")):
+        return False
+    return "eeg" in text or "raw" in text or bool(re.search(r"(^|[/_-])(subj?|subject|user|s)\d+", text))
 
 
 def _require_module(name: str, *, extra: str):

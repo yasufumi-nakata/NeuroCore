@@ -111,6 +111,38 @@ def test_plan_acquisition_uses_dryad_doi_identifier_for_api() -> None:
     assert plan.candidates[0].url == "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.46786"
 
 
+def test_plan_acquisition_resolves_kilthub_figshare_doi_to_article_api() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="kilthub",
+            url="https://doi.org/10.1184/r1/25360300",
+            doi="10.1184/r1/25360300",
+            source_domain="doi.org",
+            description="CMU KiltHub EEG-BCI dataset",
+        )
+    )
+
+    assert plan.provider == "figshare"
+    assert plan.candidates[0].method == "figshare_api"
+    assert plan.candidates[0].url == "https://api.figshare.com/v2/articles/25360300"
+
+
+def test_plan_acquisition_resolves_figshare_collection_api() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="collection",
+            url="https://springernature.figshare.com/collections/example/5769449",
+            doi="10.6084/m9.figshare.c.5769449",
+            source_domain="springernature.figshare.com",
+            description="figshare collection of EEG subject datasets",
+        )
+    )
+
+    assert plan.provider == "figshare"
+    assert plan.candidates[0].method == "figshare_collection_api"
+    assert plan.candidates[0].url == "https://api.figshare.com/v2/collections/5769449/articles?page_size=100"
+
+
 def test_plan_acquisition_detects_dspace_research_collection() -> None:
     plan = plan_acquisition(
         record(
@@ -125,6 +157,27 @@ def test_plan_acquisition_detects_dspace_research_collection() -> None:
     assert plan.provider == "dspace"
     assert plan.automation_status == "direct_api"
     assert plan.candidates[0].method == "dspace_api"
+
+
+def test_plan_acquisition_prefers_osf_host_over_non_doi_text_mentions() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="osf",
+            url="https://osf.io/uyekv",
+            doi="",
+            source_domain="osf.io",
+            description="manual followup mentions figshare but source is OSF",
+            search_sources=(
+                "manual_current_osf_figshare_followup",
+                "https://api.osf.io/v2/nodes/uyekv/files/osfstorage/",
+                "https://osf.io/download/69d11ce90228fe5af34a13fe/",
+            ),
+        )
+    )
+
+    assert plan.provider == "osf"
+    assert any(candidate.url == "https://api.osf.io/v2/nodes/uyekv/files/osfstorage/" for candidate in plan.candidates)
+    assert all("/nodes/download/" not in candidate.url for candidate in plan.candidates)
 
 
 def test_plan_acquisition_treats_public_unknown_hosts_as_web_landing() -> None:

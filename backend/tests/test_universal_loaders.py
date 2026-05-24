@@ -54,6 +54,17 @@ def test_csv_loader_drops_index_and_timestamp_metadata_columns(tmp_path) -> None
     assert frame.provenance["dropped_metadata_columns"] == 2
 
 
+def test_txt_loader_uses_delimited_numeric_eeg_columns(tmp_path) -> None:
+    path = tmp_path / "user001_10_1.txt"
+    path.write_text("Time\tSample\tAF3\tF7\n0.0\t1\t10.5\t11.5\n0.1\t2\t12.5\t13.5\n", encoding="utf-8")
+
+    frame = load(path, sampling_rate=128)
+
+    assert frame.channel_names == ("AF3", "F7")
+    assert frame.data.shape == (2, 2)
+    assert frame.provenance["source"] == "csv"
+
+
 def test_mat_loader_flattens_multidimensional_eeg_array(tmp_path, monkeypatch) -> None:
     path = tmp_path / "subject.mat"
     payload = {
@@ -106,13 +117,18 @@ def test_directory_loader_prefers_signal_files_under_eeg_folder(tmp_path) -> Non
     misc.mkdir(parents=True)
     eeg.mkdir(parents=True)
     (misc / "table.csv").write_text("a\n1\n", encoding="utf-8")
+    (misc / "README.txt").write_text("metadata", encoding="utf-8")
     signal = eeg / "sub-01_task-test_eeg.csv"
     signal.write_text("Fz,Cz\n1,2\n3,4\n", encoding="utf-8")
+    text_signal = eeg / "user001_10_1.txt"
+    text_signal.write_text("Fz\tCz\n1\t2\n", encoding="utf-8")
 
     files = find_supported_signal_files(dataset)
     frame = load(dataset, sampling_rate=250)
 
     assert files[0] == signal
+    assert text_signal in files
+    assert misc / "README.txt" not in files
     assert frame.channel_names == ("Fz", "Cz")
 
 

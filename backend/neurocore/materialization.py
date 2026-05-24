@@ -56,6 +56,7 @@ CONFIDENT_SIGNAL_SUFFIXES = {
     ".xdf",
 }
 GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz"}
+TEXT_SIGNAL_SUFFIXES = {".txt"}
 RESOLVABLE_METHODS = {
     "bnci_index",
     "dataverse_api",
@@ -66,6 +67,7 @@ RESOLVABLE_METHODS = {
     "dspace_api",
     "dryad_api",
     "figshare_api",
+    "figshare_collection_api",
     "gin_index",
     "gin_client",
     "github_tree_api",
@@ -454,6 +456,8 @@ def _resolve_candidate(
         return _resolve_zenodo(plan, candidate, fetcher)
     if candidate.method == "figshare_api":
         return _resolve_figshare(plan, candidate, fetcher)
+    if candidate.method == "figshare_collection_api":
+        return _resolve_figshare_collection(plan, candidate, fetcher)
     if candidate.method == "osf_api":
         return _resolve_osf(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method == "dataverse_api":
@@ -535,6 +539,23 @@ def _resolve_figshare(
     return [file for file in files if file.url and file.name]
 
 
+def _resolve_figshare_collection(
+    plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetcher: JsonFetcher
+) -> list[RemoteFileCandidate]:
+    payload = fetcher(candidate.url)
+    files = []
+    for item in _list(payload):
+        article_url = _string(item.get("url_public_api") or item.get("url") or item.get("url_api"))
+        article_id = _int_or_none(item.get("id"))
+        if not article_url and article_id:
+            article_url = f"https://api.figshare.com/v2/articles/{article_id}"
+        if not article_url:
+            continue
+        article = AcquisitionCandidate("figshare", "figshare_api", article_url, "file_listing")
+        files.extend(_resolve_figshare(replace(plan, provider="figshare"), article, fetcher))
+    return _dedupe_files(files)
+
+
 def _resolve_osf(
     plan: AcquisitionPlan,
     candidate: AcquisitionCandidate,
@@ -553,10 +574,11 @@ def _resolve_osf(
         seen.add(url)
         payload = fetcher(url)
         pages += 1
+        related_links: list[tuple[str, str]] = []
         for item in _json_api_data(payload):
             attributes = _dict(item.get("attributes"))
             links = _dict(item.get("links"))
-            name = _string(attributes.get("materialized_path") or attributes.get("name")).strip("/")
+            name = _string(attributes.get("materialized_path") or attributes.get("name") or attributes.get("title")).strip("/")
             download_url = _string(links.get("download") or attributes.get("download_url"))
             if attributes.get("kind") == "file" and download_url:
                 files.append(
@@ -571,11 +593,22 @@ def _resolve_osf(
                 )
             related = _relationship_href(item, "files")
             if related:
+                related_links.append((name, related))
+            if item.get("type") == "nodes":
+                node_id = _string(item.get("id"))
+                if node_id:
+                    related_links.append((name, f"https://api.osf.io/v2/nodes/{node_id}/files/"))
+                    related_links.append((name, f"https://api.osf.io/v2/nodes/{node_id}/children/?page[size]=100"))
+            children = _relationship_href(item, "children")
+            if children:
+                related_links.append((name, children))
+        for _, related in sorted(related_links, key=lambda entry: _osf_queue_priority(*entry)):
+            if related not in seen:
                 queue.append(related)
         next_url = _string(_dict(payload.get("links")).get("next"))
         if next_url:
             queue.append(next_url)
-    return files
+    return _dedupe_files(files)
 
 
 def _resolve_dataverse(
@@ -1794,6 +1827,17 @@ def _relationship_href(item: dict[str, Any], name: str) -> str:
     return _string(related)
 
 
+def _osf_queue_priority(label: str, url: str) -> tuple[int, str]:
+    text = f"{label} {url}".casefold()
+    if any(token in text for token in ("rawdata", "raw data", "/raw", "eegdata", "eeg data", "eeg_data", "/eeg")):
+        return (0, text)
+    if any(token in text for token in ("stage 2", "stage2", "data", "osfstorage")):
+        return (1, text)
+    if any(token in text for token in ("snapshot", "stage 1", "stage1", "script", "supplement", "manuscript")):
+        return (3, text)
+    return (2, text)
+
+
 def _list(value: Any) -> list[Any]:
     return value if isinstance(value, list) else []
 
@@ -1958,7 +2002,11 @@ def _download_name_from_label(label: str) -> str:
     text = " ".join(unescape(label).replace("\n", " ").split())
     if not text:
         return ""
-    suffixes = sorted((*ARCHIVE_SUFFIXES, *CONFIDENT_SIGNAL_SUFFIXES, *GENERIC_NUMERIC_SUFFIXES), key=len, reverse=True)
+    suffixes = sorted(
+        (*ARCHIVE_SUFFIXES, *CONFIDENT_SIGNAL_SUFFIXES, *GENERIC_NUMERIC_SUFFIXES, *TEXT_SIGNAL_SUFFIXES),
+        key=len,
+        reverse=True,
+    )
     suffix_pattern = "|".join(re.escape(suffix) for suffix in suffixes)
     match = re.search(rf"([^\s()<>\"']+?(?:{suffix_pattern}))\b", text, flags=re.IGNORECASE)
     if match:
@@ -2084,6 +2132,8 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
         return _is_signal_like_generic_path(name)
     if suffix == ".csv" and "csv" in hints:
         return _is_signal_like_generic_path(name)
+    if suffix in TEXT_SIGNAL_SUFFIXES and "text" in hints:
+        return _is_signal_like_generic_path(name)
     return False
 
 
@@ -2100,6 +2150,8 @@ def _is_signal_like_generic_path(name: str) -> bool:
             "readme",
             "stimuli",
             "stimulus",
+            "intervalmarker",
+            "metadata",
             "score",
             "scores",
             "result",
@@ -2127,7 +2179,19 @@ def _is_signal_like_generic_path(name: str) -> bool:
         return True
     if re.search(r"^(data[_-]?s\d+|s\d+[_-]?data|subject[_-]?\d+[_-]?data)", basename):
         return True
+    if re.fullmatch(r"s\d+", stem):
+        return True
     if re.search(r"^data[_-][a-z0-9]+[_-]sub[_-]?\d+", basename):
+        return True
+    if re.search(r"^s\d+_[0-9]+_kmi$", stem):
+        return True
+    if re.search(r"^user\d+_[0-9]+_[0-9]+$", stem):
+        return True
+    if re.search(r"^subj(?:ect)?[_-]?\d+[_-]?(?:rest|tms|eeg|raw|task)", basename):
+        return True
+    if re.fullmatch(r"\d{5,}", stem):
+        return True
+    if re.search(r"(?:^|[ _/-])(?:class|diff)[_-]?[a-z0-9]+$", stem):
         return True
     if any(
         token in stem

@@ -559,6 +559,36 @@ def test_generic_mat_detection_accepts_subject_data_names_when_plan_hints_mat() 
     assert by_name["Sub_score.mat"].directly_loadable is False
 
 
+def test_figshare_collection_resolution_expands_member_articles() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://springernature.figshare.com/collections/example/5769449",
+            doi="10.6084/m9.figshare.c.5769449",
+            source_domain="springernature.figshare.com",
+            description="BIDS MATLAB EEG collection",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url == "https://api.figshare.com/v2/collections/5769449/articles?page_size=100":
+            return [{"id": 17701079, "url_public_api": "https://api.figshare.com/v2/articles/17701079"}]
+        if url == "https://api.figshare.com/v2/articles/17701079":
+            return {
+                "files": [
+                    {"name": "s04.mat", "download_url": "https://example.test/s04.mat"},
+                    {"name": "README.txt", "download_url": "https://example.test/README.txt"},
+                ]
+            }
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    by_name = {file.name: file for file in resolution.files}
+
+    assert resolution.status == "resolved"
+    assert by_name["s04.mat"].directly_loadable is True
+    assert by_name["README.txt"].directly_loadable is False
+
+
 def test_generic_mat_detection_accepts_session_and_group_names_but_skips_derived_tables() -> None:
     plan = plan_acquisition(
         record(
@@ -583,6 +613,10 @@ def test_generic_mat_detection_accepts_session_and_group_names_but_skips_derived
                     "content_details": {"download_url": "https://example.test/Data_Design_Sub_1.mat"},
                 },
                 {"filename": "dataica.mat", "content_details": {"download_url": "https://example.test/dataica.mat"}},
+                {"filename": "Subj_1_rest.mat", "content_details": {"download_url": "https://example.test/Subj_1_rest.mat"}},
+                {"filename": "Subj_1_TMS.mat", "content_details": {"download_url": "https://example.test/Subj_1_TMS.mat"}},
+                {"filename": "CLASS_A.mat", "content_details": {"download_url": "https://example.test/CLASS_A.mat"}},
+                {"filename": "DIFF6.mat", "content_details": {"download_url": "https://example.test/DIFF6.mat"}},
                 {
                     "filename": "Central_alpha_fft_rest.mat",
                     "content_details": {"download_url": "https://example.test/Central_alpha_fft_rest.mat"},
@@ -598,6 +632,10 @@ def test_generic_mat_detection_accepts_session_and_group_names_but_skips_derived
     assert by_name["AD.mat"].directly_loadable is True
     assert by_name["Data_Design_Sub_1.mat"].directly_loadable is True
     assert by_name["dataica.mat"].directly_loadable is True
+    assert by_name["Subj_1_rest.mat"].directly_loadable is True
+    assert by_name["Subj_1_TMS.mat"].directly_loadable is True
+    assert by_name["CLASS_A.mat"].directly_loadable is True
+    assert by_name["DIFF6.mat"].directly_loadable is True
     assert by_name["Central_alpha_fft_rest.mat"].directly_loadable is False
 
 
@@ -771,6 +809,139 @@ def test_generic_csv_detection_uses_raw_task_paths_without_treating_stimuli_as_r
 
     assert resolution.files[0].directly_loadable is True
     assert resolution.files[1].directly_loadable is False
+
+
+def test_generic_csv_detection_accepts_numeric_raw_files_but_not_marker_or_metadata_csvs() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://figshare.com/articles/dataset/example/31964610",
+            doi="10.6084/m9.figshare.31964610",
+            source_domain="figshare.com",
+            description="raw EEG participant CSV recordings",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {"name": "235745.csv", "download_url": "https://example.test/235745.csv"},
+                {"name": "235745_intervalMarker.csv", "download_url": "https://example.test/235745_intervalMarker.csv"},
+                {"name": "participant_metadata.csv", "download_url": "https://example.test/participant_metadata.csv"},
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    by_name = {file.name: file for file in resolution.files}
+
+    assert by_name["235745.csv"].directly_loadable is True
+    assert by_name["235745_intervalMarker.csv"].directly_loadable is False
+    assert by_name["participant_metadata.csv"].directly_loadable is False
+
+
+def test_generic_csv_and_text_detection_accepts_kmi_raw_exports() -> None:
+    csv_plan = plan_acquisition(
+        record(
+            url="https://data.mendeley.com/datasets/msgzn862ns",
+            doi="10.17632/msgzn862ns",
+            source_domain="data.mendeley.com",
+            description="raw EEG CSV files for kinesthetic motor imagery",
+        )
+    )
+    text_plan = plan_acquisition(
+        record(
+            url="https://figshare.com/articles/dataset/example/25773342",
+            doi="10.6084/m9.figshare.25773342",
+            source_domain="figshare.com",
+            description="raw EEG text files for kinesthetic motor imagery",
+        )
+    )
+
+    def fetch_csv(_url: str):
+        return {
+            "files": [
+                {"filename": "S01_10_KMI.csv", "content_details": {"download_url": "https://example.test/S01_10_KMI.csv"}},
+                {"filename": "info_subjects.xlsx", "content_details": {"download_url": "https://example.test/info_subjects.xlsx"}},
+            ]
+        }
+
+    def fetch_text(_url: str):
+        return {
+            "files": [
+                {"name": "user001_10_1.txt", "download_url": "https://example.test/user001_10_1.txt"},
+                {"name": "readme.txt", "download_url": "https://example.test/readme.txt"},
+            ]
+        }
+
+    csv_resolution = resolve_remote_files(csv_plan, fetch_json=fetch_csv)
+    text_resolution = resolve_remote_files(text_plan, fetch_json=fetch_text)
+
+    csv_by_name = {file.name: file for file in csv_resolution.files}
+    text_by_name = {file.name: file for file in text_resolution.files}
+    assert csv_by_name["S01_10_KMI.csv"].directly_loadable is True
+    assert csv_by_name["info_subjects.xlsx"].directly_loadable is False
+    assert text_by_name["user001_10_1.txt"].directly_loadable is True
+    assert text_by_name["readme.txt"].directly_loadable is False
+
+
+def test_osf_resolution_follows_child_nodes_and_prioritizes_raw_folders() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://osf.io/5jz9d",
+            doi="",
+            source_domain="osf.io",
+            description="BrainVision EEG RawData",
+        )
+    )
+    queried: list[str] = []
+
+    def fetch_json(url: str):
+        queried.append(url)
+        if url == "https://api.osf.io/v2/nodes/5jz9d/files/":
+            return {
+                "data": [
+                    {
+                        "type": "files",
+                        "attributes": {"kind": "folder", "name": "osfstorage"},
+                        "relationships": {
+                            "files": {
+                                "links": {"related": {"href": "https://api.osf.io/v2/nodes/5jz9d/files/osfstorage/"}}
+                            }
+                        },
+                    }
+                ]
+            }
+        if url == "https://api.osf.io/v2/nodes/5jz9d/files/osfstorage/":
+            return {
+                "data": [
+                    {
+                        "type": "nodes",
+                        "id": "other",
+                        "attributes": {"title": "MeanERP"},
+                        "relationships": {"children": {"links": {"related": {"href": "https://api.osf.io/v2/nodes/other/children/"}}}},
+                    },
+                    {"type": "nodes", "id": "raw1", "attributes": {"title": "RawData"}},
+                ]
+            }
+        if url == "https://api.osf.io/v2/nodes/raw1/files/":
+            return {
+                "data": [
+                    {
+                        "type": "files",
+                        "attributes": {
+                            "kind": "file",
+                            "materialized_path": "/sub-01/eeg/sub-01_task-test_eeg.vhdr",
+                            "size": 123,
+                        },
+                        "links": {"download": "https://files.osf.io/sub-01_task-test_eeg.vhdr"},
+                    }
+                ]
+            }
+        return {"data": []}
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json, max_pages=5)
+
+    assert queried.index("https://api.osf.io/v2/nodes/raw1/files/") < len(queried)
+    assert resolution.files[0].directly_loadable is True
 
 
 def test_xz_tarballs_are_classified_as_extractable_archives() -> None:

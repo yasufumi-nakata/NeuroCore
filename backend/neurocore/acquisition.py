@@ -203,7 +203,7 @@ def local_readiness_for_record(
 
 def detect_provider(record: DatasetRecord) -> str:
     text = " ".join([record.source_domain, record.url, record.doi, " ".join(record.search_sources)]).lower()
-    doi_provider = _doi_provider(record.doi) or _doi_provider(text)
+    doi_provider = _doi_provider(record.doi) or _doi_provider_from_text(text)
     if doi_provider:
         return doi_provider
     hosts = [_host(record.url), *[_host(source) for source in record.search_sources]]
@@ -233,8 +233,24 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
                 )
             )
     elif provider == "figshare":
-        article_id = _first_match(r"articles/(?:dataset/)?[^/]+/(\d+)|articles/(\d+)", " ".join(landing_urls))
-        if article_id:
+        collection_id = _first_match(
+            r"figshare\.c\.(\d+)|collections/(?:[^/]+/)?(\d+)",
+            " ".join(landing_urls + [record.doi]),
+        )
+        article_id = _first_match(
+            r"articles/(?:dataset/)?[^/]+/(\d+)|articles/(\d+)|10\.6084/m9\.figshare\.(\d+)|10\.1184/r1/(\d+)",
+            " ".join(landing_urls + [record.doi]),
+        )
+        if collection_id:
+            candidates.append(
+                AcquisitionCandidate(
+                    provider,
+                    "figshare_collection_api",
+                    f"https://api.figshare.com/v2/collections/{collection_id}/articles?page_size=100",
+                    "file_listing",
+                )
+            )
+        elif article_id:
             candidates.append(
                 AcquisitionCandidate(
                     provider,
@@ -248,11 +264,26 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
                 AcquisitionCandidate(provider, "doi_resolver", f"https://doi.org/{record.doi}", "landing")
             )
     elif provider == "osf":
-        node_id = _first_match(r"osf\.io/([a-z0-9]{4,8})", " ".join(landing_urls))
-        if node_id:
+        osf_candidate_urls: list[str] = []
+        for url in landing_urls:
+            if "api.osf.io/v2/nodes/" in url and (
+                "/files/" in url or "/children/" in url or re.search(r"/nodes/[a-z0-9]{4,8}/?$", url)
+            ):
+                normalized = url
+                if re.search(r"/nodes/[a-z0-9]{4,8}/?$", normalized) and "/files/" not in normalized:
+                    normalized = normalized.rstrip("/") + "/files/"
+                osf_candidate_urls.append(normalized)
+        for node_id in re.findall(
+            r"osf\.io/(?!download(?:/|$))([a-z0-9]{4,8})(?:[/?#]|$)",
+            " ".join(landing_urls),
+            flags=re.IGNORECASE,
+        ):
+            osf_candidate_urls.append(f"https://api.osf.io/v2/nodes/{node_id}/files/")
+            osf_candidate_urls.append(f"https://api.osf.io/v2/nodes/{node_id}/children/?page[size]=100")
+        for url in osf_candidate_urls:
             candidates.append(
                 AcquisitionCandidate(
-                    provider, "osf_api", f"https://api.osf.io/v2/nodes/{node_id}/files/", "file_listing"
+                    provider, "osf_api", url, "file_listing"
                 )
             )
     elif provider == "openneuro":
@@ -469,6 +500,8 @@ def _doi_provider(value: str) -> str | None:
         return "figshare"
     if any(prefix in text for prefix in ("10.11583/dtu", "10.4121/", "10.4225/03/")):
         return "figshare"
+    if "10.1184/r1/" in text:
+        return "figshare"
     if "openneuro" in text or "10.18112/openneuro" in text:
         return "openneuro"
     if "10.17605/osf.io" in text:
@@ -489,6 +522,14 @@ def _doi_provider(value: str) -> str | None:
         return "scidb"
     if "10.7488/ds/" in text:
         return "repository_html"
+    return None
+
+
+def _doi_provider_from_text(value: str) -> str | None:
+    for doi in re.findall(r"10\.\d{4,9}/[^\s,;\"'<>]+", value, flags=re.IGNORECASE):
+        provider = _doi_provider(doi.rstrip(").]"))
+        if provider:
+            return provider
     return None
 
 
@@ -550,6 +591,7 @@ def _format_hints(record: DatasetRecord) -> set[str]:
         "mat": (r"\.mat\b", r"matlab"),
         "numpy": (r"\.npy\b", r"\.npz\b"),
         "csv": (r"\.csv\b", r"\bcsv\b"),
+        "text": (r"\.txt\b", r"\btext files?\b"),
     }.items():
         if any(re.search(pattern, text) for pattern in patterns):
             hints.add(label)
