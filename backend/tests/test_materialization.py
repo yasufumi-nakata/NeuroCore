@@ -296,6 +296,130 @@ def test_seeg_segment_mat_paths_can_be_raw_signal_files() -> None:
     assert by_name["data/AML/AML_stim_lang_elecs.mat"].directly_loadable is False
 
 
+def test_numeric_session_mat_files_can_be_raw_eeg_when_dataset_context_is_neural() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://data.mendeley.com/datasets/7r4z3p3g4m",
+            doi="10.17632/7r4z3p3g4m",
+            source_domain="data.mendeley.com",
+            name="N&C-TEC: ECG and EEG files",
+            equipment="MAT",
+            description="EEG and ECG MATLAB session files.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {"filename": "01_01.mat", "content_details": {"download_url": "https://example.test/01_01.mat"}},
+                {"filename": "02-05_07.mat", "content_details": {"download_url": "https://example.test/02-05_07.mat"}},
+                {"filename": "participants.xlsx", "content_details": {"download_url": "https://example.test/participants.xlsx"}},
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    by_name = {file.name: file for file in resolution.files}
+
+    assert by_name["01_01.mat"].directly_loadable is True
+    assert by_name["02-05_07.mat"].directly_loadable is True
+    assert by_name["participants.xlsx"].directly_loadable is False
+
+
+def test_bci_x_named_mat_files_can_be_raw_signal_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://figshare.com/articles/dataset/example/14721297",
+            doi="10.6084/m9.figshare.14721297",
+            source_domain="figshare.com",
+            name="BCI classification task",
+            equipment="MAT",
+            description="Brain-computer interface EEG classification matrices.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {"files": [{"name": "X7.mat", "download_url": "https://example.test/X7.mat"}]}
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].directly_loadable is True
+
+
+def test_rds_and_ecog_mat_names_can_be_raw_signal_files() -> None:
+    r_plan = plan_acquisition(
+        record(
+            url="https://figshare.com/articles/dataset/example/4210863",
+            doi="10.6084/m9.figshare.4210863",
+            source_domain="figshare.com",
+            name="Early integration of conceptual modality in word recognition: ERP evidence",
+            equipment="BrainVision RDS",
+            description="ERP EEG R data exports.",
+        )
+    )
+    mat_plan = plan_acquisition(
+        record(
+            url="https://data.mendeley.com/datasets/w68hwtb98d",
+            doi="10.17632/w68hwtb98d",
+            source_domain="data.mendeley.com",
+            name="Stable decoding continuous hand movement trajectory from ECoG signals",
+            equipment="MAT",
+            description="ECoG MATLAB signal file plus code.",
+        )
+    )
+
+    def fetch_r(_url: str):
+        return {
+            "files": [
+                {"name": "EEG.rds", "download_url": "https://example.test/EEG.rds"},
+                {"name": "EEG.window1.rds", "download_url": "https://example.test/EEG.window1.rds"},
+            ]
+        }
+
+    def fetch_mat(_url: str):
+        return {
+            "files": [
+                {"filename": "ECoG.mat", "content_details": {"download_url": "https://example.test/ECoG.mat"}},
+                {"filename": "Motion.mat", "content_details": {"download_url": "https://example.test/Motion.mat"}},
+            ]
+        }
+
+    r_resolution = resolve_remote_files(r_plan, fetch_json=fetch_r)
+    mat_resolution = resolve_remote_files(mat_plan, fetch_json=fetch_mat)
+    r_by_name = {file.name: file for file in r_resolution.files}
+    mat_by_name = {file.name: file for file in mat_resolution.files}
+
+    assert r_by_name["EEG.rds"].directly_loadable is True
+    assert r_by_name["EEG.window1.rds"].directly_loadable is True
+    assert mat_by_name["ECoG.mat"].directly_loadable is True
+    assert mat_by_name["Motion.mat"].directly_loadable is False
+
+
+def test_named_eeg_text_file_can_be_raw_signal_without_inventory_text_hint() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://figshare.com/articles/dataset/example/14199467",
+            doi="10.6084/m9.figshare.14199467",
+            source_domain="figshare.com",
+            name="A Novel Brain-Computer Interfaces System Design Based on Combining of fNIRS and EEG Signals",
+            description="Signal dataset.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {"name": "dataset_eeg_fnirs.txt", "download_url": "https://example.test/dataset_eeg_fnirs.txt"},
+                {"name": "readme.txt", "download_url": "https://example.test/readme.txt"},
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    by_name = {file.name: file for file in resolution.files}
+
+    assert by_name["dataset_eeg_fnirs.txt"].directly_loadable is True
+    assert by_name["readme.txt"].directly_loadable is False
+
+
 def test_extensionless_rawdata_parts_are_treated_as_archives() -> None:
     plan = plan_acquisition(
         record(
@@ -1805,6 +1929,34 @@ def test_http_landing_scrapes_direct_file_links() -> None:
     resolution = resolve_remote_files(plan, fetch_json=lambda url: html if url.startswith("html+landing://") else {})
 
     assert resolution.files[0].name == "sub-01_eeg.edf"
+    assert resolution.files[0].directly_loadable is True
+
+
+def test_http_landing_delegates_arxiv_dataset_doi_to_zenodo() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://arxiv.org/abs/1904.09111",
+            doi="10.48550/arXiv.1904.09111",
+            source_domain="arxiv.org",
+            description="P300 BCI EEG dataset in MAT and CSV formats.",
+        )
+    )
+    queried: list[str] = []
+
+    def fetch_json(url: str):
+        queried.append(url)
+        if url.startswith("html+landing://"):
+            return '<a href="https://doi.org/10.5281/zenodo.1494163">dataset DOI</a>'
+        assert url == "https://zenodo.org/api/records/1494163"
+        return {"files": [{"key": "subject01.mat", "links": {"self": "https://example.test/subject01.mat"}}]}
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert queried == [
+        "html+landing://?url=https%3A%2F%2Farxiv.org%2Fabs%2F1904.09111",
+        "https://zenodo.org/api/records/1494163",
+    ]
+    assert resolution.files[0].provider == "zenodo"
     assert resolution.files[0].directly_loadable is True
 
 

@@ -728,22 +728,35 @@ def _resolve_delegated_url(
     max_pages: int,
 ) -> list[RemoteFileCandidate]:
     host = urlparse(target).netloc.lower()
+    record_id = _first_match(r"zenodo\.(\d+)", target)
+    if not record_id and "zenodo.org" in host:
+        record_id = _first_match(r"records/(\d+)", target)
+    if record_id:
+        delegated_plan = replace(plan, provider="zenodo")
+        delegated = AcquisitionCandidate(
+            "zenodo", "zenodo_api", f"https://zenodo.org/api/records/{record_id}", "file_listing"
+        )
+        return _resolve_zenodo(delegated_plan, delegated, fetcher)
+    article_id = (
+        _figshare_article_id(target)
+        if _is_figshare_host(host) or "figshare." in target.lower()
+        else None
+    )
+    if article_id:
+        delegated_plan = replace(plan, provider="figshare")
+        delegated = AcquisitionCandidate(
+            "figshare", "figshare_api", f"https://api.figshare.com/v2/articles/{article_id}", "file_listing"
+        )
+        return _resolve_figshare(delegated_plan, delegated, fetcher)
+    node_id = _first_match(r"osf\.io/([a-z0-9]{4,8})", target)
+    if node_id:
+        delegated_plan = replace(plan, provider="osf")
+        delegated = AcquisitionCandidate("osf", "osf_api", f"https://api.osf.io/v2/nodes/{node_id}/files/", "file_listing")
+        return _resolve_osf(delegated_plan, delegated, fetcher, max_pages=max_pages)
     if "zenodo.org" in host:
-        record_id = _first_match(r"zenodo\.(\d+)|records/(\d+)", target)
-        if record_id:
-            delegated_plan = replace(plan, provider="zenodo")
-            delegated = AcquisitionCandidate(
-                "zenodo", "zenodo_api", f"https://zenodo.org/api/records/{record_id}", "file_listing"
-            )
-            return _resolve_zenodo(delegated_plan, delegated, fetcher)
+        return []
     if _is_figshare_host(host):
-        article_id = _figshare_article_id(target)
-        if article_id:
-            delegated_plan = replace(plan, provider="figshare")
-            delegated = AcquisitionCandidate(
-                "figshare", "figshare_api", f"https://api.figshare.com/v2/articles/{article_id}", "file_listing"
-            )
-            return _resolve_figshare(delegated_plan, delegated, fetcher)
+        return []
     if _is_dataverse_host(host):
         api_url = _dataverse_api_url_from_landing(target)
         if api_url:
@@ -766,11 +779,7 @@ def _resolve_delegated_url(
             )
             return _resolve_stanford_purl(delegated_plan, delegated, fetcher)
     if "osf.io" in host:
-        node_id = _first_match(r"osf\.io/([a-z0-9]{4,8})", target)
-        if node_id:
-            delegated_plan = replace(plan, provider="osf")
-            delegated = AcquisitionCandidate("osf", "osf_api", f"https://api.osf.io/v2/nodes/{node_id}/files/", "file_listing")
-            return _resolve_osf(delegated_plan, delegated, fetcher, max_pages=max_pages)
+        return []
     if "openneuro.org" in host:
         delegated_plan = replace(plan, provider="openneuro")
         delegated = AcquisitionCandidate("openneuro", "openneuro_api", target, "file_listing")
@@ -1308,6 +1317,7 @@ def _resolve_http_landing(
         return _dedupe_files(files)
 
     html = _string(payload)
+    links = _html_link_items(html)
     for href, label in _html_link_items(html):
         url = urljoin(candidate.url, unescape(href).replace("\\/", "/"))
         if not url.startswith(("http://", "https://")):
@@ -1325,6 +1335,14 @@ def _resolve_http_landing(
         files.append(_remote_file(plan, candidate, name=name, url=url, source_url=candidate.url))
         if max_pages is not None and len(files) >= max_pages * 1000:
             break
+    if not files:
+        for href, _ in links:
+            url = urljoin(candidate.url, unescape(href).replace("\\/", "/"))
+            if not _is_delegatable_dataset_url(url):
+                continue
+            files.extend(_resolve_delegated_url(plan, url, fetcher, max_pages=max_pages))
+            if files:
+                break
     return _dedupe_files(files)
 
 
@@ -2027,7 +2045,33 @@ def _is_repository_html_host(host: str) -> bool:
 
 
 def _figshare_article_id(value: str) -> str | None:
-    return _first_match(r"articles/(?:dataset/)?[^/]+/(\d+)|articles/(\d+)", value)
+    return _first_match(r"articles/(?:dataset/)?[^/]+/(\d+)|articles/(\d+)|figshare\.(\d+)", value)
+
+
+def _is_delegatable_dataset_url(url: str) -> bool:
+    host = urlparse(url).netloc.lower().removeprefix("www.")
+    text = url.lower()
+    if "doi.org" in host:
+        return any(token in text for token in ("zenodo.", "figshare.", "osf.io/"))
+    return (
+        "zenodo.org" in host
+        or _is_figshare_host(host)
+        or _is_dataverse_host(host)
+        or _is_data_ru_host(host)
+        or _is_stanford_sdr_host(host)
+        or "osf.io" in host
+        or "openneuro.org" in host
+        or "github.com" in host
+        or "physionet.org" in host
+        or "dandiarchive.org" in host
+        or "huggingface.co" in host
+        or "kaggle.com" in host
+        or "nemar.org" in host
+        or "scidb.cn" in host
+        or "bnci-horizon-2020.eu" in host
+        or "research-collection.ethz.ch" in host
+        or _is_repository_html_host(host)
+    )
 
 
 def _dataverse_api_url_from_landing(url: str) -> str:
@@ -2207,7 +2251,7 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
             or _is_eeg_condition_delimited_file(name, plan)
             or _is_eeg_device_delimited_file(name, plan)
         )
-    if suffix in TEXT_SIGNAL_SUFFIXES and "text" in hints:
+    if suffix in TEXT_SIGNAL_SUFFIXES and ("text" in hints or _is_neural_text_signal_file(name, plan)):
         return _is_signal_like_generic_path(name)
     if suffix in {".tab", ".tsv"} and hints.intersection({"csv", "text"}):
         return _is_signal_like_generic_path(name)
@@ -2251,9 +2295,8 @@ def _is_time_series_classification_signal_file(name: str, plan: AcquisitionPlan)
 def _is_r_signal_file(name: str, plan: AcquisitionPlan) -> bool:
     normalized = name.replace("\\", "/").lower()
     stem = Path(normalized).stem
-    text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)}".lower()
-    neural_context = re.search(r"\b(eeg|ecog|seeg|ieeg|neural|seizure|fragility)\b", text)
-    if not neural_context:
+    text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)} {normalized}".lower()
+    if not _has_neural_context(text):
         return False
     if stem.startswith(("hupdata_", "fragilitydata_")):
         return True
@@ -2279,13 +2322,34 @@ def _is_neural_mat_path(name: str, plan: AcquisitionPlan) -> bool:
     normalized = name.replace("\\", "/").lower()
     stem = Path(normalized).stem
     context = f"{plan.name} {plan.access_status} {plan.rationale} {' '.join(plan.format_hints)}".lower()
-    if not re.search(r"\b(eeg|ecog|seeg|ieeg|electrocorticography|stereoelectroencephalography)\b", context):
+    if not _has_neural_context(context):
         return False
+    if stem in {"ecog", "ieeg", "seeg"}:
+        return True
     if re.fullmatch(r"s\d+[_-]e\d+", stem):
         return True
+    if re.fullmatch(r"\d{2}(?:[_-]\d{2})+", stem):
+        return True
+    if "bci" in context or "brain-computer" in context:
+        if re.fullmatch(r"x\d+", stem):
+            return True
     if (normalized.startswith("data/") or "/data/" in normalized) and re.fullmatch(r"[a-z0-9]{2,8}_.+_seg", stem):
         return True
     return False
+
+
+def _is_neural_text_signal_file(name: str, plan: AcquisitionPlan) -> bool:
+    text = f"{plan.name} {plan.access_status} {' '.join(plan.format_hints)} {name}".lower()
+    return _has_neural_context(text)
+
+
+def _has_neural_context(text: str) -> bool:
+    return bool(
+        re.search(
+            r"\b(eeg|ecog|seeg|ieeg|erp|p300|bci|fnirs|neural|seizure|fragility|brainvision|brain-computer|electrocorticography|stereoelectroencephalography)\b",
+            text,
+        )
+    )
 
 
 def _is_signal_like_generic_path(name: str) -> bool:
