@@ -29,7 +29,9 @@ MNE_RAW_READERS = {
 
 SUPPORTED_EXTENSIONS = {
     ".csv",
+    ".tab",
     ".txt",
+    ".tsv",
     ".nwb",
     ".npy",
     ".npz",
@@ -50,7 +52,7 @@ def load(
     if resolved.is_dir():
         return load_directory(resolved, sampling_rate=sampling_rate, mne_preload=mne_preload)
     suffix = _loader_suffix(resolved)
-    if suffix in {".csv", ".txt"}:
+    if suffix in {".csv", ".tab", ".txt", ".tsv"}:
         if sampling_rate is None:
             raise ValueError("sampling_rate is required when loading delimited EEG data")
         return load_csv(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
@@ -97,7 +99,7 @@ def load_csv(
         sample = handle.read(4096)
         handle.seek(0)
         try:
-            dialect = csv.Sniffer().sniff(sample, delimiters=",\t; ")
+            dialect = csv.Sniffer().sniff(sample, delimiters=",\t;")
         except csv.Error:
             dialect = csv.excel
         reader = csv.reader(handle, dialect=dialect)
@@ -110,6 +112,8 @@ def load_csv(
             names = [str(item).strip() for item in channel_names]
         raw_rows: list[list[str]] = []
         for line_number, row in enumerate(reader, start=2):
+            if not any(cell.strip() for cell in row):
+                continue
             if len(row) != len(header):
                 raise ValueError(f"CSV row {line_number} has {len(row)} values, expected {len(header)}")
             raw_rows.append(row)
@@ -385,6 +389,8 @@ def _signal_file_sort_key(path: Path) -> tuple[int, int, str]:
         ".npz",
         ".npy",
         ".csv",
+        ".tsv",
+        ".tab",
         ".txt",
     ]
     try:
@@ -397,7 +403,7 @@ def _signal_file_sort_key(path: Path) -> tuple[int, int, str]:
 def _looks_like_supported_signal_file(path: Path) -> bool:
     if not can_load_extension(path):
         return False
-    if _loader_suffix(path) != ".txt":
+    if _loader_suffix(path) not in {".tab", ".txt", ".tsv"}:
         return True
     text = path.as_posix().casefold()
     if any(token in text for token in ("readme", "license", "stimuli", "stimulus", "questionnaire", "metadata")):

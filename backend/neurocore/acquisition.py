@@ -54,6 +54,7 @@ FIGSHARE_COMPATIBLE_HOSTS = {
 DATAVERSE_COMPATIBLE_HOSTS = {
     "borealisdata.ca",
     "dataverse.harvard.edu",
+    "rdr.kuleuven.be",
     "researchdata.ntu.edu.sg",
     "researchdata.lib.cityu.edu.hk",
     "redu.unicamp.br",
@@ -510,7 +511,7 @@ def _doi_provider(value: str) -> str | None:
         return "mendeley"
     if "10.7910/dvn/" in text:
         return "dataverse"
-    if any(prefix in text for prefix in ("10.5683/sp3/", "10.21979/n9/", "10.25824/redu/", "10.82468/")):
+    if any(prefix in text for prefix in ("10.48804/", "10.5683/sp3/", "10.21979/n9/", "10.25824/redu/", "10.82468/")):
         return "dataverse"
     if "10.34973/" in text:
         return "data_ru"
@@ -616,6 +617,8 @@ def _host(value: str) -> str:
 
 def _dataverse_host_for_record(record: DatasetRecord) -> str:
     text = record.doi.lower()
+    if "10.48804/" in text:
+        return "rdr.kuleuven.be"
     if "10.5683/sp3/" in text:
         return "borealisdata.ca"
     if "10.21979/n9/" in text:

@@ -55,8 +55,8 @@ CONFIDENT_SIGNAL_SUFFIXES = {
     ".vhdr",
     ".xdf",
 }
-GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz"}
-TEXT_SIGNAL_SUFFIXES = {".txt"}
+GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz", ".tab", ".tsv"}
+TEXT_SIGNAL_SUFFIXES = {".txt", ".tab", ".tsv"}
 RESOLVABLE_METHODS = {
     "bnci_index",
     "dataverse_api",
@@ -97,6 +97,7 @@ FIGSHARE_COMPATIBLE_HOSTS = {
 DATAVERSE_COMPATIBLE_HOSTS = {
     "borealisdata.ca",
     "dataverse.harvard.edu",
+    "rdr.kuleuven.be",
     "researchdata.ntu.edu.sg",
     "researchdata.lib.cityu.edu.hk",
     "redu.unicamp.br",
@@ -2131,10 +2132,19 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
     if suffix in {".npy", ".npz"} and "numpy" in hints:
         return _is_signal_like_generic_path(name)
     if suffix == ".csv" and "csv" in hints:
-        return _is_signal_like_generic_path(name)
+        return _is_signal_like_generic_path(name) or _is_eeg_condition_delimited_file(name, plan)
     if suffix in TEXT_SIGNAL_SUFFIXES and "text" in hints:
         return _is_signal_like_generic_path(name)
+    if suffix in {".tab", ".tsv"} and hints.intersection({"csv", "text"}):
+        return _is_signal_like_generic_path(name)
     return False
+
+
+def _is_eeg_condition_delimited_file(name: str, plan: AcquisitionPlan) -> bool:
+    if not re.search(r"\b(eeg|electroencephalogram)\b", plan.name, flags=re.IGNORECASE):
+        return False
+    stem = Path(name.lower()).stem
+    return stem in {"c", "ec", "eo", "et", "f", "h", "m", "r", "s"}
 
 
 def _is_signal_like_generic_path(name: str) -> bool:

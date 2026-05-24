@@ -54,6 +54,22 @@ def test_csv_loader_drops_index_and_timestamp_metadata_columns(tmp_path) -> None
     assert frame.provenance["dropped_metadata_columns"] == 2
 
 
+def test_csv_loader_handles_semicolon_delimited_channel_headers_with_spaces(tmp_path) -> None:
+    path = tmp_path / "EC.csv"
+    path.write_text(
+        "Channel 1 - P4;Channel 2 - O2;Channel 3 - P8\n"
+        "8.149666633;8.155891619;2.410844334\n"
+        "4.752077758;6.605314422;2.432889359\n"
+        "\n",
+        encoding="utf-8",
+    )
+
+    frame = load(path, sampling_rate=128)
+
+    assert frame.data.shape == (2, 3)
+    assert frame.channel_names == ("Channel 1 - P4", "Channel 2 - O2", "Channel 3 - P8")
+
+
 def test_txt_loader_uses_delimited_numeric_eeg_columns(tmp_path) -> None:
     path = tmp_path / "user001_10_1.txt"
     path.write_text("Time\tSample\tAF3\tF7\n0.0\t1\t10.5\t11.5\n0.1\t2\t12.5\t13.5\n", encoding="utf-8")
@@ -63,6 +79,21 @@ def test_txt_loader_uses_delimited_numeric_eeg_columns(tmp_path) -> None:
     assert frame.channel_names == ("AF3", "F7")
     assert frame.data.shape == (2, 2)
     assert frame.provenance["source"] == "csv"
+
+
+def test_tsv_and_tab_loaders_use_delimited_numeric_eeg_columns(tmp_path) -> None:
+    tsv = tmp_path / "sub-01_task-rest_eeg.tsv"
+    tab = tmp_path / "sub-02_task-rest_eeg.tab"
+    tsv.write_text("time\tFz\tCz\n0.0\t1.0\t2.0\n0.1\t3.0\t4.0\n", encoding="utf-8")
+    tab.write_text("time\tFz\tCz\n0.0\t5.0\t6.0\n0.1\t7.0\t8.0\n", encoding="utf-8")
+
+    tsv_frame = load(tsv, sampling_rate=250)
+    tab_frame = load(tab, sampling_rate=250)
+
+    assert tsv_frame.channel_names == ("Fz", "Cz")
+    assert tab_frame.channel_names == ("Fz", "Cz")
+    assert ".tsv" in supported_extensions()
+    assert ".tab" in supported_extensions()
 
 
 def test_mat_loader_flattens_multidimensional_eeg_array(tmp_path, monkeypatch) -> None:
@@ -122,12 +153,15 @@ def test_directory_loader_prefers_signal_files_under_eeg_folder(tmp_path) -> Non
     signal.write_text("Fz,Cz\n1,2\n3,4\n", encoding="utf-8")
     text_signal = eeg / "user001_10_1.txt"
     text_signal.write_text("Fz\tCz\n1\t2\n", encoding="utf-8")
+    tab_signal = eeg / "sub-01_task-rest_eeg.tsv"
+    tab_signal.write_text("Fz\tCz\n1\t2\n", encoding="utf-8")
 
     files = find_supported_signal_files(dataset)
     frame = load(dataset, sampling_rate=250)
 
     assert files[0] == signal
     assert text_signal in files
+    assert tab_signal in files
     assert misc / "README.txt" not in files
     assert frame.channel_names == ("Fz", "Cz")
 

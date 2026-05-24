@@ -127,6 +127,38 @@ def test_remote_resolution_does_not_treat_metadata_csv_as_raw_signal() -> None:
     assert resolution.files[0].materialization_action == "metadata_or_manual_review"
 
 
+def test_mendeley_short_condition_csv_names_can_be_raw_eeg() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://data.mendeley.com/datasets/4r8hp2hmb4",
+            doi="10.17632/4r8hp2hmb4.1",
+            source_domain="data.mendeley.com",
+            name="Electroencephalogram ( EEG ) dataset with rest and executive function task",
+            description="Raw EEG CSV files for eyes-closed, eyes-open, and task conditions.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {
+                    "filename": "EC.csv",
+                    "content_details": {"download_url": "https://example.test/ec.csv"},
+                },
+                {
+                    "filename": "Participants.xlsx",
+                    "content_details": {"download_url": "https://example.test/participants.xlsx"},
+                },
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].directly_loadable is True
+    assert resolution.files[0].materialization_action == "download_then_load"
+    assert resolution.files[1].directly_loadable is False
+
+
 def test_dataverse_resolution_builds_access_datafile_urls() -> None:
     plan = plan_acquisition(
         record(

@@ -257,6 +257,15 @@ def test_plan_acquisition_detects_dataverse_compatible_repositories() -> None:
             access_status="すぐに使える",
         )
     )
+    kuleuven = plan_acquisition(
+        record(
+            record_id="ku-leuven",
+            url="https://doi.org/10.48804/NV4RGL",
+            doi="10.48804/NV4RGL",
+            source_domain="doi.org",
+            access_status="すぐに使える",
+        )
+    )
     ntu = plan_acquisition(
         record(
             record_id="9",
@@ -271,6 +280,10 @@ def test_plan_acquisition_detects_dataverse_compatible_repositories() -> None:
     assert borealis.automation_status == "direct_api"
     assert borealis.candidates[0].method == "dataverse_api"
     assert borealis.candidates[0].url.startswith("https://borealisdata.ca/api/datasets/:persistentId/")
+    assert kuleuven.provider == "dataverse"
+    assert kuleuven.candidates[0].url == (
+        "https://rdr.kuleuven.be/api/datasets/:persistentId/?persistentId=doi%3A10.48804%2FNV4RGL"
+    )
     assert ntu.provider == "dataverse"
     assert ntu.candidates[0].url == (
         "https://researchdata.ntu.edu.sg/api/datasets/:persistentId/"
