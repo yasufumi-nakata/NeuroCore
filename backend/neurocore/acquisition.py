@@ -56,7 +56,9 @@ FIGSHARE_COMPATIBLE_HOSTS = {
 DATAVERSE_COMPATIBLE_HOSTS = {
     "borealisdata.ca",
     "dataverse.harvard.edu",
+    "entrepot.recherche.data.gouv.fr",
     "rdr.kuleuven.be",
+    "repo.researchdata.hu",
     "researchdata.ntu.edu.sg",
     "researchdata.lib.cityu.edu.hk",
     "redu.unicamp.br",
@@ -411,9 +413,8 @@ def _candidate_urls(record: DatasetRecord, provider: str) -> list[AcquisitionCan
                 AcquisitionCandidate(provider, "doi_resolver", f"https://doi.org/{record.doi}", "landing")
             )
     elif provider == "github":
-        repo = _first_match(r"github\.com[:/]([^/\s]+/[^/\s?#]+)", " ".join(landing_urls))
+        repo = _github_repo(" ".join(landing_urls))
         if repo:
-            repo = repo.removesuffix(".git")
             candidates.append(
                 AcquisitionCandidate(provider, "github_tree_api", f"https://github.com/{repo}.git", "file_listing")
             )
@@ -526,7 +527,10 @@ def _doi_provider(value: str) -> str | None:
         return "mendeley"
     if "10.7910/dvn/" in text:
         return "dataverse"
-    if any(prefix in text for prefix in ("10.48804/", "10.5683/sp3/", "10.21979/n9/", "10.25824/redu/", "10.82468/")):
+    if any(
+        prefix in text
+        for prefix in ("10.48804/", "10.5683/sp3/", "10.21979/n9/", "10.25824/redu/", "10.82468/", "10.57745/")
+    ):
         return "dataverse"
     if "10.34973/" in text:
         return "data_ru"
@@ -534,6 +538,8 @@ def _doi_provider(value: str) -> str | None:
         return "stanford_sdr"
     if "10.5061/dryad" in text:
         return "dryad"
+    if "10.82901/nemar" in text:
+        return "nemar"
     if "10.57760/sciencedb" in text or "sciencedb." in text:
         return "scidb"
     if "10.7488/ds/" in text:
@@ -662,6 +668,15 @@ def _dataverse_persistent_id_for_record(record: DatasetRecord) -> str:
 def _stanford_druid(value: str) -> str:
     text = value.strip()
     return _first_match(r"(?:purl\.stanford\.edu/|10\.25740/)([a-z]{2}\d{3}[a-z]{2}\d{4})", text) or ""
+
+
+def _github_repo(value: str) -> str | None:
+    match = re.search(r"api\.github\.com/repos/([^/\s?#]+/[^/\s?#]+)", value, flags=re.IGNORECASE)
+    if not match:
+        match = re.search(r"github\.com[:/]([^/\s]+/[^/\s?#]+)", value, flags=re.IGNORECASE)
+    if not match:
+        return None
+    return match.group(1).removesuffix(".git")
 
 
 def _first_match(pattern: str, text: str) -> str | None:

@@ -99,7 +99,9 @@ FIGSHARE_COMPATIBLE_HOSTS = {
 DATAVERSE_COMPATIBLE_HOSTS = {
     "borealisdata.ca",
     "dataverse.harvard.edu",
+    "entrepot.recherche.data.gouv.fr",
     "rdr.kuleuven.be",
+    "repo.researchdata.hu",
     "researchdata.ntu.edu.sg",
     "researchdata.lib.cityu.edu.hk",
     "redu.unicamp.br",
@@ -819,10 +821,9 @@ def _resolve_delegated_url(
 def _resolve_github(
     plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetcher: JsonFetcher
 ) -> list[RemoteFileCandidate]:
-    repo = _first_match(r"github\.com[:/]([^/\s]+/[^/\s?#]+)", candidate.url)
+    repo = _github_repo(candidate.url)
     if not repo:
         return []
-    repo = repo.removesuffix(".git")
     payload = fetcher(f"https://api.github.com/repos/{repo}/git/trees/HEAD?recursive=1")
     files = []
     for item in _list(payload.get("tree")):
@@ -1856,7 +1857,10 @@ def _relationship_href(item: dict[str, Any], name: str) -> str:
 
 def _osf_queue_priority(label: str, url: str) -> tuple[int, str]:
     text = f"{label} {url}".casefold()
-    if any(token in text for token in ("rawdata", "raw data", "/raw", "eegdata", "eeg data", "eeg_data", "/eeg")):
+    if any(
+        token in text
+        for token in ("rawdata", "raw data", "raw eeg", "epoched eeg", "/raw", "eegdata", "eeg data", "eeg_data", "/eeg")
+    ):
         return (0, text)
     if any(token in text for token in ("stage 2", "stage2", "data", "osfstorage")):
         return (1, text)
@@ -1989,6 +1993,15 @@ def _is_data_ru_host(host: str) -> bool:
 
 def _is_stanford_sdr_host(host: str) -> bool:
     return host.lower().removeprefix("www.") in STANFORD_SDR_HOSTS
+
+
+def _github_repo(value: str) -> str | None:
+    match = re.search(r"api\.github\.com/repos/([^/\s?#]+/[^/\s?#]+)", value, flags=re.IGNORECASE)
+    if not match:
+        match = re.search(r"github\.com[:/]([^/\s]+/[^/\s?#]+)", value, flags=re.IGNORECASE)
+    if not match:
+        return None
+    return match.group(1).removesuffix(".git")
 
 
 def _is_repository_html_host(host: str) -> bool:
@@ -2147,6 +2160,8 @@ def _is_directly_loadable_signal_name(name: str) -> bool:
     if suffix in CONFIDENT_SIGNAL_SUFFIXES:
         return True
     if suffix in GENERIC_NUMERIC_SUFFIXES:
+        if "starttime" in Path(name.lower()).stem:
+            return False
         if "eeg" in Path(name.lower()).stem:
             return True
         return bool(re.search(r"(^|[_./ -])(eeg|raw|signal|signals|recording|subject|sub-[a-z0-9]+|ses-[a-z0-9]+|task-[a-z0-9]+)", name, re.IGNORECASE))
@@ -2213,6 +2228,7 @@ def _is_signal_like_generic_path(name: str) -> bool:
             "stimulus",
             "intervalmarker",
             "metadata",
+            "starttime",
             "score",
             "scores",
             "result",
@@ -2257,6 +2273,8 @@ def _is_signal_like_generic_path(name: str) -> bool:
     if re.fullmatch(r"(?:dep|hc)ec\d+", stem):
         return True
     if re.fullmatch(r"shhs\d+[-_]\d+", stem):
+        return True
+    if re.search(r"^data[_-].*(?:combined|pre\d+|post\d+)", stem):
         return True
     if re.search(r"(?:^|[_-])annotated[_-]?sample\d+", stem):
         return True

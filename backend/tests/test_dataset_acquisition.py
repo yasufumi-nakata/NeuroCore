@@ -402,6 +402,63 @@ def test_plan_acquisition_prefers_nitrc_file_release_source() -> None:
     assert plan.candidates[0].url == "https://www.nitrc.org/frs/?group_id=1223"
 
 
+def test_plan_acquisition_uses_nemar_doi_over_dryad_alias() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="nemar-doi",
+            url="https://nemar.org/dataexplorer/detail?dataset_id=nm000151",
+            doi="10.82901/nemar.nm000151",
+            source_domain="nemar.org",
+            search_sources=("https://datadryad.org/stash/dataset/doi:10.5061/dryad.6qs86",),
+        )
+    )
+
+    assert plan.provider == "nemar"
+    assert plan.candidates[0].method == "nemar_index"
+
+
+def test_plan_acquisition_extracts_repo_from_github_api_source() -> None:
+    plan = plan_acquisition(
+        record(
+            record_id="github-api",
+            url="https://bdsp.io/content/dhypothermia/",
+            doi="10.60508/12gh-qj87",
+            source_domain="bdsp.io",
+            search_sources=("https://api.github.com/repos/bdsp-core/Hypothermia-EEG/git/trees/main?recursive=1",),
+        )
+    )
+
+    assert plan.provider == "github"
+    assert plan.candidates[0].url == "https://github.com/bdsp-core/Hypothermia-EEG.git"
+
+
+def test_plan_acquisition_uses_dataverse_compatible_landing_hosts() -> None:
+    concorda = plan_acquisition(
+        record(
+            record_id="concorda",
+            url="https://hdl.handle.net/21.15109/CONCORDA/UOQQVK",
+            doi="hdl:21.15109/concorda/uoqqvk",
+            source_domain="repo.researchdata.hu",
+            search_sources=(
+                "https://repo.researchdata.hu/api/datasets/:persistentId/?persistentId=hdl:21.15109/CONCORDA/UOQQVK",
+            ),
+        )
+    )
+    recherche = plan_acquisition(
+        record(
+            record_id="recherche-data-gouv",
+            url="https://entrepot.recherche.data.gouv.fr/dataset.xhtml?persistentId=doi:10.57745/WFQJBA",
+            doi="10.57745/WFQJBA",
+            source_domain="entrepot.recherche.data.gouv.fr",
+        )
+    )
+
+    assert concorda.provider == "dataverse"
+    assert concorda.candidates[0].url.startswith("https://repo.researchdata.hu/api/datasets/:persistentId/")
+    assert recherche.provider == "dataverse"
+    assert recherche.candidates[0].url.startswith("https://entrepot.recherche.data.gouv.fr/api/datasets/:persistentId/")
+
+
 def test_plan_inventory_acquisition_summary_counts() -> None:
     inventory = DatasetInventory(
         source="inventory.csv",

@@ -340,6 +340,84 @@ def test_epoch_cohort_and_sleep_numpy_names_can_be_raw_signal_files() -> None:
     assert all(file.directly_loadable for file in resolution.files)
 
 
+def test_macaque_ecog_combined_mat_names_can_be_raw_signal_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/123456",
+            doi="10.5281/zenodo.123456",
+            source_domain="zenodo.org",
+            name="Local-global Macaque ECoG",
+            description="Raw MAT ECoG data files.",
+            equipment="",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {
+                    "key": "Data_fixBB_corrected_screen_combined_Pre500_Post1700_Qu.mat",
+                    "links": {"self": "https://example.test/Data_fixBB_corrected_screen_combined_Pre500_Post1700_Qu.mat"},
+                },
+                {"key": "elPosition_Qu.mat", "links": {"self": "https://example.test/elPosition_Qu.mat"}},
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+    by_name = {file.name: file for file in resolution.files}
+
+    assert by_name["Data_fixBB_corrected_screen_combined_Pre500_Post1700_Qu.mat"].directly_loadable is True
+    assert by_name["elPosition_Qu.mat"].directly_loadable is False
+
+
+def test_osf_resolution_prioritizes_raw_eeg_folders_with_small_page_limit() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://osf.io/nech6",
+            doi="",
+            source_domain="osf.io",
+            description="Raw EEGLAB recordings.",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url == "https://api.osf.io/v2/nodes/nech6/files/":
+            return {
+                "data": [
+                    {
+                        "type": "files",
+                        "attributes": {"kind": "folder", "name": "Behavioural Data"},
+                        "relationships": {"files": {"links": {"related": {"href": "https://api.osf.io/v2/folders/behav/"}}}},
+                    },
+                    {
+                        "type": "files",
+                        "attributes": {"kind": "folder", "name": "Raw EEG"},
+                        "relationships": {"files": {"links": {"related": {"href": "https://api.osf.io/v2/folders/raw/"}}}},
+                    },
+                ],
+                "links": {"next": None},
+            }
+        if url == "https://api.osf.io/v2/folders/raw/":
+            return {
+                "data": [
+                    {
+                        "type": "files",
+                        "attributes": {"kind": "file", "materialized_path": "/Raw EEG/sub-01.set", "size": 10},
+                        "links": {"download": "https://osf.io/download/sub-01.set"},
+                    }
+                ],
+                "links": {"next": None},
+            }
+        if url == "https://api.osf.io/v2/nodes/nech6/children/?page[size]=100":
+            return {"data": [], "links": {"next": None}}
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json, max_pages=2)
+
+    assert resolution.files[0].name == "Raw EEG/sub-01.set"
+    assert resolution.files[0].directly_loadable is True
+
+
 def test_sleep_stage_torch_samples_can_be_raw_signal_files() -> None:
     plan = plan_acquisition(
         record(
@@ -890,6 +968,7 @@ def test_generic_mat_detection_accepts_session_and_group_names_but_skips_derived
                     "filename": "Central_alpha_fft_rest.mat",
                     "content_details": {"download_url": "https://example.test/Central_alpha_fft_rest.mat"},
                 },
+                {"filename": "EEGSTARTTIME.mat", "content_details": {"download_url": "https://example.test/EEGSTARTTIME.mat"}},
             ]
         }
 
@@ -906,6 +985,7 @@ def test_generic_mat_detection_accepts_session_and_group_names_but_skips_derived
     assert by_name["CLASS_A.mat"].directly_loadable is True
     assert by_name["DIFF6.mat"].directly_loadable is True
     assert by_name["Central_alpha_fft_rest.mat"].directly_loadable is False
+    assert by_name["EEGSTARTTIME.mat"].directly_loadable is False
 
 
 def test_dryad_resolution_follows_version_files_and_marks_archive() -> None:
@@ -1445,6 +1525,26 @@ def test_github_resolution_uses_tree_api_and_raw_urls() -> None:
     resolution = resolve_remote_files(plan, fetch_json=fetch_json)
 
     assert resolution.files[0].url == "https://raw.githubusercontent.com/example/eeg-data/HEAD/data/eeg.mat"
+    assert resolution.files[0].directly_loadable is True
+
+
+def test_github_resolution_accepts_api_repo_urls() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://api.github.com/repos/bdsp-core/Hypothermia-EEG/git/trees/main?recursive=1",
+            doi="",
+            source_domain="github.com",
+            description="MAT EEG files",
+        )
+    )
+
+    def fetch_json(url: str):
+        assert url == "https://api.github.com/repos/bdsp-core/Hypothermia-EEG/git/trees/HEAD?recursive=1"
+        return {"tree": [{"path": "data/raw_subject01.mat", "type": "blob", "size": 10, "sha": "abc"}]}
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].url == "https://raw.githubusercontent.com/bdsp-core/Hypothermia-EEG/HEAD/data/raw_subject01.mat"
     assert resolution.files[0].directly_loadable is True
 
 
