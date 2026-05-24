@@ -55,7 +55,7 @@ CONFIDENT_SIGNAL_SUFFIXES = {
     ".vhdr",
     ".xdf",
 }
-GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz", ".tab", ".tsv"}
+GENERIC_NUMERIC_SUFFIXES = {".csv", ".mat", ".npy", ".npz", ".pt", ".pth", ".tab", ".tsv"}
 TEXT_SIGNAL_SUFFIXES = {".txt", ".tab", ".tsv"}
 RESOLVABLE_METHODS = {
     "bnci_index",
@@ -2134,6 +2134,7 @@ def _is_archive_name(name: str) -> bool:
         any(normalized.endswith(suffix) for suffix in ARCHIVE_SUFFIXES)
         or bool(SPLIT_ARCHIVE_PATTERN.search(normalized))
         or bool(re.fullmatch(r"rawdata[_-]?part[_-]?\d+", Path(normalized).name))
+        or bool(re.fullmatch(r".+[_-]part[_-]?[a-z]", Path(normalized).name))
     )
 
 
@@ -2161,6 +2162,8 @@ def _is_generic_signal_supported_by_plan(name: str, plan: AcquisitionPlan) -> bo
         return _is_signal_like_generic_path(name)
     if suffix in {".npy", ".npz"} and "numpy" in hints:
         return _is_signal_like_generic_path(name)
+    if suffix in {".pt", ".pth"}:
+        return _is_torch_signal_file(name, plan)
     if suffix == ".csv" and "csv" in hints:
         return (
             _is_signal_like_generic_path(name)
@@ -2186,6 +2189,13 @@ def _is_eeg_device_delimited_file(name: str, plan: AcquisitionPlan) -> bool:
         return False
     stem = Path(name.lower()).stem
     return bool(re.search(r"(?:^|[_-])(?:openbci|gtec|g\.tec)(?:[_-]|$)", stem))
+
+
+def _is_torch_signal_file(name: str, plan: AcquisitionPlan) -> bool:
+    text = f"{plan.name} {' '.join(plan.format_hints)}".lower()
+    if not re.search(r"\b(eeg|sleep|polysomnography|preclinical)\b", text):
+        return False
+    return _is_signal_like_generic_path(name)
 
 
 def _is_signal_like_generic_path(name: str) -> bool:
@@ -2232,6 +2242,10 @@ def _is_signal_like_generic_path(name: str) -> bool:
         return True
     if re.fullmatch(r"s\d+", stem):
         return True
+    if re.fullmatch(r"[a-z]_\d+_s\d+", stem):
+        return True
+    if re.fullmatch(r"s\d+[-_]m?(?:oo|c)", stem):
+        return True
     if re.search(r"^data[_-][a-z0-9]+[_-]sub[_-]?\d+", basename):
         return True
     if re.fullmatch(r"[a-z]{0,3}sub\d+", stem):
@@ -2239,6 +2253,16 @@ def _is_signal_like_generic_path(name: str) -> bool:
     if re.fullmatch(r"s\d+x?_[ab]\d+", stem):
         return True
     if re.fullmatch(r"p\d+[a-z]?_babble_ar", stem):
+        return True
+    if re.fullmatch(r"(?:dep|hc)ec\d+", stem):
+        return True
+    if re.fullmatch(r"shhs\d+[-_]\d+", stem):
+        return True
+    if re.search(r"(?:^|[_-])annotated[_-]?sample\d+", stem):
+        return True
+    if "epochs" in stem:
+        return True
+    if "stimulationdata" in stem and "blockdesign" in stem:
         return True
     if stem.startswith(("opto_", "tfus_")):
         return True

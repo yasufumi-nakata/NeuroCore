@@ -37,6 +37,7 @@ io = [
     "pynwb>=2.7",
     "pyxdf>=1.16",
     "scipy>=1.11",
+    "torch>=2.1",
 ]
 dev = [
     "pytest>=8.0",

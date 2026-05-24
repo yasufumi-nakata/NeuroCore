@@ -243,6 +243,131 @@ def test_extensionless_rawdata_parts_are_treated_as_archives() -> None:
     assert resolution.files[0].materialization_action == "download_extract_then_scan"
 
 
+def test_extensionless_lettered_dataset_parts_are_treated_as_archives() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/123456",
+            doi="10.5281/zenodo.123456",
+            source_domain="zenodo.org",
+            name="ERP Differences in Processing Canonical and Noncanonical Finger-Numeral Configurations",
+            description="Compressed EEG dataset split into lettered part files.",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {
+                    "key": "Soylu_2019_DataversePublicData_part_a",
+                    "links": {"self": "https://example.test/Soylu_2019_DataversePublicData_part_a"},
+                }
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].archive is True
+    assert resolution.files[0].materialization_action == "download_extract_then_scan"
+
+
+def test_ssvep_trial_csv_and_text_names_can_be_raw_signal_files() -> None:
+    csv_plan = plan_acquisition(
+        record(
+            url="https://data.mendeley.com/datasets/f8v96skxj3",
+            doi="10.17632/f8v96skxj3.1",
+            source_domain="data.mendeley.com",
+            name="RAW signal of EEG using SSVEP paradigm",
+            description="CSV raw EEG files.",
+            equipment="",
+        )
+    )
+    text_plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/7758424",
+            doi="10.5281/zenodo.7758424",
+            source_domain="zenodo.org",
+            name="SSVEP database elicited by four visual stimuli types",
+            description=".txt EEG SSVEP database.",
+            equipment="",
+        )
+    )
+
+    def fetch_csv(_url: str):
+        return {
+            "files": [
+                {"filename": "L_12_S1.csv", "content_details": {"download_url": "https://example.test/L_12_S1.csv"}}
+            ]
+        }
+
+    def fetch_text(_url: str):
+        return {"files": [{"key": "S06-mOO.txt", "links": {"self": "https://example.test/S06-mOO.txt"}}]}
+
+    csv_resolution = resolve_remote_files(csv_plan, fetch_json=fetch_csv)
+    text_resolution = resolve_remote_files(text_plan, fetch_json=fetch_text)
+
+    assert csv_resolution.files[0].directly_loadable is True
+    assert text_resolution.files[0].directly_loadable is True
+
+
+def test_epoch_cohort_and_sleep_numpy_names_can_be_raw_signal_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/17955369",
+            doi="10.5281/zenodo.17955369",
+            source_domain="zenodo.org",
+            name="Resting-State EEG Dataset for Depression and Healthy Controls",
+            description=".mat and .npz EEG recordings.",
+            equipment="",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {"key": "VarekaGTNEpochs.mat", "links": {"self": "https://example.test/VarekaGTNEpochs.mat"}},
+                {"key": "depec22.mat", "links": {"self": "https://example.test/depec22.mat"}},
+                {"key": "hcec04.mat", "links": {"self": "https://example.test/hcec04.mat"}},
+                {
+                    "key": "SensoryStimulationData_BlockDesign.mat",
+                    "links": {"self": "https://example.test/SensoryStimulationData_BlockDesign.mat"},
+                },
+                {"key": "shhs1-200010.npz", "links": {"self": "https://example.test/shhs1-200010.npz"}},
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert all(file.directly_loadable for file in resolution.files)
+
+
+def test_sleep_stage_torch_samples_can_be_raw_signal_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://zenodo.org/records/18725150",
+            doi="10.5281/zenodo.18725150",
+            source_domain="zenodo.org",
+            name="Small sample dataset for preclinical sleep stage classification",
+            description="PyTorch .pth EEG sample tensors.",
+            equipment="",
+        )
+    )
+
+    def fetch_json(_url: str):
+        return {
+            "files": [
+                {
+                    "key": "11_saline_sleep_annotated_sample1907.pth",
+                    "links": {"self": "https://example.test/11_saline_sleep_annotated_sample1907.pth"},
+                }
+            ]
+        }
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json)
+
+    assert resolution.files[0].directly_loadable is True
+    assert resolution.files[0].materialization_action == "download_then_load"
+
+
 def test_nitrc_frs_resolution_extracts_raw_eeg_archives_from_download_links() -> None:
     plan = plan_acquisition(
         record(

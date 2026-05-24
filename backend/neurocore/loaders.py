@@ -36,6 +36,8 @@ SUPPORTED_EXTENSIONS = {
     ".npy",
     ".npz",
     ".mat",
+    ".pt",
+    ".pth",
     ".xdf",
     *MNE_RAW_READERS,
 }
@@ -70,6 +72,8 @@ def load(
         return load_numpy(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix == ".mat":
         return load_mat(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
+    if suffix in {".pt", ".pth"}:
+        return load_torch(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     raise ValueError(f"unsupported input format: {resolved.suffix}")
 
 
@@ -95,40 +99,28 @@ def load_csv(
     unit: str = "uV",
 ) -> NeuroFrame:
     resolved = Path(path).expanduser()
-    with resolved.open("r", encoding="utf-8", newline="") as handle:
-        sample = handle.read(4096)
-        handle.seek(0)
-        try:
-            dialect = csv.Sniffer().sniff(sample, delimiters=",\t;")
-        except csv.Error:
-            dialect = csv.excel
-        reader = csv.reader(handle, dialect=dialect)
-        try:
-            header = next(reader)
-        except StopIteration as exc:
-            raise ValueError("CSV file is empty") from exc
-        names = [item.strip() for item in header if item.strip()]
-        if channel_names is not None:
-            names = [str(item).strip() for item in channel_names]
-        raw_rows: list[list[str]] = []
-        for line_number, row in enumerate(reader, start=2):
-            if not any(cell.strip() for cell in row):
-                continue
-            if len(row) != len(header):
-                raise ValueError(f"CSV row {line_number} has {len(row)} values, expected {len(header)}")
-            raw_rows.append(row)
+    source_rows = _read_delimited_rows(resolved)
+    if not source_rows:
+        raise ValueError("CSV file is empty")
+    headerless = _row_is_numeric(source_rows[0])
+    header = [f"Ch{index + 1}" for index in range(len(source_rows[0]))] if headerless else source_rows[0]
+    raw_rows = source_rows if headerless else source_rows[1:]
     if not raw_rows:
         raise ValueError("CSV file contains no samples")
+    for line_number, row in enumerate(raw_rows, start=1 if headerless else 2):
+        if len(row) != len(header):
+            raise ValueError(f"CSV row {line_number} has {len(row)} values, expected {len(header)}")
     if channel_names is not None:
+        names = [str(item).strip() for item in channel_names]
         if len(names) != len(header):
             raise ValueError(f"channel_names has {len(names)} values, expected {len(header)}")
         numeric_indices = tuple(range(len(header)))
     else:
         names, numeric_indices, dropped_non_numeric_columns, dropped_metadata_columns = _csv_numeric_columns(
-            header, raw_rows
+            header, raw_rows, drop_metadata=not headerless
         )
     rows: list[list[float]] = []
-    for line_number, row in enumerate(raw_rows, start=2):
+    for line_number, row in enumerate(raw_rows, start=1 if headerless else 2):
         try:
             rows.append([float(row[index]) for index in numeric_indices])
         except ValueError as exc:
@@ -147,6 +139,7 @@ def load_csv(
             "path": str(resolved),
             "dropped_non_numeric_columns": dropped_non_numeric_columns,
             "dropped_metadata_columns": dropped_metadata_columns,
+            "header_inferred": headerless,
         },
     )
 
@@ -189,7 +182,43 @@ def load_mne_raw(path: str | Path, *, preload: bool = True, unit: str = "uV") ->
     )
 
 
-def _csv_numeric_columns(header: list[str], rows: list[list[str]]) -> tuple[list[str], tuple[int, ...], int, int]:
+def _read_delimited_rows(path: Path) -> list[list[str]]:
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        sample = handle.read(4096)
+        handle.seek(0)
+        if _looks_whitespace_delimited(sample):
+            return [line.strip().split() for line in handle if line.strip()]
+        try:
+            dialect = csv.Sniffer().sniff(sample, delimiters=",\t;")
+        except csv.Error:
+            dialect = csv.excel
+        reader = csv.reader(handle, dialect=dialect)
+        return [row for row in reader if any(cell.strip() for cell in row)]
+
+
+def _looks_whitespace_delimited(sample: str) -> bool:
+    if any(delimiter in sample for delimiter in (",", "\t", ";")):
+        return False
+    non_empty = [line.strip() for line in sample.splitlines() if line.strip()]
+    if not non_empty:
+        return False
+    return all(len(line.split()) > 1 for line in non_empty[:5])
+
+
+def _row_is_numeric(row: list[str]) -> bool:
+    if not row:
+        return False
+    try:
+        for cell in row:
+            float(cell)
+    except ValueError:
+        return False
+    return True
+
+
+def _csv_numeric_columns(
+    header: list[str], rows: list[list[str]], *, drop_metadata: bool = True
+) -> tuple[list[str], tuple[int, ...], int, int]:
     names = [item.strip() or f"Col{index + 1}" for index, item in enumerate(header)]
     numeric_indices = []
     dropped_non_numeric_columns = 0
@@ -201,7 +230,7 @@ def _csv_numeric_columns(header: list[str], rows: list[list[str]]) -> tuple[list
         except ValueError:
             dropped_non_numeric_columns += 1
             continue
-        if _is_csv_metadata_column(header[index], index, rows):
+        if drop_metadata and _is_csv_metadata_column(header[index], index, rows):
             dropped_metadata_columns += 1
             continue
         numeric_indices.append(index)
@@ -342,6 +371,30 @@ def load_mat(
         channels=_channels_for_data(data, names, channel_type=channel_type, unit=unit),
         timebase=Timebase(sampling_rate=float(sampling_rate)),
         provenance={"source": "mat", "path": str(resolved), "format": "mat"},
+    )
+
+
+def load_torch(
+    path: str | Path,
+    *,
+    sampling_rate: float | None = None,
+    channel_names: tuple[str, ...] | list[str] | None = None,
+    channel_type: str = "eeg",
+    unit: str = "uV",
+) -> NeuroFrame:
+    resolved = Path(path).expanduser()
+    payload = _load_torch_payload(resolved)
+    data = _find_numeric_matrix({"payload": payload})
+    sampling_rate = sampling_rate or _find_sampling_rate(payload if isinstance(payload, dict) else {})
+    if sampling_rate is None:
+        raise ValueError("sampling_rate is required when the PyTorch file does not expose fs/sfreq/sampling_rate")
+    names = channel_names or _find_channel_names(payload if isinstance(payload, dict) else {})
+    data = _samples_by_channels(data)
+    return NeuroFrame(
+        data=data,
+        channels=_channels_for_data(data, names, channel_type=channel_type, unit=unit),
+        timebase=Timebase(sampling_rate=float(sampling_rate)),
+        provenance={"source": "torch", "path": str(resolved), "format": resolved.suffix.lower().lstrip(".")},
     )
 
 
@@ -648,6 +701,14 @@ def _load_mat_payload(path: Path) -> dict[str, Any]:
             return {key: np.asarray(value) for key, value in handle.items()}
 
 
+def _load_torch_payload(path: Path) -> Any:
+    torch = _require_module("torch", extra="io")
+    try:
+        return torch.load(str(path), map_location="cpu", weights_only=True)
+    except TypeError as exc:
+        raise ValueError("PyTorch EEG loading requires torch.load(..., weights_only=True) support") from exc
+
+
 def _find_numeric_matrix(payload: dict[str, Any]) -> np.ndarray:
     preferred = ("data", "eeg", "EEG", "signal", "signals", "X", "x")
     for key in preferred:
@@ -697,7 +758,7 @@ def _nested_numeric_matrices(value: Any, *, depth: int = 0) -> list[np.ndarray]:
 
 
 def _coerce_numeric_signal_array(value: Any) -> np.ndarray:
-    array = np.asarray(value)
+    array = _as_numpy_array(value)
     if array.ndim < 2 or not np.issubdtype(array.dtype, np.number):
         raise ValueError("value is not a numeric EEG array")
     if array.ndim == 2:
@@ -705,6 +766,12 @@ def _coerce_numeric_signal_array(value: Any) -> np.ndarray:
     channel_axis = _guess_channel_axis(array.shape)
     moved = np.moveaxis(np.asarray(array, dtype=float), channel_axis, -1)
     return moved.reshape(-1, moved.shape[-1])
+
+
+def _as_numpy_array(value: Any) -> np.ndarray:
+    if all(hasattr(value, attr) for attr in ("detach", "cpu", "numpy")):
+        return np.asarray(value.detach().cpu().numpy())
+    return np.asarray(value)
 
 
 def _guess_channel_axis(shape: tuple[int, ...]) -> int:
@@ -756,12 +823,12 @@ def _guess_channel_axis(shape: tuple[int, ...]) -> int:
 def _find_sampling_rate(payload: dict[str, Any]) -> float | None:
     for key in ("sampling_rate", "sfreq", "fs", "srate"):
         if key in payload:
-            return float(np.asarray(payload[key]).reshape(-1)[0])
+            return float(_as_numpy_array(payload[key]).reshape(-1)[0])
     return None
 
 
 def _find_channel_names(payload: dict[str, Any]) -> tuple[str, ...] | None:
     for key in ("channel_names", "channels", "ch_names"):
         if key in payload:
-            return tuple(str(item) for item in np.asarray(payload[key]).reshape(-1))
+            return tuple(str(item) for item in _as_numpy_array(payload[key]).reshape(-1))
     return None

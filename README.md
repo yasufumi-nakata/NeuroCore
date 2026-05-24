@@ -19,7 +19,7 @@ NeuroCore は、EEG を装着したユーザーがマウス、キーボード、
 - Signal quality: flatline や高振幅を検出する初期品質スコア。
 - Audit log: 操作を OS に送らず dry-run で JSONL 監査ログ化。
 - Dataset inventory loader: EEG-DATA の日本語目録 CSV を、信号波形ではなく再利用候補の metadata として読み込み。
-- Universal file dispatch: CSV / NumPy に加えて、optional `io` extra で MNE 対応形式、XDF、MAT を `NeuroFrame` へ正規化。
+- Universal file dispatch: CSV / NumPy に加えて、optional `io` extra で MNE 対応形式、XDF、MAT、PyTorch tensor/checkpoint を `NeuroFrame` へ正規化。
 - Dataset acquisition planner: EEG-DATA の各行を Zenodo / OSF / OpenNeuro / Figshare / Dataverse などの取得経路へ分類。
 - Remote file resolver / materializer: Zenodo / Figshare-compatible repositories / OSF / Dataverse-compatible repositories / Dryad / Mendeley / ScienceDB / Stanford Digital Repository / Radboud Data Repository / BNCI Horizon 2020 / repository HTML download pages に加えて、OpenNeuro / GitHub / Hugging Face / PhysioNet / DANDI / Gin / Kaggle / NEMAR / DOI landing delegation / generic HTML landing / InvenioRDM records の公開 file listing を NeuroCore 内で解決し、取得済み cache へ落とした直接読込可能ファイルだけを検証対象にできます。
 - `self-test`: 合成 EEG と破綻ケースで、NaN、Nyquist 超過、stream、signal quality、低 confidence、emergency stop、agent payload guard を自動検査。
@@ -34,7 +34,7 @@ source .venv/bin/activate
 python -m pip install -e ".[dev,server]"
 ```
 
-EDF/BDF、BrainVision、EEGLAB `.set`、FIF、Neuroscan/ANT CNT、GDF/EGI/MFF、eXimia、Nicolet、Persyst、MEF3、NWB、BIDS 風 directory、XDF、MAT を読む環境では optional I/O 依存も入れます。
+EDF/BDF、BrainVision、EEGLAB `.set`、FIF、Neuroscan/ANT CNT、GDF/EGI/MFF、eXimia、Nicolet、Persyst、MEF3、NWB、BIDS 風 directory、XDF、MAT、PyTorch `.pt` / `.pth` を読む環境では optional I/O 依存も入れます。
 
 ```bash
 python -m pip install -e ".[dev,server,io]"
@@ -149,7 +149,7 @@ print(inventory.summary())
 ```
 
 この API はデータセット目録を読むためのものです。EEG の raw waveform は、各データセットを取得した後に `neurocore.load()` で `NeuroFrame` へ正規化してください。
-MNE 経由では EDF/BDF、BrainVision `.vhdr`、EEGLAB `.set`、FIF、CNT、GDF、EGI/MFF、eXimia `.nxe`、Nicolet `.data`、Persyst `.lay`、MEF3 `.mefd` を扱います。NWB は `pynwb` で `ElectricalSeries` を読みます。BIDS 風 directory は内部の対応 raw file を探して読みます。XDF は `pyxdf`、MAT は `scipy` または `h5py` を使います。CSV はラベル列などの非数値列を落とし、数値列だけを `NeuroFrame` の channel matrix として読み込めます。
+MNE 経由では EDF/BDF、BrainVision `.vhdr`、EEGLAB `.set`、FIF、CNT、GDF、EGI/MFF、eXimia `.nxe`、Nicolet `.data`、Persyst `.lay`、MEF3 `.mefd` を扱います。NWB は `pynwb` で `ElectricalSeries` を読みます。BIDS 風 directory は内部の対応 raw file を探して読みます。XDF は `pyxdf`、MAT は `scipy` または `h5py` を使います。PyTorch `.pt` / `.pth` は `torch.load(..., weights_only=True)` で tensor payload だけを読みます。CSV/TXT はヘッダーなし数値行や空白区切りにも対応し、ラベル列などの非数値列を落として数値列だけを `NeuroFrame` の channel matrix として読み込めます。
 
 raw 本体取得計画とローカルキャッシュ検証:
 

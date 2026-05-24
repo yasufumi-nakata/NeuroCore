@@ -403,6 +403,50 @@ def evaluate_loaders() -> dict[str, Any]:
             ]
         )
         details.append({"name": "mixed_label_csv", "shape": mixed_frame.to_summary()["shape"]})
+        headerless = temp / "headerless_ssvep.csv"
+        headerless.write_text("231,24606.38,25935.37\n232,24567.33,25938.55\n", encoding="utf-8")
+        headerless_frame = load_csv(headerless, sampling_rate=250)
+        checks.extend(
+            [
+                Check(
+                    "headerless_csv.shape",
+                    headerless_frame.to_summary()["shape"] == [2, 3],
+                    [2, 3],
+                    headerless_frame.to_summary()["shape"],
+                    "loaders",
+                ),
+                Check(
+                    "headerless_csv.inferred",
+                    headerless_frame.provenance.get("header_inferred") is True,
+                    True,
+                    headerless_frame.provenance.get("header_inferred"),
+                    "loaders",
+                ),
+            ]
+        )
+        details.append({"name": "headerless_csv", "shape": headerless_frame.to_summary()["shape"]})
+        whitespace = temp / "headerless_ssvep.txt"
+        whitespace.write_text("1.0 2.0 3.0\n4.0 5.0 6.0\n", encoding="utf-8")
+        whitespace_frame = load_csv(whitespace, sampling_rate=250)
+        checks.extend(
+            [
+                Check(
+                    "whitespace_txt.shape",
+                    whitespace_frame.to_summary()["shape"] == [2, 3],
+                    [2, 3],
+                    whitespace_frame.to_summary()["shape"],
+                    "loaders",
+                ),
+                Check(
+                    "whitespace_txt.inferred",
+                    whitespace_frame.provenance.get("header_inferred") is True,
+                    True,
+                    whitespace_frame.provenance.get("header_inferred"),
+                    "loaders",
+                ),
+            ]
+        )
+        details.append({"name": "whitespace_txt", "shape": whitespace_frame.to_summary()["shape"]})
         files = {
             "empty_csv": ("", "CSV file is empty"),
             "non_numeric_csv": ("label,state\nNEGATIVE,trial\n", "does not contain numeric"),
@@ -421,7 +465,7 @@ def evaluate_loaders() -> dict[str, Any]:
                 passed = False
             checks.append(Check(f"{name}.error_category", passed, expected_message, actual, "loaders"))
             details.append({"name": name, "expected_error": expected_message, "actual": actual})
-    return summarize_checks("loaders", checks, {"case_count": 5, "cases": details})
+    return summarize_checks("loaders", checks, {"case_count": 7, "cases": details})
 
 
 def evaluate_streaming() -> dict[str, Any]:

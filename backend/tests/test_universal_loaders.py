@@ -81,6 +81,37 @@ def test_txt_loader_uses_delimited_numeric_eeg_columns(tmp_path) -> None:
     assert frame.provenance["source"] == "csv"
 
 
+def test_delimited_loader_keeps_headerless_numeric_csv_rows(tmp_path) -> None:
+    path = tmp_path / "L_12_S1.csv"
+    path.write_text(
+        "231,24606.38,25935.37,9671.39\n"
+        "232,24567.33,25938.55,9626.53\n"
+        "233,24399.70,25733.76,9543.99\n",
+        encoding="utf-8",
+    )
+
+    frame = load(path, sampling_rate=256)
+
+    assert frame.data.shape == (3, 4)
+    assert frame.channel_names == ("Ch1", "Ch2", "Ch3", "Ch4")
+    assert frame.provenance["header_inferred"] is True
+
+
+def test_txt_loader_handles_headerless_whitespace_numeric_matrix(tmp_path) -> None:
+    path = tmp_path / "S06-mOO.txt"
+    path.write_text(
+        "  -4.4289079e+00   5.2644527e-01  -2.9299307e+00\n"
+        "  -4.3501472e+00  -1.4881737e+00  -3.8711138e+00\n",
+        encoding="utf-8",
+    )
+
+    frame = load(path, sampling_rate=256)
+
+    assert frame.data.shape == (2, 3)
+    assert frame.channel_names == ("Ch1", "Ch2", "Ch3")
+    assert frame.provenance["header_inferred"] is True
+
+
 def test_tsv_and_tab_loaders_use_delimited_numeric_eeg_columns(tmp_path) -> None:
     tsv = tmp_path / "sub-01_task-rest_eeg.tsv"
     tab = tmp_path / "sub-02_task-rest_eeg.tab"
@@ -110,6 +141,25 @@ def test_mat_loader_flattens_multidimensional_eeg_array(tmp_path, monkeypatch) -
     assert frame.data.shape == (12 * 1114 * 15, 8)
     assert frame.timebase.sampling_rate == 256.0
     assert frame.channel_names == ("Ch1", "Ch2", "Ch3", "Ch4", "Ch5", "Ch6", "Ch7", "Ch8")
+
+
+def test_torch_loader_uses_safe_tensor_payloads(tmp_path, monkeypatch) -> None:
+    path = tmp_path / "11_saline_sleep_annotated_sample1907.pth"
+    path.write_bytes(b"placeholder")
+    payload = {
+        "data": np.array([[1.0, 2.0], [3.0, 4.0]]),
+        "sampling_rate": np.array([128.0]),
+        "channel_names": np.array(["EEG1", "EEG2"]),
+    }
+    monkeypatch.setattr("neurocore.loaders._load_torch_payload", lambda _path: payload)
+
+    frame = load(path)
+
+    assert frame.data.shape == (2, 2)
+    assert frame.timebase.sampling_rate == 128.0
+    assert frame.channel_names == ("EEG1", "EEG2")
+    assert frame.provenance["source"] == "torch"
+    assert ".pth" in supported_extensions()
 
 
 def test_mat_loader_finds_numeric_matrix_inside_matlab_struct(tmp_path, monkeypatch) -> None:
