@@ -1266,6 +1266,71 @@ def test_nitrc_frs_resolution_extracts_raw_eeg_archives_from_download_links() ->
     assert all(file.archive for file in resolution.files)
 
 
+def test_nitrc_resolution_follows_legacy_html_pages_and_form_values() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://fcon_1000.projects.nitrc.org/indi/retro/nat_view.html",
+            doi="",
+            source_domain="fcon_1000.projects.nitrc.org",
+            name="EEG/FMRI Naturalistic Viewing Dataset",
+            description="NITRC legacy page with raw EEG tar archives.",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url == "html+landing://?url=https%3A%2F%2Ffcon_1000.projects.nitrc.org%2Findi%2Fretro%2Fnat_view.html":
+            return '<a href="NAT_VIEW/nat_view_links.html">direct downloads per subject</a>'
+        if url == "html+landing://?url=https%3A%2F%2Ffcon_1000.projects.nitrc.org%2Findi%2Fretro%2FNAT_VIEW%2Fnat_view_links.html":
+            return """
+            <a href="https://fcp-indi.s3.amazonaws.com/data/Projects/NATVIEW_EEGFMRI/raw_data_gz/sub-01.tar.gz">
+                subj-01-raw
+            </a>
+            <input value="https://fcp-indi.s3.amazonaws.com/data/Projects/NATVIEW_EEGFMRI/raw_data_gz/sub-02.tar.gz" />
+            """
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json, max_pages=3)
+
+    assert [file.name for file in resolution.files] == ["sub-01.tar.gz", "sub-02.tar.gz"]
+    assert all(file.archive for file in resolution.files)
+
+
+def test_nitrc_resolution_follows_project_documents_to_zenodo_files() -> None:
+    plan = plan_acquisition(
+        record(
+            url="https://www.nitrc.org/doi/landing_page.php?table=groups&id=1584&doi=",
+            doi="",
+            source_domain="nitrc.org",
+            name="EEG Sleep Closed-loop TMR",
+            description="NITRC project page pointing to Zenodo EEG archives.",
+        )
+    )
+
+    def fetch_json(url: str):
+        if url == "html+landing://?url=https%3A%2F%2Fwww.nitrc.org%2Fdoi%2Flanding_page.php%3Ftable%3Dgroups%26id%3D1584%26doi%3D":
+            return '<a href="/projects/sleepti">EEG Sleep Closed-loop TMR</a>'
+        if url == "html+landing://?url=https%3A%2F%2Fwww.nitrc.org%2Fprojects%2Fsleepti":
+            return '<a href="/docman/?group_id=1584">Documents</a><a href="/frs/?group_id=1584">Downloads</a>'
+        if url == "html+landing://?url=https%3A%2F%2Fwww.nitrc.org%2Fdocman%2F%3Fgroup_id%3D1584":
+            return '<a href="/docman/view.php/1584/187771/link to the database">link to the database</a>'
+        if url == "html+landing://?url=https%3A%2F%2Fwww.nitrc.org%2Fdocman%2Fview.php%2F1584%2F187771%2Flink%2520to%2520the%2520database":
+            return '<link rel="alternate" type="application/zip" href="https://zenodo.org/records/6973571/files/sub002.zip">'
+        raise AssertionError(url)
+
+    resolution = resolve_remote_files(plan, fetch_json=fetch_json, max_pages=4)
+
+    assert resolution.files[0].name == "sub002.zip"
+    assert resolution.files[0].url == "https://zenodo.org/records/6973571/files/sub002.zip"
+    assert resolution.files[0].archive is True
+
+
+def test_legacy_nitrc_host_uses_http_fallback() -> None:
+    assert (
+        _html_fetch_target("https://fcon_1000.projects.nitrc.org/indi/retro/nat_view.html")
+        == "http://fcon_1000.projects.nitrc.org/indi/retro/nat_view.html"
+    )
+
+
 def test_dataverse_resolution_builds_access_datafile_urls() -> None:
     plan = plan_acquisition(
         record(

@@ -125,6 +125,7 @@ STANFORD_SDR_HOSTS = {
 }
 HTML_HTTP_FALLBACK_HOSTS = {
     "archive.ics.uci.edu",
+    "fcon_1000.projects.nitrc.org",
     "www.archive.ics.uci.edu",
 }
 BNCI_DATASETS_URL = "https://bnci-horizon-2020.eu/database/data-sets"
@@ -499,7 +500,7 @@ def _resolve_candidate(
     if candidate.method in {"nemar_index", "nemar_client"}:
         return _resolve_nemar(plan, candidate, fetcher)
     if candidate.method == "nitrc_frs":
-        return _resolve_nitrc_frs(plan, candidate, fetcher)
+        return _resolve_nitrc_frs(plan, candidate, fetcher, max_pages=max_pages)
     if candidate.method == "scidb_api":
         return _resolve_scidb(plan, candidate, fetcher)
     if candidate.method == "stanford_purl_json":
@@ -1049,25 +1050,111 @@ def _resolve_nemar(plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetch
 
 
 def _resolve_nitrc_frs(
-    plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetcher: JsonFetcher
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    fetcher: JsonFetcher,
+    *,
+    max_pages: int,
 ) -> list[RemoteFileCandidate]:
-    html = _string(fetcher(_html_landing_url(candidate.url)))
     files: list[RemoteFileCandidate] = []
-    for href, label in _html_link_items(html):
-        target = urljoin(candidate.url, unescape(href).replace("\\/", "/"))
-        path = urlparse(target).path.lower()
-        if "/frs/download.php/" in path:
-            name = _download_name(target)
-        elif "/frs/downloadlink.php/" in path:
-            name = _download_name_from_label(label)
-            if name and "." not in Path(name).name:
-                name = f"{name}.zip"
-        else:
+    queue = [candidate.url]
+    seen: set[str] = set()
+    pages = 0
+    while queue and pages < max_pages:
+        page_url = queue.pop(0)
+        if page_url in seen:
             continue
-        if not name or not _is_resolvable_download_name(name, plan):
-            continue
-        files.append(_remote_file(plan, candidate, name=name, url=target, source_url=candidate.url))
+        seen.add(page_url)
+        html = _string(fetcher(_html_landing_url(page_url)))
+        pages += 1
+        followable_links: list[str] = []
+        for href, label in _html_link_items(html):
+            target = _quote_unsafe_url(urljoin(page_url, unescape(href).replace("\\/", "/")))
+            file = _nitrc_remote_file_from_link(plan, candidate, target, label=label, source_url=page_url)
+            if file:
+                files.append(file)
+                continue
+            if _is_nitrc_followable_html(target, page_url) and target not in seen:
+                followable_links.append(target)
+        if followable_links:
+            queue = sorted(dict.fromkeys([*queue, *followable_links]), key=_nitrc_follow_priority)
+        for target in _html_url_attribute_values(html, base_url=page_url):
+            file = _nitrc_remote_file_from_link(plan, candidate, target, label="", source_url=page_url)
+            if file:
+                files.append(file)
     return _dedupe_files(files)
+
+
+def _nitrc_remote_file_from_link(
+    plan: AcquisitionPlan,
+    candidate: AcquisitionCandidate,
+    target: str,
+    *,
+    label: str,
+    source_url: str,
+) -> RemoteFileCandidate | None:
+    if not target.startswith(("http://", "https://")):
+        return None
+    path = urlparse(target).path.lower()
+    if "/frs/download.php/" in path:
+        name = _download_name(target)
+    elif "/frs/downloadlink.php/" in path:
+        name = _download_name_from_label(label)
+        if name and "." not in Path(name).name:
+            name = f"{name}.zip"
+    else:
+        name = _download_name(target)
+    if not name or not _is_resolvable_download_name(name, plan):
+        return None
+    return _remote_file(plan, candidate, name=name, url=target, source_url=source_url)
+
+
+def _is_nitrc_followable_html(target: str, source_url: str) -> bool:
+    parsed = urlparse(target)
+    source = urlparse(source_url)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        return False
+    if parsed.netloc.lower() != source.netloc.lower():
+        return False
+    path = parsed.path.lower()
+    if path.startswith(("/docman/", "/frs/", "/projects/")):
+        return True
+    if not path.endswith((".html", ".htm")):
+        return False
+    return any(token in path for token in ("download", "links", "eeg", "nat_view", "lemon"))
+
+
+def _nitrc_follow_priority(url: str) -> tuple[int, str]:
+    path = urlparse(url).path.lower()
+    if "/docman/view.php" in path:
+        return (0, url)
+    if path.startswith("/docman/"):
+        return (1, url)
+    if path.startswith("/frs/"):
+        return (2, url)
+    if path.startswith("/projects/"):
+        return (3, url)
+    return (4, url)
+
+
+def _html_url_attribute_values(html: str, *, base_url: str) -> list[str]:
+    urls = []
+    for match in re.finditer(r"\b(?:href|src|value)\s*=\s*([\"'])(.*?)\1", html, flags=re.IGNORECASE | re.DOTALL):
+        value = unescape(match.group(2)).replace("\\/", "/").strip()
+        if not value:
+            continue
+        urls.append(_quote_unsafe_url(urljoin(base_url, value)))
+    return list(dict.fromkeys(urls))
+
+
+def _quote_unsafe_url(url: str) -> str:
+    parsed = urlparse(url.strip())
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        return url.strip()
+    return parsed._replace(
+        path=quote(unescape(parsed.path), safe="/%"),
+        query=quote(unescape(parsed.query), safe="=&?/%:+,;"),
+    ).geturl()
 
 
 def _resolve_scidb(plan: AcquisitionPlan, candidate: AcquisitionCandidate, fetcher: JsonFetcher) -> list[RemoteFileCandidate]:
