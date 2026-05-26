@@ -11,6 +11,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
+ROOT = Path(__file__).resolve().parents[1]
+BACKEND = ROOT / "backend"
+if str(BACKEND) not in sys.path:
+    sys.path.insert(0, str(BACKEND))
+
 import numpy as np
 
 from neurocore.control import ControlRouter, IntentCommand
@@ -23,7 +28,6 @@ from neurocore.stream import StreamBuffer
 from neurocore.synthetic import synthetic_eeg_frame
 
 
-ROOT = Path(__file__).resolve().parents[1]
 CONFIDENTIALITY = "private research metrics; do not commit or publish the generated report"
 
 
