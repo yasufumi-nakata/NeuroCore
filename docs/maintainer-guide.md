@@ -23,6 +23,7 @@ gh api repos/yasufumi-nakata/NeuroCore/dependabot/alerts
 - safety regression は先に blocked path の test を足します。
 - dependency alert は minimum supported Python と frontend build へ影響しない範囲で更新します。
 - GitHub Actions failure は local mirror command で再現してから直します。
+- local mirror command は `make` 経由で実行できます。`Makefile` は `.venv/bin/python`、次に `python3.14` から `python3.10` を優先し、macOS の `python` 2.7 を使いません。
 
 ## Release Checklist
 

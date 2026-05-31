@@ -1657,8 +1657,17 @@ def _fetch_json(url: str, *, timeout: float) -> Any:
                     "User-Agent": "NeuroCore/0.1 dataset-resolver",
                 },
             )
-            with urlopen(fallback, timeout=timeout) as response:
-                return {"url": response.geturl(), "content_type": response.headers.get("Content-Type", "")}
+            try:
+                with urlopen(fallback, timeout=timeout) as response:
+                    return {"url": response.geturl(), "content_type": response.headers.get("Content-Type", "")}
+            except HTTPError as fallback_exc:
+                if fallback_exc.code not in {403, 405}:
+                    raise
+                return {
+                    "url": target,
+                    "status": fallback_exc.code,
+                    "content_type": fallback_exc.headers.get("Content-Type", ""),
+                }
     if url.startswith("head+metadata://"):
         target = parse_qs(urlparse(url).query).get("url", [""])[0]
         request = Request(target, method="HEAD", headers={"Accept": "*/*", "User-Agent": "NeuroCore/0.1 dataset-resolver"})

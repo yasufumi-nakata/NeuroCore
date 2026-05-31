@@ -1,29 +1,39 @@
+PYTHON ?= $(shell \
+	if [ -x .venv/bin/python ]; then printf '%s' .venv/bin/python; \
+	elif command -v python3.14 >/dev/null 2>&1; then printf '%s' python3.14; \
+	elif command -v python3.13 >/dev/null 2>&1; then printf '%s' python3.13; \
+	elif command -v python3.12 >/dev/null 2>&1; then printf '%s' python3.12; \
+	elif command -v python3.11 >/dev/null 2>&1; then printf '%s' python3.11; \
+	elif command -v python3.10 >/dev/null 2>&1; then printf '%s' python3.10; \
+	else printf '%s' python3; fi)
+NPM ?= npm
+
 .PHONY: test self-test lint package packages pages oss-health frontend-install frontend-build
 
 test:
-	python -m pytest
+	$(PYTHON) -m pytest
 
 self-test:
-	PYTHONPATH=backend python -m neurocore.cli self-test --json
+	PYTHONPATH=backend $(PYTHON) -m neurocore.cli self-test --json
 
 lint:
-	ruff check backend scripts
+	$(PYTHON) -m ruff check backend scripts
 
 package:
-	python -m build
+	$(PYTHON) -m build
 
 packages:
-	python scripts/build_package_artifacts.py
+	$(PYTHON) scripts/build_package_artifacts.py
 
 pages:
-	python scripts/build_pages.py
-	python scripts/validate_pages.py
+	$(PYTHON) scripts/build_pages.py
+	$(PYTHON) scripts/validate_pages.py
 
 oss-health:
-	python scripts/oss_health_check.py
+	$(PYTHON) scripts/oss_health_check.py
 
 frontend-install:
-	cd frontend && npm install
+	cd frontend && $(NPM) install
 
 frontend-build:
-	cd frontend && npm run build
+	cd frontend && $(NPM) run build

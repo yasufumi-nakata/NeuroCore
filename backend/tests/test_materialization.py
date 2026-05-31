@@ -1622,6 +1622,24 @@ def test_doi_resolution_fetcher_falls_back_to_range_get_when_head_is_forbidden(m
     assert calls[1][1]["Range"] == "bytes=0-0"
 
 
+def test_doi_resolution_fetcher_treats_forbidden_head_and_range_as_unresolved(monkeypatch) -> None:
+    calls = []
+    target = "https://doi.org/10.7281/t1/b660d2"
+
+    def fake_urlopen(request, timeout):
+        calls.append((request.get_method(), dict(request.header_items()), timeout))
+        raise HTTPError(request.full_url, 403, "Forbidden", {"Content-Type": "text/html"}, None)
+
+    monkeypatch.setattr("neurocore.materialization.urlopen", fake_urlopen)
+
+    payload = _fetch_json(_doi_resolution_url(target), timeout=7)
+
+    assert payload["url"] == target
+    assert payload["status"] == 403
+    assert calls[0][0] == "HEAD"
+    assert calls[1][1]["Range"] == "bytes=0-0"
+
+
 def test_mendeley_resolution_uses_content_detail_download_urls() -> None:
     plan = plan_acquisition(
         record(
