@@ -47,6 +47,21 @@ REQUIRED_FILES = [
     "scripts/validate_pages.py",
 ]
 
+NODE24_ACTION_MAJOR_PINS = {
+    "actions/checkout": "v6",
+    "actions/setup-python": "v6",
+    "actions/setup-node": "v6",
+    "actions/configure-pages": "v6",
+    "actions/upload-pages-artifact": "v5",
+    "actions/deploy-pages": "v5",
+    "actions/upload-artifact": "v7",
+    "actions/dependency-review-action": "v5",
+    "github/codeql-action/init": "v4",
+    "github/codeql-action/analyze": "v4",
+    "github/codeql-action/upload-sarif": "v4",
+    "softprops/action-gh-release": "v3",
+}
+
 
 def read(path: str) -> str:
     return (ROOT / path).read_text(encoding="utf-8")
@@ -64,6 +79,20 @@ def package_version() -> str:
     if not match:
         raise AssertionError("backend/neurocore/__init__.py __version__ is missing")
     return match.group(1)
+
+
+def check_action_major_pins(errors: list[str]) -> None:
+    for workflow_path in sorted((ROOT / ".github/workflows").glob("*.yml")):
+        rel = workflow_path.relative_to(ROOT).as_posix()
+        text = workflow_path.read_text(encoding="utf-8")
+        for action, expected_major in NODE24_ACTION_MAJOR_PINS.items():
+            pattern = re.compile(rf"uses:\s*{re.escape(action)}@(v\d+)(?:\.\d+)*")
+            for match in pattern.finditer(text):
+                actual_major = match.group(1)
+                if actual_major != expected_major:
+                    errors.append(
+                        f"{rel} pins {action}@{actual_major}; expected {action}@{expected_major} for Node 24 action runtime"
+                    )
 
 
 def main() -> int:
@@ -85,6 +114,7 @@ def main() -> int:
         text = read(f".github/workflows/{workflow}")
         if "permissions:" not in text or "contents: read" not in text:
             errors.append(f"{workflow} missing least-privilege permissions")
+    check_action_major_pins(errors)
     if errors:
         for error in errors:
             print(f"ERROR: {error}", file=sys.stderr)
