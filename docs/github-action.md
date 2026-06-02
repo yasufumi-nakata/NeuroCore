@@ -18,6 +18,10 @@ private repository では、CodeQL upload と Dependency Review は GitHub Advan
 Advanced Security がない場合、workflow は明示的に skip します。OSSF Scorecard も default integration token では private repository を読めないため、public repository だけで実行します。
 Dependabot alerts と automated security fixes は repository API から有効化できます。
 
+## Action Runtime Maintenance
+
+GitHub-hosted runners move JavaScript actions across Node runtimes. Workflow pins for GitHub-provided actions should stay on the Node 24-compatible major line, such as `actions/checkout@v6`, `actions/setup-python@v6`, `actions/setup-node@v6`, `github/codeql-action/*@v4`, and the current Pages / artifact release majors. `scripts/oss_health_check.py` checks these major pins so an older Node 20 action line is not reintroduced silently.
+
 ## Alert Handling
 
 1. `gh issue list` で issue を確認します。
