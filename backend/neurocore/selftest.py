@@ -59,6 +59,7 @@ def run_self_tests(settings: NeuroCoreSettings | None = None) -> SelfTestReport:
         _test_stream_windowing_emits_expected_windows,
         _test_signal_quality_report_is_finite,
         _test_low_confidence_control_is_blocked,
+        _test_human_arm_required_blocks_until_armed,
         _test_emergency_stop_blocks_actions,
         _test_agent_prompt_like_payload_is_blocked,
     )
@@ -91,6 +92,12 @@ def _reference_pipeline(settings: NeuroCoreSettings) -> Pipeline:
         ],
         name="reference-control-prep",
     )
+
+
+def _with_safety(settings: NeuroCoreSettings, **overrides: Any) -> NeuroCoreSettings:
+    payload = settings.to_dict()
+    payload["safety"].update(overrides)
+    return NeuroCoreSettings.from_dict(payload)
 
 
 def _test_reference_pipeline(settings: NeuroCoreSettings) -> SelfTestResult:
@@ -157,7 +164,8 @@ def _test_nyquist_breakage_is_rejected(settings: NeuroCoreSettings) -> SelfTestR
 
 
 def _test_low_confidence_control_is_blocked(settings: NeuroCoreSettings) -> SelfTestResult:
-    router = ControlRouter(settings)
+    armed_settings = _with_safety(settings, human_armed=True, emergency_stop=False)
+    router = ControlRouter(armed_settings)
     action = router.route(IntentCommand("select", settings.safety.min_confidence - 0.05))
     if action.blocked and action.reason == "low_confidence":
         return SelfTestResult(
@@ -173,6 +181,28 @@ def _test_low_confidence_control_is_blocked(settings: NeuroCoreSettings) -> Self
         "critical",
         "Low-confidence decoded intent was not blocked",
         action.to_dict(),
+    )
+
+
+def _test_human_arm_required_blocks_until_armed(settings: NeuroCoreSettings) -> SelfTestResult:
+    unarmed_settings = _with_safety(settings, require_human_arm=True, human_armed=False, emergency_stop=False)
+    armed_settings = _with_safety(settings, require_human_arm=True, human_armed=True, emergency_stop=False)
+    blocked_action = ControlRouter(unarmed_settings).route(IntentCommand("select", 1.0))
+    allowed_action = ControlRouter(armed_settings).route(IntentCommand("select", 1.0))
+    if blocked_action.blocked and blocked_action.reason == "human_arm_required" and not allowed_action.blocked:
+        return SelfTestResult(
+            "human_arm_required_blocks_until_armed",
+            "passed",
+            "high",
+            "Human-arm trusted state is required before decoded intents become actions",
+            {"blocked": blocked_action.to_dict(), "armed": allowed_action.to_dict()},
+        )
+    return SelfTestResult(
+        "human_arm_required_blocks_until_armed",
+        "failed",
+        "critical",
+        "Human-arm gate did not block until trusted armed state was enabled",
+        {"blocked": blocked_action.to_dict(), "armed": allowed_action.to_dict()},
     )
 
 
@@ -248,7 +278,8 @@ def _test_emergency_stop_blocks_actions(settings: NeuroCoreSettings) -> SelfTest
 
 
 def _test_agent_prompt_like_payload_is_blocked(settings: NeuroCoreSettings) -> SelfTestResult:
-    router = ControlRouter(settings)
+    armed_settings = _with_safety(settings, human_armed=True, emergency_stop=False)
+    router = ControlRouter(armed_settings)
     action = router.route(
         IntentCommand(
             "agent_focus",

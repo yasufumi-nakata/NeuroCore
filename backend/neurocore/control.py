@@ -58,6 +58,8 @@ class ControlRouter:
     def route(self, command: IntentCommand) -> ControlAction:
         if self.settings.safety.emergency_stop:
             return _blocked("system", "emergency_stop", "Emergency stop is active")
+        if self.settings.safety.require_human_arm and not self.settings.safety.human_armed:
+            return _blocked(command.intent, "human_arm_required", "Human-arm is required before routing decoded intents")
         if command.confidence < self.settings.safety.min_confidence:
             return _blocked(command.intent, "low_confidence", "Intent confidence is below the configured threshold")
         now = command.timestamp

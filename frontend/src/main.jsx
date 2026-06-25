@@ -41,6 +41,7 @@ const defaultSettings = {
     min_confidence: 0.75,
     max_actions_per_second: 4,
     require_human_arm: true,
+    human_armed: false,
     emergency_stop: false,
     block_prompt_like_agent_payloads: true,
   },
@@ -104,6 +105,7 @@ function App() {
     const issues = [];
     if (settings.signal.lowpass_hz <= settings.signal.highpass_hz) issues.push("band");
     if (settings.safety.min_confidence < 0.5) issues.push("confidence");
+    if (settings.safety.require_human_arm && !settings.safety.human_armed) issues.push("unarmed");
     if (settings.safety.emergency_stop) issues.push("stopped");
     return issues;
   }, [settings]);
@@ -216,6 +218,12 @@ function App() {
           <Metric icon={<Cpu />} label="Device" value={settings.device.name} detail={`${settings.device.sampling_rate} Hz`} />
           <Metric icon={<Waves />} label="Channels" value={settings.device.channels.length} detail={settings.device.channels.join(", ")} />
           <Metric icon={<Gauge />} label="Threshold" value={settings.safety.min_confidence.toFixed(2)} detail="intent confidence" />
+          <Metric
+            icon={<ShieldCheck />}
+            label="Arm"
+            value={settings.safety.human_armed ? "Armed" : "Unarmed"}
+            detail={settings.safety.require_human_arm ? "trusted state" : "not required"}
+          />
           <Metric icon={<CircleStop />} label="Stop" value={settings.safety.emergency_stop ? "Armed" : "Clear"} detail="emergency state" />
         </section>
 
@@ -351,9 +359,14 @@ function SafetyPanel({ settings, setSettings }) {
         <NumberInput value={settings.safety.max_actions_per_second} onChange={(value) => update(settings, setSettings, "safety.max_actions_per_second", value)} />
       </Field>
       <Toggle
-        label="Human arm"
+        label="Require human arm"
         checked={settings.safety.require_human_arm}
         onChange={(checked) => update(settings, setSettings, "safety.require_human_arm", checked)}
+      />
+      <Toggle
+        label="Human armed"
+        checked={settings.safety.human_armed}
+        onChange={(checked) => update(settings, setSettings, "safety.human_armed", checked)}
       />
       <Toggle
         label="Emergency stop"

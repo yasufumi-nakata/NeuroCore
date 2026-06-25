@@ -128,7 +128,7 @@ def cmd_dataset_exercise(args: argparse.Namespace) -> int:
 
 
 def cmd_route(args: argparse.Namespace) -> int:
-    settings = NeuroCoreSettings.load(args.settings) if args.settings else NeuroCoreSettings.default()
+    settings = _control_settings(args)
     payload = json.loads(args.payload) if args.payload else {}
     command = IntentCommand(args.intent, args.confidence, source="cli", payload=payload)
     action = ControlRouter(settings).route(command)
@@ -137,7 +137,7 @@ def cmd_route(args: argparse.Namespace) -> int:
 
 
 def cmd_simulate(args: argparse.Namespace) -> int:
-    settings = NeuroCoreSettings.load(args.settings) if args.settings else NeuroCoreSettings.default()
+    settings = _control_settings(args)
     command_payloads = json.loads(Path(args.commands).expanduser().read_text(encoding="utf-8"))
     router = ControlRouter(settings)
     audit = ActionAuditLog()
@@ -156,6 +156,15 @@ def cmd_simulate(args: argparse.Namespace) -> int:
         audit.write_jsonl(args.out)
     _print(payload, json_mode=args.json)
     return 0
+
+
+def _control_settings(args: argparse.Namespace) -> NeuroCoreSettings:
+    settings = NeuroCoreSettings.load(args.settings) if args.settings else NeuroCoreSettings.default()
+    if not getattr(args, "human_armed", False):
+        return settings
+    payload = settings.to_dict()
+    payload["safety"]["human_armed"] = True
+    return NeuroCoreSettings.from_dict(payload)
 
 
 def cmd_quality(args: argparse.Namespace) -> int:
@@ -328,6 +337,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_route.add_argument("--confidence", type=float, default=1.0)
     p_route.add_argument("--payload", default="")
     p_route.add_argument("--settings", type=Path, default=None)
+    p_route.add_argument("--human-armed", action="store_true", help="Mark trusted operator human-arm state as armed")
     p_route.add_argument("--json", action="store_true")
     p_route.set_defaults(func=cmd_route)
 
@@ -337,6 +347,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_simulate.add_argument("commands", type=Path, help="JSON file containing a list of intent command objects")
     p_simulate.add_argument("--out", type=Path, default=None, help="Optional JSONL audit log path")
     p_simulate.add_argument("--settings", type=Path, default=None)
+    p_simulate.add_argument("--human-armed", action="store_true", help="Mark trusted operator human-arm state as armed")
     p_simulate.add_argument("--json", action="store_true")
     p_simulate.set_defaults(func=cmd_simulate)
 

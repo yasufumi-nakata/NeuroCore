@@ -42,7 +42,7 @@ python -m pip install -e ".[dev,server,io]"</code></pre>
           <h2>2. Run the self-test</h2>
           <pre class="terminal"><code>neurocore self-test --json</code></pre>
           <p>
-            self-test は synthetic EEG の正常経路に加えて、NaN、invalid passband、low confidence、emergency stop、
+            self-test は synthetic EEG の正常経路に加えて、NaN、invalid passband、human-arm、low confidence、emergency stop、
             agent payload guard のような破綻ケースを確認します。
           </p>
 
@@ -83,10 +83,11 @@ python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset
           </p>
 
           <h2>5. Route decoded intents</h2>
-          <pre class="terminal"><code>neurocore route-intent select --confidence 0.92 --json
-neurocore simulate-intents samples/intent_commands.json --json</code></pre>
+          <pre class="terminal"><code>neurocore route-intent select --confidence 0.92 --human-armed --json
+neurocore simulate-intents samples/intent_commands.json --human-armed --json</code></pre>
           <p>
             `ControlRouter` は外部 decoder が決めた intent を検証し、mouse、keyboard、agent の action envelope へ変換します。
+            既定設定では trusted state の `human_armed` が false のため、armed になるまで route は `human_arm_required` でブロックされます。
             実際の OS 操作や agent 実行は、この core package では行いません。
           </p>
 
