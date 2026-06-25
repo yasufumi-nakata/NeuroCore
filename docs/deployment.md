@@ -13,7 +13,7 @@ NeuroCore の実運用は core package、decoder、permissioned executor を分�
 
 ## Recommended Runtime Policy
 
-- `SafetySettings.require_human_arm` を default で有効にします。
+- `SafetyPolicy.require_human_arm` を default で有効にし、trusted state の `human_armed` は operator UI や permissioned executor から渡します。
 - low confidence、rate limit、emergency stop、unknown binding は blocked action として記録します。
 - agent payload は `trust: untrusted_decoded_intent` のまま渡します。
 - decoded text をそのまま shell、browser、AI agent prompt に入れません。
@@ -34,7 +34,7 @@ NeuroCore の実運用は core package、decoder、permissioned executor を分�
 ```bash
 neurocore self-test --json
 neurocore stream-demo --json
-neurocore simulate-intents samples/intent_commands.json --json
+neurocore simulate-intents samples/intent_commands.json --human-armed --json
 ```
 
 preflight が落ちる場合、EEG device を接続する前に settings、signal plan、safety policy、binding を直してください。

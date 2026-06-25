@@ -34,6 +34,7 @@ class SafetyPolicy:
     min_confidence: float = 0.75
     max_actions_per_second: float = 4.0
     require_human_arm: bool = True
+    human_armed: bool = False
     emergency_stop: bool = False
     block_prompt_like_agent_payloads: bool = True
 

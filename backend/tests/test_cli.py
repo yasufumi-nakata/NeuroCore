@@ -28,8 +28,24 @@ def test_cli_stream_demo_json(capsys) -> None:
     assert '"window_count"' in captured.out
 
 
+def test_cli_route_intent_requires_human_arm_by_default(capsys) -> None:
+    exit_code = main(["route-intent", "select", "--confidence", "0.92", "--json"])
+    captured = capsys.readouterr()
+
+    assert exit_code == 1
+    assert '"human_arm_required"' in captured.out
+
+
+def test_cli_route_intent_human_armed_allows_action(capsys) -> None:
+    exit_code = main(["route-intent", "select", "--confidence", "0.92", "--human-armed", "--json"])
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert '"kind": "mouse"' in captured.out
+
+
 def test_cli_simulate_intents_json(capsys) -> None:
-    exit_code = main(["simulate-intents", "samples/intent_commands.json", "--json"])
+    exit_code = main(["simulate-intents", "samples/intent_commands.json", "--human-armed", "--json"])
     captured = capsys.readouterr()
 
     assert exit_code == 0

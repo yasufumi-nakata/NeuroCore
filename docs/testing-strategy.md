@@ -9,7 +9,7 @@ The test strategy follows the same practical idea as OpenRI: do not only test th
 - Dataset checks: local EEG-DATA checkout is treated as an inventory unless raw EEG files are actually present; the inventory report also summarizes loader coverage for MNE-backed EEG formats, XDF, NWB, MAT, HDF5 `.h5` / `.hdf5`, Parquet, NumPy, PyTorch tensor/checkpoint, R `.rds` / `.rda` / `.RData`, Time Series Classification `.ts`, and CSV/TXT.
 - Acquisition checks: provider-specific raw-data acquisition plans are generated for EEG-DATA rows, public provider APIs and file indexes can be resolved to remote file candidates, and any local raw cache can be loaded through the same `NeuroFrame` path.
 - Breakage tests: NaN/Inf contamination, invalid filter bands, insufficient channels, clock-drift warnings.
-- Safety tests: low-confidence commands, emergency stop, unbound intents, prompt-like agent payloads.
+- Safety tests: human-arm state, low-confidence commands, emergency stop, unbound intents, prompt-like agent payloads.
 - Streaming tests: overlapping window emission, shape validation, trimming behavior.
 - Audit tests: allowed and blocked actions are recorded without side effects.
 - API smoke tests: `/api/health`, `/api/settings/default`, `/api/self-test`, `/api/pipeline/demo`.
@@ -23,7 +23,7 @@ Run:
 python -m pytest
 PYTHONPATH=backend python -m neurocore.cli self-test --json
 PYTHONPATH=backend python -m neurocore.cli stream-demo --json
-PYTHONPATH=backend python -m neurocore.cli simulate-intents samples/intent_commands.json --json
+PYTHONPATH=backend python -m neurocore.cli simulate-intents samples/intent_commands.json --human-armed --json
 PYTHONPATH=backend python -m neurocore.cli run-file samples/synthetic_eeg.csv --sampling-rate 250 --json
 PYTHONPATH=backend python -m neurocore.cli dataset-inventory ../EEG-DATA/eeg_dataset_summary_ja.csv --json
 PYTHONPATH=backend python -m neurocore.cli dataset-acquisition-plan ../EEG-DATA/eeg_dataset_summary_ja.csv --json

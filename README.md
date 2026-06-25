@@ -22,7 +22,7 @@ NeuroCore は、EEG を装着したユーザーがマウス、キーボード、
 - Universal file dispatch: CSV / NumPy に加えて、optional `io` extra で MNE 対応形式、XDF、MAT、HDF5、Parquet、PyTorch tensor/checkpoint、R `.rds` / `.rda` / `.RData`、Time Series Classification `.ts` を `NeuroFrame` へ正規化。
 - Dataset acquisition planner: EEG-DATA の各行を Zenodo / OSF / OpenNeuro / Figshare / Dataverse などの取得経路へ分類。
 - Remote file resolver / materializer: Zenodo / Figshare-compatible repositories / OSF / Dataverse-compatible repositories / Dryad / Mendeley / ScienceDB / Stanford Digital Repository / Radboud Data Repository / BNCI Horizon 2020 / repository HTML download pages に加えて、OpenNeuro / GitHub / Hugging Face / PhysioNet / DANDI / Gin / Kaggle / NEMAR / DOI landing delegation / generic HTML landing / InvenioRDM records の公開 file listing を NeuroCore 内で解決し、取得済み cache へ落とした直接読込可能ファイルだけを検証対象にできます。
-- `self-test`: 合成 EEG と破綻ケースで、NaN、Nyquist 超過、stream、signal quality、低 confidence、emergency stop、agent payload guard を自動検査。
+- `self-test`: 合成 EEG と破綻ケースで、NaN、Nyquist 超過、stream、signal quality、human-arm、低 confidence、emergency stop、agent payload guard を自動検査。
 - Settings UI: device / signal / safety / route / agent / self-test を操作するローカル設定画面。
 - CI: Python tests、CLI self-test、frontend build を実行。
 
@@ -61,11 +61,12 @@ neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provide
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider figshare --provider dataverse --limit 5 --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider bnci --provider repository_html --limit 5 --json
 neurocore dataset-resolve-files ../EEG-DATA/eeg_dataset_summary_ja.csv --provider doi --provider web_landing --limit 5 --json
-neurocore route-intent select --confidence 0.92 --json
-neurocore simulate-intents samples/intent_commands.json --json
+neurocore route-intent select --confidence 0.92 --human-armed --json
+neurocore simulate-intents samples/intent_commands.json --human-armed --json
 ```
 
 終了コードは、自己テストや pipeline が通れば `0`、安全上ブロックされた intent や破綻検出時は `1` です。
+既定設定では `safety.require_human_arm` が有効で、trusted state の `safety.human_armed` が `false` のため、armed になるまで route は `human_arm_required` でブロックされます。
 
 ## API
 
@@ -119,8 +120,11 @@ print(result.to_dict())
 
 ```python
 from neurocore import ControlRouter, IntentCommand
+from neurocore import NeuroCoreSettings
 
-router = ControlRouter()
+settings_payload = NeuroCoreSettings.default().to_dict()
+settings_payload["safety"]["human_armed"] = True
+router = ControlRouter(NeuroCoreSettings.from_dict(settings_payload))
 action = router.route(IntentCommand("select", confidence=0.91))
 print(action.to_dict())
 ```

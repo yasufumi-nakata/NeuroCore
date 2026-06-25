@@ -18,6 +18,7 @@
     "min_confidence": 0.75,
     "max_actions_per_second": 4.0,
     "require_human_arm": true,
+    "human_armed": false,
     "emergency_stop": false,
     "block_prompt_like_agent_payloads": true
   },
