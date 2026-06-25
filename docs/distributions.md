@@ -16,7 +16,7 @@ python scripts/validate_pages.py
 ## Install From Pages
 
 ```bash
-pip install https://www.yasufumi.net/NeuroCore/packages/python/neurocore-0.1.0-py3-none-any.whl
+pip install https://www.yasufumi.net/NeuroCore/packages/python/neurocore-0.2.0-py3-none-any.whl
 ```
 
 ## Release Boundary
