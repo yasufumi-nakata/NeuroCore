@@ -9,30 +9,20 @@ on:
 
 permissions:
   contents: read
-  id-token: write
-  security-events: write
 
 jobs:
   scorecard:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      security-events: write
     steps:
-      - name: Inspect repository visibility
-        id: repository
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: echo "private=$(gh api repos/${{ github.repository }} --jq '.private')" >> "$GITHUB_OUTPUT"
-
-      - name: Skip Scorecard for private repositories
-        if: steps.repository.outputs.private == 'true'
-        run: echo "OSSF Scorecard action cannot read this private repository with the default integration token."
-
       - uses: actions/checkout@v6
-        if: steps.repository.outputs.private != 'true'
         with:
           persist-credentials: false
 
       - name: Run OSSF Scorecard
-        if: steps.repository.outputs.private != 'true'
         uses: ossf/scorecard-action@v2.4.3
         with:
           results_file: scorecard-results.sarif
@@ -40,14 +30,12 @@ jobs:
           publish_results: true
 
       - name: Upload Scorecard SARIF
-        if: steps.repository.outputs.private != 'true'
         uses: github/codeql-action/upload-sarif@v4
         continue-on-error: true
         with:
           sarif_file: scorecard-results.sarif
 
       - name: Upload Scorecard artifact
-        if: steps.repository.outputs.private != 'true'
         uses: actions/upload-artifact@v7
         with:
           name: scorecard-results
