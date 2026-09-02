@@ -52,7 +52,7 @@ neurocore run-file samples/synthetic_eeg.csv --sampling-rate 250 --json</code></
           <p>
             CSV は samples x channels の形です。`run-file` は CSV / TXT / NumPy / MNE 対応形式 / XDF / MAT / HDF5 / Parquet / PyTorch tensor/checkpoint / R data / Time Series Classification を `NeuroFrame` へ正規化してから pipeline へ渡します。
             CSV/TXT にラベル列のような非数値列、または index/time/timestamp のような数値 metadata 列が混ざる場合は、EEG channel と見なせる数値列だけを channel matrix として読みます。ヘッダーなし数値行や空白区切り TXT も扱えます。
-            MNE 経由では EDF/BDF、BrainVision、EEGLAB、FIF、CNT/GDF、EGI/MFF、eXimia、Nicolet、Persyst、MEF3 形式を入口にできます。NWB、XDF、MAT、HDF5、Parquet、NumPy、PyTorch、R data、Excel/pickle 形式の numeric EEG payload も探索して読みます。
+            MNE 経由では EDF/BDF、BrainVision、EEGLAB、FIF、CNT/GDF、EGI/MFF、eXimia、Nicolet、Persyst、MEF3 形式を入口にできます。NWB、XDF、MAT、HDF5、Parquet、NumPy、PyTorch、R data、Excel/pickle 形式の numeric EEG payload も探索して読みます。pickle は restricted loader により許可外 global と object array を拒否しますが、untrusted ファイルは checksum を確認し、隔離した disposable process で扱ってください。
             NWB は PyNWB 経由で `ElectricalSeries` を読み、DANDI 由来の ecephys assets を `NeuroFrame` へ変換する入口として扱います。
           </p>
 
