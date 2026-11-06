@@ -248,7 +248,7 @@ def test_pickle_loader_reads_numeric_eeg_payloads(tmp_path) -> None:
             handle,
         )
 
-    frame = load_pickle(path)
+    frame = load_pickle(path, trusted=True)
 
     assert frame.data.shape == (2, 2)
     assert frame.channel_names == ("ECoG1", "ECoG2")
@@ -269,7 +269,7 @@ def test_pickle_loader_rejects_unsafe_globals_without_side_effect(tmp_path) -> N
         pickle.dump(MaliciousPayload(), handle)
 
     with pytest.raises(pickle.UnpicklingError, match="pickle global is not permitted"):
-        load_pickle(path, sampling_rate=250)
+        load_pickle(path, trusted=True, sampling_rate=250)
 
     assert not marker.exists()
 
@@ -280,7 +280,7 @@ def test_pickle_loader_rejects_object_arrays(tmp_path) -> None:
         pickle.dump({"data": np.array([[{"nested": "value"}]], dtype=object)}, handle)
 
     with pytest.raises(pickle.UnpicklingError, match="pickle object arrays are not supported"):
-        load_pickle(path, sampling_rate=250)
+        load_pickle(path, trusted=True, sampling_rate=250)
 
 
 def test_pickle_loader_rejects_deeply_nested_payloads(tmp_path) -> None:
@@ -293,7 +293,7 @@ def test_pickle_loader_rejects_deeply_nested_payloads(tmp_path) -> None:
         pickle.dump(payload, handle)
 
     with pytest.raises(pickle.UnpicklingError, match="pickle payload nesting is too deep"):
-        load_pickle(path, sampling_rate=250)
+        load_pickle(path, trusted=True, sampling_rate=250)
 
 
 def test_r_loader_reads_pyreadr_numeric_payloads(tmp_path, monkeypatch) -> None:
