@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import json
+import os
 import pickle
 import sys
 from types import ModuleType, SimpleNamespace
 
 import numpy as np
+import pytest
 
 from neurocore.cli import main
 from neurocore.loaders import (
@@ -253,6 +255,45 @@ def test_pickle_loader_reads_numeric_eeg_payloads(tmp_path) -> None:
     assert frame.timebase.sampling_rate == 1000.0
     assert frame.provenance["source"] == "pickle"
     assert ".pkl" in supported_extensions()
+
+
+def test_pickle_loader_rejects_unsafe_globals_without_side_effect(tmp_path) -> None:
+    marker = tmp_path / "pickle-executed"
+
+    class MaliciousPayload:
+        def __reduce__(self):
+            return os.system, (f"touch {marker}",)
+
+    path = tmp_path / "malicious.pkl"
+    with path.open("wb") as handle:
+        pickle.dump(MaliciousPayload(), handle)
+
+    with pytest.raises(pickle.UnpicklingError, match="pickle global is not permitted"):
+        load_pickle(path, sampling_rate=250)
+
+    assert not marker.exists()
+
+
+def test_pickle_loader_rejects_object_arrays(tmp_path) -> None:
+    path = tmp_path / "object-array.pkl"
+    with path.open("wb") as handle:
+        pickle.dump({"data": np.array([[{"nested": "value"}]], dtype=object)}, handle)
+
+    with pytest.raises(pickle.UnpicklingError, match="pickle object arrays are not supported"):
+        load_pickle(path, sampling_rate=250)
+
+
+def test_pickle_loader_rejects_deeply_nested_payloads(tmp_path) -> None:
+    payload = 0
+    for _ in range(34):
+        payload = [payload]
+
+    path = tmp_path / "deep-payload.pkl"
+    with path.open("wb") as handle:
+        pickle.dump(payload, handle)
+
+    with pytest.raises(pickle.UnpicklingError, match="pickle payload nesting is too deep"):
+        load_pickle(path, sampling_rate=250)
 
 
 def test_r_loader_reads_pyreadr_numeric_payloads(tmp_path, monkeypatch) -> None:

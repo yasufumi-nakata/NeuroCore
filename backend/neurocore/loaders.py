@@ -54,6 +54,36 @@ SUPPORTED_EXTENSIONS = {
     *MNE_RAW_READERS,
 }
 
+_SAFE_PICKLE_GLOBALS = {
+    ("builtins", "bool"),
+    ("builtins", "bytearray"),
+    ("builtins", "bytes"),
+    ("builtins", "complex"),
+    ("builtins", "dict"),
+    ("builtins", "float"),
+    ("builtins", "frozenset"),
+    ("builtins", "int"),
+    ("builtins", "list"),
+    ("builtins", "set"),
+    ("builtins", "str"),
+    ("builtins", "tuple"),
+    ("numpy", "dtype"),
+    ("numpy", "ndarray"),
+    ("numpy._core.multiarray", "_reconstruct"),
+    ("numpy._core.multiarray", "scalar"),
+    ("numpy._core.numeric", "_frombuffer"),
+    ("numpy.core.multiarray", "_reconstruct"),
+    ("numpy.core.multiarray", "scalar"),
+    ("numpy.core.numeric", "_frombuffer"),
+}
+
+
+class _RestrictedPickleUnpickler(pickle.Unpickler):
+    def find_class(self, module: str, name: str) -> Any:
+        if (module, name) not in _SAFE_PICKLE_GLOBALS:
+            raise pickle.UnpicklingError(f"pickle global is not permitted: {module}.{name}")
+        return super().find_class(module, name)
+
 
 def load(
     path: str | Path,
@@ -624,6 +654,7 @@ def load_pickle(
     channel_type: str = "eeg",
     unit: str = "uV",
 ) -> NeuroFrame:
+    """Load a numeric EEG payload through the restricted pickle loader."""
     resolved = Path(path).expanduser()
     payload = _load_pickle_payload(resolved)
     data = _find_numeric_matrix({"payload": payload})
@@ -988,7 +1019,31 @@ def _load_torch_payload(path: Path) -> Any:
 
 def _load_pickle_payload(path: Path) -> Any:
     with path.open("rb") as handle:
-        return pickle.load(handle)
+        payload = _RestrictedPickleUnpickler(handle).load()
+    _reject_pickle_object_arrays(payload)
+    return payload
+
+
+def _reject_pickle_object_arrays(value: Any, *, depth: int = 0, seen: set[int] | None = None) -> None:
+    if depth > 32:
+        raise pickle.UnpicklingError("pickle payload nesting is too deep")
+    if isinstance(value, np.ndarray):
+        if value.dtype.hasobject:
+            raise pickle.UnpicklingError("pickle object arrays are not supported")
+        return
+    if not isinstance(value, (dict, list, tuple, set, frozenset)):
+        return
+    identities = seen if seen is not None else set()
+    identity = id(value)
+    if identity in identities:
+        return
+    identities.add(identity)
+    if isinstance(value, dict):
+        items = (*value.keys(), *value.values())
+    else:
+        items = value
+    for item in items:
+        _reject_pickle_object_arrays(item, depth=depth + 1, seen=identities)
 
 
 def _load_hdf5_payload(path: Path) -> dict[str, Any]:
