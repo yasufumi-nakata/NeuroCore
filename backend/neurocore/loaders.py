@@ -91,10 +91,11 @@ def load(
     sampling_rate: float | None = None,
     channel_names: tuple[str, ...] | list[str] | None = None,
     mne_preload: bool = True,
+    trusted_pickle: bool = False,
 ) -> NeuroFrame:
     resolved = Path(path).expanduser()
     if resolved.is_dir():
-        return load_directory(resolved, sampling_rate=sampling_rate, mne_preload=mne_preload)
+        return load_directory(resolved, sampling_rate=sampling_rate, mne_preload=mne_preload, trusted_pickle=trusted_pickle)
     suffix = _loader_suffix(resolved)
     if suffix in {".csv", ".tab", ".txt", ".tsv"}:
         if sampling_rate is None:
@@ -127,7 +128,7 @@ def load(
     if suffix == ".mat":
         return load_mat(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     if suffix in {".pickle", ".pkl"}:
-        return load_pickle(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
+        return load_pickle(resolved, sampling_rate=sampling_rate, channel_names=channel_names, trusted=trusted_pickle)
     if suffix in {".pt", ".pth"}:
         return load_torch(resolved, sampling_rate=sampling_rate, channel_names=channel_names)
     raise ValueError(f"unsupported input format: {resolved.suffix}")
@@ -138,12 +139,13 @@ def load_directory(
     *,
     sampling_rate: float | None = None,
     mne_preload: bool = True,
+    trusted_pickle: bool = False,
 ) -> NeuroFrame:
     resolved = Path(path).expanduser()
     files = find_supported_signal_files(resolved)
     if not files:
         raise ValueError(f"directory does not contain a supported EEG signal file: {resolved}")
-    return load(files[0], sampling_rate=sampling_rate, mne_preload=mne_preload)
+    return load(files[0], sampling_rate=sampling_rate, mne_preload=mne_preload, trusted_pickle=trusted_pickle)
 
 
 def load_csv(
@@ -653,8 +655,13 @@ def load_pickle(
     channel_names: tuple[str, ...] | list[str] | None = None,
     channel_type: str = "eeg",
     unit: str = "uV",
+    trusted: bool = False,
 ) -> NeuroFrame:
-    """Load a numeric EEG payload through the restricted pickle loader."""
+    """Load trusted numeric EEG data; restricted globals are not a sandbox."""
+    if trusted is not True:
+        raise ValueError(
+            "pickle loading is disabled by default; use trusted=True only for verified local files"
+        )
     resolved = Path(path).expanduser()
     payload = _load_pickle_payload(resolved)
     data = _find_numeric_matrix({"payload": payload})

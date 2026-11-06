@@ -17,3 +17,8 @@ Use GitHub private vulnerability reporting when available, or contact the mainta
 The `.pkl` and `.pickle` loaders use a restricted unpickler. They accept the built-in containers and NumPy arrays needed for numeric EEG payloads, but reject arbitrary pickle globals, callables, and object arrays before converting data into a `NeuroFrame`. This is a compatibility boundary, not a guarantee that a hostile file is harmless: pickle payloads can still be malformed or resource-intensive. Treat downloaded or otherwise untrusted serialized data as hostile, verify its source and checksum, and load it in a disposable or separately permissioned process before using it in a long-lived research runtime.
 
 NeuroCore is not a medical device and does not provide clinical diagnosis.
+
+
+## Pickle loading is disabled by default
+
+The restricted unpickler is not a resource sandbox. Generic, directory and CLI paths refuse pickle before deserialization unless a caller deliberately opts in for a verified local file. See [the trust-boundary migration guide](docs/pickle-trust-boundary.md). Explicit trust does not make hostile pickle input safe.

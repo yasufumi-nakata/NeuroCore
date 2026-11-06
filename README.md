@@ -191,3 +191,8 @@ python scripts/verify_dataset_acquisition.py --inventory ../EEG-DATA/eeg_dataset
 ## 重要な境界
 
 NeuroCore は医療診断製品ではありません。OS 操作や AI エージェント実行も、このライブラリ単体では実行しません。実行側は、NeuroCore の action envelope を受け取った後も、別途ユーザー許可、OS 権限、agent policy、監査ログを適用してください。
+
+
+## Pickle loading is disabled by default
+
+The restricted unpickler is not a resource sandbox. Generic, directory and CLI paths refuse pickle before deserialization unless a caller deliberately opts in for a verified local file. See [the trust-boundary migration guide](docs/pickle-trust-boundary.md). Explicit trust does not make hostile pickle input safe.
