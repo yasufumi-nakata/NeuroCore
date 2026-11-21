@@ -1,6 +1,6 @@
 # NeuroCore Architecture
 
-NeuroCore is organized as a small runtime for EEG-to-control systems. The decoder that assigns weights or decides a user's intent lives outside this repository.
+This repository implements NeuroCore's runtime layer for EEG-to-control systems. **pj-xavier (Project Xavier) is the project that researches and develops NeuroCore's AI.** Its decoder models and evaluation artifacts are maintained outside the core runtime package and connected through the intent interface. This is an implementation boundary within the overall effort, not a separate purpose for pj-xavier. See [project positioning](project-positioning.md).
 
 ## Runtime Boundaries
 
@@ -14,7 +14,7 @@ NeuroCore is organized as a small runtime for EEG-to-control systems. The decode
 
 ## No Bundled Weights
 
-NeuroCore does not train, ship, or tune classifier weights. This is intentional. A BCI decoder can output:
+The NeuroCore core runtime does not train, ship, or tune classifier weights. pj-xavier owns the AI research and development work; keeping its models outside this package lets the runtime be tested independently. A BCI decoder can output:
 
 ```json
 {

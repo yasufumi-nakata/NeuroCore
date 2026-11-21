@@ -13,6 +13,7 @@ DOCS = ROOT / "docs"
 GITHUB_DOC_BASE = "https://github.com/yasufumi-nakata/NeuroCore/blob/main/docs"
 
 PUBLIC_DOCS = {
+    "project-positioning.md": ("project-positioning", "Project Positioning"),
     "architecture.md": ("architecture", "Architecture"),
     "testing-strategy.md": ("testing-strategy", "Testing Strategy"),
     "settings-ui.md": ("settings-ui", "Settings UI"),
@@ -169,7 +170,7 @@ def page_template(title: str, body: str, current_slug: str) -> str:
         </article>
       </main>
       <footer class="site-footer">
-        <div class="section">NeuroCore は decoder weights を含まない EEG control runtime です。OS 操作と agent 実行は外部の permissioned service が担当します。</div>
+        <div class="section">NeuroCoreのAIはpj-xavierで研究開発します．core runtimeはdecoder weightsを分離し，OS操作とagent実行は外部のpermissioned serviceが担当します．</div>
       </footer>
     </div>
   </body>

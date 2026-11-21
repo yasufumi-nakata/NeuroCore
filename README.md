@@ -6,7 +6,19 @@
 [![Tutorial](https://img.shields.io/badge/tutorial-GitHub%20Pages-256f5b)](https://www.yasufumi.net/NeuroCore/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-NeuroCore は、EEG を装着したユーザーがマウス、キーボード、AI エージェントを操作するための研究向けランタイムライブラリです。脳波から intent を推定する重み付けや分類器はこのリポジトリには含めません。外部デコーダが出した intent を、NeuroCore が検証し、安全な操作 envelope に変換します。
+**pj-xavier（Project Xavier）は，NeuroCoreのAIを研究開発するプロジェクトです．** このリポジトリはNeuroCoreのランタイム層を実装し，EEGを装着したユーザーの操作支援に必要な信号処理，設定，intentの検証とaction envelopeへの変換を担います．
+
+pj-xavierで研究開発するAIと，このcore runtimeの実装範囲は分けて管理します．脳波からintentを推定する分類器やモデル重みはcore runtimeに同梱せず，外部デコーダとして接続する設計です．AI研究開発がNeuroCoreの目的から外れるという意味ではありません．
+
+## pj-xavierとの関係
+
+| 対象 | 役割 |
+| --- | --- |
+| pj-xavier（Project Xavier） | NeuroCoreのAIの研究開発．EEG表現・基盤モデル，マルチモーダル統合，高次意図推定，AIエージェント連携を個別研究課題として扱います． |
+| このNeuroCoreリポジトリ | 信号の正規化・検証，前処理，ストリーミング，設定，外部デコーダのintentからaction envelopeへの変換． |
+| EEG-dataset | 学習・評価に使うEEG資料の探索と検証を支えるデータ目録．目録への掲載は，波形取得済み・学習可能・モデル実装済みを意味しません． |
+
+PC操作・Computer Useはpj-xavierの初期の検証・応用対象です．プロジェクト全体の目的はNeuroCoreのAIを開発することであり，個々の研究課題の達成状況はそれぞれの評価結果で判断します．[プロジェクトの位置付けと実装境界](docs/project-positioning.md)を参照してください．
 
 ## いま入っているもの
 

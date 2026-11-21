@@ -2,6 +2,8 @@
 
 NeuroCore の実運用は core package、decoder、permissioned executor を分けて配置します。
 
+pj-xavier（Project Xavier）は，NeuroCoreのAIを研究開発するプロジェクトです．AIの学習・評価とモデル重みはcore packageの外で管理し，デコーダとして接続する設計です．以下の表のscopeはこのruntime packageの実装範囲を指します．[プロジェクトの位置付け](project-positioning.md)も参照してください．
+
 ## Local Research Setup
 
 1. EEG acquisition process が raw samples を取得します。
@@ -21,7 +23,7 @@ NeuroCore の実運用は core package、decoder、permissioned executor を分�
 
 ## Service Split
 
-| Layer | Responsibility | NeuroCore scope |
+| Layer | Responsibility | Core runtime package scope |
 | --- | --- | --- |
 | Device | EEG stream acquisition | Adapter only |
 | Runtime | Frame validation, kernels, routing, audit envelope | Yes |
