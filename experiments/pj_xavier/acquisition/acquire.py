@@ -1019,6 +1019,8 @@ def main(argv=None):
         write_jsonl(args.output, rows)
         print(json.dumps({"attempted": count, "rows": len(rows), "statuses": dict(Counter(r["status"] for r in rows))}))
     elif args.command == "download":
+        from smac_storage_guard import require_smac_raw_root
+        require_smac_raw_root(args.root)
         if args.reserve_gib < 1 or args.seconds < 1:
             raise SystemExit("reserve must be >=1 GiB and seconds must be positive")
         rows = read_jsonl(args.manifest)

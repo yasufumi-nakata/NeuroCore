@@ -262,7 +262,10 @@ def main():
     p = argparse.ArgumentParser()
     for name in ('frozen-jobs', 'resource', 'acquire-source', 'original-db', 'raw-root', 'output'):
         p.add_argument('--'+name, required=True)
-    print(json.dumps(run(p.parse_args()), sort_keys=True), flush=True)
+    args = p.parse_args()
+    from smac_storage_guard import require_smac_raw_root
+    require_smac_raw_root(args.raw_root)
+    print(json.dumps(run(args), sort_keys=True), flush=True)
 
 
 if __name__ == '__main__':

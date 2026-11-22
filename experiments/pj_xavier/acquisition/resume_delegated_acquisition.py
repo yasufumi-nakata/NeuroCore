@@ -101,7 +101,10 @@ def run(args):
 def main():
     p=argparse.ArgumentParser()
     for n in ['operation-root','output','old-resource','resource','released-reservation-completion','original-db','raw-root']:p.add_argument('--'+n,required=True)
-    print(json.dumps(run(p.parse_args()),sort_keys=True),flush=True)
+    args=p.parse_args()
+    from smac_storage_guard import require_smac_raw_root
+    require_smac_raw_root(args.raw_root)
+    print(json.dumps(run(args),sort_keys=True),flush=True)
 
 
 if __name__=='__main__':main()

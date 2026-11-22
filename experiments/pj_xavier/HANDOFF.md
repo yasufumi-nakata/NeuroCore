@@ -1,5 +1,15 @@
 # PJ-Xavier 実行・引継ぎ
 
+## 保存先変更とworkstationの容量回復（2026-11-22）
+
+ユーザー最新指示「ダウンロード先をsmacにしたおけばいいじゃん．埋めた分消しておいて」に基づき，公開データの保存先はsmacへ変更しました．workstationへの大量取得，一時中継，Colabからのraw回収，認証不成立時のローカルへの切替は行わないでください．smac19は引き続き除外します．
+
+workstationの `private/xavier/raw` と `private/xavier/colab_raw_archive` にあった今回取得分773ファイル（50,476,724,659 bytes）を削除しました．削除直後の空き容量は89,830,318,080 bytesです．学習済みモデル，optimizer/RNG，評価結果，コード，取得台帳は保持しています．過去の49.54GB／255.33時間という取得・検証実績は履歴であり，現在のローカル保持量ではありません．既存台帳のdownloaded状態を現在のファイル存在の根拠にしないでください．
+
+次の保存先設定は `private/xavier/storage_cleanup_20261122/nodes.smac_only.json`，優先先は `smac:~/pj-xavier/smac31/raw` です．既存SSH alias smac（smac31）は今回も認証失敗のため，smacへの取得・移転は未実行です．認証とリモート空き容量を確認した後，既存fleetによるsmac上の直接downloadを使用してください．workstationの空きが回復してもローカル取得を再開しないでください．
+
+削除manifest，receipt，storage_policy.jsonは `private/xavier/storage_cleanup_20261122/` に保存しました．継続automationの保存先指示とcoordinatorも同じ方針へ更新済みです．以下の過去のローカル保存・元データ保持方針より，この最新指示を優先してください．
+
 更新：2026-11-22 16:25 JST．最新の公開状態はこのbranchのHEAD，運用所有権はprivate coordinatorと実jobを優先してください．
 
 ## 現在の到達点
@@ -146,3 +156,11 @@ automation `Automation_f439325b5d888191bc75e92d1ba97be7` は毎時15分26秒，A
 - private証拠：`private/xavier/phase4_automation_1615/lease_acquired.json`，`storage_receipt.json`，`source_admission.private.jsonl`，`real_FIF_16ch_smoke_receipt.json`，`cpu_stage_receipt.json`．新protocolは `next_multichannel/protocol.cpu_stage_v1.json`．metadata-only splitをそのまま学習許可や新規holdoutと呼びません．
 
 **再開条件**：実owner・job・bootを再確認してlease取得→cross-source/旧test raw・payload deny照合とsource QC固定→未使用holdout確保→preprocessing因果性とunits確定→新scientific protocol＋新GPU/CU/disk/停止予算登録→real device backward＆最大C/P容量probe→fit／各checkpoint validation→固定独立test＋負対照→全成果物SHA回収→M1試用→物理session停止．旧17testを新モデルの選択には使いません．次の1時間間隔監視でも同じowner排他を維持します．
+
+## 2026-11-22 17:14 JST：smac-only CLI保存先ガード
+
+ユーザー指定の保存先をCLIで実行時に検査する `acquisition/smac_storage_guard.py` を追加しました．既存privateの `storage_policy.json`／`nodes.smac_only.json` を両方読み，実行ホスト名が許可smacノード，そのノード専用 `~/pj-xavier/<node>/raw` 配下である場合だけ取得CLIが先へ進みます．policy欠落，workstation，smac19，node違い，外部symlinkをfail closedとし，DB作成・ダウンロード前に停止します．legacyの直接Python APIをOSレベルで封じるものではありません．
+
+取得済み履歴760 unique・49,539,668,378B・連続EEG255.33hは保持実体ではありません．削除manifestの773ファイル／50,476,724,659Bはworkstationから削除済みで，現在 `raw` と `colab_raw_archive` は存在しません．smac側への取得はSSH認証未成立につき0B．GPU学習追加・実機再試用はこの保存先ガード作業では開始していません．
+
+新規取得を再開する際はsmacノードに同じpolicy・registryと固定codeを配し，物理hostname／root実体／認証／remote空き・帯域・元URL条件を直接確認してから限定budgetで開始してください．workstationへのfallbackは禁止します．
