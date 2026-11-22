@@ -1,5 +1,16 @@
 # PJ-Xavier 実行・引継ぎ
 
+## 最新追加：S MacでP300 original DATを4.164167時間分学習（2026-11-22 20:39 JST）
+
+**CBraMod系統の実累積はtrain25,876窓／77,628秒＝21.563333時間です．** smac05のOpenNeuro ds005028のオリジナルDATのうちtrain適格65記録をsmac35へ直接転送し，SHA照合，固定QC，MPS backward4形状，10epochs／4,070stepsを完了しました．P300新窓は4,997／14,991秒で，反復学習258,760提示を固有時間へ加算していません．
+
+固定806023 validation327窓の最良再構成MSEは**0.0015065842255285976**（直前InMIDモデル0.0016149027567592268）です．これはP300新sourceの汎化評価ではなく，行動／自由意図／LLM接続／実OS成功の証拠にもなりません．P300 val9，test19，著者分析除外12記録のDATは開いていません．最良best SHA256は\`9448e34ea1549d406a14b1a3e3eae5603a2ff7882008156d0937e4edb482cc8c\`．別CPU読取検証で配列161件，manifest全26,203窓，optimizer／RNG／checkpointを検証済みです．
+
+取得の新snapshot（20:30:55 JST）は**完了60,732ファイル／395,625,524,078B，partial70,262,345,104B**，37台alive・完了ファイル欠損／サイズ不一致0．約23.07TBは取得候補です．workstationへのraw再取得・Colab学習を行わず，smac19を除外しました．詳細は[今回のP300実績](reports/smac_training_20261122_v1/P300_ORIGINAL_DAT_RESULTS.md)です．
+
+次は既存37台の取得を維持し，未完了BCI8089820 archive／SSVEP9970619 unit／P300新sourceの独立holdout確認，次の適格sourceを新しいscientific runで学習します．既存runの再実行，既存testに合わせた閾値変更はしません．
+
+
 ## 最新状態：S Macで固有17.399時間を実学習（2026-11-22）
 
 最新ユーザー指示は「取得できるデータ全部使って学習進めて、S Macの方で」です．新規の取得・保存・展開・学習はS Macで行い，smac19は除外します．workstationは接続，コード，小さな台帳だけに使用します．raw／preparedのworkstation中継とColab学習は再開しません．
