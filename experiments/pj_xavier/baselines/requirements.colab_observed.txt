@@ -1,0 +1,5 @@
+# Exact versions observed in the completed 2026-11-22 Colab CPU run.
+numpy==2.4.6
+scipy==1.16.3
+scikit-learn==1.6.1
+threadpoolctl==3.7.0

@@ -1,0 +1,5 @@
+{
+  "selection_sha256": "10f7feacf778bf9117c7d541225a62ec14af34cabdf1f76ddaa55b7c4680f3af",
+  "started_epoch": 1795307246.1942315,
+  "policy": "one prediction call per predeclared model; no refit or retuning after this marker"
+}

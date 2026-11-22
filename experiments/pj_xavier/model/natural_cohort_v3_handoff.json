@@ -1,0 +1,172 @@
+{
+  "schema": "xavier-natural-cohort-v3-handoff",
+  "status": "prepared_and_verified_not_trained",
+  "registered_protocol_sha256": "d4e6c5f685dce53e73b3aa88d12ed07c88a8ac08a27fb78392dbd99aed0a6396",
+  "preparer_sha256": "e856267e8478f7c65bbc5a1ca5da90f72e38029245f55d7cb9816b15a757430c",
+  "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "history_features_sha256": "26d01ba8b8b289ea040f6340fd65ad146cea23569fa6d679766e5711c6ae68d9",
+  "subject_split_sha256": "bdf214b16c92b33c889b5bcb8b4ec7b888877c40d7992be8a796cdbc8ae23dae",
+  "artifacts": {
+    "colab_cohort": "/content/xavier/prepared/ai_coding_uniba_v3_natural_casecontrol_verified",
+    "workstation_cohort": "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/private/xavier/prepared/ai_coding_uniba_v3_natural_casecontrol_verified",
+    "workstation_archive": "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/private/xavier/prepared_archives/ai_coding_uniba_v3_natural_casecontrol_verified.tar.gz",
+    "archive_bytes": 10882027,
+    "archive_sha256": "5d0a3968be9313826c1109d0028b6b985dafccf9d7c3a478371ae712cae33c83",
+    "all_32_arrays_reverified_after_workstation_recovery": true
+  },
+  "counts": {
+    "train": {
+      "subjects": 18,
+      "windows": 400,
+      "ai_prompt_submit": 80,
+      "keyboard": 160,
+      "mouse_click": 160
+    },
+    "val": {
+      "subjects": 6,
+      "windows": 155,
+      "ai_prompt_submit": 31,
+      "keyboard": 62,
+      "mouse_click": 62
+    },
+    "test": {
+      "subjects": 8,
+      "windows": 203,
+      "ai_prompt_submit": 39,
+      "keyboard": 82,
+      "mouse_click": 82
+    }
+  },
+  "positive_request_retention": {
+    "raw_eligible_events": 150,
+    "retained": 150,
+    "parent_retained": 5,
+    "request_windows_with_prior_key_or_mouse_activity": 140
+  },
+  "validation": {
+    "cpu_only_unit_tests": 9,
+    "torch_backbone_loaded": false,
+    "gpu_execution": false,
+    "all_features_before_guarded_cutoffs": true,
+    "all_source_eeg_and_parent_phase_hashes_match": true,
+    "nonoverlapping_windows": true,
+    "subject_split_byte_identical": true,
+    "manifest_unchanged_when_phase_hash_guard_added": true
+  },
+  "run_next": {
+    "preconditions": [
+      "Finish and persist current v2 training and its frozen five-condition evaluation first.",
+      "No other GPU training/evaluation may be running.",
+      "Check manifest, model-module, registered protocol and all EEG artifact hashes.",
+      "Start a separate v3 output; do not resume a v2 checkpoint with a changed manifest."
+    ],
+    "environment": {
+      "PYTORCH_ALLOC_CONF": "expandable_segments:True",
+      "HF_HUB_OFFLINE": "1",
+      "TOKENIZERS_PARALLELISM": "false"
+    },
+    "training_argv": [
+      "python",
+      "/content/xavier/code/model/eeg_llm.py",
+      "train",
+      "--manifest",
+      "/content/xavier/prepared/ai_coding_uniba_v3_natural_casecontrol_verified/manifest.jsonl",
+      "--output",
+      "/content/xavier/runs/qwen3_8b_aicoding_uniba_natural_v3",
+      "--model",
+      "Qwen/Qwen3-8B",
+      "--revision",
+      "b968826d9c46dd6066d109eabc6255188de91218",
+      "--mode",
+      "fused",
+      "--split-policy",
+      "subject",
+      "--samples",
+      "448",
+      "--device",
+      "cuda",
+      "--dtype",
+      "bfloat16",
+      "--epochs",
+      "3",
+      "--batch-size",
+      "4",
+      "--candidate-batch-size",
+      "4",
+      "--lr",
+      "0.001",
+      "--seed",
+      "20261122",
+      "--prefix-tokens",
+      "8",
+      "--encoder-width",
+      "64",
+      "--max-prompt-tokens",
+      "256",
+      "--max-base-params",
+      "9000000000",
+      "--memory-budget-gib",
+      "21",
+      "--max-seconds",
+      "3600"
+    ],
+    "batch_size_reason": "Predeclare batch4 as conservative fresh run after batch8's longer variable-shape v2 run exceeded reserved-memory budget; no v3 score was used to choose this.",
+    "finalize_test": false,
+    "evaluation_argv": [
+      "python",
+      "/content/xavier/code/benchmark/evaluate_variants.py",
+      "--manifest",
+      "/content/xavier/prepared/ai_coding_uniba_v3_natural_casecontrol_verified/manifest.jsonl",
+      "--checkpoint",
+      "/content/xavier/runs/qwen3_8b_aicoding_uniba_natural_v3/best.pt",
+      "--training-membership",
+      "/content/xavier/runs/qwen3_8b_aicoding_uniba_natural_v3/training_membership.json",
+      "--raw-bids-root",
+      "/content/xavier/verified_ai_coding_uniba_v2",
+      "--artifact-root",
+      "/content/xavier",
+      "--output-dir",
+      "/content/xavier/evaluations/qwen3_8b_aicoding_uniba_natural_v3",
+      "--model-module",
+      "/content/xavier/code/model/eeg_llm.py",
+      "--expected-manifest-sha256",
+      "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+      "--expected-model-sha256",
+      "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+      "--expected-test-records",
+      "203",
+      "--device",
+      "cuda",
+      "--memory-budget-gib",
+      "21",
+      "--candidate-batch-size",
+      "4"
+    ],
+    "execution_status": "Not executed; commands are for the next scheduled compute slot."
+  },
+  "history_baseline_plan": {
+    "sidecar": "history_features.jsonl",
+    "families": [
+      "history_pre_eeg",
+      "history_pre_decision_guarded"
+    ],
+    "fit_partition": "train",
+    "selection_partition": "val",
+    "final_partition": "test",
+    "proposed_estimator": "L2 multinomial logistic regression, fixed C=1, no class weighting, train-only scaling and missing-value imputation with missing indicators; the classifier has not been implemented or fitted in this preparation task.",
+    "features_allowed": "Only the .features mapping of the declared history family. Do not feed id, split, label, case_control_role, protocol hashes, target times, or provenance to the estimator.",
+    "extra_comparator": "Coarse environment plus history, with train-fitted category encoding; no target-label evidence.",
+    "uncertainty": "Subject-cluster bootstrap on held-out subjects; only 8 test subjects, so interval uncertainty must be shown."
+  },
+  "interpretation": {
+    "sampling_design": "case_control_enriched",
+    "natural_population_precision_estimated": false,
+    "cohort_prevalence_test": 0.1921182266009852,
+    "latent_intent_accuracy_estimated": false,
+    "goal_completion_estimated": false,
+    "online_causality_verified": false,
+    "history_features_are_not_automatically_injected_into_existing_llm_prompt": true,
+    "v2_vs_v3_metric_warning": "Different selected cohorts/prevalences; do not call the difference between v2 and v3 reported accuracies model improvement without evaluating fixed checkpoints on the same preregistered test cohort.",
+    "source_hours_warning": "v3 reuses v2 source recordings; do not add their source hours as independent EEG."
+  }
+}

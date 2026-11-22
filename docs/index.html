@@ -6,7 +6,7 @@
     <title>NeuroCore | EEG Control Runtime</title>
     <meta
       name="description"
-      content="NeuroCore は decoder weights を含めず、外部 EEG decoder の intent を mouse、keyboard、AI-agent action envelope へ安全に変換する runtime です。"
+      content="pj-xavierはNeuroCoreのAIを研究開発するプロジェクトです．NeuroCoreのcore runtimeはdecoder weightsを分離し，intentの検証とaction envelopeへの変換を担います．"
     >
     <link rel="stylesheet" href="assets/neurocore-pages.css">
   </head>
@@ -34,9 +34,10 @@
             <p class="eyebrow">EEG to control runtime</p>
             <h1>NeuroCore</h1>
             <p class="lead">
-              EEG decoder が出した intent を、マウス、キーボード、AI エージェント向けの安全な action envelope に変換します。
-              decoder weights はこの package に入れず、runtime、設定、監査、自己テストを分離して扱います。
+              pj-xavier（Project Xavier）は，NeuroCoreのAIを研究開発するプロジェクトです．
+              このサイトでは，EEG decoderのintentをマウス，キーボード，AIエージェント向けのaction envelopeへ変換するNeuroCoreのランタイム層を案内します．
             </p>
+            <p>AIモデルとdecoder weightsはcore runtimeの外で管理します．<a href="project-positioning/">pj-xavierの位置付けと各層の役割</a></p>
             <div class="actions" aria-label="Primary actions">
               <a class="button" href="tutorial/">チュートリアルを開く</a>
               <a class="secondary-button" href="packages/">配布物を見る</a>
@@ -54,7 +55,7 @@
             </div>
             <div class="runtime-step danger">
               <strong>3. External decoder</strong>
-              <span>intent 推定と重みづけは別システムです。NeuroCore は重みを持ちません。</span>
+              <span>NeuroCore向けAIはpj-xavierで研究開発し，モデル重みをcore runtimeから分離して接続します．</span>
             </div>
             <div class="runtime-step">
               <strong>4. Safe action envelope</strong>
@@ -83,7 +84,7 @@
       </main>
 
       <footer class="site-footer">
-        <div class="section">NeuroCore は decoder weights を含まない EEG control runtime です。OS 操作と agent 実行は外部の permissioned service が担当します。</div>
+        <div class="section">NeuroCoreのAIはpj-xavierで研究開発します．core runtimeはdecoder weightsを分離し，OS操作とagent実行は外部のpermissioned serviceが担当します．</div>
       </footer>
     </div>
   </body>

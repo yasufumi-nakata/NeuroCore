@@ -1,0 +1,120 @@
+{
+  "status": "completed_epochs",
+  "global_step": 675,
+  "elapsed_seconds": 227.3539082929999,
+  "train_step_seconds_p50": 0.1842106489998514,
+  "train_step_seconds_p95": 0.19777294159982825,
+  "memory": {
+    "process_peak_rss_bytes": 9197645824,
+    "cuda_peak_allocated_bytes": 16644056576,
+    "cuda_peak_reserved_bytes": 16821256192
+  },
+  "memory_budget_gib": 21.0,
+  "observed_memory_within_budget": true,
+  "memory_note": "CUDA reports allocator peaks; MPS values are sampled, not guaranteed peak; RSS is process high-water mark",
+  "best_checkpoint": "best.pt",
+  "test": {
+    "normal": {
+      "n": 78,
+      "accuracy": 0.8333333333333334,
+      "balanced_accuracy": 0.3333333333333333,
+      "macro_f1": 0.30303030303030304,
+      "all_classes_present": true,
+      "classes": [
+        "keyboard",
+        "mouse_click",
+        "mouse_scroll"
+      ],
+      "class_support": [
+        9,
+        65,
+        4
+      ],
+      "confusion_matrix": [
+        [
+          0,
+          9,
+          0
+        ],
+        [
+          0,
+          65,
+          0
+        ],
+        [
+          0,
+          4,
+          0
+        ]
+      ],
+      "categorical_nll": 0.5467469096183777,
+      "probability_note": "renormalized conditional candidate-sequence likelihoods; calibration not established",
+      "status": "measured",
+      "condition": "normal",
+      "latency_ms_p50": 260.05792750004275,
+      "latency_ms_p95": 262.9665508500693,
+      "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution",
+      "abstain_threshold": 0.8,
+      "coverage": 1.0,
+      "task_completion": null,
+      "false_actions_per_minute": null,
+      "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+    },
+    "shuffled_eeg": {
+      "n": 78,
+      "accuracy": 0.8333333333333334,
+      "balanced_accuracy": 0.3333333333333333,
+      "macro_f1": 0.30303030303030304,
+      "all_classes_present": true,
+      "classes": [
+        "keyboard",
+        "mouse_click",
+        "mouse_scroll"
+      ],
+      "class_support": [
+        9,
+        65,
+        4
+      ],
+      "confusion_matrix": [
+        [
+          0,
+          9,
+          0
+        ],
+        [
+          0,
+          65,
+          0
+        ],
+        [
+          0,
+          4,
+          0
+        ]
+      ],
+      "categorical_nll": 0.559764564037323,
+      "probability_note": "renormalized conditional candidate-sequence likelihoods; calibration not established",
+      "status": "measured",
+      "condition": "shuffled_eeg",
+      "latency_ms_p50": 260.40680500000235,
+      "latency_ms_p95": 261.211762899984,
+      "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution",
+      "abstain_threshold": 0.8,
+      "coverage": 1.0,
+      "task_completion": null,
+      "false_actions_per_minute": null,
+      "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+    },
+    "eeg_increment_balanced_accuracy": 0.0,
+    "status": "single_final_test_run",
+    "heldout_scope": "within_subject_session_pilot"
+  },
+  "checkpoint_sha256": "6638b0d1eb3c9e21496449eaf60adc4bc880c2ae233e77502d76b31f5dd1dc25",
+  "manifest_sha256": "87e98a0d50f6288bc9b293de32a40e118431eaf3431514b87271da6b3a9daf5a",
+  "model_selection_partition": "validation",
+  "test_used_for_tuning": false,
+  "model_kind": "pretrained_llm_with_trained_eeg_connector",
+  "agentic_readiness": "not_validated",
+  "os_actions_executed": 0
+}

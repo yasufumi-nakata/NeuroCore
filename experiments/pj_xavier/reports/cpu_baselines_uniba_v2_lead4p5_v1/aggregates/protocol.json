@@ -1,0 +1,32 @@
+{
+  "protocol_id": "pj-xavier-uniba-v2-lead4p5-cpu-logistic-20261122-v1",
+  "predeclared_before_test_prediction": true,
+  "manifest_sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac",
+  "reference_file_sha256": {
+    "training_membership.json": "4a6f5d566f1054f474728083d2f6c6872194b9395a464571d83f73430185486a",
+    "eeg_artifacts.json": "5f666e0234e3ab4cbad4271f486840219ce4b70605b84135261e9b990bb496ec"
+  },
+  "split_counts": {
+    "train": 4357,
+    "val": 1506,
+    "test": 1956
+  },
+  "C_grid": [
+    0.001,
+    0.01,
+    0.1,
+    1.0,
+    10.0,
+    100.0
+  ],
+  "selection": "train-only fitting, maximum validation balanced accuracy, then validation macro-F1, then smaller C; no train+val refit",
+  "class_weight": "balanced",
+  "cpu_native_thread_limit": 2,
+  "models": [
+    "eeg_spectrum_only",
+    "coarse_context_only",
+    "eeg_plus_coarse_context"
+  ],
+  "target": "recorded observed action, not latent intent",
+  "goal_validated": false
+}

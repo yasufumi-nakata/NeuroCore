@@ -1,0 +1,22 @@
+{
+  "measurement_mode": "actual",
+  "checkpoint_sha256": "6638b0d1eb3c9e21496449eaf60adc4bc880c2ae233e77502d76b31f5dd1dc25",
+  "machine_id": "colab-xavier-eeg-20261122",
+  "runtime": "torch 2.14.1+cu130; transformers 5.22.1",
+  "accelerator": "NVIDIA L4",
+  "hardware_compatible": true,
+  "inference_succeeded": true,
+  "measurement_method": "CUDA allocator peak and process ru_maxrss during completed training, validation and heldout candidate inference; accelerator-synchronized per-record timings",
+  "memory_measurement_scope": "peak CUDA reserved bytes; separate host RSS check against physical host RAM; CPU and GPU bytes are not pooled",
+  "peak_memory_bytes": 16821256192,
+  "memory_budget_bytes": 22548578304,
+  "host_peak_rss_bytes": 9197645824,
+  "host_ram_bytes": 56863301632,
+  "device_physical_memory_bytes": 23659151360,
+  "p95_latency_ms": 262.9665508500693,
+  "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution",
+  "raw_run_summary_sha256": "873f1e9709bb0565921841bb68ea50b35d1e60e9dda80317de8c67f274e7285e",
+  "raw_hardware_sha256": "0adb8056edbc07f0f601507fc57beda2b203531e740a80d0eadcc3e10c06c1ca",
+  "created_at": "2026-11-21T23:45:06.410518+00:00",
+  "scope": "This measures feasibility on this actual Colab L4 runtime, not on M1 or SFC Mac nodes. End-to-end harness latency and autonomous capability remain unmeasured."
+}

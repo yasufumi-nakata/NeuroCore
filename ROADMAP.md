@@ -1,5 +1,11 @@
 # Roadmap
 
+## Project Scope
+
+pj-xavier (Project Xavier) researches and develops NeuroCore's AI. Its workstreams include EEG representations and foundation models, multimodal integration, high-level intent estimation, and AI-agent integration. Computer use is an initial evaluation and application setting. These are research objectives, with implementation and validation tracked separately.
+
+The items below describe this repository's runtime roadmap. AI training and model weights remain outside the core runtime package. See [project positioning](docs/project-positioning.md).
+
 ## Near Term
 
 - Add BrainFlow and Lab Streaming Layer adapters as optional acquisition bridges.

@@ -1,0 +1,130 @@
+{
+  "schema": "xavier-natural-cohort-v3",
+  "registered_at_utc": "2026-11-22T00:17:57Z",
+  "purpose": "Preserve recorded agent-request transmissions in a natural-activity, enriched case-control EEG cohort while keeping the existing v2 subject split and v1 model run unchanged.",
+  "preparation_device": "CPU only; no GPU or LLM execution",
+  "frozen_inputs": {
+    "parent_manifest_sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac",
+    "parent_subject_split_sha256": "bdf214b16c92b33c889b5bcb8b4ec7b888877c40d7992be8a796cdbc8ae23dae",
+    "parent_alignment_audit_sha256": "b445c7229f1f4f9e2fab4a169c9882e474319c33809c5ce5e18dbfba827cd140",
+    "source_eeg_archive_sha256": "801e3e29ce6c58151c7a3a7aa1be17a6a0ee64d3cd355d43dd09418368a8e195",
+    "source_behavior_archive_sha256": "fcdeeb7a2ee46b7f8b0a31459c919fc5b4050133ff699c76b7e722da87d6e848",
+    "frozen_loader_sha256": "38e3cca302b456f5c918c03d93d5f71d77ffe636efbc3f90840cf89ac2d8badc"
+  },
+  "signal": {
+    "channels": [
+      "CP3",
+      "C3",
+      "F5",
+      "PO3",
+      "PO4",
+      "F6",
+      "C4",
+      "CP4"
+    ],
+    "sample_rate_hz": 256,
+    "window_samples": 448,
+    "window_seconds": 1.75,
+    "eeg_window_minimum_lead_s": 4.5,
+    "assumed_filter_lookahead_s": 4.125,
+    "nominal_decision_minimum_lead_s": 0.375,
+    "clock_guard": "Use each frozen record's max_error_ms/1000; end=floor((event-4.5-clock_guard)*256)/256.",
+    "online_causality_verified": false,
+    "feature_availability_verified": false
+  },
+  "inclusion": {
+    "only_parent_clock_passed_recordings": true,
+    "subject_assignments": "Copy parent subject_split.json byte-for-byte; never re-rank or re-split.",
+    "require_finite_actual_waveform": true,
+    "minimum_environment_timestamp": "At or before EEG window start minus clock guard.",
+    "allow_prior_key_mouse_actions_in_eeg_window": true,
+    "exclude_auxiliary_channels": [
+      "otree_phase",
+      "STI_artificial"
+    ]
+  },
+  "case_definition": {
+    "acquisition": "gpt",
+    "trial_type": "GPTSentPrompt",
+    "label": "ai_prompt_submit",
+    "meaning": "Observed request transmission to the agent; no latent-intent inference.",
+    "exclude_types": [
+      "GPTStartPrompting",
+      "GPTReceiveText",
+      "AI-availability permission"
+    ],
+    "only_nonnegative_behavior_onsets": true
+  },
+  "control_definition": {
+    "labels": {
+      "keyboard": "keypress action down/press/pressed/keydown",
+      "mouse_click": "mouseclick event"
+    },
+    "exclude_within_seconds_of_any_case_event": 0.15,
+    "role": "Other observed actions, not idle or no-intention labels."
+  },
+  "selection": {
+    "cohort_type": "case_control_enriched",
+    "seed": 20261122,
+    "case_priority": "Select valid case windows first within each recording, ordered by event time then acquisition/row ID; reject later overlapping case windows.",
+    "overlap_rule": "All selected [first_sample,last_sample) EEG input windows within a recording must be disjoint; touching endpoints are permitted.",
+    "controls_per_case": 4,
+    "control_label_quotas_per_case": {
+      "keyboard": 2,
+      "mouse_click": 2
+    },
+    "control_matching": "For recordings with retained cases, match each case stratum's last pre-EEG oTree AI-availability value. Sum quotas within a stratum, then select controls.",
+    "control_order": "Within each recording/availability stratum/label, ascending SHA256(seed:recording_id:acquisition:evidence_row). Selection is independent of EEG values and model predictions.",
+    "zero_case_recording_controls": {
+      "keyboard": 4,
+      "mouse_click": 4
+    },
+    "zero_case_matching": "If a recording has no retained cases, retain up to eight real controls without availability restriction so zero-request subjects remain represented.",
+    "unmet_quota": "Record the deficit; do not invent, duplicate, synthesize, or replace labels after seeing performance.",
+    "test_performance_used_for_design": false
+  },
+  "history_features": {
+    "allowed_sources": [
+      "keypress down/up event onsets",
+      "mouseclick event onsets",
+      "mousemove event onsets when available"
+    ],
+    "prohibited_fields": [
+      "key content",
+      "mouse coordinates",
+      "event duration (may encode next-event timing)",
+      "GPT events",
+      "future events",
+      "target label"
+    ],
+    "horizons_seconds": [
+      1,
+      5,
+      15,
+      60
+    ],
+    "features": [
+      "event counts in [cutoff-horizon,cutoff)",
+      "time since most recent event, capped to 60 seconds; null when absent",
+      "source availability"
+    ],
+    "primary_pre_eeg_cutoff": "window_start_s - clock_guard_s",
+    "additional_guarded_predecision_cutoff": "decision_time_s - clock_guard_s",
+    "target_guard": "Both cutoffs must be strictly before event_time_s; only source onsets strictly below the chosen cutoff enter a feature.",
+    "interpretation": "Two declared time horizons: conservative history preceding EEG, and stronger action-history-only control available by the guarded decision time. Neither is future target evidence."
+  },
+  "analysis_plan": {
+    "primary_endpoint": "Observed ai_prompt_submit versus other observed actions; report recall, specificity, balanced accuracy, AUROC/AUPRC with subject-cluster uncertainty and explicit case-control prevalence.",
+    "secondary_endpoint": "Three-class observed-action balanced accuracy, macro F1, confusion matrix, and class support.",
+    "comparison": [
+      "Recorded-history-only baseline at pre-EEG cutoff",
+      "Recorded-history-only baseline at guarded predecision cutoff",
+      "Coarse environment plus history baseline",
+      "EEG/fused model and its existing EEG-shuffle/time-shift/input-ablation controls"
+    ],
+    "model_selection": "Validation subjects only; test subjects remain held out until the preregistered comparison is frozen.",
+    "precision_scope": "Precision, AUPRC, calibration and coverage apply only to the enriched sample; they do not estimate natural-population precision, false actions/minute or task completion.",
+    "goal_status": "Still blocked for online latent-intent/agent-goal claims; no invented intent labels.",
+    "source_hours_note": "v3 reuses the same source recordings as v2; do not add v2 and v3 hours as independent data."
+  }
+}

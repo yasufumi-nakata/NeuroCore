@@ -1,0 +1,9 @@
+{
+  "status": "completed",
+  "exit_code": 0,
+  "report_sha256": "3c93b42fbba07aecc55f551c41bae98e31422a5e743afd245254cef448dbfaaf",
+  "manifest_sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac",
+  "source_sha256": "1b74445e9a85c34c86eaa435805b427ba8dbee4d675f6d3e0a4b301b1c10ff08",
+  "test_predict_calls_per_model": 1,
+  "elapsed_seconds": 25.30640616599976
+}

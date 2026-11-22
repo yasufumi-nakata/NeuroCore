@@ -1,0 +1,12 @@
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.pt
+*.pth
+*.safetensors
+*.npy
+*.npz
+*.sqlite*
+raw/
+prepared/
+runs/

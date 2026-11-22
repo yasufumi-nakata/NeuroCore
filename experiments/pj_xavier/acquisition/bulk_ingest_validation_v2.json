@@ -1,0 +1,39 @@
+{
+  "all_5165_records": {
+    "input_records": 5165,
+    "input_file_entries": 50696,
+    "new_jobs": 50696,
+    "database_rows": 50696,
+    "reingest_added": 0,
+    "quarantined_releases": [],
+    "duplicate_storage_paths": 0,
+    "statuses": {
+      "queued": 50696
+    },
+    "elapsed_seconds": 5.573,
+    "known_expected_bytes": 10431903294358
+  },
+  "explicit_EEG_resolved_releases": {
+    "input_records": 405,
+    "input_file_entries": 29229,
+    "new_jobs": 29229,
+    "database_rows": 29229,
+    "reingest_added": 0,
+    "quarantined_releases": [],
+    "duplicate_storage_paths": 0,
+    "statuses": {
+      "queued": 29229
+    },
+    "elapsed_seconds": 2.851,
+    "known_expected_bytes": 4673956432245
+  },
+  "seed_compatibility": {
+    "files_before": 23,
+    "files_after": 23,
+    "renamed": 0,
+    "job_ids_equal": true
+  },
+  "raw_downloads_by_this_validation": 0,
+  "test_count": 23,
+  "code_sha256": "981b63ddf8ca6deb3e278fe524cefceaa85e94b8e437c2eec6a5537a3f47ce60"
+}

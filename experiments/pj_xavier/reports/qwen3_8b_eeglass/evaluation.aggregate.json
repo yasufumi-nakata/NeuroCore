@@ -1,0 +1,234 @@
+{
+  "schema_version": "xavier-benchmark-v1",
+  "checkpoint_id": "best.pt",
+  "checkpoint_sha256": "6638b0d1eb3c9e21496449eaf60adc4bc880c2ae233e77502d76b31f5dd1dc25",
+  "status": "evaluated_goal_unproven",
+  "data_validation": {
+    "errors": [],
+    "warnings": [
+      "environment unavailable"
+    ],
+    "record_count": 379,
+    "warning_count": 379
+  },
+  "integrity_errors": [],
+  "test_records": 78,
+  "test_participants": 1,
+  "classes": [
+    "keyboard",
+    "mouse_click",
+    "mouse_scroll"
+  ],
+  "generalization_scope": "within-recording temporal pilot only; explicit legacy timestamp metadata correction: decision at event normalized to existing EEG cutoff; migration_id=85009bda5258015ef127010be065a48aed69848b73ddf5546ed0f4b20d58b07a; original_manifest_sha256=87e98a0d50f6288bc9b293de32a40e118431eaf3431514b87271da6b3a9daf5a",
+  "metrics": {
+    "context_only": {
+      "status": "blocked",
+      "reason": "all variants must predict the identical frozen test records",
+      "missing": 78
+    },
+    "eeg_only": {
+      "status": "measured",
+      "n": 78,
+      "class_counts": {
+        "mouse_click": 65,
+        "mouse_scroll": 4,
+        "keyboard": 9
+      },
+      "missing_classes": [],
+      "forced_accuracy": 0.8333333333333334,
+      "accepted_correct_over_all": 0.8333333333333334,
+      "balanced_accuracy": 0.3333333333333333,
+      "macro_f1": 0.30303030303030304,
+      "coverage": 1.0,
+      "selective_accuracy": 0.8333333333333334,
+      "negative_log_likelihood": 0.5467469296890132,
+      "brier_multiclass_sum": 0.2882009652229202,
+      "expected_calibration_error": 0.023354187225684053,
+      "ece_bins": 10,
+      "confusion": {
+        "keyboard": {
+          "keyboard": 0,
+          "mouse_click": 9,
+          "mouse_scroll": 0,
+          "__abstain__": 0
+        },
+        "mouse_click": {
+          "keyboard": 0,
+          "mouse_click": 65,
+          "mouse_scroll": 0,
+          "__abstain__": 0
+        },
+        "mouse_scroll": {
+          "keyboard": 0,
+          "mouse_click": 4,
+          "mouse_scroll": 0,
+          "__abstain__": 0
+        }
+      },
+      "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+      "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+    },
+    "fused": {
+      "status": "blocked",
+      "reason": "all variants must predict the identical frozen test records",
+      "missing": 78
+    },
+    "eeg_shuffled": {
+      "status": "measured",
+      "n": 78,
+      "class_counts": {
+        "mouse_click": 65,
+        "mouse_scroll": 4,
+        "keyboard": 9
+      },
+      "missing_classes": [],
+      "forced_accuracy": 0.8333333333333334,
+      "accepted_correct_over_all": 0.8333333333333334,
+      "balanced_accuracy": 0.3333333333333333,
+      "macro_f1": 0.30303030303030304,
+      "coverage": 1.0,
+      "selective_accuracy": 0.8333333333333334,
+      "negative_log_likelihood": 0.5597644793442781,
+      "brier_multiclass_sum": 0.2917319414182862,
+      "expected_calibration_error": 0.023354187225684053,
+      "ece_bins": 10,
+      "confusion": {
+        "keyboard": {
+          "keyboard": 0,
+          "mouse_click": 9,
+          "mouse_scroll": 0,
+          "__abstain__": 0
+        },
+        "mouse_click": {
+          "keyboard": 0,
+          "mouse_click": 65,
+          "mouse_scroll": 0,
+          "__abstain__": 0
+        },
+        "mouse_scroll": {
+          "keyboard": 0,
+          "mouse_click": 4,
+          "mouse_scroll": 0,
+          "__abstain__": 0
+        }
+      },
+      "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+      "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+    },
+    "eeg_time_shifted": {
+      "status": "blocked",
+      "reason": "all variants must predict the identical frozen test records",
+      "missing": 78
+    }
+  },
+  "eeg_increment": {},
+  "resource_feasibility": {
+    "status": "blocked",
+    "reasons": [
+      "actual resource measurement unavailable"
+    ]
+  },
+  "harness_replay": {
+    "status": "unavailable",
+    "reason": "no independent held-out harness replay traces supplied",
+    "task_completion_rate": null,
+    "false_actions_per_minute": null
+  },
+  "autonomous_agent_validated": false,
+  "interpretation": "Observed action prediction is a proxy. EEG-based autonomous behavior requires independently scored harness replay and an EEG contribution beyond context.",
+  "acceptance": {
+    "status": "blocked",
+    "criteria_id": "pj-xavier-proposed-replay-targets-v1",
+    "criteria_basis": "Proposed engineering targets for the first meaningful replay milestone. These values are not empirical predictions, published norms, or a claim of user approval. Version before starting model selection; modify only before a fresh evaluation freeze.",
+    "checks": {
+      "min_test_participants": {
+        "status": "failed",
+        "limit": 5,
+        "observed": 1
+      },
+      "min_replay_episodes": {
+        "status": "blocked",
+        "limit": 100,
+        "observed": null,
+        "reason": "required measurement unavailable"
+      },
+      "min_macro_f1": {
+        "status": "blocked",
+        "limit": 0.6,
+        "observed": null,
+        "reason": "required measurement unavailable"
+      },
+      "min_coverage": {
+        "status": "blocked",
+        "limit": 0.5,
+        "observed": null,
+        "reason": "required measurement unavailable"
+      },
+      "min_selective_accuracy": {
+        "status": "blocked",
+        "limit": 0.8,
+        "observed": null,
+        "reason": "required measurement unavailable"
+      },
+      "min_task_completion_rate": {
+        "status": "blocked",
+        "limit": 0.8,
+        "observed": null,
+        "reason": "required measurement unavailable"
+      },
+      "min_idle_minutes": {
+        "status": "failed",
+        "limit": 60,
+        "observed": 0.0
+      },
+      "max_false_actions_per_minute": {
+        "status": "blocked",
+        "limit": 0.1,
+        "observed": null,
+        "reason": "required measurement unavailable"
+      },
+      "max_p95_latency_ms": {
+        "status": "blocked",
+        "limit": 2000,
+        "observed": null,
+        "reason": "required measurement unavailable"
+      }
+    },
+    "interpretation": "Engineering targets chosen for this project; not established performance estimates."
+  },
+  "goal_validation_blockers": [
+    "ablation/negative control predictions incomplete",
+    "synchronized pre-decision context with leakage review missing",
+    "deployment resource gate has not passed",
+    "held-out harness task completion has not been measured",
+    "positive EEG contribution over context_only not established",
+    "positive EEG contribution over eeg_shuffled not established",
+    "positive EEG contribution over eeg_time_shifted not established",
+    "configured project acceptance criteria have not passed"
+  ],
+  "held_out_replay_validated": false,
+  "deployment_readiness": "requires user-goal acceptance thresholds and prospective evaluation",
+  "evaluation_sha256_before_migration_annotation": "3b72acb96936650ac5b63916f34f826817f7726dee4bbe7d8c92dc76520518eb",
+  "data_migrations": [
+    {
+      "schema_version": "xavier-explicit-time-metadata-migration-v1",
+      "requested_by_flag": "--legacy-decision-at-event",
+      "silent_conversion": false,
+      "reason": "Legacy preparation incorrectly named the action-event time as decision_time_s; waveform already stopped at the earlier EEG cutoff.",
+      "source_manifest_sha256": "87e98a0d50f6288bc9b293de32a40e118431eaf3431514b87271da6b3a9daf5a",
+      "source_manifest_bytes_modified": false,
+      "waveform_bytes_modified_by_adapter": false,
+      "labels_and_split_unchanged": true,
+      "record_count": 379,
+      "migration_id": "85009bda5258015ef127010be065a48aed69848b73ddf5546ed0f4b20d58b07a",
+      "normalized_records_sha256": "a3cd33504a706c7b894a6714bc9d97d50a8f5a37a1f4125de32f47196e059eea",
+      "normalized_split_manifest_sha256": "b28fe0bd3f3a1e5b117c665c65b6ca92b669e8c7908a6efd595b4c965c768e2b"
+    }
+  ],
+  "legacy_timestamp_metadata_error_corrected": true,
+  "data_quality_notes": [
+    "The source manifest contained a decision_time_s naming error. Compatibility conversion explicitly moved only decision metadata from event time to the already-recorded EEG cutoff. Original source bytes, waveform/window references, labels and split memberships were preserved; this does not establish online causal preprocessing or autonomous-agent success."
+  ],
+  "publication_note": "Aggregate export; repeated per-record warnings and migration rows omitted. The complete original evaluation remains in the private runtime snapshot.",
+  "original_evaluation_sha256": "332db8d4ed6b7bc805835ef4026ebf90f10b6e7b5f7a2ee713df76628a59a71b"
+}

@@ -1,0 +1,25 @@
+{
+  "split_policy": "within_subject_time",
+  "counts": {
+    "train": {
+      "mouse_click": 159,
+      "keyboard": 32,
+      "mouse_scroll": 34
+    },
+    "val": {
+      "mouse_scroll": 15,
+      "mouse_click": 58,
+      "keyboard": 3
+    },
+    "test": {
+      "mouse_click": 65,
+      "mouse_scroll": 4,
+      "keyboard": 9
+    }
+  },
+  "synthetic_diagnostic": false,
+  "subjects": 1,
+  "scope": "within_subject_session_pilot",
+  "checks": "metadata-based; semantic intent correctness and source clock correctness are not proven",
+  "manifest_sha256": "87e98a0d50f6288bc9b293de32a40e118431eaf3431514b87271da6b3a9daf5a"
+}
