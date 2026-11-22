@@ -1,0 +1,21 @@
+{
+  "absolute_deadline_epoch": 1795326960.34941,
+  "cpu_threads": 2,
+  "format_proof_sha256": "fdf6c962529055b5286b90489c663b5a6c9d9e247b2d160381d3114a7ade71e5",
+  "header_count_policy": "Original sample count preserved; derive positive sample count from exact signal byte span and independently evidenced scalar width",
+  "mne_header_reader_sha256": "e8b55e8a363641205136e30b4db54679677ebdb3c13e635ef8017d8a8be5478f",
+  "mne_original_event_parser_sha256": "9b5e9e4d8bde86393b6f7f908472a5599b4702957db188c41fed978c89e25f44",
+  "mne_version": "1.13.2",
+  "no_waveform_filters_or_relabeling": true,
+  "official_reader_source_URL": "https://raw.githubusercontent.com/sccn/neuroscanio/91f74b2878d847b91f12b1fc51042a4b87f71a90/loadcnt.m",
+  "official_reader_source_sha256": "3156ac652687ef119db883db8f9a75424f1840a6803d9fee021bffec800d208b",
+  "precision_rule": "Only present nextfile+52 tag0 or1 with nextfile exactly equal to event-table end; no absent-tag default",
+  "resource_sha256": "757d6d9b4fc0f6ffe86e40bb816bc10cfb551d05d5324bb5d38f25968801a48e",
+  "schema": "xavier_threeclass_CNT_quantity_protocol_v1",
+  "single_member_limit_bytes": 33554432,
+  "source_archive_SHA256": "1cf9c47c55c18f3bc272b86e1849ebfb7a2dca08159409de67b53a8a9263c41b",
+  "source_archive_bytes": 156181084,
+  "source_sha256": "04f8ba3053dc940ea2ed1f04df6496b2484f500c131bfdc5d23ee22963efa904",
+  "supervised_event_class_mapping_verified": false,
+  "training_calls": 0
+}

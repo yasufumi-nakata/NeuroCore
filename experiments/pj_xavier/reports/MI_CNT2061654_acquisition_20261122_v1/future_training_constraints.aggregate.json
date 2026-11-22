@@ -1,0 +1,24 @@
+{
+  "MNE_auto_detection_failure_preserved": true,
+  "SSL_candidate_requires_new14channel_units_QC_and_split_protocol": true,
+  "all26_original_NumSamples_invalid_or_inconsistent": true,
+  "catalog_id": "001708",
+  "current_training_inputs_changed": false,
+  "declared_continuous_seconds_all_zero": true,
+  "future_subject_group_split_required": true,
+  "header_rewrites_or_event_offset_clipping": 0,
+  "int16_precision_evidence": "Original nextfile+52 tag is zero for all26; exact pinned official EEGLAB reader interprets zero as int16",
+  "license": "CC0",
+  "reader_source_commit": "91f74b2878d847b91f12b1fc51042a4b87f71a90",
+  "reader_source_sha256": "3156ac652687ef119db883db8f9a75424f1840a6803d9fee021bffec800d208b",
+  "recorded_stimulation_codes_not_semantic_MI_classes": true,
+  "source_ID_groups": 4,
+  "source_release": "Figshare 2061654 version1",
+  "sources": [
+    "https://doi.org/10.6084/m9.figshare.2061654.v1",
+    "https://api.figshare.com/v2/articles/2061654/versions/1",
+    "https://raw.githubusercontent.com/sccn/neuroscanio/91f74b2878d847b91f12b1fc51042a4b87f71a90/loadcnt.m",
+    "https://www.fieldtriptoolbox.org/faq/preproc/dataformat/neuroscan/"
+  ],
+  "supervised_training_eligible": false
+}

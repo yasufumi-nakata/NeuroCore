@@ -1,0 +1,18 @@
+{
+  "BCI2000_calibration": "https://www.bci2000.org/mediawiki/index.php/User_Reference:DataIOFilter",
+  "BCI2000_format": "https://www.bci2000.org/mediawiki/index.php/Technical_Reference:BCI2000_File_Format",
+  "BCI2000_states": "https://www.bci2000.org/mediawiki/index.php/Technical_Reference:State_Definition",
+  "absolute_deadline_epoch": 1795329623.773936,
+  "canonical_format": "BCI2000 DAT",
+  "checksum_adapter_sha256": "0f3734b9fef3c249594454db208faf8cae9650f0acc6512dfe353896d51fa0db",
+  "cpu_threads": 2,
+  "derived_EDF_time_not_added": true,
+  "download_completion_sha256": "18fb72ece3cfc0f68cb117dcb28acdd0c04f0f13a3135d4516eddaa547e6763e",
+  "no_signal_filter_rescale_or_new_training": true,
+  "resource_sha256": "5390924e4b4db084275b776a3f5077ee2113819a6591f3f31baeebe3ab81b1f6",
+  "schema": "xavier_P300_original_DAT_audit_v1",
+  "source_catalog": "000233",
+  "source_release_key": "openneuro-ds005028-current-public-S3-e61cb6abf724",
+  "source_sha256": "fc61fed2388ad26b5cf2b0c4bba907c3e1b5d0725bb06c989deed90d6728189b",
+  "source_version_policy": "Each original S3 object versionId remains fixed; source descriptive DOI identifies v1.0.0, not an assertion that mutable current listing equals that DOI snapshot."
+}

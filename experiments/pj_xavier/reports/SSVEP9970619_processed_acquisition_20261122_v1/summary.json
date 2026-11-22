@@ -1,0 +1,46 @@
+{
+  "EEG_scalar_bytes_all": 1475430400,
+  "EXG_scalar_bytes_all": 184428800,
+  "SET_metadata_bytes": 25588704,
+  "Status_noninteger_sample_count": 4530071,
+  "Status_scalar_bytes_all": 23053600,
+  "Status_transition_count_unmapped": 5536641,
+  "acquired_distribution_bytes": 1708501504,
+  "actual_gradient_training_hours_added": 0,
+  "all88_published_MD5_and_own_SHA256_verified": true,
+  "all_event_arrays_empty": true,
+  "amplitude_calibration_validated": false,
+  "completed_epoch": 1795326398.288621,
+  "exact_EEG_duplicates": 0,
+  "existing_model_cohort_changed": false,
+  "explicit_unit_absent_records": 44,
+  "files_sha256": "435206e5f35c6528f04c1769346f2eb1efde232ad71ed2e42b98c56ed237aadb",
+  "nonfinite_stored_scalar_count": 0,
+  "online_causality_validated": false,
+  "original_raw_512Hz_files_acquired": 0,
+  "original_raw_recording_hours_added": 0,
+  "processed_export_EEG_hours_deduplicated": 8.004722222222222,
+  "processed_export_EEG_scalar_bytes_deduplicated": 1475430400,
+  "processed_export_EEG_seconds_exact_fraction": [
+    28817,
+    1
+  ],
+  "processed_export_records": 44,
+  "protocol_sha256": "fc7af711780e582eb27796bf59096a2fb9f1ed5f5ab9f248a86e44f3907f0428",
+  "records_sha256": "ee34f2d097df6eedd631fbd358864e200133efb698a5e746cda43fab608d634b",
+  "schema": "xavier_processed_SSVEP_quantity_summary_v2",
+  "source_channel_partition": {
+    "EXG_roles_unassigned": 8,
+    "Status": 1,
+    "named_scalp_EEG": 64
+  },
+  "source_files": 88,
+  "source_participant_groups": 11,
+  "source_stats_checked_unchanged": true,
+  "status": "completed",
+  "stored_sample_rate_hz_distribution": {
+    "200": 44
+  },
+  "supervised_labels_validated": false,
+  "unique_processed_EEG_records": 44
+}

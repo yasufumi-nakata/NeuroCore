@@ -1,0 +1,17 @@
+{
+  "EEG_scalar_bytes": 172953480,
+  "EEG_seconds_exact_fraction": [
+    617691,
+    25
+  ],
+  "EOG_scalar_bytes": 24707640,
+  "all_26_independent_MNE_sample_probes_pass": true,
+  "all_member_bytes_equal_partition": true,
+  "event_table_bytes": 45511,
+  "header_bytes": 54600,
+  "int16_proven_by_original_END_TAG0": true,
+  "original_num_samples_field_not_repaired": true,
+  "record_ledger_sha256": "c8b8ad27c34c072cc26bf371a61282c646ddf39977677de503fc41646bbcfa22",
+  "status": "passed",
+  "tail_metadata_bytes": 4742400
+}

@@ -1,0 +1,19 @@
+{
+  "absolute_deadline_epoch": 1795327450.8356202,
+  "acquire_source_sha256": "1c3c2099d0ded2009c098c2f3b3eabbe5148f6b0e50fdb22754f0dbaad33f597",
+  "catalog_id": "000668",
+  "channel_policy": "Exact fixed 64 named scalp EEG, 8 EXG with unresolved role, 1 Status",
+  "cpu_threads": 2,
+  "download_completion_sha256": "d0aacbcf05a95fbae1b39aa456dbf4f070623d084bbebdc147dd61c5126f2b20",
+  "dtype_policy": "EEGLAB separate FDT little-endian float32, channels fastest; sample count must exhaust whole file",
+  "figshare_version": "9970619-v1",
+  "format_source": "https://eeglab.org/tutorials/ConceptsGuide/Data_Structures.html",
+  "label_policy": "Preserve empty event arrays and unscaled Status statistics; no paper-derived event reconstruction",
+  "no_model_input_or_label_creation": true,
+  "paper_source": "https://doi.org/10.1371/journal.pone.0235309",
+  "quantity_policy": "Processed-export sample duration, not newly acquired original 512Hz raw hours",
+  "resource_sha256": "794aef7f21c3077a2cfb817c5b22316c90825e3ff61f6b4b65e65d12d68d9617",
+  "schema": "xavier_processed_SSVEP_header_audit_v2",
+  "source_sha256": "59eb78084a315c05b897daeb764d61d612beb666eaf20eeecf34a700d9cb7014",
+  "unit_policy": "Retain absent explicit SET units; no rescaling or physical calibration claim"
+}

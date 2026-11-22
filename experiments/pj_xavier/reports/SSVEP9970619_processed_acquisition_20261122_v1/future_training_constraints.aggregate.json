@@ -1,0 +1,24 @@
+{
+  "EXG_individual_roles_unassigned": true,
+  "all44_SET_event_arrays_empty": true,
+  "all44_explicit_amplitude_unit_absent": true,
+  "all4blocks_of_same_source_ID_must_share_future_fold": true,
+  "catalog_id": "000668",
+  "existing_inputs_or_models_changed": false,
+  "fractional_Status_is_not_safe_to_round_to_event_codes": true,
+  "license": "CC BY4.0",
+  "new_SSL_units_QC_and_participant_split_required": true,
+  "paper_preprocessing_not_reconstructed_in_missing_source_metadata": true,
+  "parser_v1_failure_preserved": "Empty MATLAB channel type arrays were incorrectly stringified; v2 accepts genuinely empty fields only, without assigning channel types or editing raw",
+  "processed_only_original512Hz_BDF_unavailable": true,
+  "source_ID_groups": 11,
+  "source_release": "Figshare9970619v1",
+  "sources": [
+    "https://doi.org/10.6084/m9.figshare.9970619.v1",
+    "https://api.figshare.com/v2/articles/9970619/versions/1",
+    "https://doi.org/10.1371/journal.pone.0235309",
+    "https://eeglab.org/tutorials/ConceptsGuide/Data_Structures.html"
+  ],
+  "supervised_label_and_online_causality_eligible": false,
+  "task": "7.5Hz binary-image/gray-image recognition experiment; not multi-frequency target selection"
+}

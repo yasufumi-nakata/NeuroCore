@@ -1,0 +1,58 @@
+{
+  "CNT_records": 26,
+  "EEG_hours_deduplicated": 6.8632333333333335,
+  "EEG_scalar_bytes_deduplicated": 172953480,
+  "EEG_seconds_exact_fraction": [
+    617691,
+    25
+  ],
+  "EOG_scalar_bytes_all_records": 24707640,
+  "MNE_independent_calibration_probe_records_passed": 26,
+  "additional_gradient_training_hours": 0,
+  "all_members_full_CRC_SHA_verified": true,
+  "catalog_id": "001708",
+  "channels": "14 scalp EEG + 2 EOG",
+  "completed_epoch": 1795325821.3460019,
+  "derived_event_outside_record_count_without_clip": 0,
+  "event_semantic_class_ontology_verified": false,
+  "event_table_bytes_all_records": 45511,
+  "exact_EEG_duplicate_records": 0,
+  "format_proof_sha256": "fdf6c962529055b5286b90489c663b5a6c9d9e247b2d160381d3114a7ade71e5",
+  "header_bytes_all_records": 54600,
+  "license": "CC0",
+  "native_rate_hz": 250,
+  "original_end_tag_value_counts": {
+    "0": 26
+  },
+  "original_event_entries": 2383,
+  "original_event_offset_not_frame_aligned_count": 0,
+  "original_header_or_event_repairs": 0,
+  "original_sample_count_field_mismatch_records": 26,
+  "original_stimulation_code_counts": {
+    "1": 650,
+    "15": 5,
+    "2": 649,
+    "207": 101,
+    "223": 22,
+    "255": 155,
+    "3": 651,
+    "4": 150
+  },
+  "protocol_sha256": "f2f33c75e47c70f5d43ddac4aa848daaf9a6708ce239aae053f294765da6427c",
+  "records_sha256": "c8b8ad27c34c072cc26bf371a61282c646ddf39977677de503fc41646bbcfa22",
+  "scalar_bytes_counts": {
+    "2": 26
+  },
+  "schema": "xavier_threeclass_CNT_quantity_summary_v1",
+  "signal_QC_or_new_split_completed": false,
+  "source_archive_bytes": 156181084,
+  "source_archive_sha256": "1cf9c47c55c18f3bc272b86e1849ebfb7a2dca08159409de67b53a8a9263c41b",
+  "source_article": "https://figshare.com/articles/dataset/2061654",
+  "source_participant_groups": 4,
+  "source_uncompressed_bytes": 202503631,
+  "source_version": 1,
+  "status": "completed",
+  "supervised_training_eligible": false,
+  "tail_metadata_bytes_all_records": 4742400,
+  "unique_EEG_records": 26
+}

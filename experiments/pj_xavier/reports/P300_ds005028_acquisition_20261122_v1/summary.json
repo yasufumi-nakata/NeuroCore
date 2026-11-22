@@ -1,0 +1,52 @@
+{
+  "EEG_channel_count_distribution": {
+    "32": 105
+  },
+  "acquired_distribution_bytes": 1563795662,
+  "actual_gradient_training_hours_added": 0,
+  "all_published_checksums_verified": true,
+  "all_source_files": 216,
+  "completed_epoch": 1795325568.834121,
+  "exact_original_EEG_duplicates": 0,
+  "existing_model_cohort_changed": false,
+  "external_stimulus_latency_validated": false,
+  "files_sha256": "ec4002ade8b62edf15ad7903dd782df8492851dc5fbf6f537009af511787f18d",
+  "labels_are_validated_free_form_intent": false,
+  "native_rate_hz_distribution": {
+    "256.0": 105
+  },
+  "new_source_split_or_supervised_protocol_required": true,
+  "original_DAT_file_bytes_all": 1121226995,
+  "original_DAT_header_bytes_all": 3226115,
+  "original_DAT_records": 105,
+  "original_DAT_state_payload_bytes_all": 234642160,
+  "original_EEG_hours_deduplicated": 7.488324652777778,
+  "original_EEG_sample_bytes_deduplicated": 883358720,
+  "original_EEG_seconds_exact_fraction": [
+    862655,
+    32
+  ],
+  "original_stored_selected_target_nonzero_transition_count": 2333,
+  "original_stored_stimulus_begin_rising_transition_count": 116515,
+  "paired_EDF_declared_rate_mismatch_records": 105,
+  "paired_EDF_empty_physical_unit_records": 105,
+  "paired_EDF_file_bytes": 442566400,
+  "paired_EDF_recording_hours_added": 0,
+  "paired_EDF_records": 105,
+  "paired_EDF_sample_count_mismatch_records": 0,
+  "paired_exports_sha256": "954c3b00479105f87228c82973eebbe0369620400753dbb1500aa9344b066c82",
+  "protocol_sha256": "ffa1ee23456919a1799753978f880d1fcc5cd3ec1c96251a72ab7624256cadd0",
+  "raw_nonfinite_value_count": 0,
+  "records_sha256": "f224d041be020b14a911f3b343a3cecdbf9602df8e8effd06695312a1de1ac3c",
+  "scalar_dtype_distribution": {
+    "<f4": 105
+  },
+  "schema": "xavier_P300_original_DAT_quantity_summary_v1",
+  "source_README_analysis_exclusion_flag_present": true,
+  "source_README_flag_scope": "One source participant omitted by authors because testing did not include all flashing paradigms; source records remain counted",
+  "source_participant_groups": 11,
+  "source_stats_checked_unchanged": true,
+  "state_timebase_scope": "Per-sample saved state positions; plain BCI2000 states may be delayed one block relative to signals; no delay correction applied",
+  "status": "completed",
+  "unique_original_EEG_records": 105
+}

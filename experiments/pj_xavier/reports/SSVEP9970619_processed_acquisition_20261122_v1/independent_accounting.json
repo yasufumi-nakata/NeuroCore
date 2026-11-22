@@ -1,0 +1,16 @@
+{
+  "EEG_scalar_bytes": 1475430400,
+  "EXG_scalar_bytes": 184428800,
+  "SET_metadata_bytes": 25588704,
+  "Status_scalar_bytes": 23053600,
+  "all_file_bytes_equal_partition": true,
+  "duration_definition": "sample_count/200; not last-sample timestamp xmax",
+  "files_sha256": "435206e5f35c6528f04c1769346f2eb1efde232ad71ed2e42b98c56ed237aadb",
+  "original_512Hz_raw_hours_added": 0,
+  "processed_export_seconds_exact_fraction": [
+    28817,
+    1
+  ],
+  "records_sha256": "ee34f2d097df6eedd631fbd358864e200133efb698a5e746cda43fab608d634b",
+  "status": "passed"
+}
