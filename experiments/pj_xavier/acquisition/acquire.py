@@ -724,7 +724,7 @@ def transfer(job, root, http, reserve_bytes, deadline=None, transfer_limit=None)
         if not validator or validator.startswith("W/"):
             validator = meta.get("last_modified")
             validator_field = "Last-Modified"
-    if expected is not None and offset == expected:
+    if part.exists() and expected is not None and offset == expected:
         sha = verify_file(part, expected, checksum)
         os.replace(part, path)
         partial_metadata.unlink(missing_ok=True)
@@ -852,7 +852,7 @@ def access_requirement_from_http_error(error):
         return None
 
 
-def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=None, http=None):
+def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=None, http=None, priority_catalog_ids=()):
     """One worker process per node; fixed 1 active transfer keeps host fanout bounded.
 
     SQLite leases prevent concurrent workers sharing a filesystem from claiming
@@ -862,6 +862,9 @@ def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=N
     db.row_factory = sqlite3.Row
     deadline = time.monotonic() + seconds
     transferred, processed = 0, 0
+    priority_catalog_ids = tuple(dict.fromkeys(str(value) for value in priority_catalog_ids))
+    priority_order = ("CASE WHEN catalog_id IN (" + ",".join("?" for _ in priority_catalog_ids)
+                      + ") THEN 0 ELSE 1 END, ") if priority_catalog_ids else ""
     Path(root).mkdir(parents=True, exist_ok=True)
     while time.monotonic() < deadline and (max_files is None or processed < max_files):
         if max_bytes is not None and transferred >= max_bytes:
@@ -871,7 +874,8 @@ def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=N
         row = db.execute("""SELECT * FROM downloads WHERE
             (status IN ('queued','paused','retry','capacity_blocked') OR
             (status='running' AND lease_until < ?)) AND retry_at <= ?
-            ORDER BY attempts, catalog_id, expected_bytes IS NULL, expected_bytes, relative_path LIMIT 1""", (timestamp, timestamp)).fetchone()
+            ORDER BY """ + priority_order + "attempts, catalog_id, expected_bytes IS NULL, expected_bytes, relative_path LIMIT 1",
+            (timestamp, timestamp, *priority_catalog_ids)).fetchone()
         if not row:
             db.commit()
             break
@@ -954,6 +958,8 @@ def main(argv=None):
     d.add_argument("--max-bytes", type=int)
     d.add_argument("--max-files", type=int)
     d.add_argument("--catalog-ids", nargs="*")
+    d.add_argument("--priority-catalog-ids", nargs="*", default=[],
+                   help="Prefer eligible queued rows from these catalog IDs without changing IDs, leases, or source restrictions")
     s = sub.add_parser("report")
     s.add_argument("--db", required=True)
     args = p.parse_args(argv)
@@ -1029,7 +1035,8 @@ def main(argv=None):
         db = init_db(args.db)
         added = ingest(db, rows)
         result = worker(db, args.root, reserve_gib=args.reserve_gib, seconds=args.seconds,
-                        max_bytes=args.max_bytes, max_files=args.max_files)
+                        max_bytes=args.max_bytes, max_files=args.max_files,
+                        priority_catalog_ids=args.priority_catalog_ids)
         result["new_file_jobs_ingested"] = added
         print(json.dumps(result, ensure_ascii=False))
     else:

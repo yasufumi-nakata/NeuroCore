@@ -1,0 +1,51 @@
+{
+  "observed_at": "2026-11-22T10:07:50.183519+00:00",
+  "candidate": {
+    "catalog_rows": 5164,
+    "scope_review_records": 2924,
+    "excluded_or_duplicate_records": 671,
+    "blocked_records_or_file_groups": 42825,
+    "assigned_files": 598311,
+    "assigned_file_bytes": 23069800615817,
+    "byte_scope": "download_file_bytes_all_modalities_not_EEG_only_not_unique_recording_hours",
+    "priority_seed_files": 8,
+    "priority_seed_bytes": 138420368,
+    "priority_seed_counted_once": true,
+    "all_assigned_files_including_priority": 598319,
+    "all_assigned_bytes_including_priority": 23069939036185
+  },
+  "download": {
+    "complete_files": 5908,
+    "complete_bytes": 21313810836,
+    "partial_bytes": 3228565504,
+    "complete_missing_files": 0,
+    "complete_size_mismatch_files": 0,
+    "nodes_with_data": 37,
+    "supervisors_alive": 37,
+    "errors": 0
+  },
+  "blocked": {
+    "observed_at": "2026-11-22T10:03:32.924348+00:00",
+    "blocked_reason_counts": {
+      "public_manifest_not_resolved": 784,
+      "conflicting_files_for_same_provider_path": 13,
+      "size_unknown_or_invalid; measure_before_capacity_allocation": 42028
+    },
+    "review_reason_counts": {
+      "EEG_scope_not_explicitly_supported; filename_extensions_are_not_proof": 2924
+    },
+    "excluded_reason_counts": {
+      "excluded": 668,
+      "duplicate": 3
+    }
+  },
+  "excluded_nodes": [
+    "smac19",
+    "smac40"
+  ],
+  "controller_node": "smac31",
+  "workers": 37,
+  "reserve_per_worker_bytes": 107374182400,
+  "plan_sha256": "0c448af11bbfcedf3e29c79b0d13222ea0de1ed518439a7378c7f3a817cb230a",
+  "note": "All-modality acquisition bytes; not EEG-only, unique signal hours, or training exposure."
+}

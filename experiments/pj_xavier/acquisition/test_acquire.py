@@ -154,6 +154,18 @@ class AcquisitionTests(unittest.TestCase):
             with self.subTest(path=value), self.assertRaises(ValueError):
                 acquire.safe_relative(value)
 
+    def test_zero_byte_file_requires_http_response_before_completion(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            spec = job(b"")
+            http = HttpFixture(Response(b"", 200, {"Content-Length": "0"}))
+            result = acquire.transfer(spec, tmp, http, 0)
+            path = acquire.destination(tmp, spec["dataset_key"], spec["relative_path"])
+            self.assertIsNotNone(http.headers)
+            self.assertEqual(path.read_bytes(), b"")
+            self.assertEqual(result["status"], "complete")
+            self.assertEqual(result["sha256"], hashlib.sha256(b"").hexdigest())
+            self.assertFalse(path.with_name(path.name + ".part").exists())
+
     def test_resume_206_and_checksum(self):
         with tempfile.TemporaryDirectory() as tmp:
             spec = job()
@@ -368,6 +380,29 @@ class AcquisitionTests(unittest.TestCase):
             self.assertEqual(second["status"], "complete")
             self.assertEqual(second["transferred_bytes"], 5)
             self.assertEqual(path.read_bytes(), b"abcdefgh")
+
+    def test_priority_catalog_selects_eligible_rows_without_changing_active_lease(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db = acquire.init_db(Path(tmp) / "state.sqlite")
+            records = [{"catalog_id": f"{n:06d}", "provider": "zenodo", "source_id": str(n),
+                        "source_version": str(n), "status": "resolved",
+                        "files": [acquire.make_file("a.eeg", f"https://zenodo.org/{n}/a.eeg", 8,
+                                                    evidence_url=f"https://zenodo.org/api/records/{n}")]}
+                       for n in (1, 2, 3)]
+            acquire.ingest(db, records)
+            db.execute("UPDATE downloads SET status='running',lease_until=?,attempts=2 WHERE catalog_id='000003'",
+                       (__import__('time').time() + 3600,))
+            db.commit()
+            before = tuple(db.execute("SELECT * FROM downloads WHERE catalog_id='000003'").fetchone())
+            acquire.worker(db, Path(tmp) / "raw", reserve_gib=0, seconds=5, max_files=1,
+                           priority_catalog_ids=["000003", "000002"],
+                           http=HttpFixture(Response(b"abcdefgh", 200, {"Content-Length": "8"})))
+            statuses = {r[0]: r[1] for r in db.execute("SELECT catalog_id,status FROM downloads")}
+            self.assertEqual(statuses, {"000001": "queued", "000002": "complete", "000003": "running"})
+            self.assertEqual(before, tuple(db.execute("SELECT * FROM downloads WHERE catalog_id='000003'").fetchone()))
+            self.assertEqual(db.execute("SELECT attempts FROM downloads WHERE catalog_id='000001'").fetchone()[0], 0)
+            self.assertEqual(db.execute("SELECT dataset_key FROM downloads WHERE catalog_id='000002'").fetchone()[0],
+                             "zenodo-2-2")
 
     def test_short_eof_traffic_and_backoff_persist_in_worker(self):
         with tempfile.TemporaryDirectory() as tmp:
