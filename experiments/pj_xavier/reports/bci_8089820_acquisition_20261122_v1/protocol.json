@@ -1,0 +1,68 @@
+{
+  "GDF125_specification": "https://pub.ista.ac.at/~schloegl/matlab/eeg/gdf4/TR_GDF.pdf",
+  "MNE_annotation_converter_source_sha256": "b7a6b823b3113ab879a80c818bbb615bc75d97594837c381234e7ce4cbf346f0",
+  "absolute_deadline_epoch": 1795329743.57813,
+  "acquisition_receipt_sha256": "cee94f74b72452e3262c59493b24fa132eb0f97f20cfa3683ad92ac7d5af13d2",
+  "channel_map": {
+    "EEG": [
+      "Fz",
+      "FCz",
+      "Cz",
+      "CPz",
+      "Pz",
+      "C1",
+      "C3",
+      "C5",
+      "C2",
+      "C4",
+      "C6",
+      "F4",
+      "FC2",
+      "FC4",
+      "FC6",
+      "CP2",
+      "CP4",
+      "CP6",
+      "P4",
+      "F3",
+      "FC1",
+      "FC3",
+      "FC5",
+      "CP1",
+      "CP3",
+      "CP5",
+      "P3"
+    ],
+    "EMG": [
+      "EMGd",
+      "EMGg"
+    ],
+    "EOG": [
+      "EOG1",
+      "EOG2",
+      "EOG3"
+    ]
+  },
+  "cpu_threads": 2,
+  "created_epoch": 1795323711.300489,
+  "dedup": "EEG stored scalar bytes plus calibration/channel/rate/sample count; exact representations only, not approximate waveform equivalence",
+  "event_map": {
+    "769": "left_hand_imagery",
+    "770": "right_hand_imagery"
+  },
+  "final_whole_archive_SHA_will_be_reverified": true,
+  "full_unzip": false,
+  "max_single_temporary_member_bytes": 134217728,
+  "mne_GDF_header_parser_source_sha256": "6c86c5c756066be140d46cdf0f822c02d5872f9f8bd0d8c08a1d54fdb1d6d578",
+  "mne_version": "1.13.2",
+  "primary_evidence": "https://www.nature.com/articles/s41597-023-02445-z",
+  "raw_event_duration_correction_performed": false,
+  "resource_receipt_sha256": "3b7f32e8a1fb3b48422f3c186e731208a04fc659872a7580ed6131e40463895f",
+  "schema": "xavier_zenodo8089820_GDF_quantity_audit_v2",
+  "source_archive_bytes": 27475466178,
+  "source_archive_sha256": "7c611b08995f10c2d313d194e3e75c88f7792403455994d77ca37e16104fcacf",
+  "source_prior_full_MD5_SHA_verified": true,
+  "source_sha256": "055ef0c7066702bffeaaa9aab4c3f5c19abc497fb9032f881aec413b3c936abc",
+  "training_model_calls": 0,
+  "v1_failure_preserved": "Original event rate0 was detected before quantity ledger completed; v2 preserves zero and separates native reader fallback"
+}

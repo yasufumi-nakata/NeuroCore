@@ -1,0 +1,120 @@
+{
+  "EEG_sample_bytes_deduplicated": 28767709440,
+  "EMG_sample_bytes_all_records": 2134628352,
+  "EOG_sample_bytes_all_records": 3201942528,
+  "GDF_event_bytes_all_records": 774164,
+  "GDF_header_bytes_all_records": 5862912,
+  "GDF_records": 694,
+  "GDF_total_bytes": 34160690708,
+  "GDF_version_distribution": {
+    "1.25": 694
+  },
+  "MI_cue_event_counts": {
+    "left_hand_imagery": 10394,
+    "right_hand_imagery": 10398
+  },
+  "MI_cues_outside_record_under_native_reader_fallback": 0,
+  "action_label_timestamp_validated_claim": false,
+  "all_event_code_counts": {
+    "1010": 517,
+    "32769": 698,
+    "32770": 672,
+    "32775": 178,
+    "32776": 176,
+    "33281": 516,
+    "33282": 21130,
+    "33284": 83,
+    "768": 20793,
+    "769": 10394,
+    "770": 10398,
+    "781": 20792,
+    "786": 20963,
+    "800": 20792
+  },
+  "all_members_CRC_SHA_verified": true,
+  "archive_members": 1071,
+  "archive_members_sha256": "8084233812860da87d1a05bf2aac13e9245e9444983e3213cc3090a138e14062",
+  "archive_uncompressed_bytes": 34164083331,
+  "channel_count_distribution": {
+    "27EEG+3EOG+2EMG/32": 694
+  },
+  "companion_count_by_suffix": {
+    ".cfg": 1,
+    ".csv": 86,
+    ".db": 1,
+    ".docx": 4,
+    ".ds_store": 1,
+    ".lua": 2,
+    ".ov": 1,
+    ".pdf": 5,
+    ".py": 2,
+    ".txt": 2,
+    ".xlsx": 2,
+    ".xml": 269,
+    "no_extension": 1
+  },
+  "companion_uncompressed_bytes_by_suffix": {
+    ".cfg": 577,
+    ".csv": 914829,
+    ".db": 14848,
+    ".docx": 184128,
+    ".ds_store": 6148,
+    ".lua": 3252,
+    ".ov": 199317,
+    ".pdf": 1292731,
+    ".py": 19418,
+    ".txt": 311,
+    ".xlsx": 66818,
+    ".xml": 690012,
+    "no_extension": 234
+  },
+  "completed_epoch": 1795323899.021523,
+  "duplicate_EEG_records": 1,
+  "event_rate_field_value_counts": {
+    "0": 694
+  },
+  "event_timebase_differs_from_signal_records": 694,
+  "limitations": [
+    "Quantity/header/annotation audit is not a physiological quality approval or training split.",
+    "Original source groups are publisher IDs; membership across unrelated releases is not inferred.",
+    "Exact EEG payload/calibration duplicates are removed; resampled or differently encoded equivalents are not claimed exhaustively detected.",
+    "27EEG channels require a new input protocol; existing64channel cohorts/models remain unchanged."
+  ],
+  "native_rate_distribution": {
+    "512.0": 694
+  },
+  "no_waveform_transform_or_relabeling": true,
+  "protocol_sha256": "cd057129e9435a722fd1997fa55fe3243e444c2e4edd20f0639e1eaa26dd4f41",
+  "record_count_per_group_distribution": {
+    "6": 1,
+    "8": 86
+  },
+  "recording_kind_counts": {
+    "CE_baseline": 87,
+    "OE_baseline": 87,
+    "R1_acquisition": 87,
+    "R2_acquisition": 87,
+    "R3_onlineT": 87,
+    "R4_onlineT": 87,
+    "R5_onlineT": 86,
+    "R6_onlineT": 86
+  },
+  "recordings_sha256": "ba13f499b92d498842b41dff906423afc77d5fdfde720c6da0da173c86413912",
+  "records_missing_explicit_event_timebase": 694,
+  "records_with_event_outside_record": 0,
+  "records_with_outside_event_under_native_reader_fallback": 87,
+  "schema": "xavier_zenodo8089820_GDF_quantity_summary_v2",
+  "source_archive_bytes": 27475466178,
+  "source_archive_sha256": "7c611b08995f10c2d313d194e3e75c88f7792403455994d77ca37e16104fcacf",
+  "source_group_count": 87,
+  "status": "completed",
+  "stored_signal_hours_deduplicated": 72.25685763888889,
+  "stored_signal_seconds_deduplicated": 260124.6875,
+  "subdataset_group_counts": {
+    "A": 60,
+    "B": 21,
+    "C": 6
+  },
+  "trained_gradient_hours_added": 0,
+  "unique_EEG_records": 693
+}
