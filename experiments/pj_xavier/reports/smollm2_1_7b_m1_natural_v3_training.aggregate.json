@@ -1,0 +1,271 @@
+{
+  "schema": "xavier-m1-natural-v3-training-aggregate-v1",
+  "status": "training_completed_final_evaluation_running",
+  "model": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
+  "revision": "31b70e2e869a7173562077fd711b654946d38674",
+  "architecture": "Frozen causal LLM with a trainable EEG encoder/projector prepended as input embeddings; answer-token loss only",
+  "run_name": "smollm2_1_7b_uniba_natural_v3_fused_v1",
+  "hardware": {
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "arm",
+    "device": "mps",
+    "python": "3.12.13",
+    "torch": "2.15.0",
+    "transformers": "5.24.0",
+    "mps_recommended_max_memory_bytes": 12713115648,
+    "system_memory_bytes": 17179869184,
+    "base_parameter_count": 1711376384,
+    "resolved_revision": "31b70e2e869a7173562077fd711b654946d38674",
+    "pretrained": true,
+    "estimated_weight_bytes": 3422752768,
+    "trainable_parameters": 166656,
+    "frozen_parameters": 1711376384
+  },
+  "run_summary": {
+    "status": "completed_epochs",
+    "global_step": 600,
+    "elapsed_seconds": 1541.7197402080055,
+    "train_step_seconds_p50": 1.645129791519139,
+    "train_step_seconds_p95": 2.144531118340091,
+    "memory": {
+      "process_peak_rss_bytes": 419807232,
+      "mps_sampled_allocated_bytes": 3425448960,
+      "mps_sampled_driver_bytes": 4437557248
+    },
+    "memory_budget_gib": 8.0,
+    "observed_memory_within_budget": true,
+    "memory_note": "CUDA reports allocator peaks; MPS values are sampled, not guaranteed peak; RSS is process high-water mark",
+    "best_checkpoint": "best.pt",
+    "last_checkpoint": "epoch_003_step_0000600.pt",
+    "test": {
+      "status": "not_run",
+      "reason": "--finalize-test required after validation-stage model selection"
+    },
+    "checkpoint_sha256": "281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475",
+    "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+    "model_selection_partition": "validation",
+    "test_used_for_tuning": false,
+    "model_kind": "pretrained_llm_with_trained_eeg_connector",
+    "agentic_readiness": "not_validated",
+    "os_actions_executed": 0
+  },
+  "process_wall_seconds": 1550.64106965065,
+  "allocator_limit": {
+    "kind": "mps_allocator",
+    "fraction": 0.6756750138862577,
+    "allocator_limit_bytes": 8589934592,
+    "recommended_bytes": 12713115648,
+    "scope": "PyTorch MPS allocator only; CPU allocations and other processes are outside this quota"
+  },
+  "source_sha256": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+  "checkpoint_bytes": 2022605,
+  "best_validation_epoch": 2,
+  "validation_history": [
+    {
+      "epoch": 1,
+      "global_step": 200,
+      "mean_train_token_loss": 0.4081546325981617,
+      "val": {
+        "n": 155,
+        "accuracy": 0.4,
+        "balanced_accuracy": 0.3333333333333333,
+        "macro_f1": 0.19047619047619047,
+        "all_classes_present": true,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          31,
+          62,
+          62
+        ],
+        "confusion_matrix": [
+          [
+            0,
+            31,
+            0
+          ],
+          [
+            0,
+            62,
+            0
+          ],
+          [
+            0,
+            62,
+            0
+          ]
+        ],
+        "categorical_nll": 1.3246065378189087,
+        "probability_note": "renormalized conditional candidate-sequence likelihoods; calibration not established",
+        "status": "measured",
+        "condition": "normal",
+        "latency_ms_p50": 1064.2099999822676,
+        "latency_ms_p95": 1080.2004124852829,
+        "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution",
+        "abstain_threshold": 0.8,
+        "coverage": 0.0,
+        "task_completion": null,
+        "false_actions_per_minute": null,
+        "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+      },
+      "checkpoint": "epoch_001_step_0000200.pt",
+      "epoch_completed": true,
+      "next_batch_position": 400,
+      "best_by": "validation balanced accuracy; earliest checkpoint wins ties"
+    },
+    {
+      "epoch": 2,
+      "global_step": 400,
+      "mean_train_token_loss": 0.3203539407253265,
+      "val": {
+        "n": 155,
+        "accuracy": 0.45161290322580644,
+        "balanced_accuracy": 0.3763440860215053,
+        "macro_f1": 0.3344988344988345,
+        "all_classes_present": true,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          31,
+          62,
+          62
+        ],
+        "confusion_matrix": [
+          [
+            0,
+            17,
+            14
+          ],
+          [
+            0,
+            36,
+            26
+          ],
+          [
+            0,
+            28,
+            34
+          ]
+        ],
+        "categorical_nll": 1.0486317873001099,
+        "probability_note": "renormalized conditional candidate-sequence likelihoods; calibration not established",
+        "status": "measured",
+        "condition": "normal",
+        "latency_ms_p50": 1070.3429999994114,
+        "latency_ms_p95": 1147.2936499747445,
+        "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution",
+        "abstain_threshold": 0.8,
+        "coverage": 0.0,
+        "task_completion": null,
+        "false_actions_per_minute": null,
+        "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+      },
+      "checkpoint": "epoch_002_step_0000400.pt",
+      "epoch_completed": true,
+      "next_batch_position": 400,
+      "best_by": "validation balanced accuracy; earliest checkpoint wins ties"
+    },
+    {
+      "epoch": 3,
+      "global_step": 600,
+      "mean_train_token_loss": 0.3116308063268661,
+      "val": {
+        "n": 155,
+        "accuracy": 0.4064516129032258,
+        "balanced_accuracy": 0.3387096774193548,
+        "macro_f1": 0.2648531440961956,
+        "all_classes_present": true,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          31,
+          62,
+          62
+        ],
+        "confusion_matrix": [
+          [
+            0,
+            25,
+            6
+          ],
+          [
+            0,
+            52,
+            10
+          ],
+          [
+            0,
+            51,
+            11
+          ]
+        ],
+        "categorical_nll": 1.0484849214553833,
+        "probability_note": "renormalized conditional candidate-sequence likelihoods; calibration not established",
+        "status": "measured",
+        "condition": "normal",
+        "latency_ms_p50": 1137.004749965854,
+        "latency_ms_p95": 1388.730620674323,
+        "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution",
+        "abstain_threshold": 0.8,
+        "coverage": 0.0,
+        "task_completion": null,
+        "false_actions_per_minute": null,
+        "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+      },
+      "checkpoint": "epoch_003_step_0000600.pt",
+      "epoch_completed": true,
+      "next_batch_position": 400,
+      "best_by": "validation balanced accuracy; earliest checkpoint wins ties"
+    }
+  ],
+  "cohort": {
+    "sampling_design": "case_control_enriched",
+    "train_subjects": 18,
+    "train_windows": 400,
+    "train_ai_requests": 80,
+    "validation_subjects": 6,
+    "validation_windows": 155,
+    "validation_ai_requests": 31,
+    "test_subjects": 8,
+    "test_windows": 203,
+    "test_ai_requests": 39
+  },
+  "configuration": {
+    "epochs": 3,
+    "batch_size": 2,
+    "candidate_batch_size": 2,
+    "learning_rate": 0.001,
+    "seed": 20261122,
+    "dtype": "bfloat16",
+    "max_seconds": 1800,
+    "memory_budget_gib": 8,
+    "cpu_fallback": false
+  },
+  "final_test": {
+    "status": "running_separate_frozen_five_condition_evaluation",
+    "selected_checkpoint_sha256": "281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475",
+    "test_used_for_model_selection": false,
+    "thresholds_unchanged": true
+  },
+  "interpretation": {
+    "model_can_train_in_current_workstation": true,
+    "agentic_goal_validated": false,
+    "online_causality_verified": false,
+    "latency_note": "Validation candidate scoring takes about 1 s; the nominal decision-to-event lead is only .375 s under the offline-filter assumption, before other pipeline overheads",
+    "natural_population_precision_estimated": false
+  },
+  "latency_environment": {
+    "isolated_measurement": false,
+    "concurrent_workload": "Downloads, metadata/controller work, and light CPU audits ran concurrently on the same workstation. Timing is an observed shared-workstation result, not an isolated benchmark."
+  }
+}

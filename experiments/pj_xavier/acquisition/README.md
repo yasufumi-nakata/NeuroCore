@@ -7,9 +7,13 @@
 - `acquire.py`：全カタログ行の正規化，Zenodo・Figshare・Dataverse・PhysioNet・OpenNeuro・OSFの公式公開情報による解決，Range付きストリーミング転送，MD5等の公開checksumと取得後SHA-256，SQLite再開台帳，容量・時間・転送量の上限です．
 - `neurocore_resolver_bridge.py`：`neurocore.materialization.resolve_remote_files`を利用し，さらに広いproviderの公開メタデータを解決します．既存の全ファイルをメモリに載せるmaterializerは大量転送に使いません．
 - `build_cached_queue.py`：過去の公式API応答のSHA-256を照合し，保存済み監査キャッシュから取得候補を再構築します．現在の取得成功と区別します．
-- `test_acquire.py`：27件のテストで，ゲートの除外，再開時のHTTP 200/206の違い，checksum不一致，容量停止，転送量上限，HTMLログイン応答拒否，同名異fileの保持，台帳の冪等性，manifest変更の拒否，short EOF／中断応答の再開と受信 traffic 計上を確認しています．
+- `test_acquire.py`：30件のテストで，ゲートの除外，再開時のHTTP 200/206の違い，checksum不一致，容量停止，転送量上限，HTMLログイン応答拒否，同名異fileの保持，台帳の冪等性，manifest変更の拒否，short EOF／中断応答の再開と受信 traffic 計上，明示的な Guestbook 要件の保留を確認しています．
+- `hold_access_requirement.py`：公式応答の証跡を照合し，Guestbook が必要な release の未着手・再試行ファイルだけを保留します．2件のテストで証跡の整合と既存の完了・実行中行の保持を検証しています．
+- `append_public_queue.py`：更新された全カタログを immutable snapshot として保存し，既存の EEG 対象候補だけを台帳へ追加します．10件のテストで既存行の保持，版・checksum の衝突保留，名前空間，再実行，取得条件，未解決 scope の扱いを検証しています．
 
 本ディレクトリのコードはデータや外部スクリプトを実行せず，pickle等も読み込みません．認証情報をファイルやコマンド引数に持ちません．401・403は取得制限として記録し，429は再試行時刻を記録してその実行を止めます．
+
+Dataverse が HTTP 400 とともに「所定の Guestbook 応答が必要」と明示した場合は `access_action_required` とし，自動再試行を止めます．任意の HTTP 400 をアクセス制限へ変更する処理ではありません．既存台帳の同一 release に適用する場合は，公式 dataset API の PID・版・guestbook ID・file ID 群と取得時の応答を照合します．個人情報の捏造や Guestbook 要件の回避は行いません．[公式 Data Access API](https://guides.dataverse.org/en/latest/api/dataaccess.html)
 
 ## 起動例
 
@@ -84,6 +88,33 @@ python acquire.py download \
 
 Bridgeは処理済み行を再度照合せず次の未処理行へ進みます．再試行するときだけ`--retry`を付けてください．既存resolverは全ページ完了の証明を返さないため，Bridgeのmanifestは`manifest_complete=false`とします．全件確認が終わったと数えるにはproviderごとの完全性確認がさらに必要です．
 
+## 更新された公開候補の追加
+
+既存 worker を動かしたまま使う場合は，全 manifest の再投入ではなく次の追加専用 CLI を使います．`plan` は更新元ファイルを変更せずに SHA-256 名の snapshot を作り，現在のカタログ CSV と ID 集合を照合します．`apply` は snapshot・plan・各添付台帳の hash を再照合し，`downloads` に対する UPDATE／DELETE を SQLite authorizer で禁止した接続から INSERT だけを実行します．
+
+```bash
+python append_public_queue.py plan \
+  --source /data/xavier/catalog_fresh_resolution.jsonl \
+  --snapshots /data/xavier/fresh_queue_snapshots \
+  --catalog /data/xavier/catalog_latest.csv \
+  --db /data/xavier/bulk_downloads.sqlite \
+  --output /data/xavier/fresh_queue_plan_01 \
+  --reserve-gib 35
+
+python append_public_queue.py apply \
+  --plan-dir /data/xavier/fresh_queue_plan_01 \
+  --db /data/xavier/bulk_downloads.sqlite \
+  --expected-plan-sha256 <plan.jsonのSHA-256> \
+  --receipt /data/xavier/fresh_queue_append_receipt_01.json \
+  --reserve-gib 35
+```
+
+追加対象は `resolved` かつ既存 scope が `include_provisional` または `component_only_provisional` の公開ファイルです．別台帳で管理する EEGlass・AI-assisted coding の2 seed は除外します．同一 provider file ID の公開 size・checksum・URL が変化していれば release 単位で保留し，ほかの release は継続します．既存の保存 path は変更せず，新規の同名異 file は provider ID による名前空間を使います．未知のサイズは `metadata_blocked`，公式取得要件が台帳に記録された release は `access_action_required` として追加します．
+
+`catalog_audit.jsonl` はカタログの全行を保持します．対象範囲が未解決の行は `scope_review.jsonl` に残し，公式応答の説明に EEG データの明記がある候補，題名だけの候補，矛盾する説明がある候補を区別します．拡張子だけで EEG 波形と断定せず，この review queue から自動的に取得範囲を広げたり学習を承認したりしません．
+
+この CLI は worker の起動・停止，deadline・転送量 budget の更新，raw ファイルの移動・削除を行いません．候補 byte 数が利用可能なストレージを超えていても，その分を取得済みとは数えません．実転送は既存 worker の時間・容量・転送量上限に従います．snapshot，詳細ファイル一覧，実行 receipt は `private/` に保存し，公開レポートへは集計値だけを出してください．
+
 ## 保存と並列化
 
 SQLite・`.part`・rawデータ・カタログ取得台帳はリポジトリの`private/`または別のデータ領域へ置いてください．Gitへraw波形や取得台帳を追加する必要はありません．
@@ -103,7 +134,7 @@ Colabの一時ディスク上に置いたデータとcheckpointは，ランタ�
 | `excluded` | 非ヒト，頭蓋内，波形なし等の既存監査で対象外候補です． |
 | `duplicate` | 同じprovider releaseの別カタログ行です．異なるコーパス間の波形重複ではありません． |
 
-ファイル台帳ではさらに`complete`，`paused`，`retry`，`capacity_blocked`，`integrity_failed`を区別します．取得済みbyte数はファイル全体の量であり，純粋なEEG信号量ではありません．時間はヘッダー・チャンネル型・raw/加工版・被験者/セッションの重複を照合した後に計算します．AIが生成したラベル数をEEG記録時間へ加算しません．
+ファイル台帳ではさらに`complete`，`paused`，`retry`，`capacity_blocked`，`integrity_failed`，`metadata_blocked`，`access_action_required`を区別します．取得済みbyte数はファイル全体の量であり，純粋なEEG信号量ではありません．時間はヘッダー・チャンネル型・raw/加工版・被験者/セッションの重複を照合した後に計算します．AIが生成したラベル数をEEG記録時間へ加算しません．
 
 ## 優先データと版の注意
 

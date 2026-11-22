@@ -1,0 +1,65 @@
+{
+  "schema_version": "pj-xavier-controller-v3-gate-upgrade-v1",
+  "observed_at": "2026-11-22T01:08:35.318495+00:00",
+  "old_controller_pid": 12764,
+  "old_transfer_pid": 22431,
+  "old_controller_stopped": true,
+  "old_transfer_stopped": true,
+  "old_locks_released": {
+    "state.daemon.lock": "released",
+    "state.lock": "released"
+  },
+  "state_unchanged_by_interruption": true,
+  "new_controller_pid": 29527,
+  "original_absolute_deadline_epoch": 1795324658.879168,
+  "original_launch_started_epoch": 1795306658.879168,
+  "restart_started_epoch": 1795309583.9092438,
+  "restart_max_seconds": 15072,
+  "restart_extends_original_deadline": false,
+  "new_gate_id": "uniba_natural_v3_five_variant_evaluation",
+  "live_gate": {
+    "passed": false,
+    "receipt_path": "runs/qwen3_8b_aicoding_uniba_natural_v3_fused_30e_v1/variant_evaluation_completion.json",
+    "reason": "[Errno 2] No such file or directory: '/content/xavier/runs/qwen3_8b_aicoding_uniba_natural_v3_fused_30e_v1/variant_evaluation_completion.json'"
+  },
+  "live_probe_epoch": 1795309600.9941254,
+  "new_gate_seen_after_restart": true,
+  "readonly_tick_passed": true,
+  "raw_recovery": {
+    "source_file": "bids_eeg_itu.tar.gz",
+    "source_size": 4650970671,
+    "source_sha256": "1e192b5e65931b9a44858acd987d540d3436de3fddf99454170b93434c2c99b5",
+    "chunk_size_limit": 67108864,
+    "verified_chunks": 6,
+    "confirmed_bytes": 402653184,
+    "status": "transferring",
+    "full_file_preservation_complete": false,
+    "source_original_modified": false,
+    "installed_CLI_modified": false,
+    "stream_append_buffer_bytes": 1048576
+  },
+  "tests": {
+    "pass": 36,
+    "environments": [
+      "scratch",
+      "workstation"
+    ],
+    "new_chunk_protocol_tests": 10
+  },
+  "source_sha256": {
+    "controller.py": "e5e7db92eeeef3ebb293063b2e326933bd28228f16475f21fb0c0e71ac5b1a23",
+    "remote_core.py": "84b1758397a1dee106e136380018dce1f4872763926f5bf7f799eaba85106556",
+    "test_controller.py": "2d02fbb708764a75fff24837abf99b5528c4b77752b8917471ff7d2925697920",
+    "test_chunk_recovery.py": "0187061268131c551c23c701c7359d5f7ab79fb338753852c6e5c98230941b79",
+    "config.example.json": "8fa4aafa753e3a0660ad7f2a9664346d3d3e8c2cb593c5f7209929eaaf816b2d",
+    "README.md": "c1aa6f97727dcb690934dfa6e8f8273d6ac79c3775272466c4823089e6cb20a8",
+    "validation.json": "df5471635f0456a81aa6802ff70f2afd3d91e3790ddb132d7b28d98824453277"
+  },
+  "raw_bytes_are_not_new_dataset_downloads": "This is custody transfer of already downloaded Colab raw data to workstation; it must not be counted as additional unique corpus bytes.",
+  "GPU_jobs_stopped_or_started_by_upgrade": 0,
+  "new_Colab_sessions_created": 0,
+  "independent_review": "source identity, chunk/final checksums, pending append, idle gate reviewed; interrupted ACK cleanup issue fixed with fixture",
+  "current_cycle_remote_source_sha256": "104cbe63c667e927f9578bc055730d1c430e66538ccb90a1d67a7ec99175870a",
+  "next_cycle_remote_source_sha256": "84b1758397a1dee106e136380018dce1f4872763926f5bf7f799eaba85106556",
+  "limitation": "Current raw file remains incomplete until final full-file SHA verification. The current cycle holds the earlier remote source in memory; future cycles load the ACK crash-recovery fix."
+}

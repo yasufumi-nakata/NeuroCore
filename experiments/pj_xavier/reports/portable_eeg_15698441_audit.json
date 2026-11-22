@@ -1,0 +1,1056 @@
+{
+  "schema": "pj-xavier-portable-eeg-header-audit-v1",
+  "observed_utc": "2026-11-22T00:44:50.184509+00:00",
+  "source_url": "https://zenodo.org/records/15698441",
+  "archive_sha256": "e71b328b41ec62490e46984c227d368148b63abbf3a2a39405c2975a72ae14be",
+  "archive_bytes": 3294723748,
+  "selected_prefix": "raw data/",
+  "candidate_recordings": 57,
+  "verified_recordings": 57,
+  "held_recordings": [],
+  "subjects": 19,
+  "formats": {
+    "BrainVision": 38,
+    "EDF": 19
+  },
+  "stored_signal_seconds": 125629.42,
+  "stored_signal_hours": 34.897061111111114,
+  "source_sidecar_seconds": 125629.1775625,
+  "source_sidecar_hours": 34.89699376736111,
+  "eeg_sample_bytes": 4982944384,
+  "records": [
+    {
+      "recording": "raw data/sub-001/ses-BA/eeg/sub-001_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        250.0
+      ],
+      "stored_signal_seconds": 2076.58,
+      "source_sidecar_seconds": 2076.576,
+      "stored_minus_sidecar_seconds": 0.0039999999999054126,
+      "member_bytes": 66450560,
+      "eeg_sample_bytes": 66450560,
+      "signal_member_sha256": "5a38de89a965fb8606967fd45ecaacca303044ca35c9b1d5e023cbd69fb691c1",
+      "header_sha256": "c8167101724a59c1b7b1332f69da74c9351b4bc1c947728d8b4aafcb2c567f67",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-001/ses-EM/eeg/sub-001_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2081.0,
+      "source_sidecar_seconds": 2080.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 18247100,
+      "eeg_sample_bytes": 17047552,
+      "signal_member_sha256": "6fcba7e8598cfa3d0816418bb25aab332706f27699440de0ffa603581b6ce460",
+      "header_sha256": "eafa322c62d48d21efe77f76e27f9332b44e0692ee023d876820c04588ad6027",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-001/ses-LA/eeg/sub-001_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2105.32,
+      "source_sidecar_seconds": 2105.318,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 134740480,
+      "eeg_sample_bytes": 134740480,
+      "signal_member_sha256": "4ce7f5c63c382e81769db323c2dfc169ca7c420ce78effbc8fc2097b020bc41a",
+      "header_sha256": "f13fad37e08b6adcffd31ee6c4c2358f191a86b3b57aa62c3cfc73d742d45dce",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-002/ses-BA/eeg/sub-002_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        250.0
+      ],
+      "stored_signal_seconds": 2107.9,
+      "source_sidecar_seconds": 2107.896,
+      "stored_minus_sidecar_seconds": 0.0039999999999054126,
+      "member_bytes": 67452800,
+      "eeg_sample_bytes": 67452800,
+      "signal_member_sha256": "ded2eec428165cec5b38663294370e79a89dc11bfa9eecf55ee7a868359edb12",
+      "header_sha256": "ff861d9dadb8821e91717ec9036533e413bc7010d5a2140f17f9ddc0aaa3ce9f",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-002/ses-EM/eeg/sub-002_ses-EM_task-all_run-2_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2213.0,
+      "source_sidecar_seconds": 2212.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 19403948,
+      "eeg_sample_bytes": 18128896,
+      "signal_member_sha256": "fcddf78c36b8628464a399de5fa3ca57f42c4dd09cd7a5549a525774ec16d20d",
+      "header_sha256": "25e3f001931f98f23d9741a0896b6c7dc9f88119464433cedfc62656908a60d4",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-002/ses-LA/eeg/sub-002_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2103.36,
+      "source_sidecar_seconds": 2103.358,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 134615040,
+      "eeg_sample_bytes": 134615040,
+      "signal_member_sha256": "cf0b31c7e4d5d51b9c0388d7301b15c1869ac49542dd6a3f137accf0bb828d48",
+      "header_sha256": "7c2ea793904f140eeb3cb063aa0c7bb256555d2aef262b1013f0070b10efe6d0",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-003/ses-BA/eeg/sub-003_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        250.0
+      ],
+      "stored_signal_seconds": 2105.66,
+      "source_sidecar_seconds": 2105.656,
+      "stored_minus_sidecar_seconds": 0.0039999999999054126,
+      "member_bytes": 67381120,
+      "eeg_sample_bytes": 67381120,
+      "signal_member_sha256": "b9f1ab795a132964ccf33b9eb7702aa10644adca4733e0f0d06ebaacd260700a",
+      "header_sha256": "6237c1c21ff93c9a2a9ae6f18fb61a870d48e26ebda95a08ceff72440c934cdb",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-003/ses-EM/eeg/sub-003_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2324.0,
+      "source_sidecar_seconds": 2323.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 20372104,
+      "eeg_sample_bytes": 19038208,
+      "signal_member_sha256": "27771922e92e46719d3d696183b128b2607969cce597be35b655239235ace575",
+      "header_sha256": "78d90214cbd1065efdac704074526e84959923d6b252e62d8319e3a9afb1016f",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-003/ses-LA/eeg/sub-003_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2131.04,
+      "source_sidecar_seconds": 2131.038,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 136386560,
+      "eeg_sample_bytes": 136386560,
+      "signal_member_sha256": "d3da32446375cdc1c642ef06369764f203fc370e1b4061bf65487099aef6e944",
+      "header_sha256": "c9d72e986da3d56f36b0ed013a2fc5b9305f33b3abed47dfcadd9635a19d14c2",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-004/ses-BA/eeg/sub-004_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        250.0
+      ],
+      "stored_signal_seconds": 2133.12,
+      "source_sidecar_seconds": 2133.116,
+      "stored_minus_sidecar_seconds": 0.0039999999999054126,
+      "member_bytes": 68259840,
+      "eeg_sample_bytes": 68259840,
+      "signal_member_sha256": "3d0ea3f19d0435099b056a713996506e286b53ddd8e4e120dce8032419b400f5",
+      "header_sha256": "efe591655b0ee10b684433770c0f27ed77eae5648d09227f042b36e356923075",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-004/ses-EM/eeg/sub-004_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2121.0,
+      "source_sidecar_seconds": 2120.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 18597660,
+      "eeg_sample_bytes": 17375232,
+      "signal_member_sha256": "1fda0b5a3bb86fc219eab4963c03db88ea21e02e0b378fdb126774c49f7d516b",
+      "header_sha256": "fba2404b522288bd2ab4de87afa1f5b95918832f7cef59856a5ea960ec1ed94a",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-004/ses-LA/eeg/sub-004_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2106.66,
+      "source_sidecar_seconds": 2106.658,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 134826240,
+      "eeg_sample_bytes": 134826240,
+      "signal_member_sha256": "2b2472e6d9718f6c9a83bca870009e71778cb0d5deeee8f811734705c8f938ba",
+      "header_sha256": "55b038f196edf6eea6222e8d59dcf38baa5968fcff940ac7177349296bfe0e63",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-005/ses-BA/eeg/sub-005_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        250.0
+      ],
+      "stored_signal_seconds": 2164.94,
+      "source_sidecar_seconds": 2164.936,
+      "stored_minus_sidecar_seconds": 0.0039999999999054126,
+      "member_bytes": 69278080,
+      "eeg_sample_bytes": 69278080,
+      "signal_member_sha256": "d7218074f9d20ecca11d656867d156d829b00a04672c15c43b5d8ed908bf7494",
+      "header_sha256": "1b02c4f15df088bfe77e4011c5c0b07d45361cbd5bc272af78638fa3762dae4c",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-005/ses-EM/eeg/sub-005_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2054.0,
+      "source_sidecar_seconds": 2053.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 18010472,
+      "eeg_sample_bytes": 16826368,
+      "signal_member_sha256": "571cc812be5c1e0f198dbeb9e1371a3b7df11a30ac14ac7eda5665a10e79d7f5",
+      "header_sha256": "601f28c458e0bc396a5239a00e254409254ebc004469feda1828f363f4e49fcd",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-005/ses-LA/eeg/sub-005_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2014.66,
+      "source_sidecar_seconds": 2014.658,
+      "stored_minus_sidecar_seconds": 0.00200000000018008,
+      "member_bytes": 128938240,
+      "eeg_sample_bytes": 128938240,
+      "signal_member_sha256": "3f55c883952e5d0fd945921fbc5dbdb1279ddc86284f94db0b76949382034e5c",
+      "header_sha256": "d75081d311e6ff5927df3882eb04ed8d9205b08a32b429c9abe53d7cc7ec9e99",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-006/ses-BA/eeg/sub-006_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        250.0
+      ],
+      "stored_signal_seconds": 2373.38,
+      "source_sidecar_seconds": 2373.376,
+      "stored_minus_sidecar_seconds": 0.0039999999999054126,
+      "member_bytes": 75948160,
+      "eeg_sample_bytes": 75948160,
+      "signal_member_sha256": "96e54aad58a36e9ac30d4788a4bba10f51bd446b61758fdaf78b844865c08a91",
+      "header_sha256": "5db6f2d8f0493e3058571394aa130e9b06b9efc6e8309cf141a31ebe54504347",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-006/ses-EM/eeg/sub-006_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2146.0,
+      "source_sidecar_seconds": 2145.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 18816760,
+      "eeg_sample_bytes": 17580032,
+      "signal_member_sha256": "0a785561c8f94b502ca46d6ca6111dbab69d5d47cf8f35807376fab88318a2db",
+      "header_sha256": "d934d80ea3954d9bcebb5c311ccfdf70450fd44be2156cbd0d9875a8d8fd786c",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-006/ses-LA/eeg/sub-006_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2210.56,
+      "source_sidecar_seconds": 2210.558,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 141475840,
+      "eeg_sample_bytes": 141475840,
+      "signal_member_sha256": "4b105c0c04975066944c28caae5e76f7fb0a0a7ab8261f49f869d51b797bd489",
+      "header_sha256": "c75e938657d64941e207a7c681fcbce8ec3eeeedbfc04659f215100d74d9faf5",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-007/ses-BA/eeg/sub-007_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        250.0
+      ],
+      "stored_signal_seconds": 2102.7,
+      "source_sidecar_seconds": 2102.696,
+      "stored_minus_sidecar_seconds": 0.0039999999999054126,
+      "member_bytes": 67286400,
+      "eeg_sample_bytes": 67286400,
+      "signal_member_sha256": "c51f6fc464419c2ca557d3998e2f2184b8e37603066cc631f9df62a35de27043",
+      "header_sha256": "a027c8370db8a3a73f0b4d7a02f6b7f2d1d5501b7076127d5fe0122b27b3e5fd",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-007/ses-EM/eeg/sub-007_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2226.0,
+      "source_sidecar_seconds": 2225.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 19517880,
+      "eeg_sample_bytes": 18235392,
+      "signal_member_sha256": "860d7a15686116a12296455a5f16acb972186fc6f4b9c2558d439d7c4e23dcd8",
+      "header_sha256": "3821292969c4034067b3bb60b3050917ccb4c3e2a78685602feb8ad7807d433b",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-007/ses-LA/eeg/sub-007_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2164.26,
+      "source_sidecar_seconds": 2164.258,
+      "stored_minus_sidecar_seconds": 0.0020000000004074536,
+      "member_bytes": 138512640,
+      "eeg_sample_bytes": 138512640,
+      "signal_member_sha256": "c0c447218f074611f318643f2a2c42f062c80996ae98a86809b32e4aab1d397a",
+      "header_sha256": "b332e2e1eac3820621d4a5fb50bc83f77af5396b7454bbf605a14ca4c0b71689",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-008/ses-BA/eeg/sub-008_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        250.0
+      ],
+      "stored_signal_seconds": 2104.86,
+      "source_sidecar_seconds": 2104.856,
+      "stored_minus_sidecar_seconds": 0.0039999999999054126,
+      "member_bytes": 67355520,
+      "eeg_sample_bytes": 67355520,
+      "signal_member_sha256": "ef9f8abb72e87b07183d73e3d92c9727bbf73d6ee3a9b22bac2dfa1fda60371e",
+      "header_sha256": "212452e3f629315ca0fc0e1ea1fe1e0a47f3a3a3cb1b1c2761058de84798f66a",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-008/ses-EM/eeg/sub-008_ses-EM_task-all_run-3_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2276.0,
+      "source_sidecar_seconds": 2275.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 19956080,
+      "eeg_sample_bytes": 18644992,
+      "signal_member_sha256": "ec65df8b1417f8d608a84efe6f3764d192306a730ea2ab4b3aad89f22fd55557",
+      "header_sha256": "b6787764ce2f12e641fa7be398449433e351a65be05d14fd692ecab7d88870d8",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-008/ses-LA/eeg/sub-008_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2227.66,
+      "source_sidecar_seconds": 2227.658,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 142570240,
+      "eeg_sample_bytes": 142570240,
+      "signal_member_sha256": "7e27945cd412aeb523ce34f65d55769a874cf37c437a8bc25fa1b8dbfc983fc3",
+      "header_sha256": "4001a9846577e653d8b8407f1b7ea461c8b9529ce0999299b57db5ed0d08496b",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-009/ses-BA/eeg/sub-009_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2022.36,
+      "source_sidecar_seconds": 2022.358,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 129431040,
+      "eeg_sample_bytes": 129431040,
+      "signal_member_sha256": "e3ca4f39fc213271823bab80eb81d7e40c3650b66b0a18e941a2676c48738cde",
+      "header_sha256": "5eae41843b36236818a254ec22f8731f1174ae8e87df3029751e5275250ca750",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-009/ses-EM/eeg/sub-009_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2147.0,
+      "source_sidecar_seconds": 2146.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 18821230,
+      "eeg_sample_bytes": 17588224,
+      "signal_member_sha256": "182bb513bc6661402fd9ee0f7428cfd06aeeef29ea2725db2a8ba3910ef959dd",
+      "header_sha256": "672e84ab86fd1fbfbacb15be870be3515b1d710040409df4f85dcd37b4af13cd",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-009/ses-LA/eeg/sub-009_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2105.56,
+      "source_sidecar_seconds": 2105.558,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 134755840,
+      "eeg_sample_bytes": 134755840,
+      "signal_member_sha256": "bee7f56983592e98cc3dfde714f8de7f5d1d6bd8e7059bb9f2d9bd9eadad489f",
+      "header_sha256": "634ac7536ee4d440615453d15eebbcde413c3940719efd93669aba59ed59b1dc",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-010/ses-BA/eeg/sub-010_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2191.34,
+      "source_sidecar_seconds": 2191.338,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 140245760,
+      "eeg_sample_bytes": 140245760,
+      "signal_member_sha256": "d9a416d6a688a3ef0341f6cbae906ed51be997626162614c227139372887f6bf",
+      "header_sha256": "b7111da81ae5e048ef0b4f5deeb283f26c4188f14dd0c43989fbb714cf4cb6f2",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-010/ses-EM/eeg/sub-010_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2491.0,
+      "source_sidecar_seconds": 2490.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 21840340,
+      "eeg_sample_bytes": 20406272,
+      "signal_member_sha256": "a1cd0c48f7720240279fc1d455143e9a71f0a9c81c97749a3010592ada677a27",
+      "header_sha256": "e457b609ac760f0a66f2465954b8b5a533f0847473f1941852f38690fa349151",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-010/ses-LA/eeg/sub-010_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2180.84,
+      "source_sidecar_seconds": 2180.838,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 139573760,
+      "eeg_sample_bytes": 139573760,
+      "signal_member_sha256": "7a9e3ccc1f95583486cf11d6d985bb44435302c6b2325fdf1dabff663c834b66",
+      "header_sha256": "926c40dee25a2dddf2524c8f2eac6b92a897006a4b059bffac1fed67ae2ae224",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-011/ses-BA/eeg/sub-011_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2874.68,
+      "source_sidecar_seconds": 2874.678,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 183979520,
+      "eeg_sample_bytes": 183979520,
+      "signal_member_sha256": "e019d93c7135f465b0797e5a5bdaeb12282ab9256dddd37b904e84ab0b8b89c4",
+      "header_sha256": "f048638b6623d35fbc00daaa0c2fa5ac89501ac0a2656f7202ae74112253d181",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-011/ses-EM/eeg/sub-011_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2287.0,
+      "source_sidecar_seconds": 2286.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 20052484,
+      "eeg_sample_bytes": 18735104,
+      "signal_member_sha256": "98f0c6a0773dc622edd04a06f88a25494e32858509b3bf4c3196e5224295e52d",
+      "header_sha256": "4dbf0a9cb26c89ddea79ae04b8961ee160360c5bec32a226cfe582f34370598d",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-011/ses-LA/eeg/sub-011_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2192.42,
+      "source_sidecar_seconds": 2192.418,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 140314880,
+      "eeg_sample_bytes": 140314880,
+      "signal_member_sha256": "94eeaf8d6a4aa578aa5caa31d79647a121f534cbe95ae990933ba2548c6fc5e6",
+      "header_sha256": "e912c6ba32c1738e688175ef9f98d5b82c97aad758b5738b05fbf6982e51353d",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-012/ses-BA/eeg/sub-012_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        250.0
+      ],
+      "stored_signal_seconds": 2330.8,
+      "source_sidecar_seconds": 2330.796,
+      "stored_minus_sidecar_seconds": 0.00400000000036016,
+      "member_bytes": 74585600,
+      "eeg_sample_bytes": 74585600,
+      "signal_member_sha256": "60cf06cca78e18fbe3aacc98ee8d1b8994a6fec215db9b4bc576a1cda46f1da0",
+      "header_sha256": "85244760be5fda3cc29c5ed29bab4ebc322b9ba4049e1476f0e5137d9a44cff8",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-012/ses-EM/eeg/sub-012_ses-EM_task-all_run-3_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2287.0,
+      "source_sidecar_seconds": 2286.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 20052484,
+      "eeg_sample_bytes": 18735104,
+      "signal_member_sha256": "385e9ac9fc2db14b3525a22d05d5ced45e0c75cb7cd3487571607fde596f053a",
+      "header_sha256": "0515e89a131898554ae6bd6db25918bbfbcafb3f4ff4a3bb8e73f2fc3290ab00",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-012/ses-LA/eeg/sub-012_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2113.42,
+      "source_sidecar_seconds": 2113.418,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 135258880,
+      "eeg_sample_bytes": 135258880,
+      "signal_member_sha256": "87265c22f4f5879944ba92620b14b38334659b6e4daa51bfba3860ac4e995384",
+      "header_sha256": "c91adfb10732b5236514e9f1beda24082d44f3a1ab957b9fd18cb007fcff3a89",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-013/ses-BA/eeg/sub-013_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2116.26,
+      "source_sidecar_seconds": 2116.258,
+      "stored_minus_sidecar_seconds": 0.0020000000004074536,
+      "member_bytes": 135440640,
+      "eeg_sample_bytes": 135440640,
+      "signal_member_sha256": "ed4d7b4de77db68e0a6a96e670a2a3572e1603469aca84a5cdf6b4c8e3ce776a",
+      "header_sha256": "c47817c49733554b32e89a17037968fe4dbe2695c6ca0468e8f0fcc98990ded5",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-013/ses-EM/eeg/sub-013_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2133.0,
+      "source_sidecar_seconds": 2132.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 18702828,
+      "eeg_sample_bytes": 17473536,
+      "signal_member_sha256": "cf138dc45938f4446550a6ff692c1119d3671dd7498cb85fd474a6c25c69d9d2",
+      "header_sha256": "7ad4051ff2731766703b6845b56b00e56677a5bd65ccb32784da78b20bc43c4b",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-013/ses-LA/eeg/sub-013_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2182.7,
+      "source_sidecar_seconds": 2182.698,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 139692800,
+      "eeg_sample_bytes": 139692800,
+      "signal_member_sha256": "3fe5d3c3cb70b191ca2a4f633db106473d2678f389981d2270ac5debc7cdd22a",
+      "header_sha256": "cf2c7fcc26c3840278b03d89131f675f9e8681d5f2bf9d87eb1e2f7a1201c39e",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-014/ses-BA/eeg/sub-014_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2092.44,
+      "source_sidecar_seconds": 2092.438,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 133916160,
+      "eeg_sample_bytes": 133916160,
+      "signal_member_sha256": "fe1a4a7468beda69e477d31d5e1ae11b4fd1b3721f685a4beea841c265ee666a",
+      "header_sha256": "1bcb0e8ddf6947b751d37189c0b77302bc2e24d949764916723236372be406fb",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-014/ses-EM/eeg/sub-014_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2167.0,
+      "source_sidecar_seconds": 2166.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 19000804,
+      "eeg_sample_bytes": 17752064,
+      "signal_member_sha256": "73b8e21eca789b81b55cd8c7ef044eab062896ed6b3844781c6a25212584c356",
+      "header_sha256": "0116776899b67e2d8d98abdd2f06f8ecc4426522d2a3787e8a421e5e40e8964c",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-014/ses-LA/eeg/sub-014_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2299.58,
+      "source_sidecar_seconds": 2299.578,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 147173120,
+      "eeg_sample_bytes": 147173120,
+      "signal_member_sha256": "546e1c8e3c363ef3265efd31db970737182298b4adc8bfce4e73e769c1e46196",
+      "header_sha256": "8c9a4a2ebee99ed3cbb8e653e93e137d4e78fb1b34bb42e963ce29d7934126d7",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-015/ses-BA/eeg/sub-015_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2189.88,
+      "source_sidecar_seconds": 2189.878,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 140152320,
+      "eeg_sample_bytes": 140152320,
+      "signal_member_sha256": "989a23f64fcfa3dd0ec042875fe4e59e19753768d542c2292b2d30ab55691c79",
+      "header_sha256": "1d8e9ac5750a3caf856d4871a79e266bceb08509b613fa1065d5b64de05cb493",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-015/ses-EM/eeg/sub-015_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2249.0,
+      "source_sidecar_seconds": 2248.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 19719452,
+      "eeg_sample_bytes": 18423808,
+      "signal_member_sha256": "b0503fa308a2bfd86ce8601b78cdca0b28194ac880607769be16a1b166812e39",
+      "header_sha256": "c8efeb7ec5bdc2e4c5944e2855cb1f3ef877fcb98a3e8efc65372616f85d0dcf",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-015/ses-LA/eeg/sub-015_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2142.22,
+      "source_sidecar_seconds": 2142.218,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 137102080,
+      "eeg_sample_bytes": 137102080,
+      "signal_member_sha256": "717f6f734fc18957e1a57fbd792a43d158c11fa3e4dfe7727104c17b2a49aae4",
+      "header_sha256": "d3ddf1b3e84637975b4c8125a9e8960ca62eb5011c9e6da06470163624d0a586",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-016/ses-BA/eeg/sub-016_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2081.8,
+      "source_sidecar_seconds": 2081.798,
+      "stored_minus_sidecar_seconds": 0.0020000000004074536,
+      "member_bytes": 133235200,
+      "eeg_sample_bytes": 133235200,
+      "signal_member_sha256": "6f1acdf4bab2b13520739de50820950ad428e0631e5e1ea7b216007161cad263",
+      "header_sha256": "aff5366a94bde7a381e749215b2a96b92093671424d109e50be292d8c9db9247",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-016/ses-EM/eeg/sub-016_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 3886.0,
+      "source_sidecar_seconds": 3885.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 34066120,
+      "eeg_sample_bytes": 31834112,
+      "signal_member_sha256": "5c7759df3da166d8242c7c635c0e25d5bb0f091829ca04f08fc2a5f443e0b324",
+      "header_sha256": "b9852a80ab08f9e90b3e4b560df9756e3830cc1834bc7b4eb81550fc5b54659d",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-016/ses-LA/eeg/sub-016_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2058.36,
+      "source_sidecar_seconds": 2058.358,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 131735040,
+      "eeg_sample_bytes": 131735040,
+      "signal_member_sha256": "6b7d1e583b123b8267638ffe8c7f31c24772ec42e6fa8de0558f4e5eb5756e94",
+      "header_sha256": "cee10e68a4cb426488e3d28d190afd1b7e06f3c8e7f83fc4e866c460188dc964",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-018/ses-BA/eeg/sub-018_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2127.76,
+      "source_sidecar_seconds": 2127.758,
+      "stored_minus_sidecar_seconds": 0.0020000000004074536,
+      "member_bytes": 136176640,
+      "eeg_sample_bytes": 136176640,
+      "signal_member_sha256": "e2daa2e27978253ce0fd909ed89a67ef595ddbd384166d6a045d2c73ea11b6b2",
+      "header_sha256": "5075afe63efa64d8bbef1c261cfc33847247f434cbad20dcd27582c70c97d9ec",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-018/ses-EM/eeg/sub-018_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2038.0,
+      "source_sidecar_seconds": 2037.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 17870248,
+      "eeg_sample_bytes": 16695296,
+      "signal_member_sha256": "89da70d314861b8ff556a365e762e68fd099798a13b8ebfc8847651f4179f56c",
+      "header_sha256": "5ac15abf5b24cd595c9fda64d44a0205587af2aa1a78b1ebf3684f4b8af9b798",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-018/ses-LA/eeg/sub-018_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2059.76,
+      "source_sidecar_seconds": 2059.758,
+      "stored_minus_sidecar_seconds": 0.0020000000004074536,
+      "member_bytes": 131824640,
+      "eeg_sample_bytes": 131824640,
+      "signal_member_sha256": "2adb09056c9387daceee9a416c026b9d8cd8bee18b49379055e9c5406e7a98e3",
+      "header_sha256": "e9a5c43d19e80e567d8f035d08caa2d7697401ee48724541f6a4ecec3f3109e0",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-020/ses-BA/eeg/sub-020_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2093.98,
+      "source_sidecar_seconds": 2093.978,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 134014720,
+      "eeg_sample_bytes": 134014720,
+      "signal_member_sha256": "78e69569e764c9383401a9f58d167ae948671286c9d8534fcd3a66256a18febc",
+      "header_sha256": "219632072eecc6a20e8dc9883095ec6ed4149b82045a047145643a051dae4a7d",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-020/ses-EM/eeg/sub-020_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2380.0,
+      "source_sidecar_seconds": 2379.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 20867536,
+      "eeg_sample_bytes": 19496960,
+      "signal_member_sha256": "e21d0bbf6c908f87a89d04cf2454762e0a7cd30dbe0a11103c03e745574df28b",
+      "header_sha256": "4457f9311fb8d66b0aee37c8331fb8a8392f4ee9fe3bae51177c71079f4fc435",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-020/ses-LA/eeg/sub-020_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2184.18,
+      "source_sidecar_seconds": 2184.178,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 139787520,
+      "eeg_sample_bytes": 139787520,
+      "signal_member_sha256": "439d209a826e99c28e68e6f415999e0b7044b0bd5259fb852598aaf43cd92602",
+      "header_sha256": "8fa7bd0cea13d4f44cc82ead928c2af596d14a80e0cc3c61a0b492ca94b3b29a",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-021/ses-BA/eeg/sub-021_ses-BA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2097.94,
+      "source_sidecar_seconds": 2097.938,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 134268160,
+      "eeg_sample_bytes": 134268160,
+      "signal_member_sha256": "5e462ec84156f8503e920bf804caac45ffd458120ccc7042d0262125258b8477",
+      "header_sha256": "c784044bb4d0e802c5b64b3cfe04967aa4c7f938a90420aec6cf1b822aebd756",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-021/ses-EM/eeg/sub-021_ses-EM_task-all_run-1_eeg",
+      "format": "EDF",
+      "channels_in_file": 35,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        128.0
+      ],
+      "stored_signal_seconds": 2096.0,
+      "source_sidecar_seconds": 2095.9921875,
+      "stored_minus_sidecar_seconds": 0.0078125,
+      "member_bytes": 18378560,
+      "eeg_sample_bytes": 17170432,
+      "signal_member_sha256": "2858f4c1fe8117cd4a6922ee54329b6d8e4aec2585bcf48d222d355d321c3b07",
+      "header_sha256": "87ee995e7b7a2ad0ff814e10865ca314426a11b09c8f651ad263bc06aca7f7d5",
+      "zip_crc_verified": true,
+      "continuous": true
+    },
+    {
+      "recording": "raw data/sub-021/ses-LA/eeg/sub-021_ses-LA_task-all_run-1_eeg",
+      "format": "BrainVision",
+      "channels_in_file": 32,
+      "eeg_channels": 32,
+      "eeg_sample_rates_hz": [
+        500.0
+      ],
+      "stored_signal_seconds": 2056.48,
+      "source_sidecar_seconds": 2056.478,
+      "stored_minus_sidecar_seconds": 0.0019999999999527063,
+      "member_bytes": 131614720,
+      "eeg_sample_bytes": 131614720,
+      "signal_member_sha256": "5dc23dc4fe838b33956cc23a4a4557d1d9f088cdd361c4a321a1e7f69b8db80d",
+      "header_sha256": "dbcd27b8d28bb4a5977d6d17f83230783718a9f8652f42d38bfae66709207fe2",
+      "zip_crc_verified": true,
+      "continuous": true
+    }
+  ],
+  "scope": "Stored original recording duration, not channel-hours. Processing outputs and statistical variants outside raw data/ are excluded.",
+  "limitations": [
+    "EDF fixed-size records can include end padding; sidecar and stored duration are both reported.",
+    "No usable-window, artifact quality, intent-label, training-license, or causal online-preprocessing approval is implied.",
+    "Distinct recordings are based on raw member identities and content hashes; cross-dataset re-exports require a separate audit."
+  ],
+  "format_source": "https://www.edfplus.info/specs/edf.html"
+}
