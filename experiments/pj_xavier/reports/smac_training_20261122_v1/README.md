@@ -1,5 +1,12 @@
 # S Macでの取得・追加学習（2026-11-22）
 
+## 最新追加：EEG＋判定前環境→X/Yの漏洩防止スコアラーをS Macで検証（2026-11-23 02:19 JST）
+
+新しい `next_multichannel/score_joint_alignment.py` に固定registry SHAとsource A/B cue goldの独立照合，4配置×同一trialのcounterbalance，6条件のpaired負対照とmust-link単位bootstrapを実装しました．15新規テストがsmac35のtask PythonでもPASS，旧関連23テストもPASS．コードとfixtureのみS Macへ配置し，EEG rawをworkstationへ戻していません．**今回の実gradientは0時間／0stepsであり，EEG→X/Yの実性能やOS成功は未測定です．** [検証内容](reports/smac_training_20261122_v1/JOINT_PROXY_SCORER_CPU_SMOKE_20261123.md)．
+
+S Mac 37台の新snapshot（2026-11-23 02:14 JST頃）は完了**179,003files／1,677,468,786,313B**，partial**483,485,762,153B**，全supervisor生存，完了ファイル欠損・サイズ不一致0．CBraModの累積固有学習量は以前の**22.581667h／27,098窓**を維持．smac19は除外し，取得候補23.07TBを学習済みとして報告しません．
+
+
 ## BDF29606906の別群validation診断（2026-11-23）
 
 固定の未学習BDF validation5群／327窓で，P300親MSE0.001262252863→BDF追加後MSE**0.000975983663**（22.6792％減少）を実測しました．追加fit0，BDF test信号読込0であり，独立testやEEG→LLM/実OS行動改善ではありません．[検証レポート](BDF29606906_HELDOUT_VALIDATION_RESULTS.md)．
