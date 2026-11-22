@@ -1,5 +1,10 @@
 # PJ-Xavier 実行・引継ぎ
 
+## 最新追加：BDFの未学習validation5群をMPSで検証（2026-11-23）
+
+S Mac smac35でBDF29606906の固定validation5群・327窓を凍結checkpoint2本で比較しました．波形再構成MSEはBDF学習前 **0.001262252863** → 学習後 **0.000975983663**（22.6792％減少）．新たなfit0steps，元test1群の信号読込0です．これは**BDF validationのoffline再構成**に限り，別test・自由意図・LLM/行動・実OS成功ではありません．[詳しい実測](reports/smac_training_20261122_v1/BDF29606906_HELDOUT_VALIDATION_RESULTS.md)．
+
+
 ## 最新：BDF29606906追加学習をS Macで完了（2026-11-23 01:21 JST）
 
 **累積train 27,098窓／22.581667時間**．BDF14記録から1,222窓／1.018333時間を追加し，smac35で10epochs／4,270stepsを完了しました．固定806023 validation最良MSEは **0.001426294970**（直前P300モデル0.001506584226）．BDFの独立val/testとEEG→LLM行動・実OS成功は未評価です．37台の取得は完了168,898files／1,484,540,481,925B，partial407,571,866,481B，supervisor37，欠損/サイズ不一致0（2026-11-23 01:18 JST）．smac19とworkstation/Colabのraw取得・学習は引き続き除外します．
