@@ -1,34 +1,36 @@
 {
-  "observed_at": "2026-11-22T10:07:50.183519+00:00",
+  "observed_at": "2026-11-22T10:29:06.451317+00:00",
   "candidate": {
     "catalog_rows": 5164,
     "scope_review_records": 2924,
     "excluded_or_duplicate_records": 671,
-    "blocked_records_or_file_groups": 42825,
-    "assigned_files": 598311,
-    "assigned_file_bytes": 23069800615817,
+    "blocked_records_or_file_groups": 42824,
+    "assigned_files": 598548,
+    "assigned_file_bytes": 23071211018396,
     "byte_scope": "download_file_bytes_all_modalities_not_EEG_only_not_unique_recording_hours",
     "priority_seed_files": 8,
     "priority_seed_bytes": 138420368,
     "priority_seed_counted_once": true,
-    "all_assigned_files_including_priority": 598319,
-    "all_assigned_bytes_including_priority": 23069939036185
+    "all_assigned_files_including_priority": 598556,
+    "all_assigned_bytes_including_priority": 23071349438764
   },
   "download": {
-    "complete_files": 5908,
-    "complete_bytes": 21313810836,
-    "partial_bytes": 3228565504,
+    "complete_files": 24912,
+    "complete_bytes": 78902422439,
+    "partial_bytes": 14949974059,
     "complete_missing_files": 0,
     "complete_size_mismatch_files": 0,
     "nodes_with_data": 37,
     "supervisors_alive": 37,
-    "errors": 0
+    "errors": 0,
+    "complete_plus_partial_bytes": 93852396498
   },
+  "actual_validation": "DB complete state plus live file existence/size checks; snapshot does not rehash every payload",
   "blocked": {
     "observed_at": "2026-11-22T10:03:32.924348+00:00",
     "blocked_reason_counts": {
       "public_manifest_not_resolved": 784,
-      "conflicting_files_for_same_provider_path": 13,
+      "conflicting_files_for_same_provider_path": 12,
       "size_unknown_or_invalid; measure_before_capacity_allocation": 42028
     },
     "review_reason_counts": {
@@ -37,7 +39,9 @@
     "excluded_reason_counts": {
       "excluded": 668,
       "duplicate": 3
-    }
+    },
+    "updated_at": "2026-11-22T10:21:50.654597+00:00",
+    "adjustment_evidence": "inmid_assignment_receipt.json"
   },
   "excluded_nodes": [
     "smac19",
@@ -46,6 +50,7 @@
   "controller_node": "smac31",
   "workers": 37,
   "reserve_per_worker_bytes": 107374182400,
-  "plan_sha256": "0c448af11bbfcedf3e29c79b0d13222ea0de1ed518439a7378c7f3a817cb230a",
-  "note": "All-modality acquisition bytes; not EEG-only, unique signal hours, or training exposure."
+  "plan_sha256": "155a332f2336913abab7b37052cf0148b6a58a563454147fef4d303e1f5a29f3",
+  "raw_payloads_returned_to_workstation": 0,
+  "note": "All file payloads including metadata/non-EEG modalities; not unique EEG hours or trained volume"
 }

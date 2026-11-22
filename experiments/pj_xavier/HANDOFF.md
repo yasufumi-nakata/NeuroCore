@@ -1,93 +1,92 @@
 # PJ-Xavier 実行・引継ぎ
 
-## 最新の到達点：S Macで取得と学習を実行済み（2026-11-22）
+## 最新状態：S Macで固有17.399時間を実学習（2026-11-22）
 
-ユーザー最新指示「取得できるデータ全部使って学習進めて、S Macの方で」に基づき，新規の取得・保存・展開・学習はS Mac側で行います．smac19は除外します．workstationは接続，コード，小さな運用台帳に使用します．公開データのraw／preparedをworkstationへ一時中継せず，Colab学習も再開しません．
+最新ユーザー指示は「取得できるデータ全部使って学習進めて、S Macの方で」です．新規の取得・保存・展開・学習はS Macで行い，smac19は除外します．workstationは接続，コード，小さな台帳だけに使用します．raw／preparedのworkstation中継とColab学習は再開しません．
 
-**正規認証を確認した38台のうち37台で分散取得を開始し，smac01では追加sourceのCBraMod自己教師学習を10epochs／110steps完了しました．** smac31は管理用，smac40はDNS未解決で割当なしです．
+**37台の分散取得を維持し，CBraModの初期・CNT追加・InMID追加を各10epochs完了しました．** 実入力の累積固有量は20,879窓／62,637秒＝17.3991666667hです．旧phase3の別model lineageの29.985888889hを足しません．
 
-| 状態 | 実績 |
+| 段階 | 実績 | 状態 |
+| --- | --- | --- |
+| smac01，806023 | 659 train窓，1,977秒，110steps | 完了，独立33項目PASS |
+| smac06，2392979 | 36files取得，21候補すべて固定QC不適格 | 新gradient0，理由付きblocked |
+| smac10，CNT2061654 | 新3,385窓／10,155秒，累積4,044窓，640steps | 完了，独立59項目PASS |
+| smac35，InMID | 新16,835窓／50,505秒，累積20,879窓，3,280steps | 完了，prep21項目＋model59項目PASS |
+
+最終InMIDモデルの固定806023 validation MSEは0.0016149027567592268です．CNT親の0.001595536042884798より1.213806％増えました．最新学習済みmodelと，既存validationで最良のCNT modelを区別し，全checkpointを保持します．新sourceへの汎化，行動decode，自由意図，EEG→LLMや実OS成功は未評価です．
+
+[実行report](reports/smac_training_20261122_v1/README.md)，[学習集計](reports/smac_training_20261122_v1/sequential_training_aggregate.json)，[取得snapshot](reports/smac_training_20261122_v1/acquisition_snapshot_final.json)を参照してください．
+
+## 取得は稼働中
+
+19:51:41 JSTの1回のsnapshotで，37台すべてのsupervisor／実データを確認しました．complete40,187 files／175,035,084,578B，partial26,550,729,130B，合計201,585,813,708Bです．completeの実ファイル欠損・サイズ不一致・snapshot errorは0．このsnapshotで全payloadを再hashしたわけではありません．
+
+総割当は598,556 files／23,071,349,438,764Bです．これは全modalityの取得候補であり，取得済み・EEGのみ・学習済みの量ではありません．未解決metadata784件，path衝突12件，容量不明42,028 groups，EEG scope未確認2,924件は引き続き根拠を調査します．InMIDの同名MAT衝突は標準namespace migrationで解消しました．
+
+smac31は管理用，smac01～39のうち19・31を除く37台が取得workerです．smac40はDNS未解決で割当なし．1node1stream，空きreserve100GiB，600秒cycle，supervisor起動から48時間です．期限は2026-11-24 18:59～19:04 JST頃で，最後のcycleは期限を少し越えて終了し得ます．429のRetry-After/backoffとTLS検証を維持します．guestbook217必須release342filesは保留し，フォームは送信していません．
+
+controllerは `/Users/yasufumi/pj-xavier/control_20261122/acquisition/` です．
+
+- `snapshot_acquisition.py --name <receipt.json>`：全nodeのlive観測．
+- `priority_source_snapshot.py`：学習優先sourceの状態．
+- `resume_acquisition.py`：引数なしは確認のみ．`--apply --hours 48` は停止済みで再開可能なnodeだけを再開し，稼働中は二重起動しません．`--hosts smacNN` で限定できます．
+- `STOP_DOWNLOADS` がnode rootにある場合は停止を維持します．明示的な再開指示を扱う時だけ `--clear-stop --apply` を使用します．
+- 現DB／manifest／partを保持します．無条件のre-deployは既取得量を容量へ二重計上し得るため避け，期限・空き・実PID・lockを再確認して新しい枠を記録します．
+
+詳細はworkstationの `private/xavier/smac_execution_20261122/acquisition/SMAC_ACQUISITION_RUNBOOK.md` と `smac_acquisition_summary_20261122.json` に保存しています．最終全台snapshotは `fleet_snapshot_final_report_20261122T105137Z.json` です．
+
+## 所有権と接続
+
+正worktreeは `/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training`，branchは `feat/pj-xavier-validation-20261122`，repoは `yasufumi-nakata/NeuroCore`，[Draft PR71](https://github.com/yasufumi-nakata/NeuroCore/pull/71)です．
+
+最初に `private/xavier/eegmmidb_phase2_v1/coordinator.json` のowner/leaseと実jobを確認します．有効ownerが作業中なら観測だけ行い，source変更・二重起動をしません．owner解放後に排他的leaseを取り，既存downloadを維持しながら独立した次の適格sourceを処理します．
+
+通常のworkstation `python3` から `private/xavier/smac_execution_20261122/smac_transport.py` を使用します．`connect()` はsmac31，`run_node(node, code, timeout=..., task_python=True)` はtask venvです．task_python省略時は既存cluster Python．ControlMasterはMCP境界でハングしたため使用しません．
+
+既存Keychain→smac31の正規認証と，smac31の既存cluster credential loader／既知host keyを使用します．秘密値は出力・保存・コピーしません．smac31のAGENTSとsmac-cluster skillに従い，既存の他job・サービスを停止しません．node inventoryは `control_20261122/node_preflight.json`，policy/registryはworkstationの `private/xavier/storage_cleanup_20261122/` にあります．
+
+node rootは `/Users/yasufumi/pj-xavier/smacNN`，rawは `raw/<dataset_key>/<relative_path>`，DBは `downloads.sqlite` の `downloads` tableです．smac01/06/10/35にはtask `venv/bin/python` を配置済みです．venv Pythonを `.resolve()` してbase interpreterへ変えません．
+
+## 実行済みchainと再利用する成果物
+
+`control_20261122/training_chain_v2/state.json` はcompletedです．controller PID37852，smac35 pipeline PID70200は過去の実行識別子で，再起動する根拠にしません．v1はCNTのgit前flight失敗を保持したまま終了しています．
+
+| 成果物 | node内path |
 | --- | --- |
-| 割当済みの取得候補 | 598,319 files／23,069,939,036,185 bytes，全modalityの候補 |
-| live取得完了 | 5,908 files／21,313,810,836 bytes（19:07:50 JST snapshot） |
-| 取得途中 | 3,228,565,504 bytes，同時点，完了へ非加算 |
-| worker | 37台でsupervisor・実取得を確認，完了ファイル欠損／サイズ不一致0 |
-| 初期学習用source | Zenodo806023，8 files／138,420,368 bytes |
-| 準備・実学習量 | train659窓／1,977秒＝0.5491666667h，val327窓／981秒 |
-| 実学習 | MPS native，batch64，10epochs／110steps，反復提示6,590窓 |
-| 固定validation | 初期masked MSE0.002140255476 → best0.001922294883 |
-| 独立検証 | 全210 trainable tensors・12 encoder層の更新，optimizer step110，val再計算を33項目で確認 |
-| 次段階 | 2392979の8ch追加準備をsmac06へ配備，rawはsmac08からcluster内直接転送 |
+| 初期corpus | smac01 `prepared/smac806023_ssl_v1` |
+| 初期run | smac01 `runs/smac806023_ssl_20261122_v1/run` |
+| CNT corpus | smac10 `prepared/smac806023_plusCNT_ssl_v1` |
+| CNT run | smac10 `runs/smac806023_plusCNT_ssl_20261122_v1/run` |
+| 最新corpus | smac35 `prepared/smac806023_CNT_plusInMID_ssl_v1` |
+| 最新run | smac35 `runs/smac806023_CNT_plusInMID_ssl_20261122_v1/run` |
 
-取得候補・実取得・prepared・gradient exposureを混同しないでください．MSEはoffline波形再構成のvalidationで，行動性能や未知sourceへの汎化を実証する指標ではありません．初期の実入力0.549hと，別lineageのphase3選択モデル29.985888889hは足しません．
+最新best SHAは `600f1e25e89d5229ea70e5d8a4f873b8653dfc445503850d77ff4739bc184ad5`，CNT bestは `0d9a9cc83f5aa0a4b25404de286eff7a86fa7af462649a8e3df54f104ff82817` です．次の学習では目的に沿う親を明示し，この2つを性能上同等とは扱いません．
 
-[現実行reportとhash](reports/smac_training_20261122_v1/README.md)を参照してください．以前の全文は[移行前HANDOFF snapshot](reports/handoff_snapshots/HANDOFF_20261122_before_smac_fleet.md)に保持しました．その中の認証未成立・新source未学習・Colab再開案は当時の記録です．最新の実job，private coordinatorと本引継ぎを優先します．
+trainerは `experiments/pj_xavier/model/cbramod_ssl_smac.py`，SHA `ad0d8c27352411db52640c077af4b4bb38c6b1652ea20f3e6e965af2c172ca8a`．旧sealed trainerは無変更です．source追加は別moduleと新corpus/protocolへ分離し，親corpus/run/upstream/weightsはcluster内メモリ中継で全file SHAを照合して転送しました．
 
-## 作業場所，所有権と接続
+upstreamは各訓練nodeの `upstream/CBraMod_pinned`，commit `b9e961003214326972c567eff390e75b0287e32a` です．初期の不完全な `upstream/CBraMod` は使いません．
 
-| 項目 | 場所 |
-| --- | --- |
-| 正worktree | `/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training` |
-| repository／branch | `yasufumi-nakata/NeuroCore`／`feat/pj-xavier-validation-20261122` |
-| Draft PR | [71](https://github.com/yasufumi-nakata/NeuroCore/pull/71) |
-| coordinator | `private/xavier/eegmmidb_phase2_v1/coordinator.json` |
-| workstation transport | `private/xavier/smac_execution_20261122/smac_transport.py` |
-| smac31 controller | `/Users/yasufumi/pj-xavier/control_20261122` |
-| verified inventory | controller配下の `node_preflight.json` |
-| 各worker root | `/Users/yasufumi/pj-xavier/smacNN` |
-| raw／DB | worker rootの `raw`／`downloads.sqlite` |
-| task Python | smac01／smac06の `venv/bin/python` |
-| 運用証拠 | `private/xavier/smac_execution_20261122/`，取得担当のprivate運用dir |
-| policy／registry | `private/xavier/storage_cleanup_20261122/` |
+smac10/35は独立portable Gitを導入済みです．task環境のPATH先頭へ `<node root>/tools/git/bin`，GIT_EXEC_PATHへ `<node root>/tools/git/libexec/git-core` を指定します．公式配布SHAと実rev-parse/showを確認し，source検証を省略せず再開しました．Apple Git／Xcode license／global設定は変更していません．導入receiptは `private/xavier/smac_execution_20261122/portable_git_installation_receipt_v2.json` です．
 
-有効owner/leaseと実PID/argv/bootを確認します．rootまたは別ownerが実作業中なら観測・記録だけ行い，コード変更や二重起動をしません．owner解放後は排他的leaseを取得し，既存download jobを維持しながら独立した次の学習準備を進めます．全download完了まで待つ必要はありません．
+技術的失敗は停止します．probeはexit2＋kind=probe＋status=failed＋memory_within_budget=falseの明示的な容量超過だけを候補落ちにできます．欠落report・非有限gradient・source mismatch・通常のOOM例外などを容量不足として握りつぶしません．scientific blockedはprepのexit2と正確なstatusが揃う場合だけです．
 
-workstationの通常 `python3` からtransportをimportし，`connect()` はsmac31，`run_node(node, code, timeout=..., task_python=True)` はworkerのtask venvを使用します．task_python省略時は既存cluster Pythonです．通常venvへparamikoを追加する必要はありません．
+## 次の具体的な作業
 
-OpenSSH ControlMasterはMCP実行境界でハングしたため使用しません．smac31の既存credential loaderと観測済みhost keyを保持し，秘密値は出力・保存・コピーしません．smac31のAGENTSとsmac-cluster skillに従います．system python3がXcode license要求を返すworkerでは既存standalone cluster Pythonを明示します．license変更やsudoは不要です．venvのPython pathは `.resolve()` せず，venv pathのまま起動します．
+1. 実jobとlease，最新取得DBを確認します．完了した3段階やQC不適格2392979を理由なく繰り返しません．37台の取得は継続させます．
+2. 優先取得sourceはBCI8089820／P300 ds005028がsmac05，SSVEP9970619がsmac02などです．取得済み・単位／校正／重複／split監査済みから次のoffline SSL adapterを追加します．新たな取得先へ二重downloadせず，必要なcluster内転送を使います．
+3. 2392979は16件のnative過大振幅，5件のwindow QC不適格で0窓でした．公式の単位／変換根拠が得られるまで保留し，恣意的な倍率・clipping・閾値緩和で採用しません．small BCIの単位不明も同様です．
+4. raw／physical payload deny，must-link，既存review/val/testと累積partition履歴を継承し，trainだけを追加します．元label，観測event，weak labelは出典と品質を分離し，AI推定を評価goldに昇格させません．
+5. 新しいimmutable corpusとprotocolをregisterし，選んだ親の `--parent-run` とSHAを記録します．新形状の実MPS backward/capacity probe，1node1GPUjob，40GiB枠，段階ごとの新しい時間枠を守り，checkpoint/optimizer/RNGと実seen-IDを保存します．古い予算を延長して再利用しません．
+6. 新sourceの汎化を評価する際は，既に見たtestへ最適化せず，別の固定protocolで未使用の対象と負対照を定めます．既存806023 validationだけで全sourceの品質を主張しません．
+7. EEG＋判定前環境→X/Y，LLM接続，実機試用は既存の次段階設計を引き継ぎます．P300 oracle／decoder出力／未来contextを分離し，cue goldと自由意図を区別します．offline SSLをonline認証や実OS成功と扱いません．
+8. 公開code／aggregateだけ既存branchへcommit/pushし，exact commit CIを確認．raw・個別ID・予測・weights・認証はprivate．Google Doc実行tabへ追記しreadback後，実jobを記録してleaseを解放します．
 
-## 全量取得の実運用
+## 継続と過去記録
 
-controllerの `acquisition/full_fleet_plan.json` は容量・公開条件・pairing・衝突を確認した候補を37台へ割当済みです．`planning_receipt.json` と `source_blocker_summary.json` に根拠を保存しています．未解決metadata784件，path衝突13件，容量不明42,028 groups，EEG scope未確認2,924件は未割当であり，引き続き解決します．権利や単位の不明点を推測で承認しません．
+既存automation `Automation_f439325b5d888191bc75e92d1ba97be7` は毎時15分26秒（Asia/Tokyo）です．S Macだけで取得と学習を進め，未割当metadataの解決も継続します．進捗要約だけで終えず，取得済みの適格sourceを次の学習へ進めます．
 
-観測はcontrollerの `acquisition/snapshot_acquisition.py --name <new_receipt.json>` で行います．最新の運用memo／safe resume controllerを優先し，node DBと実ファイルを照合してください．
+workstationのraw／colab_raw_archive773files／50,476,724,659Bは削除済み，モデル／optimizer／RNG／評価／コード／台帳は保持済みです．証拠は `private/xavier/storage_cleanup_20261122/` です．
 
-各nodeは `download_supervisor.py`，`download.json`，`download_state.json`，`bulk_supervisor_state.json`，`download.log`，`bulk_supervisor.log` を保持します．1node1stream，100GiB空きreserve，600秒cycle，supervisor起動から48時間の枠です．429のRetry-Afterとbackoffを尊重し，TLS検証を無効化しません．Dataverseのguestbook217必須releaseは同一release全体を既存access_action_requiredに沿って保留し，フォームを送信せず次の公開sourceへ進めました．
+phase1～3は学習・固定評価・回収・M1試用・Colab停止まで完了済みです．過去の全条件・制限は[移行前HANDOFF](reports/handoff_snapshots/HANDOFF_20261122_before_smac_fleet.md)，[phase3結果](eegmmidb_phase3/RESULTS.md)に保持しています．過去の認証未成立・Colab再開案より，現在のS Mac運用を優先します．
 
-再開時は生存PIDとlockを照合し，既存DB／manifest／partを保持してsupervisorだけを安全に継続します．期限終了後の無条件re-deployは既取得bytesを容量へ二重計上し得るため避けてください．node rootの `STOP_DOWNLOADS` は現在cycle後に停止する仕組みです．新しい期限・空き容量・実jobをreceiptへ記録して再開します．
-
-## 完了した初期CBraMod実学習
-
-smac01内のcorpusは `prepared/smac806023_ssl_v1`，runは `runs/smac806023_ssl_20261122_v1/run` です．実行codeは `training_code_v1` に独立保存し，取得code更新の影響を受けません．
-
-- 公式CBraMod commit `b9e961003214326972c567eff390e75b0287e32a`，公式weightsから開始しました．
-- 有効checkoutは `upstream/CBraMod_pinned` です．元の不完全な `upstream/CBraMod` は使用しません．
-- test2記録は波形を開かずdenyへ保持．元file SHA，physical-V payload，ordered montage，単位，split，固定QCを照合しました．
-- 16ch／3秒／200Hz／float32 V_x_1e4，causal追加処理．配布sourceの過去のoffline因果性は未確認で，online_harness_allowed=falseです．
-- 実probe batch1／8／32／64が全PASS．本学習は公式weightsに戻してbatch64，10epochs，110stepsを実行しました．probeの学習済み重みを本学習に流用していません．
-- best checkpoint SHAは `3450e90e0c2cdf8b0b7f2fa28d39ae5037f7d9b70fea95cc5d93a885d98e6d10`．
-- training protocol SHAは `51a5c1b15f407405da0e7d9eb58f60f23978c9008e21ff4b2bf649de42048f0b`．
-- 全210 trainable tensor，12 encoder層，AdamWの有限非ゼロmomentとstep110を独立確認．val327窓のみno_grad再計算し，初期・bestの保存MSEを再現しました．新testアクセス0，新training step0．
-- private receiptは `stage1_encoder_verification_20261122_v1.json`．
-
-最初のprobe attemptはupstreamのgit metadata欠落でforward前に停止しました．git検証を回避せず，正規shallow repositoryを転送したattempt2で完了しています．失敗の証拠を削除しません．
-
-## 次に実行すること
-
-1. coordinatorと実jobを確認し，最新stage2 stateを読みます．完了runを再実行せず，進行中jobを維持します．
-2. `next_multichannel/SMAC_SOURCE_ADDITION_RUNBOOK.md` に従い，2392979の取得完了をsmac08で確認し，smac06へcluster内直接コピーします．36file／110,071,616Bを二重downloadしません．
-3. smac06の `training_code_v2` で `prepare_smac_ssvep.py` を実行します．base806023 corpus・parent run・公式upstream・weightsはクラスタ内コピーして全SHA照合します．旧test10記録と重複alias5を開かず，21train候補から固定QCで選びます．native source guardを通り得る5記録もwindow QCは別です．全落ちならblocked receiptを保存して次sourceへ進み，単位倍率・閾値を調整しません．
-4. 適格な新corpusは新protocolでregisterし，`--parent-run` で選択された直前bestを引き継ぎます．新C/Pを含む全bucketの実MPS capacity probe後にfitします．旧val/test/review deny，must-link，source/payload/native intervalのunionを継承し，baseの反復を新規固有量に加算しません．
-5. InMID／BCI8089820／CNTなど，取得とsource監査が完了したものから次adapterへ進めます．EDF/BDF/GDF/CNT/SET等の単位・時刻・native範囲・校正・duplicate制約を確認します．元label，観測event，weak labelを区別し，不明なlabelを評価goldへしません．
-6. EEG→LLM／判定前環境→X/Yは既存の新protocol設計を引き継ぎ，未使用holdoutと負対照を固定して別段階で実行します．P300のTextToSpell／StimulusTypeは教師oracle，SelectedTargetはdecoder出力，未来TextResultは事前contextにできません．既に見た17test群へ最適化しません．
-7. 公開コード・aggregateだけcommit/pushし，exact commitのCIを確認します．raw／個別ID／個別予測／weights／認証はprivate．既存Google Docの実行tabへ追記しreadbackを確認します．最後に実jobを記録してleaseを解放します．
-
-## 過去run，記録と継続
-
-phase1～3は学習・固定評価・回収・M1試用・Colab停止まで完了しています．phase3の選択モデルはfresh小型encoder lineageで，CBraModと混同しません．主左右BAはphase3 EEG62.45%，fused56.72%，同17test群を使う探索比較です．自由意図や実OSの成功は未実証です．過去の完整な条件・制限・CI・回収hashは[移行前snapshot](reports/handoff_snapshots/HANDOFF_20261122_before_smac_fleet.md)，[phase3結果](eegmmidb_phase3/RESULTS.md)に保持しています．
-
-workstationのraw／colab_raw_archive773files／50,476,724,659 bytesは依頼どおり削除済みで，学習済みモデル／optimizer／RNG／評価／コード／台帳は保持しています．削除証拠は `private/xavier/storage_cleanup_20261122/` です．
-
-既存automation `Automation_f439325b5d888191bc75e92d1ba97be7` は毎時15分26秒（Asia/Tokyo）です．promptはS Macだけで取得と学習を進める実経路へ更新しました．稼働workerがある時も，重複を避けつつ取得済みsourceの学習を前へ進めます．未解決候補のmetadata調査も継続し，進捗の要約だけで終了しません．
-
-[Google Doc実行tab](https://docs.google.com/document/d/1kGlNqvZEg_AzSYKGTiGF3Z0HcVIxNGNimNwpR6w1680/edit?tab=t.7cvfsge8pwil)と旧tabsの記録を保持します．
+[Google Doc実行tab](https://docs.google.com/document/d/1kGlNqvZEg_AzSYKGTiGF3Z0HcVIxNGNimNwpR6w1680/edit?tab=t.7cvfsge8pwil)の旧tabs・過去記録を保持します．

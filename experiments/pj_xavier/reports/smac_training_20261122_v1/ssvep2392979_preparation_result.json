@@ -1,0 +1,16 @@
+{
+  "base_corpus_not_copied": true,
+  "candidate_records_before_current_QC": 21,
+  "certificates_sha256": "846bf9a6dcce279ca3eaf5478ed7d89220046797b2b7e5771a4051bbc45b1df2",
+  "new_gradient_exposure_hours": 0,
+  "new_source_records": 0,
+  "new_source_unique_hours": 0,
+  "new_source_windows": 0,
+  "protocol_sha256": "3aa5b9961c52a4348acfe192808d6a0b11e1c8d9c990cafb630f74bc029ae0e8",
+  "reasons": {
+    "native_peak_above_fixed_0_1V_source_bound": 16,
+    "no_window_meets_fixed_V_QC": 5
+  },
+  "status": "blocked_no_eligible_new_source_windows",
+  "test_records_not_opened": 10
+}

@@ -1,0 +1,92 @@
+{
+  "schema": "inmid_preparation_independent_verification_aggregate_v1",
+  "publication_status": "candidate_not_published",
+  "saved_at_utc": "2026-11-22 10:58:31 UTC",
+  "status": "passed",
+  "scope": "offline_SSL_preparation_only",
+  "examination_repeated_for_this_save": false,
+  "checks_count": 21,
+  "all_checks_passed": true,
+  "checks": {
+    "adapter_code_seal": true,
+    "all92_certificates": true,
+    "all_artifact_bytes_shapes_and_dtype_match": true,
+    "all_base_rows_exactly_retained": true,
+    "base_completion_seal": true,
+    "candidate_window_accounting": true,
+    "completion_success": true,
+    "counts_hours_recomputed": true,
+    "fixed_QC_protocol": true,
+    "metadata_and_certificate_seals": true,
+    "new_intervals_nonoverlapping": true,
+    "new_train_only_14EEG_native128": true,
+    "no_behavior_MAT_video_or_online_claim": true,
+    "original_and_physical_payload_proofs_match_retained_audit": true,
+    "per_source_window_counts_match": true,
+    "prior_exclusions_preserved": true,
+    "source_ledger_seal": true,
+    "stored_new_arrays_meet_fixed_QC": true,
+    "test16_unopened_and_denied": true,
+    "train76_all_calibration_verified": true,
+    "validation327_exactly_preserved": true
+  },
+  "aggregate_completion_sha256": "f36cb58f7d97703b41357c34e0e9540fceb24cace3689b3eea1b65c919ef682a",
+  "source": {
+    "name": "InMID",
+    "native_sample_rate_hz": 128,
+    "retained_EEG_channels": 14,
+    "auxiliary_channels_excluded": 44,
+    "metadata_records": 92,
+    "admitted_train_records": 76,
+    "frozen_test_records": 16,
+    "frozen_test_signals_opened": 0,
+    "new_validation_records": 0,
+    "physical_V_calibration_verified_train_records": 76,
+    "original_file_and_payload_proofs_match_retained_audit": true,
+    "independent_MNE_calibration_max_difference_V": 1.734723475976807e-18
+  },
+  "fixed_QC": {
+    "candidate_nonoverlapping_3_second_windows": 19228,
+    "rejected_peak_above_100uV_windows": 2393,
+    "accepted_new_windows": 16835,
+    "native_peak_V_max_before_filtering": 0.004817435897435897,
+    "stored_new_peak_uV": 99.97838139533997,
+    "stored_new_min_channel_std_uV": 3.326688839593793,
+    "thresholds_relaxed": false
+  },
+  "unique_input": {
+    "new_seconds": 50505,
+    "new_hours": 14.029166666666667,
+    "combined_train_windows": 20879,
+    "combined_train_seconds": 62637,
+    "combined_train_hours": 17.399166666666666,
+    "prior_validation_windows": 327,
+    "prior_validation_exactly_preserved": true,
+    "validation_domain": "zenodo:806023 only",
+    "repetition_across_epochs_added_to_unique_hours": false
+  },
+  "storage_verification": {
+    "verified_artifacts": 96,
+    "artifact_bytes": 717266688,
+    "new_artifacts": 76,
+    "all_hashes_shapes_and_dtypes_match": true,
+    "base_rows_and_exclusions_preserved": true
+  },
+  "verification_operations": {
+    "read_only": true,
+    "raw_source_signals_reopened": 0,
+    "training_steps": 0
+  },
+  "interpretation": [
+    "This receipt verifies prepared data and provenance. It does not independently verify the final fitted model.",
+    "Validation covers the retained zenodo:806023 domain only; no InMID generalization claim is made.",
+    "Behavior labels, MAT files and videos are not added to EEG duration.",
+    "The result supports offline self-supervised learning only and makes no online or behavioral performance claim."
+  ],
+  "privacy": {
+    "individual_subject_or_record_identifiers_included": false,
+    "per_record_hashes_included": false,
+    "private_absolute_paths_included": false,
+    "credentials_included": false
+  }
+}

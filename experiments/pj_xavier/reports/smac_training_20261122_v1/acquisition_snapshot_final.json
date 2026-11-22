@@ -1,0 +1,20 @@
+{
+  "schema_version": "xavier-download-public-aggregate-v1",
+  "observed_at_utc": "2026-11-22T10:51:41.856443+00:00",
+  "observed_at_jst": "2026-11-22T19:51:41.856443+09:00",
+  "measured_worker_nodes": 37,
+  "supervisors_alive": 37,
+  "nodes_with_actual_data": 37,
+  "complete_files": 40187,
+  "complete_bytes": 175035084578,
+  "partial_bytes": 26550729130,
+  "complete_plus_partial_bytes": 201585813708,
+  "complete_missing_files": 0,
+  "complete_size_mismatch_files": 0,
+  "snapshot_query_errors": 0,
+  "byte_scope": "Downloaded whole files including metadata and non-EEG modalities; not unique EEG hours or trained data volume",
+  "validation_scope": "Existing downloader complete state plus live file existence and byte-size checks; this snapshot does not rehash every payload",
+  "snapshot_runs_performed_for_this_report": 1,
+  "raw_payloads_copied_to_workstation_for_this_report": 0,
+  "workers_started_stopped_or_modified_for_this_report": 0
+}
