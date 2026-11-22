@@ -1,0 +1,155 @@
+{
+  "schema": "pj-xavier-eegmmidb-header-label-scope-v1",
+  "source_audit_sha256": "015cc62aaa5f206086cd7c2ba360a18ff5745f6a7b7f4fbaf546bd8214809097",
+  "recordings_ledger_sha256": "51b801d07876ae185bd6f6d0bc465769b68d6265cf5ab9356e9ab4ff896ebea2",
+  "total_recordings": 1526,
+  "channel_order_groups": [
+    {
+      "channel_names": [
+        "Fc5.",
+        "Fc3.",
+        "Fc1.",
+        "Fcz.",
+        "Fc2.",
+        "Fc4.",
+        "Fc6.",
+        "C5..",
+        "C3..",
+        "C1..",
+        "Cz..",
+        "C2..",
+        "C4..",
+        "C6..",
+        "Cp5.",
+        "Cp3.",
+        "Cp1.",
+        "Cpz.",
+        "Cp2.",
+        "Cp4.",
+        "Cp6.",
+        "Fp1.",
+        "Fpz.",
+        "Fp2.",
+        "Af7.",
+        "Af3.",
+        "Afz.",
+        "Af4.",
+        "Af8.",
+        "F7..",
+        "F5..",
+        "F3..",
+        "F1..",
+        "Fz..",
+        "F2..",
+        "F4..",
+        "F6..",
+        "F8..",
+        "Ft7.",
+        "Ft8.",
+        "T7..",
+        "T8..",
+        "T9..",
+        "T10.",
+        "Tp7.",
+        "Tp8.",
+        "P7..",
+        "P5..",
+        "P3..",
+        "P1..",
+        "Pz..",
+        "P2..",
+        "P4..",
+        "P6..",
+        "P8..",
+        "Po7.",
+        "Po3.",
+        "Poz.",
+        "Po4.",
+        "Po8.",
+        "O1..",
+        "Oz..",
+        "O2..",
+        "Iz.."
+      ],
+      "records": 1526
+    }
+  ],
+  "sample_rate_groups": [
+    {
+      "sample_rates_hz": [
+        160.0
+      ],
+      "records": 1490
+    },
+    {
+      "sample_rates_hz": [
+        128.0
+      ],
+      "records": 36
+    }
+  ],
+  "unit_groups": [
+    {
+      "header_units": [
+        "uV"
+      ],
+      "records": 1526
+    }
+  ],
+  "ordinary_signals_counted_as_EEG_basis": "source-specific PhysioNet64-scalp-EEG-plus-annotation documentation, identical64electrode-header names in all1526records; not a generic EDF classification rule or independent hardware proof",
+  "recording_sample_duration_scope": "stored acquisition seconds from each header and exact payload; no channel-hour sum",
+  "label_review_required_records": 50,
+  "label_review_required_publisher_groups": 4,
+  "passed_limited_annotation_metadata_checks_records": 1476,
+  "nominal_160Hz_exception_records": 36,
+  "unmapped_annotation_count": 2,
+  "unmapped_annotation_codes": {
+    "T1": 2
+  },
+  "baseline_records_with_nonrest_codes": 2,
+  "overlap_seconds": {
+    "n": 547,
+    "min": 0.005,
+    "p50": 0.005,
+    "p95": 0.05,
+    "max": 0.05
+  },
+  "out_of_bounds_seconds": {
+    "n": 12,
+    "min": 0.025,
+    "p50": 0.025,
+    "p95": 0.025,
+    "max": 0.025
+  },
+  "per_task": {
+    "baseline_eyes_open": {
+      "records": 109,
+      "review_required": 1
+    },
+    "baseline_eyes_closed": {
+      "records": 109,
+      "review_required": 1
+    },
+    "motor_execution_left_right_fist": {
+      "records": 327,
+      "review_required": 12
+    },
+    "motor_imagery_left_right_fist": {
+      "records": 327,
+      "review_required": 12
+    },
+    "motor_execution_both_fists_feet": {
+      "records": 327,
+      "review_required": 12
+    },
+    "motor_imagery_both_fists_feet": {
+      "records": 327,
+      "review_required": 12
+    }
+  },
+  "raw_records_removed": 0,
+  "labels_corrected": 0,
+  "new_training_eligibility_granted": false,
+  "interpretation": "Flags identify recorded annotation/header differences for a future protocol. Small overlaps can reflect timestamp precision; no cause or repair inferred. All raw durations retained. The other1476records passed these limited metadata checks only; waveform quality/label validity/online control performance remain unestablished.",
+  "private_label_review_ledger_sha256": "2ee3590257afd78b8d9e05760c256aa7c614d834d6dc69adefbb796c6c5c4add"
+}

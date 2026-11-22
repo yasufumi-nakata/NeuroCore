@@ -1,0 +1,180 @@
+{
+  "schema": "pj-xavier-eegmmidb-archive-audit-v1",
+  "status": "completed",
+  "source_id": "physionet:eegmmidb:1.0.0",
+  "catalog_id": "009861",
+  "started_epoch": 1795317596.769683,
+  "ended_epoch": 1795317620.23329,
+  "source_code_sha256": "b4e3979968c427a18509f9b2df9a2cdba452e66827300d212b48b49d11bd5c98",
+  "source_urls": {
+    "dataset": "https://physionet.org/content/eegmmidb/1.0.0/",
+    "checksums": "https://physionet.org/files/eegmmidb/1.0.0/SHA256SUMS.txt",
+    "records": "https://physionet.org/files/eegmmidb/1.0.0/RECORDS",
+    "run_mapping": "https://mne.tools/stable/generated/mne.datasets.eegbci.load_data.html",
+    "edf": "https://www.edfplus.info/specs/edf.html",
+    "edf_plus": "https://www.edfplus.info/specs/edfplus.html"
+  },
+  "archive_sha256": "0ff5f7f38d1d14b8e485581ad4cf5b327e6494bc2ac7c7d7d4f7e9518a950cbe",
+  "archive_distribution_bytes": 1997435063,
+  "official_checksum_manifest_sha256": "7f5d16957d8ee7bce86cc7ccba0e5994f63f33781607eb3f838392d49311a208",
+  "official_RECORDS_sha256": "02d1de9c00511d3b7548a6b59bdf209c819db025518ddcc52b21fd3b2b9de4a8",
+  "all_published_member_hashes_verified": true,
+  "official_checksum_members": 3058,
+  "archive_regular_members": 3059,
+  "archive_directory_entries": 110,
+  "archive_uncompressed_member_bytes": 3614967988,
+  "uncompressed_bytes_by_type": {
+    "metadata_or_documentation": 425642,
+    "EDF_files": 3613708800,
+    "WFDB_event_files": 833546
+  },
+  "unlisted_members": [],
+  "official_RECORDS_coverage_complete": true,
+  "eeg_recordings": 1526,
+  "publisher_subject_groups": 109,
+  "unique_EEG_payload_recordings": 1526,
+  "duplicate_EEG_payload_recordings": 0,
+  "all_recording_signal_seconds_decimal": "174724",
+  "all_recording_signal_hours": 48.534444444444446,
+  "content_unique_signal_seconds_decimal": "174724",
+  "content_unique_signal_hours": 48.534444444444446,
+  "eeg_physical_sample_storage_bytes": 3560112128,
+  "content_unique_eeg_sample_storage_bytes": 3560112128,
+  "edf_annotation_payload_bytes": 27813376,
+  "edf_header_bytes": 25783296,
+  "eeg_sample_values": 1780056064,
+  "eeg_channel_count_records": {
+    "64": 1526
+  },
+  "sample_rate_set_records": {
+    "[160.0]": 1490,
+    "[128.0]": 36
+  },
+  "unit_set_records": {
+    "[\"uV\"]": 1526
+  },
+  "continuity_marker_records": {
+    "EDF+C": 1526
+  },
+  "record_count_inferred_files": 0,
+  "annotation_error_records": 48,
+  "annotation_errors": {
+    "overlapping_annotation_intervals": 547,
+    "annotation_outside_signal_duration": 12
+  },
+  "record_duration_seconds_min": 37.0,
+  "record_duration_seconds_max": 181.0,
+  "tasks": {
+    "baseline_eyes_closed": {
+      "recordings": 109,
+      "subjects": 109,
+      "signal_seconds": 6648.0,
+      "signal_hours": 1.8466666666666667,
+      "eeg_sample_bytes": 136151040,
+      "annotation_counts": {
+        "T0": 109,
+        "T1": 1
+      },
+      "semantic_annotation_counts": {
+        "baseline_eyes_closed": 109,
+        "unmapped_annotation": 1
+      }
+    },
+    "baseline_eyes_open": {
+      "recordings": 109,
+      "subjects": 109,
+      "signal_seconds": 6645.0,
+      "signal_hours": 1.8458333333333334,
+      "eeg_sample_bytes": 136089600,
+      "annotation_counts": {
+        "T0": 109,
+        "T1": 1
+      },
+      "semantic_annotation_counts": {
+        "baseline_eyes_open": 109,
+        "unmapped_annotation": 1
+      }
+    },
+    "motor_execution_both_fists_feet": {
+      "recordings": 327,
+      "subjects": 109,
+      "signal_seconds": 40277.0,
+      "signal_hours": 11.188055555555556,
+      "eeg_sample_bytes": 820314112,
+      "annotation_counts": {
+        "T0": 4910,
+        "T2": 2469,
+        "T1": 2440
+      },
+      "semantic_annotation_counts": {
+        "rest": 4910,
+        "executed_both_feet": 2469,
+        "executed_both_fists": 2440
+      }
+    },
+    "motor_execution_left_right_fist": {
+      "recordings": 327,
+      "subjects": 109,
+      "signal_seconds": 40423.0,
+      "signal_hours": 11.22861111111111,
+      "eeg_sample_bytes": 823304192,
+      "annotation_counts": {
+        "T0": 4927,
+        "T2": 2456,
+        "T1": 2471
+      },
+      "semantic_annotation_counts": {
+        "rest": 4927,
+        "executed_right_fist": 2456,
+        "executed_left_fist": 2471
+      }
+    },
+    "motor_imagery_both_fists_feet": {
+      "recordings": 327,
+      "subjects": 109,
+      "signal_seconds": 40372.0,
+      "signal_hours": 11.214444444444444,
+      "eeg_sample_bytes": 822259712,
+      "annotation_counts": {
+        "T0": 4920,
+        "T2": 2455,
+        "T1": 2465
+      },
+      "semantic_annotation_counts": {
+        "rest": 4920,
+        "imagined_both_feet": 2455,
+        "imagined_both_fists": 2465
+      }
+    },
+    "motor_imagery_left_right_fist": {
+      "recordings": 327,
+      "subjects": 109,
+      "signal_seconds": 40359.0,
+      "signal_hours": 11.210833333333333,
+      "eeg_sample_bytes": 821993472,
+      "annotation_counts": {
+        "T0": 4918,
+        "T2": 2438,
+        "T1": 2480
+      },
+      "semantic_annotation_counts": {
+        "rest": 4918,
+        "imagined_right_fist": 2438,
+        "imagined_left_fist": 2480
+      }
+    }
+  },
+  "members_ledger_sha256": "c291d869f76749f0e8882e940aafaa5caf7b18358497728d4323f60ebba7d76c",
+  "recordings_ledger_sha256": "51b801d07876ae185bd6f6d0bc465769b68d6265cf5ab9356e9ab4ff896ebea2",
+  "training_or_model_operations": 0,
+  "raw_files_modified": 0,
+  "archive_extracted_to_disk": false,
+  "interpretation": {
+    "duration": "header/sample-derived recording seconds; not channel-hours, unique-person time, or autonomous-control labels",
+    "storage": "physical sample storage bytes means original two-byte EEG values; hardware calibration not independently established",
+    "deduplication": "within-release exact EEG payload SHA; aliases not acquired or added; cross-dataset shared participants remain unknown",
+    "labels": "publisher task annotations interpreted by run; not inferred thoughts, freeform intent, or agent actions",
+    "event_companion": "WFDB .event checksum verified; its semantic equality to EDF+ TAL is stated by publisher, not independently decoded here",
+    "training": "not added to existing frozen SSL, alignment, or benchmark cohorts; new protocol required"
+  }
+}

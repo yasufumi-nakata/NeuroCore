@@ -2,7 +2,7 @@
 
 NeuroCore の EEG デコーダと LLM 接続部を開発する実験コードです．目標は，判断以前の環境情報と EEG から操作を推定し，実ハーネスでタスク完了まで評価することです．現在の実装では，学習可能な EEG encoder／prefix を既存 LLM の `inputs_embeds` に渡し，出力トークンの損失から逆伝播します．
 
-**実 EEG による 1.7B・8B モデルの学習，checkpoint 保存，held-out 評価，workstation での推論，NeuroCore router への dry-run を実行しました．目的の自律エージェント能力と EEG の追加寄与は，まだ実証できていません．** 最初の基盤を追加した [PR #70](https://github.com/yasufumi-nakata/NeuroCore/pull/70) はマージ済みで，追加監査・評価・修正は [PR #71](https://github.com/yasufumi-nakata/NeuroCore/pull/71) で継続しています．最新の実行場所と再開手順は [HANDOFF.md](HANDOFF.md) を参照してください．
+**実 EEG による 1.7B・8B モデルの学習，checkpoint 保存，held-out 評価，workstation での推論，NeuroCore router への dry-run を実行しました．目的の自律エージェント能力と，負対照まで含めた安定したEEGの追加寄与は，まだ実証できていません．** 最初の基盤を追加した [PR #70](https://github.com/yasufumi-nakata/NeuroCore/pull/70) はマージ済みで，追加監査・評価・修正は [PR #71](https://github.com/yasufumi-nakata/NeuroCore/pull/71) で継続しています．最新の実行場所と再開手順は [HANDOFF.md](HANDOFF.md) を参照してください．
 
 ## データ量：候補・取得済み・検証済みを区別
 
@@ -13,11 +13,11 @@ NeuroCore の EEG デコーダと LLM 接続部を開発する実験コードで
 | EEG-dataset の目録 | 5,165 行 | 全 ID と取得先解決結果を照合し，不足・余剰 0 |
 | workstation の取得キュー | 609 releases，468,040 file jobs | EEG を含む候補の release 全体．認証・規約操作・metadata の保留を含む |
 | 上記キューの既知の容量 | 15,821,047,310,466 B，約 15.82 TB | 動画・補助データ・版の重複を含む候補容量．38 files はサイズ未確定 |
-| 取得完了し SHA-256 を再検証した内容 | 39 files，14,569,523,189 B，約 14.57 GB | 10:58〜10:59 の workstation＋Colab 観測．同一内容の複製を二重加算しない |
-| 元 EEG の header／binary を数量検証した範囲 | 118 記録，87.90746536 時間 | チャンネル数を掛けた時間ではなく，記録の長さの合計 |
-| 上記の物理 EEG 値の非圧縮容量 | 10,924,347,024 B，約 10.92 GB | 補助チャンネル・動画・header・窓配列・モデル重みを除く．元の保存形式のまま |
+| 取得完了し SHA-256 の検証記録がある内容 | 40 files，16,566,958,252 B，約 16.57 GB | 12:28 の workstation台帳観測．同一内容の複製を二重加算しない |
+| 元 EEG の header／binary を数量検証した範囲 | 1,644 記録，136.44190981 時間 | チャンネル数を掛けた時間ではなく，記録の長さの合計 |
+| 上記の物理 EEG 値の非圧縮容量 | 14,484,459,152 B，約 14.48 GB | 補助チャンネル・動画・header・窓配列・モデル重みを除く．元の保存形式のまま |
 
-取得状況の根拠は [acquired_progress_003.json](reports/acquired_progress_003.json)，全キュー更新は [fresh_queue_append_20261122_01](reports/fresh_queue_append_20261122_01/README.md)，数量の定義と hash は [verified_eeg_quantities_20261122.json](reports/verified_eeg_quantities_20261122.json) にあります．未完了の partial 9,081,331,952 B は取得済み容量に加算しません．取得候補全体の EEG 時間は未確定です．ZIP 容量から EEG 時間への一律換算はしません．
+取得状況の根拠は [acquired_progress_004.json](reports/acquired_progress_004.json)，全キュー更新は [fresh_queue_append_20261122_01](reports/fresh_queue_append_20261122_01/README.md)，数量の定義は [verified_eeg_quantities_20261122_004.json](reports/verified_eeg_quantities_20261122_004.json) にあります．既存39内容は前回003の全量SHAと現在の台帳・保全記録を照合し，新規EEGMMIDBは全archive・memberを新たにSHA検証しました．未完了のpartial 19,442,311,408 Bは取得済み容量に加算しません．取得候補全体のEEG時間は未確定です．ZIP容量からEEG時間への一律換算はしません．
 
 さらに全 468,040 file jobs を固定規則で構造監査しました．そのうち EEG と明示された path の信号形式は 62,303 files／7,209,327,960,212 B，135 releases でした．これは header を検証した純 EEG 量ではなく，取得順序を検討するための候補量です．未展開 archive，EEG を含み得る MEG container，動画・視線等の companion は別々に残し，EEG の有無を確かめる前に一律除外していません．詳細と全 609 releases の分類は [全キュー構造監査](reports/queue_structure_20261122_v1/README.md) にあります．
 
@@ -27,7 +27,10 @@ NeuroCore の EEG デコーダと LLM 接続部を開発する実験コードで
 | AI-assisted coding：UniBa | 34 | 30.61540256 h | 8 |
 | AI-assisted coding：ITU | 26 | 21.30617947 h | 64 |
 | Portable EEG systems comparison | 57 | 34.89706111 h | 32 |
-| 合計 | 118 | 87.90746536 h | 記録ごとに異なる |
+| EEGMMIDB：運動実行・運動想起 | 1,526 | 48.53444444 h | 64 |
+| 合計 | 1,644 | 136.44190981 h | 記録ごとに異なる |
+
+新規EEGMMIDBは1,997,435,063BのZIPを477.51秒で取得し，公式全3,058 member＋チェックサム一覧，1,526 EDFを23.46秒で監査しました．実headerは160Hzが1,490記録，128Hzが36記録です．注釈区間の5〜50msの重なり・25msのはみ出しやbaselineのT1を含む50記録を，ラベルreview対象としました．[全取得・数量・注釈監査](reports/eegmmidb_acquisition_20261122_v1/README.md)と，[9代表記録・209注釈のMNE独立照合](reports/eegmmidb_mne_representative_audit_20261122_v1/README.md)を参照してください．この追加データは既存の学習・評価へ入れていません．次段階の[EEGMMIDB benchmark設計](benchmark/NEXT_EEGMMIDB_BENCHMARK.md)を保存しています．
 
 raw と filtered export，同じ archive の保全コピー，原波形から切り出した学習窓を新しい独立記録として数えません．記録時間の検証は，信号品質・意図の正解・オンライン処理の因果性の証明とは別です．異なる corpus 間の同一参加者照合も未実施です．
 
@@ -35,7 +38,7 @@ Colab の優先取得は EEGlass と AI-assisted coding の全 23 files／11,221
 
 ## 実際に学習したモデル
 
-全て LLM 本体を凍結し，EEG 接続部を学習した実測です．基盤重みは immutable revision で固定しています．時間は原則として学習・検証 loop の範囲で，ダウンロードや環境構築を含みません．
+LLMとの接続時は本体を凍結し，EEG接続部を学習しました．別の自己教師学習段階ではEEG encoderを更新しています．基盤重みは immutable revision で固定しています．時間は原則として学習・検証 loop の範囲で，ダウンロードや環境構築を含みません．
 
 | モデル／cohort | 実機 | 完了した学習 | 実測時間 | メモリの観測 |
 | --- | --- | ---: | ---: | --- |
@@ -45,6 +48,8 @@ Colab の優先取得は EEGlass と AI-assisted coding の全 23 files／11,221
 | SmolLM2-1.7B／UniBa v3 | M1／16 GiB | 3 epochs，600 steps | 1,541.72 秒 | MPS driver の観測最大 4.44 GB，allocator quota 8 GiB |
 | Qwen3-8B／UniBa v3 | Colab L4 | 30 epochs，3,000 steps | 1,340.03 秒 | CUDA 最大予約 18.49 GB |
 | CBraMod＋SmolLM2-1.7B／UniBa v3 | Colab L4 | 30 epochs，390 steps | 429.33 秒 | CUDA 最大予約 9.22 GB |
+| CBraModの連続EEG追加事前学習 | Colab L4 | 10 epochs，280 steps | 169.79 秒 | CUDA 最大予約 7.84 GB |
+| 追加学習CBraMod＋SmolLM2-1.7B／同じUniBa v3 | Colab L4 | 30 epochs，390 steps | 432.71 秒 | CUDA 最大予約 9.22 GB |
 
 MPS のメモリ値はサンプリング観測で，瞬間最大値の測定ではありません．実際の M1 上で学習が完走した事実と，true peak の未測定を分けて記録します．UniBa v3 の Smol は 166,656 parameters，v2 の Qwen は 299,776 parameters を学習しました．frozen backbone はそれぞれ約 1.71B／8.19B parameters です．
 
@@ -106,7 +111,7 @@ AI 送信対その他の fused AUROC は 0.6053 です．fused minus shuffle の
 
 L4 の fused 推論 p95 は46.92 ms，最大CUDA予約は3.47 GBでした．これはCPU EEG encoder・転送・投影・LLM scoringの範囲で，読み込み・resampling・tokenization・harnessを含む端から端までの遅延ではありません．旧結果を閲覧した後の探索実験であり，encoder，出力方式，入力長，正規化，学習予算，実機を同時に変えているため，差を個別要素の効果とは同定しません．
 
-**87.91 時間を全てこの LLM 接続部へ学習させたわけではありません．** UniBa v3 の train は 400 窓で，元構成では 700 秒＝11 分40秒，新 CBraMod 構成では末尾 1 秒ずつの計 400 秒＝6 分40秒を使用しています．全窓を原記録 SHA ごとに照合した時間区間の和集合も同じで，窓の重なりは 0 でした．新構成で 30 epochs 反復した 12,000 秒は，新しい EEG の追加時間ではありません．[時間区間の独立監査](reports/selected_eeg_interval_audit_20261122.json) に記録しました．
+**取得済み136.44時間を全てこのLLM接続部へ学習させたわけではありません．** UniBa v3 の train は 400 窓で，元構成では 700 秒＝11 分40秒，新 CBraMod 構成では末尾 1 秒ずつの計 400 秒＝6 分40秒を使用しています．全窓を原記録 SHA ごとに照合した時間区間の和集合も同じで，窓の重なりは 0 でした．新構成で 30 epochs 反復した 12,000 秒は，新しい EEG の追加時間ではありません．[時間区間の独立監査](reports/selected_eeg_interval_audit_20261122.json) に記録しました．
 
 ### 連続EEGによる追加学習の入力
 
@@ -121,7 +126,7 @@ encoderの自己教師学習に使う連続EEGを，ITU全量とUniBa validation
 
 166配列，1,685,013,248Bを生成し，全421,248,000値の独立検査が通過しました．学習用とモデル選択用は参加者groupを分けています．品質基準はresampling後の最大絶対振幅100µV以下，各channelの標準偏差0.01µV以上，finiteです．元の50.889時間との差には端の除外・不完全窓も含みます．
 
-**UniBaは1,902候補から8窓・240秒しか残らず，採用データの大半はportable EEGです．** このdomainの偏りを保持した実験として評価し，歩留まりを上げるために品質基準や単位を後から変えていません．[固定前処理](model/SSL_PREPROCESSING.md)，[全75原記録の品質検査と集計](reports/ssl_corpus_preparation_20261122_v1/README.md)に根拠を保存しています．2026-11-22 12:05 JST時点で，このうち学習用1,678窓の全てを使う追加事前学習が完了しました．10 epochs・280 steps，学習ループと検証169.79秒，CUDA予約の実測最大7,841,251,328Bです．学習用float32値は1周あたり1,284,096,000Bで，反復提示を新しいEEG量には加えません．採用重みは固定validationのMSEが学習後候補で最小だったepoch 8で，固有の入力13.983333時間，採用時までの反復提示111.866667時間です．ただし，採用時MSE0.001495は更新前の0.001183より高く，復元誤差が改善したとは言えません．[実測集計](reports/cbramod_ssl_pretraining.aggregate.json)に全epochと選択根拠があります．LLMとの同条件alignmentも30epochs・390steps・432.709秒で完走し，UniBaの5条件評価を終えました．fusedの3-class balanced accuracyは34.20%で，更新前35.09%を上回りませんでした．別施設ITUの評価と全成果物の回収・M1試用は別に進めています．
+**UniBaは1,902候補から8窓・240秒しか残らず，採用データの大半はportable EEGです．** このdomainの偏りを保持した実験として評価し，歩留まりを上げるために品質基準や単位を後から変えていません．[固定前処理](model/SSL_PREPROCESSING.md)，[全75原記録の品質検査と集計](reports/ssl_corpus_preparation_20261122_v1/README.md)に根拠を保存しています．2026-11-22 12:05 JST時点で，このうち学習用1,678窓の全てを使う追加事前学習が完了しました．10 epochs・280 steps，学習ループと検証169.79秒，CUDA予約の実測最大7,841,251,328Bです．学習用float32値は1周あたり1,284,096,000Bで，反復提示を新しいEEG量には加えません．採用重みは固定validationのMSEが学習後候補で最小だったepoch 8で，固有の入力13.983333時間，採用時までの反復提示111.866667時間です．ただし，採用時MSE0.001495は更新前の0.001183より高く，復元誤差が改善したとは言えません．[実測集計](reports/cbramod_ssl_pretraining.aggregate.json)に全epochと選択根拠があります．LLMとの同条件alignmentも30epochs・390steps・432.709秒で完走し，UniBaの5条件評価を終えました．fusedの3-class balanced accuracyは34.20%で，更新前35.09%を上回りませんでした．別施設ITUの評価，全成果物509件の回収，M1での試用まで完了しました．SSL50,340秒とalignment末尾400秒の原記録区間を照合し，重複3秒を除いた実学習入力は50,737秒＝14.093611時間です．[完了した学習・実機検証](model/CBRAMOD_SSL_COMPLETED_RESULTS.md)と[完了時の入力区間集計](reports/ssl_alignment_completed_train_interval_union.json)に根拠を保存しています．この時間は取得原記録136.44時間やepoch反復提示とは異なります．
 
 UniBaのBIDS V表記とBrainVision headerの0.1µV表記は，公開されたMNE-BIDS／pybvの通常の保存処理でも生じる組み合わせです．表記差だけで尺度の誤りとは判断できません．元のXDFと機器の校正情報がないため，入力段階の単位と極端な公称振幅の由来は未確認です．[出力コードまで追跡した追加監査](reports/uniba_amplitude_provenance_20261122_v1/README.md)に，確認できた変換と残る不足を記載しています．
 
@@ -137,15 +142,18 @@ UniBa は 34 記録中 32 記録，28.58953451 時間が時刻同期検査に通
 
 ### 別施設 ITU での完了した評価
 
-固定した3モデルの5条件と，学習済み履歴4モデルの計19条件を，各630例で評価・回収・独立再検証しました．ITUでの追加学習，閾値の調整，保存済み履歴モデルの再fitはありません．
+元3モデルの保存済み5条件へ新しいSSLモデルの5条件を追加し，履歴4モデルも含む計24条件・各630例を回収・独立再検証しました．元19条件の再推論は行っていません．ITUでの追加学習，閾値の調整，保存済み履歴モデルの再fitはありません．
 
 | 固定したモデルの fused 条件 | 3-class BA | AI送信 AUROC［参加者95%CI］ | 固定0.5で検出したAI送信 |
 | --- | ---: | ---: | ---: |
 | Smol1.7B | 34.52% | 0.5594［0.5143，0.6071］ | 0／126 |
 | Qwen8B | 36.11% | 0.5342［0.4706，0.5995］ | 0／126 |
 | CBraMod＋Smol1.7B | 34.13% | 0.5159［0.4592，0.5721］ | 7／126 |
+| 追加EEG学習CBraMod＋Smol1.7B | 38.10% | 0.5997［0.5449，0.6547］ | 38／126 |
 
-各モデルの fused minus context-only／shuffle／−10秒という計9比較のAI AUROC差は，全て95%区間に0を含みました．UniBaで見えたCBraModのEEG整列の信号は，この外部評価で再現を確認できませんでした．EEGを使わない履歴対照のAUROCは，EEG窓開始前の履歴で0.7239，判断直前までの履歴で0.8352でした．これらを超えるEEGの実用的な追加効果は未実証です．[外部評価の全結果と限界](benchmark/ITU_EXTERNAL_THREE_MODEL_RESULTS.md)，[全19条件の独立完了監査](benchmark/itu_external_completion_audit.json) に記録しています．
+新しいSSLモデルのAI AUROCは，旧CBraModとの差が+0.0838［対応付き95%CI +0.0056〜+0.1514］でした．一方，shuffleとの差+0.0868［−0.0010〜+0.1804］，−10秒との差+0.0381［−0.0091〜+0.0836］は0を含みます．UniBaでの追加SSL前後のAUROC差も+0.0098［−0.0503〜+0.0781］で，安定した利益はまだ確認できません．先行結果を見た後の探索比較であり，単一学習・多重比較未補正という範囲です．
+
+新モデルの固定0.5判定は，AI送信38/126件の検出と非送信102/504件の誤検出で，この濃縮標本内の適合率は27.14%でした．3class最大確率0.8以上で採用した111/630件の正解は46/111＝41.44%です．EEGなしの操作履歴はAUROC0.7239〜0.8352で，新モデルを上回りました．AUROCは順位づけの指標で，作業の完了率や校正済みの意図確率ではありません．[両施設の24条件比較と限界](benchmark/SSL_FOURTH_MODEL_RESULTS.md)，[第4外部モデルを含む独立完了監査](benchmark/itu_external_ssl_completion_audit.json)を参照してください．旧3モデルの数値・報告も保全しています．
 
 先行する互換性確認では，公式 CBraMod の source／weights を固定し，M1 の CPU 上で実 train EEG 3 窓を通しました．約 19.8 MB の weights，2 CPU threads の 3 例 batch が 0.033 秒で完了しています．この数値は encoder 単体の資源確認で，LLM と結合した推論時間や解読性能は表していません．[単体実測 JSON](reports/cbramod_cpu_capacity_probe.json) と，その後に実行した上記結合学習を区別してください．
 
@@ -153,7 +161,7 @@ UniBa は 34 記録中 32 記録，28.58953451 時間が時刻同期検査に通
 
 AI-assisted coding の公開 EEG は offline filter 済みです．公開 export recipe を再構成すると未来側の support は条件付きで 4.125 秒です．窓終端からイベントまで 4.5 秒＋時計誤差を確保しても，feature の可用時点からイベントまでは最低 0.375 秒です．配布 binary と recipe の同一性，元 XDF，online causality は未確認です．M1 の validation candidate scoring は約 1 秒であり，この名目 lead を満たすオンライン動作は実証できていません．
 
-Colab は workstation の既存 CLI を経由しています．SFC VPN は接続でき，smac19 は DNS／SSH 到達まで確認しましたが，smac19／smac31 の SSH 認証は未成立です．11:45〜11:48 JSTのユーザー再承認後には実際のパスワード入力まで進めましたが，既存設定・過去の接続履歴のログイン指定とも認証は成立しませんでした．現在の障害は承認ではなく，SSHの認証情報またはサーバー側のアクセス設定です．今回 Mac cluster への計算投入はできていません．学習・推論が実証できた実機は workstation M1 と Colab L4 です．
+Colabはworkstationの既存CLIを経由して使用し，全成果物回収後の12:26:40 JSTに所有sessionを正常停止しました．SFC VPN は接続でき，smac19 は DNS／SSH 到達まで確認しましたが，smac19／smac31 の SSH 認証は未成立です．11:45〜11:48 JSTのユーザー再承認後には実際のパスワード入力まで進めましたが，既存設定・過去の接続履歴のログイン指定とも認証は成立しませんでした．現在の障害は承認ではなく，SSHの認証情報またはサーバー側のアクセス設定です．今回 Mac cluster への計算投入はできていません．学習・推論が実証できた実機は workstation M1 と Colab L4 です．
 
 workstation の取得は空き容量 35 GiB を残して進めます．Colab からの大きな保全コピーは，CLI の一括メモリ使用を避けるため，64 MiB ごとの SHA 検証・再開可能な転送にしました．保全コピーは新しい取得データ量へ加算しません．Dataverse の必須 Guestbook 応答がある 342 files は `access_action_required` として保持しています．
 
@@ -166,6 +174,21 @@ uv venv --python 3.12 .venv-xavier
 uv pip install --python .venv-xavier/bin/python -e '.[server,dev]'
 uv pip install --python .venv-xavier/bin/python -r experiments/pj_xavier/model/requirements.txt
 ```
+
+### 追加EEG学習済みモデルの実機試用
+
+追加学習したencoderとLLM接続部も，workstationのM1上で試用を完了しました．事前に固定した同じtrain3例を読み，予測は3例とも観測ラベルと一致しましたが，汎化性能の証拠にはしません．routerは具体的意図が未対応のため全件を保留し，OS操作・cloud agent呼出しは0です．MPS driverの観測最大は4.31GB，quota8GiBで動作しました．瞬間最大メモリやオンライン全工程の遅延は未確定です．
+
+正worktreeのルートで，未使用の出力名を指定して実行できます．このユーザー向け出力先は未実行です．
+
+```bash
+.venv-xavier/bin/python experiments/pj_xavier/integration/try_cbramod_ssl_recorded_eeg.py \
+  --contract private/xavier/demos/cbramod_ssl_train_demo_contract_v1.json \
+  --expected-contract-sha256 bde21873e6c0c2c173658eae47f4ce7f38d5be8575944dcf2ce7cf08365797cb \
+  --output-dir private/xavier/demos/cbramod_ssl_train_trial_user_01
+```
+
+[実行方法・検証条件](integration/README_TRY_CBRAMOD_SSL_RECORDED_EEG.md)と[実試用の記録](reports/cbramod_ssl_recorded_eeg_demo_20261122_v1/README.md)を保存しています．モデル本体とEEGはworkstationのprivateディレクトリに保持しており，公開コードだけのcloneでは実験成果物が不足します．
 
 ### CBraMod＋Smol の実機試用
 

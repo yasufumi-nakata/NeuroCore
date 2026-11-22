@@ -1,0 +1,100 @@
+{
+  "schema": "pj-xavier-acquired-progress-v1",
+  "locations": [
+    {
+      "location": "workstation_bulk",
+      "observed_started_utc": "2026-11-22T03:28:15.083471+00:00",
+      "observed_finished_utc": "2026-11-22T03:28:21.359749+00:00",
+      "ledger_rows": 468040,
+      "ledger_snapshot_sha256": "90395a7b001f144ff6902620966c4ba0f850f741d980a8ced832dd8614ba81cc",
+      "ledger_status_counts": {
+        "queued": 467640,
+        "access_action_required": 342,
+        "complete": 16,
+        "retry": 3,
+        "metadata_blocked": 38,
+        "running": 1
+      },
+      "complete_file_copies": 16,
+      "complete_file_copy_bytes": 3348369667,
+      "partial_file_copies": 3,
+      "partial_observed_bytes": 19442311408,
+      "held_file_count": 0,
+      "sha256_reverified": false
+    },
+    {
+      "location": "workstation_colab_raw_archive",
+      "observed_started_utc": "2026-11-22T03:28:21.362858+00:00",
+      "observed_finished_utc": "2026-11-22T03:28:21.366248+00:00",
+      "ledger_rows": 23,
+      "ledger_snapshot_sha256": "71ffcfbb697817f5c64d1623535f3dd2594b0ed7520a4efbe467be53d58f6ddc",
+      "ledger_status_counts": {
+        "complete": 23
+      },
+      "complete_file_copies": 23,
+      "complete_file_copy_bytes": 11221153522,
+      "partial_file_copies": 0,
+      "partial_observed_bytes": 0,
+      "held_file_count": 0,
+      "sha256_reverified": false
+    },
+    {
+      "location": "workstation_eegmmidb",
+      "observed_started_utc": "2026-11-22T03:28:21.368588+00:00",
+      "observed_finished_utc": "2026-11-22T03:28:21.371567+00:00",
+      "ledger_rows": 1,
+      "ledger_snapshot_sha256": "49e24dc0d0e0eb515992a5119663618602f7e14dac7d24daf0d0dc6a7b1d910a",
+      "ledger_status_counts": {
+        "complete": 1
+      },
+      "complete_file_copies": 1,
+      "complete_file_copy_bytes": 1997435063,
+      "partial_file_copies": 0,
+      "partial_observed_bytes": 0,
+      "held_file_count": 0,
+      "sha256_reverified": false
+    }
+  ],
+  "completed_file_copies": 40,
+  "completed_file_copy_bytes": 16566958252,
+  "completed_unique_sha256_contents": 40,
+  "completed_unique_sha256_bytes": 16566958252,
+  "deduplication": "Identical complete file content SHA-256 is counted once across all supplied ledgers.",
+  "interpretation": "Acquired release payload bytes, including multimodal sidecars. This is not pure EEG bytes, unique recordings, or all catalog data.",
+  "known_deduplication_limits": [
+    "Different raw/filtered exports can have different hashes for the same recording.",
+    "Archives are not compared with their extracted members.",
+    "Replica archives outside the selected acquisition ledgers are omitted."
+  ],
+  "recording_hours": null,
+  "hours_reason": "Requires independent header and recording-identity audits; never inferred from bytes.",
+  "all_catalog_files_downloaded": false,
+  "observation_scope": "Fresh workstation acquisition ledgers and all23locally preserved Colab raw files; ephemeral remote replicas and model/derived archives are not added.",
+  "integrity_refresh": {
+    "whole_existing_raw_corpus_rehashed_again": false,
+    "new_bulk_complete_contents_rehashed": 0,
+    "new_bulk_complete_bytes_rehashed": 0,
+    "EEGMMIDB_full_archive_and_all_members_freshly_verified": true,
+    "EEGMMIDB_audit_summary_sha256": "015cc62aaa5f206086cd7c2ba360a18ff5745f6a7b7f4fbaf546bd8214809097",
+    "controller_preserved_file_stat_identities_checked": 23,
+    "original_003_fullhash_snapshots_referenced": true
+  },
+  "private_snapshot_hashes": {
+    "workstation_004.json": "64787e9c55439129f471eb2191fd8dfc0836035b6914ba5c8d103cc3d0b32048",
+    "preserved_colab_raw_004.json": "729a4fcb5098b2e50f6ae7f01d9a19fa1324220690e0ba25166a57d11e5c66cf",
+    "eegmmidb_004.json": "73a63a0f952939296fe419274f6c0388f5367837c71ca3cd879b72897d22cc9f"
+  },
+  "capacity_observation": {
+    "observed_utc": "2026-11-22T03:28:21.372681+00:00",
+    "free_disk_bytes": 57038569472,
+    "reserved_minimum_bytes": 37580963840,
+    "partials_are_not_verified_downloads": true
+  },
+  "bulk_candidate_manifest": {
+    "file_jobs": 468040,
+    "known_whole_file_bytes": 15821047310466,
+    "unknown_size_jobs": 38,
+    "release_storage_keys": 609,
+    "scope": "candidate release files include non-EEG modalities and archives with unverified contents; not downloaded bytes"
+  }
+}

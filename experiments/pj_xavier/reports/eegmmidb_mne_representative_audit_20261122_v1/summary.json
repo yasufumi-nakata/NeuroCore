@@ -1,0 +1,660 @@
+{
+  "schema": "xavier-eegmmidb-MNE-representative-result-v1",
+  "status": "representative_parsers_agree_with_documented_raw_attachment_behavior",
+  "protocol_sha256": "b1a31da1cc5dff3e3909db278dfd18965e5e52b8a04809a7c5191ec2589171b1",
+  "private_detail_sha256": "4b7769d53c142690963cf3da992556da3317a4ed662a2f030c4ce7134a7ba7eb",
+  "source_sha256": {
+    "archive": "0ff5f7f38d1d14b8e485581ad4cf5b327e6494bc2ac7c7d7d4f7e9518a950cbe",
+    "recordings": "51b801d07876ae185bd6f6d0bc465769b68d6265cf5ab9356e9ab4ff896ebea2",
+    "members": "c291d869f76749f0e8882e940aafaa5caf7b18358497728d4323f60ebba7d76c",
+    "summary": "015cc62aaa5f206086cd7c2ba360a18ff5745f6a7b7f4fbaf546bd8214809097",
+    "review": "bc6105f2781d1967d9ad0843aea8569c74f4d1ae52c4933cba898da0dafb7d4d"
+  },
+  "source_hashes_rechecked_after_audit": true,
+  "MNE_version": "1.13.2",
+  "records_checked": 9,
+  "full_source_recordings": 1526,
+  "header_agreements": 9,
+  "standalone_annotation_agreements": 9,
+  "raw_attachment_exact_agreements": 8,
+  "raw_attachment_duration_clip_records": 1,
+  "unexplained_reader_difference_records": 0,
+  "waveform_preloads": 0,
+  "model_forward_calls": 0,
+  "label_corrections": 0,
+  "new_training_eligibility_granted": false,
+  "existing_quantity_or_model_reports_modified": false,
+  "all_owned_temporary_directories_removed": true,
+  "elapsed_seconds": 3.1336203750688583,
+  "records": [
+    {
+      "member": "S001/S001R01.edf",
+      "member_sha256": "4743b736131a7e147c150e8b37711029b6cda5e356c4b3e8261a03cdcaaf8b0c",
+      "member_bytes": 1275936,
+      "selection_reasons": [
+        "lexicographically first clean 160 Hz eyes-open baseline"
+      ],
+      "MNE_raw_header": {
+        "n_times": 9760,
+        "sample_rate_hz": 160.0,
+        "duration_seconds": 61.0,
+        "channel_count": 64,
+        "preload": false
+      },
+      "header_agreement": true,
+      "native_vs_standalone": {
+        "agrees_within_tolerance": true,
+        "expected_count": 1,
+        "observed_count": 1,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "native_vs_raw_attached": {
+        "agrees_within_tolerance": true,
+        "expected_count": 1,
+        "observed_count": 1,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "raw_attachment_boundary_explanation": {
+        "all_differences_are_recording_end_duration_clips": false,
+        "changes": [],
+        "events_rewritten_by_this_audit": 0
+      },
+      "warnings": {
+        "read_annotations": [],
+        "read_raw_edf": []
+      },
+      "temporary_directory_removed": true,
+      "unexplained_reader_difference": false,
+      "native": {
+        "n_times": 9760,
+        "sample_rate_hz": 160.0,
+        "duration_seconds": 61.0,
+        "channel_count": 64,
+        "prior_annotation_errors": {},
+        "baseline_with_nonrest_code": false
+      },
+      "interval_counts": {
+        "native": {
+          "overlaps": 0,
+          "outside_recording": 0
+        },
+        "standalone_MNE": {
+          "overlaps": 0,
+          "outside_recording": 0
+        },
+        "raw_attached_MNE": {
+          "overlaps": 0,
+          "outside_recording": 0
+        }
+      }
+    },
+    {
+      "member": "S001/S001R04.edf",
+      "member_sha256": "3d161f88e1c00632585287d2ce584c2bc0f08862438eb255ea8723e00fac693d",
+      "member_bytes": 2596896,
+      "selection_reasons": [
+        "lexicographically first clean 160 Hz motor-imagery record"
+      ],
+      "MNE_raw_header": {
+        "n_times": 20000,
+        "sample_rate_hz": 160.0,
+        "duration_seconds": 125.0,
+        "channel_count": 64,
+        "preload": false
+      },
+      "header_agreement": true,
+      "native_vs_standalone": {
+        "agrees_within_tolerance": true,
+        "expected_count": 30,
+        "observed_count": 30,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "native_vs_raw_attached": {
+        "agrees_within_tolerance": true,
+        "expected_count": 30,
+        "observed_count": 30,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "raw_attachment_boundary_explanation": {
+        "all_differences_are_recording_end_duration_clips": false,
+        "changes": [],
+        "events_rewritten_by_this_audit": 0
+      },
+      "warnings": {
+        "read_annotations": [],
+        "read_raw_edf": []
+      },
+      "temporary_directory_removed": true,
+      "unexplained_reader_difference": false,
+      "native": {
+        "n_times": 20000,
+        "sample_rate_hz": 160.0,
+        "duration_seconds": 125.0,
+        "channel_count": 64,
+        "prior_annotation_errors": {},
+        "baseline_with_nonrest_code": false
+      },
+      "interval_counts": {
+        "native": {
+          "overlaps": 0,
+          "outside_recording": 0
+        },
+        "standalone_MNE": {
+          "overlaps": 0,
+          "outside_recording": 0
+        },
+        "raw_attached_MNE": {
+          "overlaps": 0,
+          "outside_recording": 0
+        }
+      }
+    },
+    {
+      "member": "S088/S088R03.edf",
+      "member_sha256": "95c2618922b253bb9faf4a565dc64bbd3b213347764aaf470661b5ea3755c241",
+      "member_bytes": 2064384,
+      "selection_reasons": [
+        "first 128 Hz record in prior affected group S088"
+      ],
+      "MNE_raw_header": {
+        "n_times": 15872,
+        "sample_rate_hz": 128.0,
+        "duration_seconds": 124.0,
+        "channel_count": 64,
+        "preload": false
+      },
+      "header_agreement": true,
+      "native_vs_standalone": {
+        "agrees_within_tolerance": true,
+        "expected_count": 38,
+        "observed_count": 38,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "native_vs_raw_attached": {
+        "agrees_within_tolerance": true,
+        "expected_count": 38,
+        "observed_count": 38,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "raw_attachment_boundary_explanation": {
+        "all_differences_are_recording_end_duration_clips": false,
+        "changes": [],
+        "events_rewritten_by_this_audit": 0
+      },
+      "warnings": {
+        "read_annotations": [],
+        "read_raw_edf": []
+      },
+      "temporary_directory_removed": true,
+      "unexplained_reader_difference": false,
+      "native": {
+        "n_times": 15872,
+        "sample_rate_hz": 128.0,
+        "duration_seconds": 124.0,
+        "channel_count": 64,
+        "prior_annotation_errors": {
+          "overlapping_annotation_intervals": 16
+        },
+        "baseline_with_nonrest_code": false
+      },
+      "interval_counts": {
+        "native": {
+          "overlaps": 16,
+          "outside_recording": 0
+        },
+        "standalone_MNE": {
+          "overlaps": 16,
+          "outside_recording": 0
+        },
+        "raw_attached_MNE": {
+          "overlaps": 16,
+          "outside_recording": 0
+        }
+      }
+    },
+    {
+      "member": "S089/S089R01.edf",
+      "member_sha256": "fa4c6f60949968c607bf5105f9c80ea1a786b5bf6b15737077a9f256af66bfa3",
+      "member_bytes": 1275936,
+      "selection_reasons": [
+        "all baseline records with non-T0 code"
+      ],
+      "MNE_raw_header": {
+        "n_times": 9760,
+        "sample_rate_hz": 160.0,
+        "duration_seconds": 61.0,
+        "channel_count": 64,
+        "preload": false
+      },
+      "header_agreement": true,
+      "native_vs_standalone": {
+        "agrees_within_tolerance": true,
+        "expected_count": 2,
+        "observed_count": 2,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "native_vs_raw_attached": {
+        "agrees_within_tolerance": true,
+        "expected_count": 2,
+        "observed_count": 2,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "raw_attachment_boundary_explanation": {
+        "all_differences_are_recording_end_duration_clips": false,
+        "changes": [],
+        "events_rewritten_by_this_audit": 0
+      },
+      "warnings": {
+        "read_annotations": [],
+        "read_raw_edf": []
+      },
+      "temporary_directory_removed": true,
+      "unexplained_reader_difference": false,
+      "native": {
+        "n_times": 9760,
+        "sample_rate_hz": 160.0,
+        "duration_seconds": 61.0,
+        "channel_count": 64,
+        "prior_annotation_errors": {},
+        "baseline_with_nonrest_code": true
+      },
+      "interval_counts": {
+        "native": {
+          "overlaps": 0,
+          "outside_recording": 0
+        },
+        "standalone_MNE": {
+          "overlaps": 0,
+          "outside_recording": 0
+        },
+        "raw_attached_MNE": {
+          "overlaps": 0,
+          "outside_recording": 0
+        }
+      }
+    },
+    {
+      "member": "S089/S089R02.edf",
+      "member_sha256": "44c5016ee50908df260c8adb6d195c44824787637b2537ee823efcabbc8cfac6",
+      "member_bytes": 1275936,
+      "selection_reasons": [
+        "all baseline records with non-T0 code"
+      ],
+      "MNE_raw_header": {
+        "n_times": 9760,
+        "sample_rate_hz": 160.0,
+        "duration_seconds": 61.0,
+        "channel_count": 64,
+        "preload": false
+      },
+      "header_agreement": true,
+      "native_vs_standalone": {
+        "agrees_within_tolerance": true,
+        "expected_count": 2,
+        "observed_count": 2,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "native_vs_raw_attached": {
+        "agrees_within_tolerance": true,
+        "expected_count": 2,
+        "observed_count": 2,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "raw_attachment_boundary_explanation": {
+        "all_differences_are_recording_end_duration_clips": false,
+        "changes": [],
+        "events_rewritten_by_this_audit": 0
+      },
+      "warnings": {
+        "read_annotations": [],
+        "read_raw_edf": []
+      },
+      "temporary_directory_removed": true,
+      "unexplained_reader_difference": false,
+      "native": {
+        "n_times": 9760,
+        "sample_rate_hz": 160.0,
+        "duration_seconds": 61.0,
+        "channel_count": 64,
+        "prior_annotation_errors": {},
+        "baseline_with_nonrest_code": true
+      },
+      "interval_counts": {
+        "native": {
+          "overlaps": 0,
+          "outside_recording": 0
+        },
+        "standalone_MNE": {
+          "overlaps": 0,
+          "outside_recording": 0
+        },
+        "raw_attached_MNE": {
+          "overlaps": 0,
+          "outside_recording": 0
+        }
+      }
+    },
+    {
+      "member": "S089/S089R03.edf",
+      "member_sha256": "0de49011384bfb26129a96a0ad2d4edf64f22eacfb523da12afb9889c324c0af",
+      "member_bytes": 3752736,
+      "selection_reasons": [
+        "first 160 Hz overlapping annotation in group S089"
+      ],
+      "MNE_raw_header": {
+        "n_times": 28960,
+        "sample_rate_hz": 160.0,
+        "duration_seconds": 181.0,
+        "channel_count": 64,
+        "preload": false
+      },
+      "header_agreement": true,
+      "native_vs_standalone": {
+        "agrees_within_tolerance": true,
+        "expected_count": 44,
+        "observed_count": 44,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "native_vs_raw_attached": {
+        "agrees_within_tolerance": true,
+        "expected_count": 44,
+        "observed_count": 44,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "raw_attachment_boundary_explanation": {
+        "all_differences_are_recording_end_duration_clips": false,
+        "changes": [],
+        "events_rewritten_by_this_audit": 0
+      },
+      "warnings": {
+        "read_annotations": [],
+        "read_raw_edf": []
+      },
+      "temporary_directory_removed": true,
+      "unexplained_reader_difference": false,
+      "native": {
+        "n_times": 28960,
+        "sample_rate_hz": 160.0,
+        "duration_seconds": 181.0,
+        "channel_count": 64,
+        "prior_annotation_errors": {
+          "overlapping_annotation_intervals": 9
+        },
+        "baseline_with_nonrest_code": false
+      },
+      "interval_counts": {
+        "native": {
+          "overlaps": 9,
+          "outside_recording": 0
+        },
+        "standalone_MNE": {
+          "overlaps": 9,
+          "outside_recording": 0
+        },
+        "raw_attached_MNE": {
+          "overlaps": 9,
+          "outside_recording": 0
+        }
+      }
+    },
+    {
+      "member": "S092/S092R03.edf",
+      "member_sha256": "7131a3198f80a3a770ee2396e8792f644fe9ee520edb632edcec921fc9a57c69",
+      "member_bytes": 2064384,
+      "selection_reasons": [
+        "first 128 Hz record in prior affected group S092"
+      ],
+      "MNE_raw_header": {
+        "n_times": 15872,
+        "sample_rate_hz": 128.0,
+        "duration_seconds": 124.0,
+        "channel_count": 64,
+        "preload": false
+      },
+      "header_agreement": true,
+      "native_vs_standalone": {
+        "agrees_within_tolerance": true,
+        "expected_count": 38,
+        "observed_count": 38,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "native_vs_raw_attached": {
+        "agrees_within_tolerance": true,
+        "expected_count": 38,
+        "observed_count": 38,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "raw_attachment_boundary_explanation": {
+        "all_differences_are_recording_end_duration_clips": false,
+        "changes": [],
+        "events_rewritten_by_this_audit": 0
+      },
+      "warnings": {
+        "read_annotations": [],
+        "read_raw_edf": []
+      },
+      "temporary_directory_removed": true,
+      "unexplained_reader_difference": false,
+      "native": {
+        "n_times": 15872,
+        "sample_rate_hz": 128.0,
+        "duration_seconds": 124.0,
+        "channel_count": 64,
+        "prior_annotation_errors": {
+          "overlapping_annotation_intervals": 16
+        },
+        "baseline_with_nonrest_code": false
+      },
+      "interval_counts": {
+        "native": {
+          "overlaps": 16,
+          "outside_recording": 0
+        },
+        "standalone_MNE": {
+          "overlaps": 16,
+          "outside_recording": 0
+        },
+        "raw_attached_MNE": {
+          "overlaps": 16,
+          "outside_recording": 0
+        }
+      }
+    },
+    {
+      "member": "S100/S100R03.edf",
+      "member_sha256": "1498da5c347ddbade9c693f68063d3fbe244dddb6fc73bcbbb16331d05a0e9a9",
+      "member_bytes": 2047872,
+      "selection_reasons": [
+        "first 128 Hz record in prior affected group S100",
+        "first out-of-range annotation in group S100"
+      ],
+      "MNE_raw_header": {
+        "n_times": 15744,
+        "sample_rate_hz": 128.0,
+        "duration_seconds": 123.0,
+        "channel_count": 64,
+        "preload": false
+      },
+      "header_agreement": true,
+      "native_vs_standalone": {
+        "agrees_within_tolerance": true,
+        "expected_count": 24,
+        "observed_count": 24,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "native_vs_raw_attached": {
+        "agrees_within_tolerance": false,
+        "expected_count": 24,
+        "observed_count": 24,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.025000000000000355,
+        "differences": [
+          {
+            "index": 23,
+            "expected": {
+              "onset_seconds": 117.9,
+              "duration_seconds": 5.125,
+              "code": "T1"
+            },
+            "observed": {
+              "onset_seconds": 117.9,
+              "duration_seconds": 5.1,
+              "code": "T1"
+            }
+          }
+        ]
+      },
+      "raw_attachment_boundary_explanation": {
+        "all_differences_are_recording_end_duration_clips": true,
+        "changes": [
+          {
+            "index": 23,
+            "observed_duration_change_seconds": -0.025000000000000355,
+            "native_end_seconds": 123.025,
+            "raw_attached_end_seconds": 123.0,
+            "matches_recording_bound": true
+          }
+        ],
+        "events_rewritten_by_this_audit": 0
+      },
+      "warnings": {
+        "read_annotations": [],
+        "read_raw_edf": [
+          {
+            "category": "RuntimeWarning",
+            "message": "Limited 1 annotation(s) that were expanding outside the data range."
+          }
+        ]
+      },
+      "temporary_directory_removed": true,
+      "unexplained_reader_difference": false,
+      "native": {
+        "n_times": 15744,
+        "sample_rate_hz": 128.0,
+        "duration_seconds": 123.0,
+        "channel_count": 64,
+        "prior_annotation_errors": {
+          "annotation_outside_signal_duration": 1,
+          "overlapping_annotation_intervals": 11
+        },
+        "baseline_with_nonrest_code": false
+      },
+      "interval_counts": {
+        "native": {
+          "overlaps": 11,
+          "outside_recording": 1
+        },
+        "standalone_MNE": {
+          "overlaps": 11,
+          "outside_recording": 1
+        },
+        "raw_attached_MNE": {
+          "overlaps": 11,
+          "outside_recording": 0
+        }
+      }
+    },
+    {
+      "member": "S109/S109R14.edf",
+      "member_sha256": "40ff8875daf98e4614854d1bb6bdf97b85b386b9caddc0dc944414fec0d049fe",
+      "member_bytes": 2555616,
+      "selection_reasons": [
+        "lexicographically last clean 160 Hz record"
+      ],
+      "MNE_raw_header": {
+        "n_times": 19680,
+        "sample_rate_hz": 160.0,
+        "duration_seconds": 123.0,
+        "channel_count": 64,
+        "preload": false
+      },
+      "header_agreement": true,
+      "native_vs_standalone": {
+        "agrees_within_tolerance": true,
+        "expected_count": 30,
+        "observed_count": 30,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "native_vs_raw_attached": {
+        "agrees_within_tolerance": true,
+        "expected_count": 30,
+        "observed_count": 30,
+        "max_onset_error_seconds": 0.0,
+        "max_duration_error_seconds": 0.0,
+        "differences": []
+      },
+      "raw_attachment_boundary_explanation": {
+        "all_differences_are_recording_end_duration_clips": false,
+        "changes": [],
+        "events_rewritten_by_this_audit": 0
+      },
+      "warnings": {
+        "read_annotations": [],
+        "read_raw_edf": []
+      },
+      "temporary_directory_removed": true,
+      "unexplained_reader_difference": false,
+      "native": {
+        "n_times": 19680,
+        "sample_rate_hz": 160.0,
+        "duration_seconds": 123.0,
+        "channel_count": 64,
+        "prior_annotation_errors": {},
+        "baseline_with_nonrest_code": false
+      },
+      "interval_counts": {
+        "native": {
+          "overlaps": 0,
+          "outside_recording": 0
+        },
+        "standalone_MNE": {
+          "overlaps": 0,
+          "outside_recording": 0
+        },
+        "raw_attached_MNE": {
+          "overlaps": 0,
+          "outside_recording": 0
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Only deterministically selected representatives were checked by MNE; the native audit remains the separate whole-dataset quantity record.",
+    "Reader agreement does not establish biological signal quality, label correctness, channel wiring or online control capability.",
+    "128 Hz is an observed header value. Every selected 128 Hz source belongs to a prior overlap-flagged group; it is not certified as normal.",
+    "MNE Raw attachment can shorten a boundary-crossing annotation. The original standalone TAL interval and bytes are retained rather than silently corrected.",
+    "Baseline T1 remains an observed non-rest code under an unmapped semantic case; a parser match does not resolve its task meaning."
+  ]
+}

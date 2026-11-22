@@ -1,0 +1,1189 @@
+{
+  "schema": "xavier-cbramod-ssl-alignment-final-aggregate-v1",
+  "status": "SSL_alignment_both_sites_controls_strict_recovered_M1_completed_agent_goal_unproven",
+  "model_source_sha256": "f246128e909d3581168fbda7a5d062dc31491f27e96b6cae999579795a04fe10",
+  "protocol_sha256": "ab3d9311d37cd5c96f41882a66b9631f3cd2fdf7923912efaf7bfaee7db19d3a",
+  "checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+  "checkpoint_bytes": 4966101,
+  "checkpoint_contents": "Projection, optimizer/RNG and immutable encoder/LLM provenance; adapted EEG and frozen LLM tensors are separate pinned dependencies.",
+  "SSL_weights_sha256": "0132c9372cbcff28ad36965de043f7b8190233e9faba8ce3ec02c2ae8c93f3e7",
+  "SSL_weights_bytes": 19763138,
+  "SSL_encoder_seal_sha256": "b5367f60bde3a3156d3edb47565fed29c5009edbdfcd515d2dc4c698df63f171",
+  "training": {
+    "status": "completed_epochs",
+    "epochs": 30,
+    "steps": 390,
+    "elapsed_seconds": 432.70863024200116,
+    "process_wall_seconds": 444.00941157341003,
+    "batch_size": 32,
+    "seed": 20261122,
+    "best_validation_epoch": 26,
+    "best_validation_balanced_accuracy": 0.42473118279569894,
+    "best_validation_confusion": [
+      [
+        8,
+        12,
+        11
+      ],
+      [
+        9,
+        34,
+        19
+      ],
+      [
+        5,
+        28,
+        29
+      ]
+    ],
+    "memory": {
+      "process_peak_rss_bytes": 4380045312,
+      "cuda_peak_allocated_bytes": 9130753024,
+      "cuda_peak_reserved_bytes": 9219080192
+    },
+    "memory_budget_gib": 21.0,
+    "trainable_parameters": 412048,
+    "frozen_eeg_encoder_parameters": 4883800,
+    "frozen_llm_parameters": 1711376384,
+    "epoch_history": [
+      {
+        "epoch": 1,
+        "global_step": 13,
+        "mean_train_classification_loss": 1.1552556707308843,
+        "validation_balanced_accuracy": 0.3387096774193548,
+        "validation_categorical_nll": 1.1055190563201904
+      },
+      {
+        "epoch": 2,
+        "global_step": 26,
+        "mean_train_classification_loss": 1.1053723188546987,
+        "validation_balanced_accuracy": 0.3709677419354838,
+        "validation_categorical_nll": 1.045898199081421
+      },
+      {
+        "epoch": 3,
+        "global_step": 39,
+        "mean_train_classification_loss": 1.0304669462717497,
+        "validation_balanced_accuracy": 0.3494623655913978,
+        "validation_categorical_nll": 1.072615623474121
+      },
+      {
+        "epoch": 4,
+        "global_step": 52,
+        "mean_train_classification_loss": 0.9984288719984201,
+        "validation_balanced_accuracy": 0.3225806451612903,
+        "validation_categorical_nll": 1.0633054971694946
+      },
+      {
+        "epoch": 5,
+        "global_step": 65,
+        "mean_train_classification_loss": 1.0302952436300425,
+        "validation_balanced_accuracy": 0.3440860215053763,
+        "validation_categorical_nll": 1.0589483976364136
+      },
+      {
+        "epoch": 6,
+        "global_step": 78,
+        "mean_train_classification_loss": 1.011032196191641,
+        "validation_balanced_accuracy": 0.3118279569892473,
+        "validation_categorical_nll": 1.1237789392471313
+      },
+      {
+        "epoch": 7,
+        "global_step": 91,
+        "mean_train_classification_loss": 0.9882619518500108,
+        "validation_balanced_accuracy": 0.3602150537634408,
+        "validation_categorical_nll": 1.0754631757736206
+      },
+      {
+        "epoch": 8,
+        "global_step": 104,
+        "mean_train_classification_loss": 1.0360933129604046,
+        "validation_balanced_accuracy": 0.41397849462365593,
+        "validation_categorical_nll": 1.0617663860321045
+      },
+      {
+        "epoch": 9,
+        "global_step": 117,
+        "mean_train_classification_loss": 1.0219803406642034,
+        "validation_balanced_accuracy": 0.3279569892473118,
+        "validation_categorical_nll": 1.263440728187561
+      },
+      {
+        "epoch": 10,
+        "global_step": 130,
+        "mean_train_classification_loss": 1.4104117384323707,
+        "validation_balanced_accuracy": 0.36021505376344093,
+        "validation_categorical_nll": 1.232035756111145
+      },
+      {
+        "epoch": 11,
+        "global_step": 143,
+        "mean_train_classification_loss": 1.1274827260237474,
+        "validation_balanced_accuracy": 0.3548387096774193,
+        "validation_categorical_nll": 1.1238642930984497
+      },
+      {
+        "epoch": 12,
+        "global_step": 156,
+        "mean_train_classification_loss": 1.0316696075292735,
+        "validation_balanced_accuracy": 0.3602150537634408,
+        "validation_categorical_nll": 1.1016407012939453
+      },
+      {
+        "epoch": 13,
+        "global_step": 169,
+        "mean_train_classification_loss": 1.040196180343628,
+        "validation_balanced_accuracy": 0.3440860215053763,
+        "validation_categorical_nll": 1.1096714735031128
+      },
+      {
+        "epoch": 14,
+        "global_step": 182,
+        "mean_train_classification_loss": 1.0193095115514903,
+        "validation_balanced_accuracy": 0.3494623655913978,
+        "validation_categorical_nll": 1.1521652936935425
+      },
+      {
+        "epoch": 15,
+        "global_step": 195,
+        "mean_train_classification_loss": 1.0051126250853906,
+        "validation_balanced_accuracy": 0.3709677419354838,
+        "validation_categorical_nll": 1.0706989765167236
+      },
+      {
+        "epoch": 16,
+        "global_step": 208,
+        "mean_train_classification_loss": 0.9633166698309091,
+        "validation_balanced_accuracy": 0.3333333333333333,
+        "validation_categorical_nll": 1.1782679557800293
+      },
+      {
+        "epoch": 17,
+        "global_step": 221,
+        "mean_train_classification_loss": 0.9447482824325562,
+        "validation_balanced_accuracy": 0.3548387096774193,
+        "validation_categorical_nll": 1.2031415700912476
+      },
+      {
+        "epoch": 18,
+        "global_step": 234,
+        "mean_train_classification_loss": 0.9331523821904109,
+        "validation_balanced_accuracy": 0.3817204301075268,
+        "validation_categorical_nll": 1.2046183347702026
+      },
+      {
+        "epoch": 19,
+        "global_step": 247,
+        "mean_train_classification_loss": 0.9008273619871873,
+        "validation_balanced_accuracy": 0.3548387096774193,
+        "validation_categorical_nll": 1.2119165658950806
+      },
+      {
+        "epoch": 20,
+        "global_step": 260,
+        "mean_train_classification_loss": 0.8980876940947312,
+        "validation_balanced_accuracy": 0.3440860215053763,
+        "validation_categorical_nll": 1.1577211618423462
+      },
+      {
+        "epoch": 21,
+        "global_step": 273,
+        "mean_train_classification_loss": 0.8520662509478055,
+        "validation_balanced_accuracy": 0.3763440860215053,
+        "validation_categorical_nll": 1.1778409481048584
+      },
+      {
+        "epoch": 22,
+        "global_step": 286,
+        "mean_train_classification_loss": 0.8627719145554763,
+        "validation_balanced_accuracy": 0.3279569892473118,
+        "validation_categorical_nll": 1.284472107887268
+      },
+      {
+        "epoch": 23,
+        "global_step": 299,
+        "mean_train_classification_loss": 0.8206024169921875,
+        "validation_balanced_accuracy": 0.41397849462365593,
+        "validation_categorical_nll": 1.288134217262268
+      },
+      {
+        "epoch": 24,
+        "global_step": 312,
+        "mean_train_classification_loss": 0.8110252618789673,
+        "validation_balanced_accuracy": 0.3333333333333333,
+        "validation_categorical_nll": 1.2889764308929443
+      },
+      {
+        "epoch": 25,
+        "global_step": 325,
+        "mean_train_classification_loss": 0.7337417510839609,
+        "validation_balanced_accuracy": 0.3602150537634408,
+        "validation_categorical_nll": 1.447411298751831
+      },
+      {
+        "epoch": 26,
+        "global_step": 338,
+        "mean_train_classification_loss": 0.7268062509023226,
+        "validation_balanced_accuracy": 0.42473118279569894,
+        "validation_categorical_nll": 1.3307818174362183
+      },
+      {
+        "epoch": 27,
+        "global_step": 351,
+        "mean_train_classification_loss": 0.6455246026699359,
+        "validation_balanced_accuracy": 0.3978494623655913,
+        "validation_categorical_nll": 1.4059158563613892
+      },
+      {
+        "epoch": 28,
+        "global_step": 364,
+        "mean_train_classification_loss": 0.5931088947332822,
+        "validation_balanced_accuracy": 0.3118279569892473,
+        "validation_categorical_nll": 1.6200711727142334
+      },
+      {
+        "epoch": 29,
+        "global_step": 377,
+        "mean_train_classification_loss": 0.551000313116954,
+        "validation_balanced_accuracy": 0.3924731182795698,
+        "validation_categorical_nll": 1.4489030838012695
+      },
+      {
+        "epoch": 30,
+        "global_step": 390,
+        "mean_train_classification_loss": 0.5072454466269567,
+        "validation_balanced_accuracy": 0.3817204301075268,
+        "validation_categorical_nll": 1.5767565965652466
+      }
+    ],
+    "history_sha256": "b6cdc2d32dc84ba20cb11bca3ae527b328721df0f61a1f2622a0a7134752972a"
+  },
+  "input_quantity": {
+    "schema": "xavier-completed-cross-stage-trained-input-union-v1",
+    "status": "completed_checkpoints_and_membership_verified",
+    "source_key": "original raw binary SHA256 plus intervals",
+    "SSL_unique_seconds": 50340.0,
+    "alignment_latest_second_unique_seconds": 400.0,
+    "cross_stage_overlap_seconds": 3.0,
+    "combined_unique_seconds": 50737.0,
+    "combined_unique_hours": 14.09361111111111,
+    "SSL_training_windows": 1678,
+    "alignment_training_windows": 400,
+    "SSL_selected_epoch": 8,
+    "alignment_selected_epoch": 26,
+    "SSL_whole_job_epochs": 10,
+    "alignment_whole_job_epochs": 30,
+    "SSL_job_repeated_seconds": 503400,
+    "SSL_selected_encoder_repeated_seconds": 402720,
+    "alignment_job_repeated_seconds": 12000,
+    "alignment_selected_checkpoint_repeated_seconds": 10400,
+    "evidence": {
+      "prior_fixed_cohort_union_sha256": "e237accac7f24e7093d404a8fbe626f885eb858052d1a48178d04327bdd17698",
+      "SSL_manifest_sha256": "216729840806ca20040331baf59ddeadea4e62bc48a19a57c183810e13dd9043",
+      "alignment_manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+      "SSL_best_checkpoint_sha256": "ea598a3fc91e0b260ee6a3f44e0a303a02bb3de63b8c3f009b13d47563fce55a",
+      "alignment_best_checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+      "SSL_membership_sha256": "1e3c2d0dc53e96913a6f94ccafc6c1c13d512796fe96731421ca476a71ffebeb",
+      "alignment_membership_sha256": "d0bfb2b1791b055cd9f8cf31608e697632aafb0abe544a4db7de5b67e3d07c14",
+      "SSL_encoder_seal_sha256": "b5367f60bde3a3156d3edb47565fed29c5009edbdfcd515d2dc4c698df63f171",
+      "alignment_history_sha256": "b6cdc2d32dc84ba20cb11bca3ae527b328721df0f61a1f2622a0a7134752972a",
+      "recovery_receipt_sha256": "17a0ccc353b7cfa2109dc4628b5cc5848fb5d8be785b1865897737896e44bf38"
+    },
+    "completion_basis": [
+      "Selected SSL checkpoint explicitly records all1678 seen training IDs; they equal the pinned corpus and membership.",
+      "Selected alignment checkpoint is a completed full epoch with next_batch_position400. The sealed deterministic source loop visits every fixed training ID once per complete epoch. This is cursor/source evidence, not a separately instrumented per-example input log.",
+      "All30 alignment history entries are completed full epochs with400 entries and13 updates; selected best is the first validation maximum and its checkpoint bytes match.",
+      "Recovery independently reverified166 SSL arrays and32 downstream arrays."
+    ],
+    "scope_notes": [
+      "Unique means union within each original binary source, not distinct anonymous physical people across releases.",
+      "Only gradient-training sources enter this union; reconstruction validation, model-selection validation, held-out EEG and epoch repetitions are excluded.",
+      "The3-second source overlap is counted once despite different window boundaries and resampling context. It is not processed-array byte identity.",
+      "Original upstream pretrained encoder/LLM exposure is outside this new-continuation accounting.",
+      "The prior planned-cohort union file remains unchanged."
+    ]
+  },
+  "SSL_reconstruction_comparison_to_official_initial": {
+    "metric": "same fixed-mask portable validation raw-sample MSE; lower is better",
+    "official_initial_checkpoint": 0.0011833986433372758,
+    "best_registered_trained_checkpoint": 0.001494813073512124,
+    "relative_increase_percent": 26.315260029083287,
+    "improved_over_official_initial": false,
+    "selection_policy": "The registered comparison selects among trained checkpoints; the unmodified original remains a separate baseline and was not silently substituted.",
+    "interpretation": "The additional SSL training completed, but validation reconstruction worsened relative to the official starting checkpoint. Downstream action/intent improvement must be assessed separately with the matched comparison."
+  },
+  "evaluation": {
+    "elapsed_seconds": 63.439574703999824,
+    "test_records": 203,
+    "test_subjects": 8,
+    "conditions": {
+      "fused": {
+        "n": 203,
+        "accuracy": 0.35467980295566504,
+        "balanced_accuracy": 0.3419845736918908,
+        "macro_f1": 0.3369421616055643,
+        "all_classes_present": true,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          39,
+          82,
+          82
+        ],
+        "confusion_matrix": [
+          [
+            11,
+            17,
+            11
+          ],
+          [
+            22,
+            23,
+            37
+          ],
+          [
+            14,
+            30,
+            38
+          ]
+        ],
+        "categorical_nll": 1.250303864479065,
+        "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+        "status": "measured",
+        "condition": "normal",
+        "latency_ms_p50": 47.543131999191246,
+        "latency_ms_p95": 48.966750499494076,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+        "abstain_threshold": 0.8,
+        "coverage": 0.10837438423645321,
+        "task_completion": null,
+        "false_actions_per_minute": null,
+        "candidate_forward_passes": 1,
+        "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+        "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods",
+        "variant": "fused",
+        "prediction_path": "/content/xavier/evaluations/cbramod_ssl_smollm2_uniba_v3_fiveconditions_v1/fused_predictions.jsonl",
+        "prediction_sha256": "1f0cd450f94e067e94ac40e272cb671752b2b8b9650ce312c51dc73c9aeb326b",
+        "checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+        "frozen_test_ids_sha256": "28bb49f3bd1c3129ca8bcb58b4126f49465d42bd5aeaa5aec2d05a69668cf374",
+        "ablation_scope": "same frozen fused checkpoint; no condition-specific optimization or model selection"
+      },
+      "context_only": {
+        "n": 203,
+        "accuracy": 0.1921182266009852,
+        "balanced_accuracy": 0.3333333333333333,
+        "macro_f1": 0.10743801652892561,
+        "all_classes_present": true,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          39,
+          82,
+          82
+        ],
+        "confusion_matrix": [
+          [
+            39,
+            0,
+            0
+          ],
+          [
+            82,
+            0,
+            0
+          ],
+          [
+            82,
+            0,
+            0
+          ]
+        ],
+        "categorical_nll": 1.316331386566162,
+        "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+        "status": "measured",
+        "condition": "normal",
+        "latency_ms_p50": 46.451869000520674,
+        "latency_ms_p95": 48.19479740017414,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+        "abstain_threshold": 0.8,
+        "coverage": 0.0,
+        "task_completion": null,
+        "false_actions_per_minute": null,
+        "candidate_forward_passes": 1,
+        "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+        "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods",
+        "variant": "context_only",
+        "prediction_path": "/content/xavier/evaluations/cbramod_ssl_smollm2_uniba_v3_fiveconditions_v1/context_only_predictions.jsonl",
+        "prediction_sha256": "63aca95d4e4455e349f21d36bf141f25d251bea572976aa26457f34de1ffabda",
+        "checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+        "frozen_test_ids_sha256": "28bb49f3bd1c3129ca8bcb58b4126f49465d42bd5aeaa5aec2d05a69668cf374",
+        "ablation_scope": "same frozen fused checkpoint; no condition-specific optimization or model selection"
+      },
+      "eeg_only": {
+        "n": 203,
+        "accuracy": 0.4088669950738916,
+        "balanced_accuracy": 0.35980821346675,
+        "macro_f1": 0.34981080888127364,
+        "all_classes_present": true,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          39,
+          82,
+          82
+        ],
+        "confusion_matrix": [
+          [
+            5,
+            27,
+            7
+          ],
+          [
+            9,
+            51,
+            22
+          ],
+          [
+            5,
+            50,
+            27
+          ]
+        ],
+        "categorical_nll": 1.3866209983825684,
+        "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+        "status": "measured",
+        "condition": "normal",
+        "latency_ms_p50": 47.86028700073075,
+        "latency_ms_p95": 50.922414101296454,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+        "abstain_threshold": 0.8,
+        "coverage": 0.2561576354679803,
+        "task_completion": null,
+        "false_actions_per_minute": null,
+        "candidate_forward_passes": 1,
+        "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+        "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods",
+        "variant": "eeg_only",
+        "prediction_path": "/content/xavier/evaluations/cbramod_ssl_smollm2_uniba_v3_fiveconditions_v1/eeg_only_predictions.jsonl",
+        "prediction_sha256": "bbe61e6670ab059422686ac2cae35b8bfac5dde5dcf812ed7a892aaf8b7e0186",
+        "checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+        "frozen_test_ids_sha256": "28bb49f3bd1c3129ca8bcb58b4126f49465d42bd5aeaa5aec2d05a69668cf374",
+        "ablation_scope": "same frozen fused checkpoint; no condition-specific optimization or model selection"
+      },
+      "eeg_shuffled": {
+        "n": 203,
+        "accuracy": 0.32019704433497537,
+        "balanced_accuracy": 0.29111944965603503,
+        "macro_f1": 0.29149856377357436,
+        "all_classes_present": true,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          39,
+          82,
+          82
+        ],
+        "confusion_matrix": [
+          [
+            6,
+            11,
+            22
+          ],
+          [
+            20,
+            28,
+            34
+          ],
+          [
+            17,
+            34,
+            31
+          ]
+        ],
+        "categorical_nll": 1.4294360876083374,
+        "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+        "status": "measured",
+        "condition": "shuffled_eeg",
+        "latency_ms_p50": 46.57136900095793,
+        "latency_ms_p95": 48.81072549997043,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+        "abstain_threshold": 0.8,
+        "coverage": 0.10837438423645321,
+        "task_completion": null,
+        "false_actions_per_minute": null,
+        "candidate_forward_passes": 1,
+        "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+        "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods",
+        "variant": "eeg_shuffled",
+        "prediction_path": "/content/xavier/evaluations/cbramod_ssl_smollm2_uniba_v3_fiveconditions_v1/eeg_shuffled_predictions.jsonl",
+        "prediction_sha256": "564422fb6ac69936b5da7adb6e3f145ea71f30b5133e786e996e60428f89945d",
+        "checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+        "frozen_test_ids_sha256": "28bb49f3bd1c3129ca8bcb58b4126f49465d42bd5aeaa5aec2d05a69668cf374",
+        "ablation_scope": "same frozen fused checkpoint; no condition-specific optimization or model selection"
+      },
+      "eeg_time_shifted": {
+        "n": 203,
+        "accuracy": 0.3793103448275862,
+        "balanced_accuracy": 0.3443819053575152,
+        "macro_f1": 0.34230531901764777,
+        "all_classes_present": true,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          39,
+          82,
+          82
+        ],
+        "confusion_matrix": [
+          [
+            7,
+            9,
+            23
+          ],
+          [
+            14,
+            29,
+            39
+          ],
+          [
+            13,
+            28,
+            41
+          ]
+        ],
+        "categorical_nll": 1.4288790225982666,
+        "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+        "status": "measured",
+        "condition": "normal",
+        "latency_ms_p50": 47.96471499867039,
+        "latency_ms_p95": 53.450912099106056,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+        "abstain_threshold": 0.8,
+        "coverage": 0.18719211822660098,
+        "task_completion": null,
+        "false_actions_per_minute": null,
+        "candidate_forward_passes": 1,
+        "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+        "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods",
+        "variant": "eeg_time_shifted",
+        "prediction_path": "/content/xavier/evaluations/cbramod_ssl_smollm2_uniba_v3_fiveconditions_v1/eeg_time_shifted_predictions.jsonl",
+        "prediction_sha256": "fc9414cb2ca0a45c10e721ee7b937d28f3fae2b4d63091a4e3309c6f86bee7d3",
+        "checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+        "frozen_test_ids_sha256": "28bb49f3bd1c3129ca8bcb58b4126f49465d42bd5aeaa5aec2d05a69668cf374",
+        "ablation_scope": "same frozen fused checkpoint; no condition-specific optimization or model selection"
+      }
+    },
+    "source_report_sha256": "1d15108458fd59e74d549b0d5857c923d0f9a00082944ab705589bdf6b95da9a",
+    "predictions_sha256": "7076f8cb824af584632ed19d3f5236cfc54299c3d1fe3760084e6d283610bbbc",
+    "memory": {
+      "process_peak_rss_bytes": 4404355072,
+      "cuda_peak_allocated_bytes": 3441674752,
+      "cuda_peak_reserved_bytes": 3466592256
+    },
+    "hardware": {
+      "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+      "machine": "x86_64",
+      "processor": "x86_64",
+      "device": "cuda",
+      "python": "3.13.16",
+      "torch": "2.14.1+cu130",
+      "transformers": "5.22.1",
+      "accelerator": "NVIDIA L4",
+      "accelerator_memory_bytes": 23659151360,
+      "system_memory_bytes": 56863301632,
+      "base_parameter_count": 1711376384,
+      "resolved_revision": "31b70e2e869a7173562077fd711b654946d38674",
+      "pretrained": true,
+      "estimated_weight_bytes": 3422752768,
+      "cbramod": {
+        "source_commit": "b9e961003214326972c567eff390e75b0287e32a",
+        "source_sha256": {
+          "models/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "models/cbramod.py": "caa7c5a0e4acd488a6f625b56f7b54dc4e7190d6b68ef5b76dff2cef86874a14",
+          "models/criss_cross_transformer.py": "90e90b8c98ca7eb543c44e32afc29674d3f71cb090692ad9f82db3a43edf334c"
+        },
+        "initial_weights_revision": "500543c7e30bda1b22bfd51a49301b238dee21fd",
+        "initial_weights_sha256": "0792cb808c14e6b7a2bb2ce1dff379bc47bc54c49a779825bdfeb33bf8157178",
+        "weights_sha256": "0132c9372cbcff28ad36965de043f7b8190233e9faba8ce3ec02c2ae8c93f3e7",
+        "ssl_encoder_seal": {
+          "schema": "xavier-selected-ssl-encoder-seal-v1",
+          "run_name": "cbramod_ssl_portable_uniba_v1",
+          "weights_sha256": "0132c9372cbcff28ad36965de043f7b8190233e9faba8ce3ec02c2ae8c93f3e7",
+          "weights_bytes": 19763138,
+          "ssl_best_checkpoint_sha256": "ea598a3fc91e0b260ee6a3f44e0a303a02bb3de63b8c3f009b13d47563fce55a",
+          "ssl_protocol_sha256": "9f264097ae6699fa4320e89afc26a5eac999bee0113788325c6001f6d249a8b0",
+          "ssl_source_sha256": "47f24f9429bdc9af9495b121c4bf2cbc94ce62dbeb6b1033eeff6a4a88fe60fd",
+          "ssl_manifest_sha256": "216729840806ca20040331baf59ddeadea4e62bc48a19a57c183810e13dd9043",
+          "ssl_source_allowlist_sha256": "e2c44f7135afa8a3d5a896d6ad7f8f335d418d77a34d2815497e1335ef736215",
+          "ssl_training_membership_sha256": "1e3c2d0dc53e96913a6f94ccafc6c1c13d512796fe96731421ca476a71ffebeb",
+          "ssl_run_summary_sha256": "364bd472e178685b22099fd04bfbefbeb31d0412e48eac7b2cb7b9c4328a3b2e",
+          "initial_weights_sha256": "0792cb808c14e6b7a2bb2ce1dff379bc47bc54c49a779825bdfeb33bf8157178",
+          "selection_partition": "portable_SSL_validation",
+          "updated_tensor_count": 210,
+          "selection_metric": "fixed-mask raw-sample MSE; earliest minimum",
+          "selected_epoch": 8,
+          "selected_global_step": 224,
+          "training_examples_presented_before_selection": 13424,
+          "unique_training_windows_before_selection": 1678,
+          "unique_training_seconds_before_selection": 50340,
+          "validation_mask_identity": "ID and seed fixed before training",
+          "downstream_test_source_used": false,
+          "itu_sources_used": 0,
+          "behavior_labels_used": 0,
+          "exclusion_scope": "This new continuation only; original upstream pretraining membership was not independently re-audited"
+        },
+        "encoder_device": "cpu",
+        "encoder_dtype": "float32",
+        "encoder_frozen": true
+      },
+      "core_source_sha256": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+      "candidate_scoring": "one forward; three restricted next-token logits",
+      "eeg_encoder_input_seconds": 1,
+      "source_window_seconds": 1.75
+    },
+    "allocator_limit": {
+      "kind": "cuda_allocator",
+      "fraction": 0.9530594720367856,
+      "allocator_limit_bytes": 22548578304,
+      "device_total_bytes": 23659151360,
+      "scope": "PyTorch CUDA allocator only; host RAM and external allocations are outside this quota"
+    },
+    "latency_isolated": false,
+    "latency_note": "Model-call includes CPU EEG and LLM but excludes array I/O, resampling, prompt tokenization and harness; shared machine."
+  },
+  "matched_before_after_SSL_comparison": {
+    "before_checkpoint_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
+    "before_model_source_sha256": "b0c397176f8cb9e6dd759ed7169c0029c870f756c501ce317c2e6c7c41f32505",
+    "alignment_hyperparameters_held_fixed": true,
+    "changed_component": "Frozen EEG encoder after registered masked EEG SSL; downstream checkpoint selected by same validation rule.",
+    "before_fused_balanced_accuracy": 0.3509485094850948,
+    "after_fused_balanced_accuracy": 0.3419845736918908,
+    "difference_after_minus_before": -0.008963935793204036,
+    "three_class_balanced_accuracy_improved": false,
+    "AI_ranking_paired_analysis": {
+      "status": "completed",
+      "UniBa_after_minus_before": {
+        "first": "cbramod_ssl_smol17b_30epochs::fused",
+        "second": "cbramod_smol17b_30epochs::fused",
+        "auroc_difference": 0.009849906191369717,
+        "lower_95": -0.050332635269678815,
+        "upper_95": 0.07808224271267096,
+        "valid_resamples": 1000,
+        "source_pair_first": "cbramod_smol17b_30epochs::fused",
+        "source_pair_second": "cbramod_ssl_smol17b_30epochs::fused",
+        "sign_reversed_to_show_requested_direction": true
+      },
+      "ITU_after_minus_before": {
+        "first": "cbramod_ssl_smollm_v3::fused",
+        "second": "cbramod_smollm_v3::fused",
+        "auroc_difference": 0.0837821239606954,
+        "lower_95": 0.005627442518038118,
+        "upper_95": 0.1514064745478437,
+        "valid_resamples": 1000,
+        "source_pair_first": "cbramod_smollm_v3::fused",
+        "source_pair_second": "cbramod_ssl_smollm_v3::fused",
+        "sign_reversed_to_show_requested_direction": true
+      },
+      "interpretation": "The paired fitted comparison is not uniformly improved: UniBa three-class BA is lower and AI AUROC difference CI includes zero; ITU AI AUROC difference is positive in an unadjusted exploratory comparison. Both ITU shuffled/shifted increments have CIs including zero, and history-only comparators rank better."
+    },
+    "scope": "One fitted pair at fixed seed; exploratory UniBa test reuse. Not a universal effect estimate."
+  },
+  "strict": {
+    "status": "evaluated_goal_unproven",
+    "report_sha256": "c404d1469a4207e3b7b557c056f1b3251599440c618cf69b9d38932fad1a1e28",
+    "integrity_errors": [],
+    "negative_controls": {
+      "eeg_shuffled": {
+        "status": "passed",
+        "records_checked": 203,
+        "issues": [],
+        "evidence_scope": "Consistency of logged source IDs and original recording times; not an independent rerun of model inputs."
+      },
+      "eeg_time_shifted": {
+        "status": "passed",
+        "records_checked": 203,
+        "issues": [],
+        "evidence_scope": "Actual raw extraction certificates were independently decoded and compared; original inputs were matched to checkpoint-sealed bytes. This is not prospective causal preprocessing."
+      }
+    },
+    "resource_feasibility": {
+      "status": "passed",
+      "reasons": [],
+      "measurement": {
+        "machine_id": "colab_l4_xavier",
+        "runtime": "torch 2.14.1+cu130; transformers 5.22.1",
+        "accelerator": "NVIDIA L4",
+        "measurement_mode": "actual",
+        "checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+        "hardware_compatible": true,
+        "inference_succeeded": true,
+        "target_environment_verified": true,
+        "target_environment_id": "colab_l4_xavier",
+        "hardware_evidence_sha256": "1d15108458fd59e74d549b0d5857c923d0f9a00082944ab705589bdf6b95da9a",
+        "hardware_evidence_path": "evaluations/cbramod_ssl_smollm2_uniba_v3_fiveconditions_v1/variant_evaluation_report.json",
+        "measurement_method": "actual frozen five-condition inference; PyTorch CUDA allocator peaks and CPU getrusage RSS high-water",
+        "peak_memory_bytes": 3466592256,
+        "memory_budget_bytes": 22548578304,
+        "memory_capacity_bytes": 23659151360,
+        "host_peak_rss_bytes": 4404355072,
+        "host_ram_bytes": 56863301632,
+        "p95_latency_ms": 48.966750499494076,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+        "allocator_limit": {
+          "kind": "cuda_allocator",
+          "fraction": 0.9530594720367856,
+          "allocator_limit_bytes": 22548578304,
+          "device_total_bytes": 23659151360,
+          "scope": "PyTorch CUDA allocator only; host RAM and external allocations are outside this quota"
+        },
+        "isolated_latency_measurement": false,
+        "concurrent_workload": "Read-only status/metadata and background acquisition may be active; no other GPU compute process was admitted. This is not an isolated end-to-end latency benchmark.",
+        "nominal_decision_to_event_minimum_seconds": 0.375,
+        "eeg_encoder_device": "cpu",
+        "eeg_encoder_dtype": "float32",
+        "memory_measurement_scope": "CUDA peak is accelerator allocator use; CPU EEG encoder/RSS is a distinct host scope"
+      },
+      "target_environment_evidence": "recorded",
+      "limits_are": "project configuration; not research-established universal thresholds",
+      "scope": "Reported measured configuration only; accelerator and host memory scopes must not be conflated, and component latency is not end-to-end task latency."
+    },
+    "eeg_increment": {
+      "context_only": {
+        "macro_f1_difference": 0.07550387596899225,
+        "interval": {
+          "status": "measured",
+          "method": "paired participant-cluster percentile bootstrap",
+          "groups": 8,
+          "replicates": 500,
+          "seed": 1731,
+          "metric": "macro_f1",
+          "lower_95": 0.04295619820733976,
+          "upper_95": 0.10772060203430545
+        }
+      },
+      "eeg_shuffled": {
+        "macro_f1_difference": 0.021085271317829453,
+        "interval": {
+          "status": "measured",
+          "method": "paired participant-cluster percentile bootstrap",
+          "groups": 8,
+          "replicates": 500,
+          "seed": 1731,
+          "metric": "macro_f1",
+          "lower_95": -0.021505376344086023,
+          "upper_95": 0.05185763550003253
+        }
+      },
+      "eeg_time_shifted": {
+        "macro_f1_difference": -0.017398500145513543,
+        "interval": {
+          "status": "measured",
+          "method": "paired participant-cluster percentile bootstrap",
+          "groups": 8,
+          "replicates": 500,
+          "seed": 1731,
+          "metric": "macro_f1",
+          "lower_95": -0.079123212682179,
+          "upper_95": 0.04162728268456672
+        }
+      }
+    },
+    "goal_validation_blockers": [
+      "online_preprocessing_unverified: future filter support/availability has not passed",
+      "measured latency does not cover end-to-end preprocessing, inference and harness execution",
+      "held-out harness task completion has not been measured",
+      "positive EEG contribution over eeg_shuffled not established",
+      "positive EEG contribution over eeg_time_shifted not established",
+      "configured project acceptance criteria have not passed"
+    ],
+    "autonomous_agent_validated": false
+  },
+  "recovery": {
+    "status": "completed",
+    "archive_bytes": 1292427996,
+    "archive_sha256": "0cf829e4a12e7fa3a13e4b7f3143816407697cb6e03684806b37e02b4fa82253",
+    "verified_members": 509,
+    "existing_ssl_arrays_reverified": 166,
+    "existing_alignment_arrays_reverified": 32,
+    "receipt_sha256": "17a0ccc353b7cfa2109dc4628b5cc5848fb5d8be785b1865897737896e44bf38"
+  },
+  "limitations": [
+    "Trained SSL validation MSE is worse than unchanged official initial encoder; execution success is not performance improvement.",
+    "Only8 UniBa30-second windows passed fixed quality admission; continuation is predominantly portable-task EEG.",
+    "Existing400 UniBa alignment inputs were not retrospectively filtered or rescaled; upstream XDF/calibration remains unavailable.",
+    "Observed prompt-submit/key/mouse events do not define semantic user intents or agent commands.",
+    "Case-control enrichment and missing continuous idle/harness episodes preclude natural-use precision, false actions per minute and task-completion claims.",
+    "Context-only is zero-EEG distribution-shift ablation, not a separately retrained text-only model.",
+    "Raw time shift and shuffled controls do not establish prospective causal filtering.",
+    "No input recipe, hyperparameter or threshold changed using new UniBa/ITU results."
+  ],
+  "amplitude_diagnostic": {
+    "path": "reports/cbramod_alignment_train_input_amplitude.json",
+    "sha256": "ddc393987f547555d21629ce826abe7d9c10144d84aa936f7bbfaccde0b841ea"
+  },
+  "M1_train_example_trial": {
+    "status": "completed",
+    "checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+    "record_selection": "one deterministic training example per observed-action class; same examples as original CBraMod trial",
+    "examples": 3,
+    "source_partition": "train",
+    "heldout_examples_used": 0,
+    "classification_matches_recorded_labels": 3,
+    "generalization_accuracy_estimated": false,
+    "latency_ms_p50": 544.9888339499012,
+    "latency_ms_p95": 2948.505321412813,
+    "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+    "latency_limitations": "n=3, cold first example included, shared workstation with background download/metadata work; not an isolated end-to-end latency benchmark.",
+    "memory": {
+      "process_peak_rss_bytes": 384548864,
+      "mps_sampled_allocated_bytes": 3424401920,
+      "mps_sampled_driver_bytes": 4310302720
+    },
+    "true_MPS_peak_measured": false,
+    "allocator_limit": {
+      "kind": "mps_allocator",
+      "fraction": 0.6756750138862577,
+      "allocator_limit_bytes": 8589934592,
+      "recommended_bytes": 12713115648,
+      "scope": "PyTorch MPS allocator only; CPU allocations and other processes are outside this quota"
+    },
+    "router_blocked_examples": 3,
+    "router_block_reason": "proxy_label_has_no_explicit_intent_mapping",
+    "os_actions_executed": 0,
+    "cloud_agent_calls": 0,
+    "probability_kind": "restricted_three_next_token_softmax_uncalibrated",
+    "autonomous_agent_validated": false,
+    "summary_sha256": "4b6e8e16e1ce4b88edc2716cf3c505a1c44c18b347df72679725970a4786af9e",
+    "prediction_metadata_sha256": "e98444383bdb2615d007b51003adb6119cc15203a429f26b2d786ffd6259e10f",
+    "separate_trial_aggregate": "reports/cbramod_ssl_recorded_eeg_demo_20261122_v1/summary.json"
+  },
+  "ITU_external_evaluation": {
+    "status": "five_conditions_recovered_independently_audited_scored_and_canonical_published",
+    "source_path": "benchmark/itu_external_ssl_fourth_model_aggregate.json",
+    "source_sha256": "7f18067efc08386d04d150f87b68bcdc20c83cb303d1e85594c2a15d9f953e01",
+    "publication_receipt_sha256": "b96091afbfcd3a6af8f8d687af2dd6c3305d0652b28586d587a05ffeee72064d",
+    "publication_receipt_path": "benchmark/itu_external_ssl_publication_receipt.json",
+    "canonical_sha256": "cd6ee4e946de49ce6458a56bd8716f7b171b0cac321236d3d59b0451b620e7f4",
+    "protocol_sha256": "528bca6179f4b96dbd45fad16c551d2013abcf5d91d954332f5ee85252acef26",
+    "checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+    "records_per_condition": 630,
+    "conditions_new": 5,
+    "conditions_total_with_previous_recorded_results": 24,
+    "new_model_conditions_summary": {
+      "fused": {
+        "status": "measured",
+        "n": 630,
+        "accuracy": 0.3682539682539683,
+        "balanced_accuracy": 0.38095238095238093,
+        "macro_f1": 0.3659207526484414,
+        "coverage": 0.1761904761904762,
+        "latency_ms_p50": 46.6570264998154,
+        "latency_ms_p95": 48.472767950534035,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness"
+      },
+      "context_only": {
+        "status": "measured",
+        "n": 630,
+        "accuracy": 0.2,
+        "balanced_accuracy": 0.3333333333333333,
+        "macro_f1": 0.1111111111111111,
+        "coverage": 0.0,
+        "latency_ms_p50": 46.78070000045409,
+        "latency_ms_p95": 49.50828324936083,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness"
+      },
+      "eeg_only": {
+        "status": "measured",
+        "n": 630,
+        "accuracy": 0.3619047619047619,
+        "balanced_accuracy": 0.3716931216931217,
+        "macro_f1": 0.3568883929572631,
+        "coverage": 0.13174603174603175,
+        "latency_ms_p50": 47.32637000051909,
+        "latency_ms_p95": 48.83901649964173,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness"
+      },
+      "eeg_shuffled": {
+        "status": "measured",
+        "n": 630,
+        "accuracy": 0.3634920634920635,
+        "balanced_accuracy": 0.36640211640211645,
+        "macro_f1": 0.35571968012167465,
+        "coverage": 0.1761904761904762,
+        "latency_ms_p50": 46.96432450054999,
+        "latency_ms_p95": 48.133127400524245,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness"
+      },
+      "eeg_time_shifted": {
+        "status": "measured",
+        "n": 630,
+        "accuracy": 0.36984126984126986,
+        "balanced_accuracy": 0.3677248677248677,
+        "macro_f1": 0.35999463323941505,
+        "coverage": 0.17936507936507937,
+        "latency_ms_p50": 47.20546899989131,
+        "latency_ms_p95": 51.97335509974437,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness"
+      }
+    },
+    "AI_vs_other_comparison": {
+      "fused_AI_vs_other": {
+        "n": 630,
+        "positive_support": 126,
+        "negative_support": 504,
+        "sample_prevalence": 0.2,
+        "threshold": 0.5,
+        "recall": 0.30158730158730157,
+        "specificity": 0.7976190476190477,
+        "balanced_accuracy": 0.5496031746031746,
+        "precision_enriched_sample_only": 0.2714285714285714,
+        "auroc": 0.5997023809523809,
+        "auprc_average_precision_enriched_sample_only": 0.2557134728674688,
+        "brier_enriched_sample_only": 0.20375531778955588,
+        "confusion": {
+          "tp": 38,
+          "fn": 88,
+          "tn": 402,
+          "fp": 102
+        }
+      },
+      "participant_bootstrap_intervals": {
+        "recall": {
+          "lower_95": 0.2,
+          "upper_95": 0.41441990771259063,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        },
+        "specificity": {
+          "lower_95": 0.7149040570175439,
+          "upper_95": 0.8729592409611499,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        },
+        "balanced_accuracy": {
+          "lower_95": 0.5089154411764706,
+          "upper_95": 0.5924966923607916,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        },
+        "auroc": {
+          "lower_95": 0.5448688472523594,
+          "upper_95": 0.6547127088996828,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        },
+        "auprc_average_precision_enriched_sample_only": {
+          "lower_95": 0.22022997391748184,
+          "upper_95": 0.31656985565142237,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        }
+      },
+      "observation_groups": 25,
+      "bootstrap_repetitions": 1000,
+      "paired_AUROC_differences": {
+        "original_CBraMod": {
+          "first": "cbramod_ssl_smollm_v3::fused",
+          "second": "cbramod_smollm_v3::fused",
+          "auroc_difference": 0.0837821239606954,
+          "lower_95": 0.005627442518038118,
+          "upper_95": 0.1514064745478437,
+          "valid_resamples": 1000,
+          "source_pair_first": "cbramod_smollm_v3::fused",
+          "source_pair_second": "cbramod_ssl_smollm_v3::fused",
+          "sign_reversed_to_show_requested_direction": true
+        },
+        "context_only": {
+          "first": "cbramod_ssl_smollm_v3::fused",
+          "second": "cbramod_ssl_smollm_v3::context_only",
+          "auroc_difference": 0.05679169816074581,
+          "lower_95": 0.0034784822382478184,
+          "upper_95": 0.10885895234716539,
+          "valid_resamples": 1000,
+          "source_pair_first": "cbramod_ssl_smollm_v3::context_only",
+          "source_pair_second": "cbramod_ssl_smollm_v3::fused",
+          "sign_reversed_to_show_requested_direction": true
+        },
+        "shuffled": {
+          "first": "cbramod_ssl_smollm_v3::fused",
+          "second": "cbramod_ssl_smollm_v3::eeg_shuffled",
+          "auroc_difference": 0.08677406147644251,
+          "lower_95": -0.0009941700811812219,
+          "upper_95": 0.18035685832297124,
+          "valid_resamples": 1000,
+          "source_pair_first": "cbramod_ssl_smollm_v3::eeg_shuffled",
+          "source_pair_second": "cbramod_ssl_smollm_v3::fused",
+          "sign_reversed_to_show_requested_direction": true
+        },
+        "time_shifted": {
+          "first": "cbramod_ssl_smollm_v3::fused",
+          "second": "cbramod_ssl_smollm_v3::eeg_time_shifted",
+          "auroc_difference": 0.03811570924666163,
+          "lower_95": -0.009122264467921507,
+          "upper_95": 0.08355769002633079,
+          "valid_resamples": 1000,
+          "source_pair_first": "cbramod_ssl_smollm_v3::eeg_time_shifted",
+          "source_pair_second": "cbramod_ssl_smollm_v3::fused",
+          "sign_reversed_to_show_requested_direction": true
+        }
+      },
+      "CI_scope": "Conditional on fitted checkpoints, participant-ID cluster resampling, unadjusted multiple comparisons; not repeated-training or cross-site uncertainty."
+    },
+    "history_only_AI_AUROC_min": 0.7239386495338878,
+    "history_only_AI_AUROC_max": 0.8352387251196776,
+    "memory": {
+      "process_peak_rss_bytes": 4423966720,
+      "cuda_peak_allocated_bytes": 3441674752,
+      "cuda_peak_reserved_bytes": 3466592256
+    },
+    "elapsed_seconds": 201.74759703899872,
+    "resource_feasibility": {
+      "status": "passed",
+      "scope": "actual Colab CUDA inference only; component latency excludes preprocessing and harness",
+      "budget_gib": 21
+    },
+    "source_exclusion_guard_status": "passed",
+    "human_identity_disjointness_verified": false,
+    "site_cluster_uncertainty": "blocked_single_external_site",
+    "test_used_for_training_or_selection": false,
+    "exploratory_after_prior_results": true,
+    "autonomous_goal_validated": false,
+    "uncertainty_clarification_path": "benchmark/ITU_UNCERTAINTY_INTERPRETATION_ADDENDUM.md"
+  },
+  "os_actions_executed": 0,
+  "autonomous_agent_validated": false,
+  "canonical_completion": {
+    "status": "published",
+    "canonical_sha256": "486fa559b8d081fa51c1ebaf9077cc5d6642d53f1686725bc8494a15f021a02d",
+    "release_receipt_sha256": "b4982594be77be765d542fd423c94a2013272711f05542edd8f17f43a199f884",
+    "release_epoch": 1795317673.86838,
+    "additional_external_gate_was_live": true,
+    "training_or_test_inference_repeated": false
+  },
+  "AI_history_comparison": {
+    "status": "completed_saved_predictions_only",
+    "UniBa_24_condition_source": "benchmark/v3_ssl_recorded_comparison_aggregate.json",
+    "UniBa_source_sha256": "87ab941469d740cc59beaba640837a377cd50d286b73cda774ca99b618f15e76",
+    "UniBa": {
+      "fused_AI_vs_other": {
+        "n": 203,
+        "positive_support": 39,
+        "negative_support": 164,
+        "sample_prevalence": 0.1921182266009852,
+        "threshold": 0.5,
+        "recall": 0.1794871794871795,
+        "specificity": 0.8902439024390244,
+        "balanced_accuracy": 0.5348655409631019,
+        "precision_enriched_sample_only": 0.28,
+        "auroc": 0.6151500938086304,
+        "auprc_average_precision_enriched_sample_only": 0.28614596488308114,
+        "brier_enriched_sample_only": 0.17275053691046377,
+        "confusion": {
+          "tp": 7,
+          "fn": 32,
+          "tn": 146,
+          "fp": 18
+        }
+      },
+      "participant_bootstrap_intervals": {
+        "recall": {
+          "lower_95": 0.0,
+          "upper_95": 0.3023431994362227,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        },
+        "specificity": {
+          "lower_95": 0.8125,
+          "upper_95": 0.9652777777777778,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        },
+        "balanced_accuracy": {
+          "lower_95": 0.47080094537815126,
+          "upper_95": 0.5797154905226151,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        },
+        "auroc": {
+          "lower_95": 0.4988030481975794,
+          "upper_95": 0.7131510897583871,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        },
+        "auprc_average_precision_enriched_sample_only": {
+          "lower_95": 0.18822310997611033,
+          "upper_95": 0.3757689142626299,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        }
+      },
+      "observation_groups": 8,
+      "bootstrap_repetitions": 1000,
+      "paired_AUROC_differences": {
+        "original_CBraMod": {
+          "first": "cbramod_ssl_smol17b_30epochs::fused",
+          "second": "cbramod_smol17b_30epochs::fused",
+          "auroc_difference": 0.009849906191369717,
+          "lower_95": -0.050332635269678815,
+          "upper_95": 0.07808224271267096,
+          "valid_resamples": 1000,
+          "source_pair_first": "cbramod_smol17b_30epochs::fused",
+          "source_pair_second": "cbramod_ssl_smol17b_30epochs::fused",
+          "sign_reversed_to_show_requested_direction": true
+        },
+        "context_only": {
+          "first": "cbramod_ssl_smol17b_30epochs::fused",
+          "second": "cbramod_ssl_smol17b_30epochs::context_only",
+          "auroc_difference": 0.032833020637898724,
+          "lower_95": -0.1161345332865864,
+          "upper_95": 0.1369889191236614,
+          "valid_resamples": 1000,
+          "source_pair_first": "cbramod_ssl_smol17b_30epochs::context_only",
+          "source_pair_second": "cbramod_ssl_smol17b_30epochs::fused",
+          "sign_reversed_to_show_requested_direction": true
+        },
+        "shuffled": {
+          "first": "cbramod_ssl_smol17b_30epochs::fused",
+          "second": "cbramod_ssl_smol17b_30epochs::eeg_shuffled",
+          "auroc_difference": 0.18707004377736086,
+          "lower_95": 0.07567789713541663,
+          "upper_95": 0.314699285448698,
+          "valid_resamples": 1000,
+          "source_pair_first": "cbramod_ssl_smol17b_30epochs::eeg_shuffled",
+          "source_pair_second": "cbramod_ssl_smol17b_30epochs::fused",
+          "sign_reversed_to_show_requested_direction": true
+        },
+        "time_shifted": {
+          "first": "cbramod_ssl_smol17b_30epochs::fused",
+          "second": "cbramod_ssl_smol17b_30epochs::eeg_time_shifted",
+          "auroc_difference": 0.09748280175109447,
+          "lower_95": -0.0009398496240602405,
+          "upper_95": 0.20264873700454838,
+          "valid_resamples": 1000,
+          "source_pair_first": "cbramod_ssl_smol17b_30epochs::eeg_time_shifted",
+          "source_pair_second": "cbramod_ssl_smol17b_30epochs::fused",
+          "sign_reversed_to_show_requested_direction": true
+        }
+      },
+      "CI_scope": "Conditional on fitted checkpoints, participant-ID cluster resampling, unadjusted multiple comparisons; not repeated-training or cross-site uncertainty."
+    },
+    "new_inference_for_scoring": 0,
+    "new_fits_for_scoring": 0
+  }
+}

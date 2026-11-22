@@ -1,187 +1,148 @@
 # PJ-Xavier 学習・評価の引き継ぎ
 
-更新：2026-11-22，日本時間．**進行中の実ジョブがあります．receipt と実プロセスを照合してから再開してください．**
+更新：2026-11-22 12:40 JST．**今回の4構成の学習・評価・回収・M1試用は完了し，Colabは12:26:40 JSTに正常停止しました．bulk取得とmetadata解決は12:37時点で稼働中です．目的の自律操作は未実証です．** 古い完了ジョブを再投入せず，以下のreceiptと実プロセスを確認してください．
 
-## 目的・許可・接続経路
+## 目的，許可，接続状況
 
-PJ-Xavier は NeuroCore の EEG＋LLM AI の研究開発です．ユーザーの目標は，判断前のハーネス環境と EEG に応じて agentic な操作を行い，環境内のタスク完了を検証できるモデルです．操作イベントの分類，dry-run，合成リプレイをこの最終目標の達成として報告しません．
+目標は，判断前のハーネス環境とEEGから実行可能な意図を推定し，環境内のタスク達成まで検証することです．観測操作の分類，train例の一致，dry-run，手製fixtureの合格を達成証拠として扱いません．
 
-EEG-dataset の自動取得可能な EEG を含む全データ，マルチモーダルの付属物，AI 補助ラベル，学習，checkpoint ごとの評価，実機試用，GitHub push，継続予約は確認不要で許可されています．既存 CU 枠の利用は許可済みです．購入や制限回避は行いません．
+EEG-datasetの自動取得可能なEEGを含む全データとマルチモーダル付属物，AI補助ラベル，学習，評価，実機試用，GitHub push，継続予約は確認不要で許可されています．既存CU枠の利用も許可済みです．購入やアクセス制限の回避は行いません．新しい実験は既存の許可内で，データ・protocol・計算予算を具体化して進めます．
 
-**Colab は必ず workstation の `/Users/yasufumi/.local/bin/colab` CLI を経由します．直接の Colab MCP は使いません．** Session は `xavier-eeg-20261122`，remote root は `/content/xavier`．L4 約22.03 GiB，host RAM約52.96 GiB，12 CPUsです．開始時417.49 CU，L4観測率1.94 CU/h．残高は `colab usage` で再確認してください．
+**Colabは必ずworkstationの `/Users/yasufumi/.local/bin/colab` CLI経由です．** 今回の所有session `xavier-eeg-20261122` は終了済みです．旧sessionの期限・予算・完了receiptを新規実験へ流用しません．実機はL4約22.03 GiB，host RAM約52.96 GiB，12 CPUsでした．最終観測CU残高409.45，率1.94 CU/hですが，次回はCLIで現在値を確認してください．
 
-SFC VPN の保存構成は接続済みです．smac19 は `133.27.22.29` への名前解決と SSH 応答まで確認しましたが，smac19／smac31 の SSH 認証は未成立です．既存 SSH agent に identity はありませんでした．**以前のパスワード入力の自動承認レビュー拒否に対して，ユーザーが「もう一回承認出して．承認するので」と明示的に再承認し，11:45〜11:48 JSTに実入力を実行しました．現在の障害はその拒否ではなく，SSHサーバー側の認証不成立です．** strictな既存host key照合を保ち，設定済みyasufumiと履歴で確認したyasufumi@keio.jpで試しましたが，remote hostname・ControlMaster socket・計算投入はいずれも得られませんでした．private/xavier/smac19_reauthorized_auth_attempt_20261122_01.jsonと02.jsonに秘密値なしのreceiptを保存．一時PTY2件は閉じました．追加のログイン名・パスワードを推測せず，実際に接続できるSSH指定／認証方法が分かったらpreflightから続けます．12:10 JSTの過去context再検索でも，成功したSFCログイン名・再現手順は得られませんでした．既知host/IPに限定したKeychain service metadata照合も該当なし（秘密の取得・追加認証試行0）．別service名や別Macに認証情報が存在しないと断定しません．private/xavier/smac_prior_context_recheck_20261122.jsonを参照．38 台の歴史的 RAM 合計を単一モデルの GPU メモリとして使いません．
+**SFCクラスターでの計算投入は未成立です．** 保存VPN構成は接続でき，smac19.sfc.keio.ac.jpは133.27.22.29への名前解決とSSH応答まで確認しました．既存SSH agentにidentityはなく，public-key認証は失敗しました．以前の自動承認レビュー拒否後，ユーザーの明示的再承認に基づいて11:45〜11:48 JSTにパスワード入力を実行しましたが，既存設定と過去履歴のログイン指定はいずれも認証不成立でした．現在の障害は承認ではなく，SSH認証・アカウントアクセスです．remote hostname，ControlMaster socket，計算実行はいずれも得られていません．
 
-## 正しい作業場所と GitHub
+秘密値を含まない証拠は `private/xavier/smac19_reauthorized_auth_attempt_20261122_01.json` と `02.json` にあります．一時PTYは閉じました．過去contextと既知host/IPのKeychain service metadataも照合しましたが，再現可能な成功指定は得られませんでした．秘密の取得や追加認証試行は行っていません．`smac_prior_context_recheck_20261122.json` を参照してください．ログイン名・パスワードを推測せず，実際に接続できるSSH指定または認証方法が判明したらpreflightから続けます．歴史的な38台のRAM単純合計を，単一モデルのGPU容量として扱いません．
 
-- Worktree：`/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training`
-- Repository：`yasufumi-nakata/NeuroCore`
-- 現在の追加 branch：`feat/pj-xavier-validation-20261122`
-- 最初の branch：`feat/pj-xavier-training-20261122`（過去の履歴）
-- 初回の base：`966907f0087bd38d74b1e1ddae32dda739de986b`．追加 branch は origin/main `63f5ffd` へ付け替え済み．
-- 追加 Draft PR：[71](https://github.com/yasufumi-nakata/NeuroCore/pull/71)
-- 最初の PR70 は 2026-11-22 00:37:16 UTC に別の操作で squash merge されたことを後から確認．merge commit d3e222bfa120a59214e50981f0f7d64bc7bedb03．root は merge を実行していない．
-- 最初に push 確認した commit：`93c952209274721b25acdde4f49cf121b1d4b78e`
-- 最初の CI／Dependency Review／Repository Health はsuccess．CodeQL解析job完了後にhostname判定の2件highが検出され，新PRで修正．PR71 head2bd3f08d2e9439f7ed9b2fcba8a19008b3d23c2bではCodeQL alert checkも含め全9checksがsuccess．
-- 新branchは最新main63f5ffdへ初回93c9522以後の追加分だけをrebase済み．ea101fb3474c3d501563ef64d2e84375372684b1では11:16 JST確認で全9CI/CodeQL checks SUCCESS．続いて外部最終結果・M1試用・SSL入力検証・固定protocolを8f1040ade89ebab61b1597af68dafcbfd9b2ad3bとしてpushし，remote branchとPR headの一致を確認．8f1040aも11:55 JSTまでに全9CI/CodeQL checks SUCCESSを確認済み．次のheadは別に確認すること．元branchへforce pushはしていない．以後は現在のgit／PRを読み直すこと．
+## 正しい作業場所と公開先
+
+- 正worktree：`/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training`
+- repository：`yasufumi-nakata/NeuroCore`
+- branch：`feat/pj-xavier-validation-20261122`
+- Draft PR：[71](https://github.com/yasufumi-nakata/NeuroCore/pull/71)
 - 実験コード：`experiments/pj_xavier/`
-- 原データ・重み・詳細ログ・台帳：`private/xavier/`（git 除外）
-- Python：`.venv-xavier/bin/python`，3.12.13．workstation の既定 Python 3.9 を使わないこと．
-- Catalog checkout：`/Users/yasufumi/Documents/GitHub/EEG-dataset`，参照 origin/main は `5594ef98` で始まる commit．ローカル main は更新していない．
+- 原本・重み・詳細ログ・台帳：`private/xavier/`，git除外
+- Python：`.venv-xavier/bin/python`，3.12.13．既定3.9を使わないこと
+- Colab／GitHub CLI：`/Users/yasufumi/.local/bin/colab`，`gh`
+- catalog checkout：`/Users/yasufumi/Documents/GitHub/EEG-dataset`．参照origin/mainは5594ef98で始まるcommit．ローカルmainは変更していません
 
-original checkout `/Users/yasufumi/Documents/GitHub/NeuroCore` の既存未追跡ファイルを一括 stage／削除／復元しないでください．一時的な出力先誤りの経緯は `private/xavier/model_agent_path_correction_inventory.json` と `model_worktree_copy_receipt.json` に保持しています．正 worktree へ hash 照合してコピー済みで，original は削除していません．
+PR70は別の操作でsquash mergeされ，現在の追加branchはmain63f5ffdをbaseにしています．rootはmerge・force pushを実行していません．直前checkpoint `caab5083c185aa798d4f94af28e74f594274c888` は全9 CI／CodeQL checksがSUCCESSです．この文書を含む後続headは `git` とPRで改めて確認してください．
 
-## 最初に確認するジョブ
+original checkout `/Users/yasufumi/Documents/GitHub/NeuroCore` の無関係な未追跡ファイルへ触れず，正worktreeの今回対象だけをstageしてください．一時的な出力先誤りとhash照合付き保全の記録は `model_agent_path_correction_inventory.json`，`model_worktree_copy_receipt.json` にあります．
 
-PID は再利用されます．receipt 内の start time と argv を確認し，Colab では `/proc/PID/stat` の Z／X を終了として扱います．PID 存在や古い summary だけで稼働判定しません．
+## 現在のジョブと期限
 
-| 場所・ジョブ | 最終確認 PID | 確認先 |
-| --- | ---: | --- |
-| workstation bulk download | 8814 | `private/xavier/bulk_launch_v3.json`，`bulk_download.pid/log`，`bulk_downloads.sqlite` |
-| workstation metadata resolver | 5571 | `metadata_refresh_launch.json`，`metadata_refresh.pid/log`，`catalog_fresh_resolution.jsonl` |
-| workstation recovery controller | 80001 | `controller/gate_update_20261122_ssl_external/`，`config.json`，`state.json` |
-| workstation EEGMMIDB追加取得 | 80523 | `private/xavier/eegmmidb_acquisition_v1/`（独立manifest／SQLite，元session期限内） |
-| Colab CBraMod＋Smol 単一 token 実験 | 初回 supervisor 38446／train child 38907 は学習完了 | `/content/xavier/workflows/cbramod_symbol_v1/`，`runs/cbramod_smollm2_uniba_v3_symbol_v1/` の最新stateを確認 |
+PIDだけでなく開始時刻・argv・receiptを照合します．ColabのZ／X状態は終了です．
 
-workstation の表中の短いパスは `private/xavier/` 配下です．M1 v3 は学習・五条件評価・strict・試用まで完了しました．Qwen v3 も30epochs学習，五条件推論，strict，回収，履歴比較，canonical receipt公開まで完了しています．最新根拠は `private/xavier/variant_ops/v3_workflow_state.json`（status completed）です．Qwen v2 も完了済み，seed23filesの取得・workstation保全も全件完了です．これらの完了ジョブを再投入しません．
+| ジョブ | 最終状態 | 確認先（private/xavier配下） |
+| --- | --- | --- |
+| workstation bulk download，PID8814 | 12:37 JST稼働 | bulk_launch_v3.json，bulk_download.pid/log，bulk_downloads.sqlite |
+| metadata resolver，PID5571 | 12:37 JST稼働 | metadata_refresh_launch.json，metadata_refresh.pid/log，catalog_fresh_resolution.jsonl |
+| recovery controller，PID80001 | 全gate回収後に正常終了 | controller/state.json，controller/gate_update_20261122_ssl_external/ |
+| EEGMMIDB取得80523・監査83755 | 正常終了 | eegmmidb_acquisition_v1/，公開reports/eegmmidb_acquisition_20261122_v1/ |
+| Colab全学習・外部評価 | 完了・回収済み・session停止 | exports/，external_ssl_ops/，controller/state.json |
 
-CBraMod gateを実daemonへ反映した後，Qwen v3のcanonical receiptを公開済みです．ITU外部評価3gatesを52995へlive反映した段階を経て，実行可能なSSL phase plan・17tests・起動前条件を固定し，新gateをcontroller63404へlive反映しました．live probe1795314619.42987，config SHAbbad4903fd9033c11c0bd08673141e40793c406e8f7139e90570732935d8f36b．元deadline，raw，stateを保持し，元3モデルのITU canonical receiptも公開・回収済みです．public benchmark/itu_external_publication_receipt.jsonを照合してください． 第4SSLモデルITUの実行前にcontroller63404をidle・子0確認後に停止し，80001へ更新しました．live probe1795317065.009 > launch1795317059.049，gate itu_external_cbramod_ssl_smollm_v3_five_variants=false確認済み．元state/raw/deadlineを保持．private/xavier/controller/gate_update_20261122_ssl_external/completion.jsonが根拠です．別external protocol SHA528bca6179f4b96dbd45fad16c551d2013abcf5d91d954332f5ee85252acef26を予測前に封印しています．第4ITU supervisor60503は12:12:34 JSTに起動，/content/xavier/workflows/itu_ssl_external_v1/で前guard→5条件→後guardを逐次実行．回収・CPU集計はworkstation81675，private/xavier/external_ssl_ops/postprocessing_state.json．完了を読むまで再投入しないこと．新gateだけではGPU起動を許可せず，実corpus・容量・残時間・protocolを別に検証します．無期限holdやdummy gateは使いません．
+bulk元deadline：1795322496.632661，max bytes64,062,645,375，空きreserve35 GiB．metadata元deadline：1795319128.862762．旧Colab絶対deadline1795321234.65，旧controller絶対deadline1795324658.879168は終了した実行枠の記録であり，再起動で取り直しません．
 
-**Colab sessionの元絶対deadlineは1795321234.65（13:20:34 JST）で，controller終了より早いです．GPU workflowの予算計算はこちらを使います．** bulk の元絶対 deadline は **1795322496.632661**，元 max bytes は **64,062,645,375**，reserve35GiBです．controller の元絶対終了は **1795324658.879168（14:17:38 JST）** です．再起動で5時間を取り直しません．metadata resolver の元 deadline は1795319128.862762です．
+最終controller stateの保存時SHAは `fe6821d33c278e2be7e7303a8de30574d85eac9cf6b16324c9abda33bc0e970e`．session_stop_receiptはepoch1795318000.5087922，reason `owned_session_idle_and_required_artifacts_verified`．全23seed rawの保全もall_complete=true，held=[]です．モデル・全24条件評価を再投入しません．
 
-## controller の重要な修正
+Colab CLI0.7.4の巨大downloadは全体をRAMへ保持するため，保全転送は64 MiB chunkとSHA，offset，size，末尾再開，全体SHAを照合するcontroller実装を使います．installed CLI本体は変更していません．次の新sessionでも実daemonへcompletion gatesが読まれたことを検証し，config編集だけで反映済みとはしません．dummy gateや無期限keepaliveは使いません．
 
-Colab CLI0.7.4の大きな `download` はHTTP JSON／base64全体をRAMへ保持し，ITU4.65GBの回収が進まなくなりました．旧controller12764とその子22431を同定して停止し，state／lease／原本を保存しました．新controller29527は**64MiB chunk**ごとにsource SHA，offset，size，chunk SHAを照合し，localへ1MiB bufferで追記します．中断tailから再開し，全体SHA一致まで保全完了にしません．installed CLI本体は変更していません．
+## 全目録と取得済み量
 
-元 `launch_receipt.json` は保持し，chunk実装の起動は `launch_receipt_v3_gate.json` です．その後，CBraMod gate追加のため29527を本人性照合後に停止し，43294へ切り替えました．新起動・live gate根拠は `controller/gate_update_20261122_cbramod/completion.json`，config SHAは755fbeb2184b8114d1ba5447e7f0fc9510cfbe20519255c829950321f5e82357．元deadlineとstateを維持しています．公開根拠は `reports/controller_v3_gate_20261122/` とcontroller/validation.json．36testsと実転送を確認済みです．
+全5,165行のID集合は不足・余剰0です．catalog CSV SHAは `142a7e8da1ca3c8439082cf3af768cab9ffcdb0f967c003f86dd5ee71f1ee5f8`．取得キューは609 releases／468,040 file jobs，既知15,821,047,310,466 Bです．動画・補助情報・版の重複を含む候補容量で，純EEG量や取得完了量ではありません．38 filesはサイズ未確定，Dataverse342 filesは必須Guestbookのためaccess_action_requiredです．
 
-新completion gateは `uniba_natural_v3_five_variant_evaluation` です．receiptは
-`runs/qwen3_8b_aicoding_uniba_natural_v3_fused_30e_v1/variant_evaluation_completion.json`，checkpointは同runのbest.pt．live daemonで未完了gateが反映された確認後，v2 canonical receiptを公開しました．v2 receipt SHA：
-`75d988106771fcb861cc3239262f7973c6edf91ffdfcfb9285353696ae8533e8`．
+最新snapshot004は12:28:21 JSTです．
 
-新しい GPU ジョブを追加する前にはconfigに必要なcompletion gateを加え，**実行中daemonへ読み込まれたこと**を検証してください．config fileの編集だけでは反映されません．全raw／run成果物の保全，実process終了，GPU idle grace，completion receiptを満たすまで停止しません．dummy keepaliveやgate無効化で処理を隠しません．
+| 範囲 | 確認値 |
+| --- | ---: |
+| 受領完了した同一内容重複なしのファイル | 40 contents，16,566,958,252 B |
+| header／payloadを数量検証した原EEG | 1,644記録，136.44190980902778時間 |
+| 元EEG sample部分 | 14,484,459,152 B |
+| 未完了partial（完成量へ加算しない） | 19,442,311,408 B |
+| workstation空き | 57,038,569,472 B |
 
-## 全目録と取得キュー
+BCI Database.zipの27,475,466,178 Bは期待総量です．004時点の実partialは18,529,386,496 Bで，他2件のpartial約0.913 GBを合わせて上記19.44 GBです．次の観測は新しいsnapshotへ保存し，既存時点を上書きしません．
 
-catalogは5,165行で，ID集合の不足・余剰0です．CSV SHA：
-`142a7e8da1ca3c8439082cf3af768cab9ffcdb0f967c003f86dd5ee71f1ee5f8`．
+[取得004](reports/acquired_progress_004.json) SHA `19a8d747b92e36591cb23f9961aca96ae6de511fe4ff15cdcafa26819954ecf1`．[数量004](reports/verified_eeg_quantities_20261122_004.json) の最終SHAは `ee6abaf82d878679dc3336b039f707044ea548708e1af3bc597c004077c040e7`です．旧下書き952b…は最終版ではありません．既存39 contentsは003のfull SHAと現在の台帳・保全statを照合，新規EEGMMIDBは全ZIP・memberをfresh SHA照合しています．004で全40を再度full rehashしたとは報告しません．
 
-最初のcacheではEEG候補405releases／29,229files／4,673,956,432,245Bでした．最新の固定snapshotから206releases／438,834jobsを追加済みです．bulkは計609releases／468,040jobs／既知15,821,047,310,466B，別管理のseedは2releases／23files／11,221,153,522Bです．これはrelease全体の候補で，純EEG・重複排除済み記録時間・全件取得済みという値ではありません．
+原記録内訳はEEGlass1.08882222h，UniBa30.61540256h，ITU21.30617947h，Portable34.89706111h，EEGMMIDB48.53444444h．raw/filteredや保全copy，channel-hours，切り出し窓，epoch反復を二重加算しません．数量の検証と信号品質・実行可能な意図ラベルの検証は別です．異なるcorpusの同一人物不存在も未証明です．
 
-固定fresh snapshot：
-`private/xavier/fresh_queue_snapshots/catalog_ef5aa95b592bc88c45588c9fe6ea9d39bf776bc724ceaa91150fc9e55d547a84.jsonl`．
-private planは`fresh_queue_plan_20261122_01/`，apply/verification receiptは`fresh_queue_append_receipt_01.json`／`fresh_queue_append_verification_01.json`．公開集計は`reports/fresh_queue_append_20261122_01/`．
+全キュー構造監査ではEEG明示path＋信号形式が62,303 files／7,209,327,960,212 B／135 releasesでしたが，未確認候補です．archive・MEG同時EEG・iEEG・multimodal companionを残しています．metadataの追加は固定snapshotとINSERT-only importerを使い，既存URL／identity／size／checksum／状態を変えません．既存workerと元予算も維持します．[構造監査](reports/queue_structure_20261122_v1/README.md)と[fresh append](reports/fresh_queue_append_20261122_01/README.md)を参照してください．
 
-追加時は既存29,206＋新438,834件のURL／provider identity／size／checksumを再照合し，不一致0．importerはINSERT-onlyで既存row更新・削除0，稼働workerや元budgetを変えていません．38filesはunknown sizeでmetadata_blocked，1releaseはstorage key長がfilesystem上限を超えるため保留しています．2,925行のscope review候補は，official description EEG231，title-only1902，metadata不足778，矛盾14に分けています．未確認scopeを自動で学習承認しません．
+## 新規EEGMMIDBの確認範囲
 
-Dataverse DOI10.7910/DVN/K5EDB4の342filesは，公式APIが必須Guestbook応答を要求するためaccess_action_requiredです．HTTP400を一律にrestricted扱いせず，実応答を記録しました．元running／completeは変更していません．Guestbook修正時のacquire.py SHAは0e265a3c...．その後CodeQLの指摘を修正し，正規hostnameまたは区切り付きsubdomainでFigshare／PhysioNetを判定する現source SHAは1c3c2099d0ded2009c098c2f3b3eabbe5148f6b0e50fdb22754f0dbaad33f597です．稼働bulkは以前の043031...をロード済みですが，保留rowは選択しません．hostname修正＋append＋試用の51tests／27subtestsとCodeQLの再解析が通過しています．
+catalog009861，PhysioNet EEGMMIDB1.0.0，公開ODC Attribution1.0．公式ZIP1,997,435,063 BのSHAは `0ff5f7f38d1d14b8e485581ad4cf5b327e6494bc2ac7c7d4f7e9518a950cbe`．109公開subject groups／1,526 EDF／174,724秒です．全3,058公式member＋checksum自体を照合し，ZIP内全regular member3,614,967,988 B，EEG sample3,560,112,128 B，完全同一EEG payload重複0を確認しました．160 Hzは1,490記録，128 Hzは36記録です．
 
-最新の完全取得量は `reports/acquired_progress_003.json` の10:58〜10:59観測で，39 unique file contents／14,569,523,189Bです．workstation16files＋Colab23files．全completeをSHA再検証し，replicaとpartial9,081,331,952Bを加算していません．次回は新しいsnapshot番号で再観測し，既存時点を上書きしません．`acquisition/report_progress.py` は468k行をstream処理する版です．7tests通過．
+48記録に547件の5〜50 ms overlap／12件の25 ms範囲外annotation，別にbaseline2記録のT1があり，50記録をlabel reviewとして残しました．残り1,476記録も限定metadata検査を通過しただけです．自動修正0，モデルへの投入0です．[全取得・数量・ラベル監査](reports/eegmmidb_acquisition_20261122_v1/README.md)を参照してください．
 
-全468,040file jobsのread-only構造監査も完了．EEG明示path＋信号形式は62,303files／7,209,327,960,212B／135releases．これは未検証のpath候補で純EEG実測ではありません．未展開archive，MEG同時EEG，iEEG，その他modalitiesを別分類に残します．`reports/queue_structure_20261122_v1/` に全609releasesと分類の根拠があります．キュー変更0，8tests通過です．
+独立MNE1.13.2では事前選択9代表のheaderとstandalone209注釈が一致しました．Raw添付は8/9完全一致，S100R03のみ終端123.025→123.000秒へ25 msのclipがあり，警告を保存しました．standaloneでは元durationを保持し，未説明差0です．128 Hzとbaseline T1も原本で確認．全1,526記録のMNE波形品質検証とは扱いません．[独立照合](reports/eegmmidb_mne_representative_audit_20261122_v1/README.md)にprotocolと差分があります．
 
-## 検証済みの EEG と前処理制約
+## 完了した学習と評価
 
-`reports/verified_eeg_quantities_20261122.json`：118記録，**87.90746536458333時間**，物理EEG scalar **10,924,347,024B**．EEGlass1記録1.08882222h，UniBa34記録30.61540256h，ITU26記録21.30617947h，portable57記録34.89706111h．原記録／filtered copy／channel時間／学習窓を二重加算しません．ZIP容量から時間を推定しません．
+既存EEGlass／UniBa v2／v3の実測，入力源，事前固定protocol，回収は[README](README.md)と個別reportsを参照してください．model/eeg_llm.pyの実行時SHAは `e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f`，固定v3 manifestは `030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093`です．実行済みsource／protocolをその場で変更しません．
 
-UniBa32／34人，28.58953451hが固定100ms／5000ppmの時計監査に通過しました．P003／P015を保留．ITU25／26人，20.51673720hが同基準に通過し，P012は最大LOO4.30216秒で保留．ITUは全員外部test候補として予約，学習やモデル選択に使っていません．共通8EEGとphase補助は全26記録にあり，時計監査と数量監査は独立照合済みです．
+UniBa v3は18train／6val／8test groups，400／155／203窓です．EEG8ch＋判断前page／AI availabilityで，観測行動AI送信／keyboard／clickを分類しています．gaze・screen等も取得済みですが，vision encoderの学習を実行したわけではありません．ITUは25/26時計通過groups，630窓，AI126／key252／click252，全て外部test専用です．外部siteは1つで，参加者群単位の区間はsite一般化やモデル再学習の不確かさを含みません．
 
-ITU archive4,650,970,671B，SHA：
-`1e192b5e65931b9a44858acd987d540d3436de3fddf99454170b93434c2c99b5`．
-Colab raw root：`/content/xavier/verified_ai_coding_itu_v1`．workstationの全監査資料は `ai_coding_itu_quantity_audit_v1/` と `ai_coding_itu_external_clock_v1/`．archive本体を含む23seed files／11,221,153,522Bの64MiB保全コピーとSHA照合は全件完了しました．controllerのraw_preservation_receiptはall_complete=true，held=[]です．コピーを新規corpus容量へ加算しません．
+### 追加SSL＋同条件LLM接続
 
-公開filter recipeからの未来側supportは条件付き4.125秒．窓終端→eventを4.5秒＋clock guard，feature availabilityは終端＋4.125秒，decision→eventは最低0.375秒です．元XDFと配布binary／recipe同一性が未確認なのでonline_causality_verified=falseを維持します．実推論の遅延も別に測ります．
+- SSL train1,678非重複30秒窓＝50,340秒，val522窓＝4.35h．ITU全量，UniBa val/test・時計不合格を除外し，train/valは参加者群単位で分離しています．75候補50.888960hからの固定QCで3840/6040窓が落ち，学習区間の大半はPortableです．閾値や単位を結果に合わせて変更していません．
+- SSL10epochs／280updates，169.792149秒，CUDA reserved最大7,841,251,328 B．選択epoch8．固定val MSEは初期0.0011833986→学習後最良0.0014948131で26.315%悪化しました．学習完走をSSL性能改善とみなしません．
+- 適応EEG重み19,763,138 B，SHA `0132c9372cbcff28ad36965de043f7b8190233e9faba8ce3ec02c2ae8c93f3e7`．
+- 同条件LLM接続30epochs／390updates，432.708630秒，CUDA reserved最大9,219,080,192 B．更新は412,048 parametersの投影部で，EEG4,883,800／LLM1,711,376,384はこの段階で凍結しました．選択epoch26，validation BA0.424731．
+- 選択接続checkpoint SHA `d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16`．4,966,101 Bで，基盤本体を別に要します．
+- 完了した2段階の入力unionは50,340＋400−3＝**50,737秒／14.0936111111時間**です．選択SSL membershipと完了alignment cursor／固定loop・全membershipに基づきます．alignmentの各step sample traceを別途計測したわけではありません．[完了入力区間](reports/ssl_alignment_completed_train_interval_union.json)と[学習完了結果](model/CBRAMOD_SSL_COMPLETED_RESULTS.md)に根拠があります．
 
-## 凍結した cohort／model source
+回収509members，payload1,405,939,370 B，archive1,292,427,996 B．archive SHA `0cf829e4a12e7fa3a13e4b7f3143816407697cb6e03684806b37e02b4fa82253`．全memberと166SSL配列・32下流配列を照合しました．recovery receipt `private/xavier/exports/cbramod_ssl_v1_recovery_receipt.json` SHA `17a0ccc353b7cfa2109dc4628b5cc5848fb5d8be785b1865897737896e44bf38`．
 
-model/eeg_llm.py SHA：
-`e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f`．
-実行中のrunがこのsourceを使うため，その場でmodel本体を改変しません．新architectureは別ファイル／別protocol／別runで行います．
+### 4モデル・両施設の固定予測比較
 
-v2 manifest：`/content/xavier/prepared/ai_coding_uniba_v2_lead4p5/manifest.jsonl`，SHA：
-`af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac`．
-train4357／val1506／test1956，18／6／8人．AI送信2／2／1例でこのclassの性能推定は困難です．総7,819窓／3.80090278h．
+既存19条件に新SSLの5条件だけを加え，UniBa203例，ITU630例をそれぞれ24条件で比較しました．旧条件の再推論・再fitはありません．ITU新5条件は3,150予測，201.747597秒で完了し，前後guard・回収・独立CPU集計・canonical公開が通りました．
 
-v3 manifest：`prepared/ai_coding_uniba_v3_natural_casecontrol_verified/manifest.jsonl`，SHA：
-`030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093`．
-workstationとColabに同一bytes・32配列hash検証済み．train400（AI80）／val155（AI31）／test203（AI39），同じ18／6／8人．全758窓8ch×448／256Hz，0.36847222h．AI全150イベントと自然な直前操作を保持したcase-control cohortです．通常利用時precision／誤作動毎分を推定できません．v2と原記録を共有するので時間を合算しません．
+| ITU fused | 3分類BA | AI送信AUROC［95%参加者群CI］ |
+| --- | ---: | ---: |
+| Smol1.7B | 34.52% | 0.5594［0.5143，0.6071］ |
+| Qwen8B | 36.11% | 0.5342［0.4706，0.5995］ |
+| 初期CBraMod＋Smol | 34.13% | 0.5159［0.4592，0.5721］ |
+| 追加SSL CBraMod＋Smol | 38.10% | 0.5997［0.5449，0.6547］ |
 
-自然cohort protocol SHA：d4e6c5f685dce53e73b3aa88d12ed07c88a8ac08a27fb78392dbd99aed0a6396．subject split SHA：bdf214b16c92b33c889b5bcb8b4ec7b888877c40d7992be8a796cdbc8ae23dae．
+新SSL minus初期CBR AUROCは+0.0838［+0.0056，+0.1514］ですが，shuffle差+0.0868［−0.0010，+0.1804］，−10秒差+0.0381［−0.0091，+0.0836］は0を含みます．履歴のみのAUROC0.7239〜0.8352を下回ります．UniBaのSSL前後AUROC差+0.0098［−0.0503，+0.0781］も確定的改善ではありません．探索的・単一学習・多重比較未補正という範囲です．
 
-## モデルと評価の到達点
+新ITUの固定0.5はTP38/126，FP102/504，この濃縮標本のprecision27.14%です．最大3class確率0.8の採用111/630件中正解46/111＝41.44%．確率を校正済み意図確率や実操作成功率と呼びません．[4モデル全結果](benchmark/SSL_FOURTH_MODEL_RESULTS.md)，[外部完了監査](benchmark/itu_external_ssl_completion_audit.json)，[公開receipt](benchmark/itu_external_ssl_publication_receipt.json)を参照してください．
 
-EEGlassのSmol1.7／Qwen8Bは3epochs完走．test78は全mouse_click予測，balanced accuracy1/3，shuffle差0．Smol best_pinnedは元のimmutable revision根拠付き．3train窓をM1で推論し，NeuroCore実router＋DryRunActionSinkの接続も3件成功，OS操作0／cloud call0．READMEに実行コマンドがあります．
+旧scorerのlimits文字列にある8 subjectsはUniBaの説明で，ITUの実bootstrapは25groupsです．凍結結果を改変せず，`benchmark/ITU_UNCERTAINTY_INTERPRETATION_ADDENDUM.md`で訂正しています．
 
-Qwen v2は3epochs／1635steps，attempt2学習・validation1,332.96秒，CUDA peak reserved20,631,781,376Bで完走しました．初回memory guard停止も記録保存済みです．best SHA：
-`29f349c199bd99232a2431f83179085e136a1509beb9c84d5b25dd25edba21f7`．
-5条件GPU／strict証拠検証／private回収完了．fused BA39.54%，macroF1.37370，shuffleとの差macroF1+.00171，参加者95%CI[-.00700,+.00946]．固定confidence.8のfused coverage0%．goal=evaluated_goal_unproven．公開詳細はbenchmark/QWEN8B_UNIBA_V2_RESULTS.md／qwen3_8b_uniba_v2_aggregate.json．private archive49,002,964B，SHA：d9646d138f00a81c6893c1dc5e636d5df0caaac697d7f23cd3b9082c0f53af9b．
+## 実機試用，ラベル，実ハーネス
 
-M1 Smol v3は3epochs／600stepsを1,541.7197秒で完走，8GiB allocator quota，MPS driver sampled最大4,437,557,248B．validation bestはepoch2，SHA：
-`281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475`．
-run：`private/xavier/runs/smollm2_1_7b_uniba_natural_v3_fused_v1`．固定203testの5条件評価は1回完了済みです．MPS true peakは測れていないためresource reportにsampledをtrue peakとして埋めません．実行成功とstrict peak gateの証拠不足を区別します．validation candidate scoring約1秒は名目lead0.375秒より遅いです．
+M1で追加SSLモデル→NeuroCore routerまで固定train3例が完走し，3例ともラベル一致しました．全routeは `proxy_label_has_no_explicit_intent_mapping` として保留され，OS操作0／cloud agent呼出0です．MPS sampled driver4,310,302,720 B，quota8 GiB，CPU peak RSS384,548,864 B．n=3のcoldを含むcomponent p50 544.989ms／p95 2948.505msであり，true MPS peakやonline end-to-end性能ではありません．
 
-その後M1の5条件評価は1177.71秒で正常終了しました．fused BA35.37%，context-only35.77%，EEG-only33.33%，shuffle35.37%，−10秒34.55%．fusedのfixed.8採用率0%，AIvsotherのfixed.5はrecall0/39，BA50%，AUROC.6165．strict integrity errors0，shuffle/raw shift203件すべて証拠passed，goal未実証．M1実機は他のdownload/metadata/controller/軽CPU処理と並行しておりisolated latencyではありません．M1 strict SHA8f837c0c0baedc513ed25730e4181b92b88a45aaf3f434c58e5bd4042478ddbc．
+[試用手順](integration/README_TRY_CBRAMOD_SSL_RECORDED_EEG.md)に，未使用出力先での実行コマンドを用意しました．実契約は `private/xavier/demos/cbramod_ssl_train_demo_contract_v1.json`，SHA `bde21873e6c0c2c173658eae47f4ce7f38d5be8575944dcf2ce7cf08365797cb`．実試用先は `cbramod_ssl_uniba_v3_train_examples_v1/`，ユーザー向け `cbramod_ssl_train_trial_user_01/` は未実行です．モデル本体とEEGはprivateに必要で，公開cloneだけでは再現できません．
 
-Qwen v3は`Qwen/Qwen3-8B` revision b968826d9c46dd6066d109eabc6255188de91218．run：`/content/xavier/runs/qwen3_8b_aicoding_uniba_natural_v3_fused_30e_v1`．protocol SHA：
-`3c0c702d66024df9dee302536f6a643ad6397a1584936f63b532d29a5e87b95b`．
-30epochsまたは3600秒，batch4／candidate4，lr.001，seed20261122，prefix8，width64，21GiB，expandable_segments．testを学習中に使わずvalidation bestだけで選択．正常なtime-budget停止も事前に許可された完了条件で，実epochsを報告します．OOM／integrity failureは保留．完走後samebestの5条件とhistory比較を実行します．Smol3epochsとの予算差を明記します．
+AIラベルはOllama qwen3.5:2bによるtrain15イベント表記の正規化を225窓へ出典付き伝播したものです．新しい自由意図のgoldや新規EEG時間を作ったとはしません．元gold・観測行動・AI弱ラベルを別に保持します．
 
-Qwen v3は30epochs／3000steps／1340.03秒で完走，CUDA reserved peak18,492,686,336B．best SHAb7c8e8f37a1f9276cc58b35609a6e21191faacc138a6f37e37296976be2ed924．五条件のforced BAはfused35.77%，context-only33.74%，EEG-only32.52%，shuffle35.37%，−10秒36.59%．fused fixed.8採用率2/203．strict／回収／履歴比較は全て完了．archive107,137,145B，SHA dd608399c8098503f8ce314b924a707b17c07069690ab09bc38ffceb571d1f3d，canonical receipt SHA22aac8e5d686fb5c1e8cd3d9e52a684f42c7afc4d02d7ef0448055a719614c5c．
+公開Connection課題から独立に作ったJava8ケースのハーネスは，正解fixture8/8，優先順位誤り7/8，常時成功2/8，NPE0/8，構文エラーcompile failureを確認しました．既存JDK11，heap128 MiB，compile15s/run5sです．bundled fixture専用で，任意の生成コードを隔離するsandboxではありません．[ハーネス](benchmark/connection_harness/README.md)と[元資料監査](benchmark/CODING_HARNESS_SOURCE_AUDIT.md)を参照してください．元データには正確な判断前editor状態・元oracleが足りず，EEG agentの実課題成功率は未測定です．
 
-両v3モデルのAIvsother fixed.5 recallは0/39．AUROCはSmol.616479，Qwen.621482，差+.005003の参加者95%CI[-.051595,.061366]．全14条件の固定予測比較は `benchmark/V3_FIXED_MODEL_COMPARISON.md` とv3_fixed_models_history_aggregate.json．再学習・閾値選択・再推論はしていません．
+公開EEGのoffline filterの未来側supportは条件付き4.125秒，窓終端→eventは4.5秒＋clock guardで，名目lead最低0.375秒です．元XDF・配布binaryとrecipeの同一性が未確認のためonline_causality_verified=falseを維持します．BIDS VとBrainVision0.1µV表記は通常のMNE-BIDS／pybv出力でも生じ，表記差だけで誤scaleと断定しません．[単位の追加監査](reports/uniba_amplitude_provenance_20261122_v1/README.md)に確認済み変換と未確認の機器校正・XDFを記載しています．
 
-v2 CPU spectrum／context／combined baselineは学習・評価・回収完了．公開はreports/cpu_baselines_uniba_v2_lead4p5_v1/aggregates/．v3 history baselineも完了，10.35秒，2threads．AIvsother BA：preEEG70.41%，guardedpredecision83.11%，guardedhistory＋context86.59%（TP39,FN0,TN120,FP44，precision46.99%は濃縮標本のみ）．benchmark/history_baselines.pyのscore-predictionsで固定LLM予測を再推論せず比較できます．historyモデルにEEGは使っていません．
+## 検証と次の実験
 
-## AI ラベルと次の encoder
+`local_validation_20261122_04.json`は365 tests＋127 subtestsが通過（初回skip2件もfixture指定修正後に別実行，未解消skip0）．追加05は新規5 test filesで37 tests＋27 subtestsが通過，99 Python source filesの前後SHA不変です．新EEGMMIDB監査9 testsもlocal／workstationで通過しました．各検証は別の実行で，402件や411件の一括suiteを実行したと報告しません．最終Ruffとgit diff checkも通過．CPUコード検査はモデル精度の証拠とは別です．
 
-Ollama qwen3.5:2b（実体2.3B/Q8_0）の15種event表記正規化を225train窓へ伝播済み．`weak_labels_propagated_v1/`．heldout参照0，元gold変更0，新しい潜在意図gold0．モデル自身の予測をtest正解へ使いません．
+次段階は[EEGMMIDB benchmark設計](benchmark/NEXT_EEGMMIDB_BENCHMARK.md)から開始します．現時点で設計のみ，新データのモデル入力0です．109groupsを76/16/17へ分ける案は未生成・未封印です．全recordを160Hzとせず，50label review，trainだけのQC，因果的変換とcue漏洩防止を先に固定します．既存UniBa／ITUへ再fitせず，新しい別protocol・runにしてください．
 
-公式CBraModをprivate/upstream/CBraModへcommit b9e961003214326972c567eff390e75b0287e32aで取得済み．weights revision500543c7e30bda1b22bfd51a49301b238dee21fd，SHA0792cb808c14e6b7a2bb2ce1dff379bc47bc54c49a779825bdfeb33bf8157178．weights_only／strict load，4,883,800parameters，実train3窓をCPU2threadsで通し0.033秒．GPU calls0，学習0，test0．公式source／19.8MB weightsのhashはreports/cbramod_cpu_capacity_probe.json．入力は最後1秒のみ200Hzへresample，V×1e4．これから結合学習をする場合は独立protocolを固定してください．
+既存事前学習モデルへのEEGMMIDB混入が不明なら独立holdout主張を限定します．native float32全EEGは計算上7,120,224,256 Bで，200Hz変換・窓複製・checkpoint・回収の必要容量は別です．全量RAM読込みを避け，35 GiB空きを保持します．次回候補はCPU QC30分，GPU枠60分ですが，予約済み予算ではありません．新protocolへ絶対期限・CU・機種・容量試験と回収／停止枠を記録してください．性能で規則を後付け変更しません．
 
-## 次の独立実験と外部 cohort
+## 継続予約と再開順序
 
-新module `model/cbramod_token_llm.py`（SHA b0c397176f8cb9e6dd759ed7169c0029c870f756c501ce317c2e6c7c41f32505），protocol（SHA fddc652d9cf963154d1dc07ff5903b3c7e1b4cfaf7f1d3b22ba00b0085e79bcb）を固定して実行済みです．frozen CBraModの8×200 featureをLayerNorm＋LinearでSmol1.7Bの8prefix tokensへ投影し，412,048parametersのみ学習．EEG encoderはCPU FP32，LLMはL4／M1です．元eeg_llm.py不変．A/B/C token IDs330/389/340，train400窓の2,400境界検証を通過し，同じ3logitsのCEとsoftmaxで統一しました．13CPUtestsをworkstation／Colab双方で通過（cloud scratchはfixture不在で12pass/1skip）．旧label長・EOS，encoder，入力長，正規化，予算を同時に変えた探索実験です．
+2026-11-22 14:15:26 Asia/Tokyoの継続予約は `Automation_f439325b5d888191bc75e92d1ba97be7` です．公開APIにはモデルProを固定する指定がなく，Pro固定済みとはしません．最新promptとenabled状態はautomation側で確認してください．
 
-run：`runs/cbramod_smollm2_uniba_v3_symbol_v1`．gate：`cbramod_smollm2_uniba_v3_symbol_evaluation`，receiptは同runの`variant_evaluation_completion.json`，checkpointはbest.pt．容量probe8/16/32が各50stepsを通過しbatch32を選択，probe weightsは本学習に再利用していません．本学習は30epochs／390steps／429.33秒で正常完了．最大CUDA reserved9,219,080,192B．best epoch23，SHA3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c．後続wrapperの評価script path誤りはtest推論前に停止し，失敗receiptを保持して評価段階だけ再開しました．学習繰返し0．203×5条件評価は61.35秒で完了．strictのmemory_measurement_scope欄は初稿を保全して実測値を補完し再集計，追加推論0．
+1．この文書，git／PR，controller停止receipt，bulk／resolverの本人性を確認します．完了モデル・外部評価・試用を繰り返しません．
+2．bulk／metadataの実結果を新snapshotへ保存します．BCI Database.zip等のpartialは保持し，期限後の継続が必要なら空き・完成済み・新しい予算を検証して明示的に登録します．重複workerを起動しません．
+3．取得完了archiveをchecksum・header・annotation・原区間単位で監査し，数量を更新します．metadata queueの追記はimmutable snapshotとINSERT-onlyで行います．
+4．EEGMMIDBの新metadata契約・subject split・label reviewを固定し，train QC・因果性・cue非開示・容量を検査して学習manifestを封印します．未解決なら理由を保存します．
+5．新しいworkstation経由Colab枠でcapacity probe→val選択学習→checkpoint封印→test1回→全回収／hash照合→session停止を行います．既存の学習許可内で進め，旧期限を黙って延長しません．
+6．結果・限界をGitHubとProject Xavier Google Docへ反映し，具体的に残る作業があれば継続予約へ引き継ぎます．将来の実課題ベンチマークには，正解目的，判断前状態，EEG同期，操作結果，無操作区間を持つ記録が必要です．
 
-CBR forcedBA fused35.09%，context33.33%，EEG-only31.48%，shuffle30.05%，−10秒34.80%．fused固定.8 coverage47.29%，selective accuracy43.75%で未校正．AI AUROC.6053，fused−shuffle差.1609［.1004,.2548］，−10秒差.1293［.0521,.2227］は探索的信号ですが，context-onlyとの差CI［−.0399,.1158］は0を含みます．固定.5はAI10/39，FP36/164．L4 p95 46.92msは部分処理のみ．strict integrity0，shuffle/shift203件passed，resourcepassed，goalunproven．publicはreports/cbramod_symbol_final.aggregate.json とbenchmark/CBRAMOD_UNIBA_V3_RECORDED_COMPARISON.md．
+Google Doc：学校アカウント，folder `1SL-QixFxmElPUvt28oC8k7HDvrUdFGY2`．[実行・検証記録](https://docs.google.com/document/d/1kGlNqvZEg_AzSYKGTiGF3Z0HcVIxNGNimNwpR6w1680/edit?tab=t.7cvfsge8pwil)は同文書の新tab `t.7cvfsge8pwil` に追記し，旧Tab1／EEGデータ規模比較の本文を保持します．古い時点の集計を最新値で上書きしません．
 
-CBR archive177,230,987B，SHAcb0fd60b4a2488abacdbc7418d71061d5bd8d51bd45a9a018ec2a804bd0d1878，371members全SHA一致でworkstation回収完了．同best4,963,861B．LLM／CBraMod元weightsは別の固定依存です．新M1 wrapperはintegration/try_cbramod_recorded_eeg.py，focused9tests通過．train各class1例のM1試行もexit0，checkpoint／閾値／source不変，3例の分類は一致しましたがtrainでのruntime確認です．全例proxy_label_has_no_explicit_intent_mappingでrouter block，OS0／cloud0．private/xavier/demos/cbramod_uniba_v3_train_examples_v1/summary.json．contract SHAa55521c8360bfe7b19dfc8b1b7a58b93f07e22ca790df9284e576ac013de9490．実施済みtrialを再実行せず，ユーザー用の新しい出力先はREADMEにあります．
-
-ITU外部test-only cohortは `model/prepare_itu_external.py` で準備・独立検証・workstation回収済み．`/content/xavier/prepared/ai_coding_itu_external_v3_natural_casecontrol_v1`，manifest SHAcfd93863b8f8e263174e6ab59395496efbd397e821542fa3a1f0c1e5faa503b0，protocol SHA6dae42f26833eab36028b886907a4cfcf9047f3ad76af182c497129cd885eca0．25clock-pass記録全て，630窓（AI126,key252,click252），25arrays9,034,880B，0.30625h，train/val0．630原波形窓全サンプル，630実label，1,260history，204source membersを独立再照合．49files回収hash一致．公開reports/itu_external_cohort_v3_20261122_v1/．原波形hashのUniBaとの重複0ですが，unqualified participant labels21件共有のためglobal human identity分離の証明ではありません．1外部siteのためsite-cluster CIは不能です．
-
-ITU外部評価はbenchmark/external_evaluation.pyとscore_external_predictions.pyの別契約で全推論・集計・回収・独立監査まで完了しました．旧protocol f1633...はhistory adapterの入力schema誤想定（availability=trueを要求）を予測0件の時点で検出したため保全し，offline false＋4.125s＋過去境界を検証する修正版を予測前に固定しました．有効protocolはprotocol.itu_external_evaluation.v2.json，SHA1acd857958d034125c4a69d222b7564c15531f17cdf89a509d6319beb625eb02．外部cohort／checkpoint／thresholdは不変．3 neural×5条件＋4固定history＝19条件，各630例，計11,970予測を最終QA済みです．
-
-外部fused3classBAはSmol34.52%，Qwen36.11%，CBR34.13%．AI AUROCは.559366［.514256,.607123］／.534218［.470577,.599478］／.515920［.459164,.572050］．fixed.5 recall0/126，0/126，7/126（CBR FP35/504）．3モデル全9対照差CIが0を含み，UniBaのCBR信号の外部再現は未確認．public benchmark/ITU_EXTERNAL_THREE_MODEL_RESULTS.md，itu_external_three_models_aggregate.json（SHA058d8a6255b57057520262206ffae1663cf2aba9baa978195249defee4258e86），itu_external_completion_audit.json（SHA524a00074112fd696b1ea9e8a2a405d16f4f562b26135d6126495c81831aa94d）．private1955members回収照合，archive SHA92aab5641e54d3f95193b1f83fc37bd41c950747d1c25c9f4a97c2c8b5f143c5．stateはprivate/xavier/external_itu_ops/postprocessing_state.json．新SSL gateのlive反映後にcanonical公開・回収も完了しました．元3モデルを再推論しません．
-
-ITU history4モデルはCPU推論済み，fit0／閾値変更0，元UniBa1,624確率を差0.0で再現．AI BAはpre-EEG history68.55%，＋context67.36%，guarded decision history77.48%，＋context76.98%．public reports/itu_external_history_20261122_v2/．EEG無しで得られる成績であり，EEG寄与比較の強い対照です．濃縮標本の20%AI比率を自然利用の頻度と混同しません．
-
-追加の未ラベル学習候補はUniBa train18人15.991899h＋portable19人34.897061h，75記録50.888960h，物理EEG samples5,454,564,672Bです．portableの3装置を同じsubject groupにして15人train／4人SSL reconstruction validationを先に固定し，ITU全量とUniBa val/test・clock不合格を除外しました．この50.889hは品質検査前の候補量です．UniBa18記録のBIDS V／header0.1µVは異なる表記として台帳保存していますが，通常のMNE-BIDS0.16／pybv0.7.6 writer pathで説明でき，表記差だけでは尺度の誤りを示しません．public reports/uniba_amplitude_provenance_20261122_v1/で訂正．元XDF／device calibrationがないことが実際のprovenance不足です．fresh MNEと独立header換算で元train400窓の全1,433,600値がsealed配列に一致し，既存尺度は保持しました．inventoryはprivate/xavier/ssl_source_inventory_v1/．
-
-前処理は196.48秒で完了し，全6,040候補窓の排他的会計も通過しました．固定QC通過は2,200窓／18.333333h，内訳はtrain1,678窓／13.983333h，SSL validation522窓／4.35hです．166配列1,685,013,248B．UniBaは1,902候補から8窓／240秒／3原記録のみ採用され，portable2,192窓が大半です．固定条件はresampling後の全sample最大絶対値100µV以下，各channel std0.01µV以上，finiteです．QC後に条件や尺度を変更していません．大きなdomain偏りを結果に付記してください．全166配列・421,248,000値の独立検査，実8/32chのtrain勾配finite/nonzeroも通過．最大abs99.955µV／最小channel std0.391µV．
-
-corpus：private/xavier/prepared/ssl_portable_uniba_v1/．manifest SHA216729840806ca20040331baf59ddeadea4e62bc48a19a57c183810e13dd9043，artifacts SHA3dc4599eef7093584e806c15c39c99be42b0fef33851a60e2f5c7ade6f883be2，allowlist SHAe2c44f7135afa8a3d5a896d6ad7f8f335d418d77a34d2815497e1335ef736215，preprocessing protocol SHA642246adb9bf39a9652a2ccb9fdbead834c611fbd4f5325b8dfc08d54fba45a5．採用時間を実際にモデルが見た時間と同一視せず，runのseen IDs／区間和集合で報告してください．
-
-SSLは30秒非重複窓，1秒200Hz patches，実8/32EEG channels，mask.5，公式4.924M encoder/headのmasked raw reconstruction MSEです．validation maskはID+seed固定．SSL1800秒＋同じ400窓へのalignment900秒，旧CBRの末尾1秒・A/B/C・seed・batch32・30epochs等を維持し，追加SSL重みだけを変更する別moduleです．phase plan SHA b547fb49aaac9b60c10aec6c48c668f632ff8b366b849a68c307ed10796959e3．trainer47f24f9429bdc9af9495b121c4bf2cbc94ce62dbeb6b1033eeff6a4a88fe60fd，newalignmentf246128e909d3581168fbda7a5d062dc31491f27e96b6cae999579795a04fe10．実公式8/32ch backprop，array index完全対応，再開後val非改善で旧bestを保持するcaseを含めCPU17tests全PASS．public reports/cbramod_ssl_cpu_verification.json．corpus実SHA入り最終protocol model/cbramod_ssl_training_protocol.jsonはSHA9f264097ae6699fa4320e89afc26a5eac999bee0113788325c6001f6d249a8b0で封印済みです．全264転送membersのSHAを照合後，11:54:19 JSTにGPU idle，208.98GB空き，CU410.58，残時間5174.75秒で4200秒admissionを通過し，SSL supervisor55817（start_ticks1338445）を起動しました．workflow/current_stageとPID identityを再確認して続けます．batch8/16/32/64の50step試験が通過し，試した範囲の最大64を選択（絶対上限とは未検証）．11:55:42 JST開始のSSL本番は10epochs／280steps／169.792秒で完走，固有train1,678窓50,340秒＝13.983333h全て使用，GPU peak reserved7,841,251,328B．採用はepoch8，weights SHA0132c9372cbcff28ad36965de043f7b8190233e9faba8ce3ec02c2ae8c93f3e7，210tensor更新．採用時までの反復111.866667h，job全体139.833333hを新規EEG量に加えません．initialval MSE.0011834に対してbest trained.0014948と悪化しており，SSL復元改善の証拠ではありません．51metadataを回収済み，public reports/cbramod_ssl_pretraining.aggregate.json．11:59:27 JSTにmatched alignment child57203開始．matched alignmentは30epochs／390steps／432.709秒で完走，best SHAd2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16．12:07:56 JSTにはUniBa5条件も完了しました．fused3classBA34.20%，context33.33%，EEG35.98%，shuffle29.11%，−10秒34.44%．元CBR fused35.09%より改善せず，strict integrity0／shuffle203／rawshift203／L4資源pass，goal unprovenです．第4ITU評価・全weights回収・M1試用は別に進行しています．新しい実験・予算・gateを固定し，既存deadlineを無記録で延長しません．
-
-rootの `reports/selected_eeg_interval_audit_20261122.json` で全manifestの原記録SHA別interval unionを独立確認．UniBa trainは元700秒／CBraMod末尾400秒，val271.25／155秒，test355.25／203秒．ITUは1102.5／630秒．どちらの窓長でもoverlap0．epoch反復提示時間や取得原記録87.9hとは合算しません．
-
-M1の一括試用は実行済みです．`private/xavier/demos/m1_natural_v3_train_examples_v1/summary.json`．train各class1例，heldout使用0，全3例abstainでrouter block，OS0／cloud0．元32配列，checkpoint，model，backendのhash不変．そのprepared dirは再実行せず，新しい試用はREADMEの未使用output名を使います．公開集計は `reports/recorded_eeg_demo_20261122_v1/`．
-
-## 次の作業と継続予約
-
-Project Xavierフォルダの既存研究資料に「2026-11-22 実行・検証記録」タブを追加済みです．Google Doc ID1kGlNqvZEg_AzSYKGTiGF3Z0HcVIxNGNimNwpR6w1680，tab IDt.7cvfsge8pwil．入力準備段階のcheckpointとして取得量・外部3モデル結果・QC・試用・現在の認証状態を保存しました．既存2タブ本文不変，新本文・native tables・source linksをreadback検証．private/xavier/google_doc_update_20261122_checkpoint.jsonが根拠です．単位表記差のみでは尺度誤りを示さないことを同タブ本文に訂正済み（最終readbackで確認すること）．追加SSLの結果は完成後に同タブへ追記し，準備量を完了学習量と読み替えないでください．
-
-追加コードを含むlocal validation04は，38 test files／89 Python source filesのsnapshotで365件＋127 subtestsが通過しました．初回はSSL用fixture環境変数名の違いで2件skipとなりましたが，既存の公式weightsを指定してその2件だけを追加実行し通過，未実行skipは0です．前後source SHA不変，AST／Ruff／diff checkも通過．public reports/local_validation_20261122_04.json，SHA77349647cdf393ce460f6f9da2f475ddf6dee766ee5b48d72d0c275e65e43494．後から追加されるharness等のコードをこのsnapshotで検証済みとは扱いません．
-
-12:14 JSTにroot focused validation05を実行し，新しい5 test filesの37 tests＋27 subtestsが全PASS，skip0でした．99 Python sourcesの前後SHA不変，AST／Ruff／diff checkも通過．public reports/local_validation_20261122_05.json（SHAeed8ff4333bae2e6c46d399b76d1b23f36de64ca867f979141df8d130c70076e）．validation04の365 testsを再実行したものではありません．
-
-1. 完了済みの M1／Qwen v3／CBraMod symbol学習・五条件評価・strict・回収・M1試用を再実行しない．現在のSSL workflow stateと起動receiptを先に確認する．
-2. 全23seed原本・checkpoint・予測・reportのSHA回収receiptを照合する．chunkや保全コピーを新しいcorpus bytesへ足さない．大容量CLI downloadへ戻さない．
-3. ITU外部630例での元3モデル×5条件＋保存済み履歴4モデルは計19条件を完了済み．新SSLモデルは別の探索的external protocolを予測前に固定し，元評価を変更・再実行しない．外部cohortをtrain/val扱いに書き換えず，語彙・scaler・係数の再fitや閾値選択も行わない．
-4. 固定した13.983333hのtrain EEGによるSSLは完走済み．同条件のalignment，5条件評価，別protocolのITU評価，strict，回収，M1試用を完了する．ITU全量と既存val/test原記録を除外．元checkpointを保存し，容量/CU・元Colab期限13:20:34 JST・回収余裕を守る．
-5. 実ハーネスの目的達成・idle誤作動・因果的live EEGの評価は未成立として残す．公開coding資料にUML・初期APIはあるが自動Java test本体と判断前の編集状態記録がないため，遡及的task completion採点は不能．独立Java plumbing benchmark v2は公開予定16filesをroot review済み，5fixtureの実測・6Python guards PASS．exact RuntimeExceptionを要求し，偶発的NPEに得点を与えたv1の弱点を修正，旧source／resultはprivate保全．人工fixtureの成功をEEGモデルによる自律操作成功と扱わない．
-6. metadata新規解決分をimmutable snapshotからINSERT-onlyで追加し，容量・アクセス保留を明示する．未解決scope，Guestbook，SSH認証，storageを成功扱いしない．smac19認証後は本人性と実資源を確認して計算投入する．
-7. 新結果を明記してcommit／pushし，現在のbranch・PR71の状態と最新workflowを確認する．PR70は既に外部でmerge済み．force push／mergeは行わない．raw／重み／秘密をgitへ入れない．
-
-同一threadの一回の継続予約は **2026-11-22 14:15:26 Asia/Tokyo**，enabled確認済み．ID：`Automation_f439325b5d888191bc75e92d1ba97be7`．利用モデルをProへ固定するパラメータは公開されていないため，Pro固定済みとは報告しません．予約はこの文書，git，receiptを読んで既存ジョブを重複せず継続する設定です．全て完了した場合は不要な予約を解除し，残件があれば具体的な次の再開条件を残してください．
+最終記録：Google Docの完了追記は28本文段落・新規native table2表・見出し7・source link6件を読み戻し検証し，旧2tabsのbodyが不変でした．証拠は `private/xavier/google_doc_final_update_20261122.json`．継続予約は14:15:26 JST，enabled=true，完了済み4モデルと停止済みColabを反映したpromptへ更新済みで，`private/xavier/automation_final_handoff_20261122.json` に保存しています．
