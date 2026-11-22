@@ -1,0 +1,56 @@
+{
+  "schema": "pj-xavier-acquired-progress-v1",
+  "locations": [
+    {
+      "location": "workstation",
+      "observed_started_utc": "2026-11-22T01:59:16.364490+00:00",
+      "observed_finished_utc": "2026-11-22T01:59:31.668472+00:00",
+      "ledger_rows": 468040,
+      "ledger_snapshot_sha256": "90395a7b001f144ff6902620966c4ba0f850f741d980a8ced832dd8614ba81cc",
+      "ledger_status_counts": {
+        "queued": 467640,
+        "access_action_required": 342,
+        "complete": 16,
+        "retry": 3,
+        "metadata_blocked": 38,
+        "running": 1
+      },
+      "complete_file_copies": 16,
+      "complete_file_copy_bytes": 3348369667,
+      "partial_file_copies": 3,
+      "partial_observed_bytes": 9081331952,
+      "held_file_count": 0,
+      "sha256_reverified": true
+    },
+    {
+      "location": "colab",
+      "observed_started_utc": "2026-11-22T01:58:43.246240+00:00",
+      "observed_finished_utc": "2026-11-22T01:59:15.656358+00:00",
+      "ledger_rows": 23,
+      "ledger_snapshot_sha256": "2425c5f1b30e443b0ec12a9a8591443643ca3ed5f5d60fb2095ed2ed6fefeb62",
+      "ledger_status_counts": {
+        "complete": 23
+      },
+      "complete_file_copies": 23,
+      "complete_file_copy_bytes": 11221153522,
+      "partial_file_copies": 0,
+      "partial_observed_bytes": 0,
+      "held_file_count": 0,
+      "sha256_reverified": true
+    }
+  ],
+  "completed_file_copies": 39,
+  "completed_file_copy_bytes": 14569523189,
+  "completed_unique_sha256_contents": 39,
+  "completed_unique_sha256_bytes": 14569523189,
+  "deduplication": "Identical complete file content SHA-256 is counted once across all supplied ledgers.",
+  "interpretation": "Acquired release payload bytes, including multimodal sidecars. This is not pure EEG bytes, unique recordings, or all catalog data.",
+  "known_deduplication_limits": [
+    "Different raw/filtered exports can have different hashes for the same recording.",
+    "Archives are not compared with their extracted members.",
+    "Replica archives outside the selected acquisition ledgers are omitted."
+  ],
+  "recording_hours": null,
+  "hours_reason": "Requires independent header and recording-identity audits; never inferred from bytes.",
+  "all_catalog_files_downloaded": false
+}

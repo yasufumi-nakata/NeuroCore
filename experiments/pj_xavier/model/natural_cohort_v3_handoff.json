@@ -1,6 +1,6 @@
 {
   "schema": "xavier-natural-cohort-v3-handoff",
-  "status": "m1_training_completed_final_evaluation_running_qwen30e_running",
+  "status": "m1_training_evaluation_and_train_example_trial_completed_goal_unproven",
   "registered_protocol_sha256": "d4e6c5f685dce53e73b3aa88d12ed07c88a8ac08a27fb78392dbd99aed0a6396",
   "preparer_sha256": "e856267e8478f7c65bbc5a1ca5da90f72e38029245f55d7cb9816b15a757430c",
   "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
@@ -69,7 +69,8 @@
     "status": "Actual registered protocol has been executed by benchmark agent; the earlier fixed-C suggestion is superseded.",
     "priority_protocol": "../benchmark/protocol.history_uniba_v3.json",
     "actual_public_aggregate": "../benchmark/history_baseline_v3_aggregate.json",
-    "actual_private_report": "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/private/xavier/runs/history_baselines_uniba_v3_v1/history_report.json"
+    "actual_private_report": "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/private/xavier/runs/history_baselines_uniba_v3_v1/history_report.json",
+    "model_comparison_public_aggregate": "../benchmark/smollm2_1_7b_uniba_v3_history_aggregate.json"
   },
   "interpretation": {
     "sampling_design": "case_control_enriched",
@@ -80,10 +81,12 @@
     "online_causality_verified": false,
     "history_features_are_not_automatically_injected_into_existing_llm_prompt": true,
     "v2_vs_v3_metric_warning": "Different selected cohorts/prevalences; do not call the difference between v2 and v3 reported accuracies model improvement without evaluating fixed checkpoints on the same preregistered test cohort.",
-    "source_hours_warning": "v3 reuses v2 source recordings; do not add their source hours as independent EEG."
+    "source_hours_warning": "v3 reuses v2 source recordings; do not add their source hours as independent EEG.",
+    "m1_eeg_increment_established": false,
+    "m1_fused_threshold_0_8_coverage": 0.0
   },
   "m1_live_run": {
-    "status": "training_completed_final_evaluation_running",
+    "status": "completed_goal_unproven",
     "pid": 20716,
     "run_dir": "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/private/xavier/runs/smollm2_1_7b_uniba_natural_v3_fused_v1",
     "model": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
@@ -125,7 +128,7 @@
     "process_peak_rss_bytes": 419807232,
     "training_aggregate": "../reports/smollm2_1_7b_m1_natural_v3_training.aggregate.json",
     "final_evaluation": {
-      "status": "running",
+      "status": "completed_goal_unproven",
       "supervisor_pid": 29035,
       "child_pid": 29036,
       "started_at": "2026-11-22T01:05:18Z",
@@ -145,7 +148,90 @@
       "candidate_batch_size": 2,
       "evaluator_sha256": "bd92732e088ff633d2ff299161cf47a8a5630435c4c425dbae7992f563bc0447",
       "model_or_threshold_changed": false,
-      "test_used_for_tuning": false
+      "test_used_for_tuning": false,
+      "completed_at": "2026-11-22T01:24:56Z",
+      "elapsed_seconds": 1177.7106241249712,
+      "source_report_sha256": "e1d32bfbc462f6fcb21c7118f73a0db1e78940f320da2eee7580bfb6d88d4026",
+      "strict_report_sha256": "8f837c0c0baedc513ed25730e4181b92b88a45aaf3f434c58e5bd4042478ddbc",
+      "public_aggregate": "../reports/smollm2_1_7b_m1_natural_v3_evaluation.aggregate.json",
+      "public_aggregate_sha256": "4f62dc11ff498551c66eeba182a1abcf75974c56dd289313d1294ac26726ee41",
+      "integrity_errors": [],
+      "negative_controls_passed_records": 203,
+      "strict_resource_peak_missing": true,
+      "hardware_compatible": true,
+      "inference_succeeded": true,
+      "isolated_latency_measurement": false
+    },
+    "process_active": false,
+    "train_example_trial": {
+      "status": "completed",
+      "examples": 3,
+      "source_split": "train",
+      "abstained_examples": 3,
+      "router_blocked_examples": 3,
+      "os_actions_executed": 0,
+      "cloud_agent_calls": 0,
+      "heldout_records_used_for_demo": 0,
+      "summary_sha256": "2975e744870eb69b876157f5b22d610c2b29c814551d155a22e6a262b3c18211",
+      "generalization_accuracy_estimated": false
+    },
+    "history_comparison": {
+      "status": "completed",
+      "public_aggregate": "../benchmark/smollm2_1_7b_uniba_v3_history_aggregate.json",
+      "public_aggregate_sha256": "5ce95453561775664c7aebb8d6fa598cae5f49db7b1c008c1762ec64a89309f5",
+      "ai_vs_other_fused": {
+        "n": 203,
+        "positive_support": 39,
+        "negative_support": 164,
+        "sample_prevalence": 0.1921182266009852,
+        "threshold": 0.5,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "balanced_accuracy": 0.5,
+        "precision_enriched_sample_only": null,
+        "auroc": 0.6164790494058787,
+        "auprc_average_precision_enriched_sample_only": 0.2932016005140407,
+        "brier_enriched_sample_only": 0.15512707769001374,
+        "confusion": {
+          "tp": 0,
+          "fn": 39,
+          "tn": 164,
+          "fp": 0
+        }
+      },
+      "ai_vs_other_fused_subject_bootstrap": {
+        "recall": {
+          "lower_95": 0.0,
+          "upper_95": 0.0,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        },
+        "specificity": {
+          "lower_95": 1.0,
+          "upper_95": 1.0,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        },
+        "balanced_accuracy": {
+          "lower_95": 0.5,
+          "upper_95": 0.5,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        },
+        "auroc": {
+          "lower_95": 0.52961214473163,
+          "upper_95": 0.6885866477272726,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        },
+        "auprc_average_precision_enriched_sample_only": {
+          "lower_95": 0.22696709753744376,
+          "upper_95": 0.40531718102875086,
+          "valid_resamples": 1000,
+          "invalid_resamples": 0
+        }
+      },
+      "interpretation": "Observed submit-event scores on the enriched held-out sample; no calibrated intent confidence or natural-population precision."
     }
   },
   "superseded_three_epoch_qwen_proposal": {

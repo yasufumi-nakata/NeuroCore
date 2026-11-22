@@ -1,0 +1,75 @@
+{
+  "schema": "xavier-itu-external-natural-cohort-v3-v1",
+  "registered_before_event_selection": true,
+  "purpose": "Prepare the unused ITU site as external_test only, using the unchanged UniBa v3 case/control, signal and history rules.",
+  "site": "itu",
+  "partition": "external_test",
+  "cpu_threads_maximum": 2,
+  "frozen_inputs": {
+    "uniba_v3_protocol_sha256": "d4e6c5f685dce53e73b3aa88d12ed07c88a8ac08a27fb78392dbd99aed0a6396",
+    "uniba_v3_manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+    "itu_alignment_audit_sha256": "b7d2bd664c661c2328f5394a7f3a2c24d8177e154974b21ef86cf4788c7ce916",
+    "itu_source_verification_sha256": "fd62aae6d772038c55a5e80c21d1b5472adb5f235666e2ae485346a91ae0a476",
+    "itu_extracted_members_sha256": "c598e398e305084ff988650191312b283294a58034346c07600bc8e06eb282be",
+    "itu_eeg_archive_sha256": "1e192b5e65931b9a44858acd987d540d3436de3fddf99454170b93434c2c99b5",
+    "itu_behavior_archive_sha256": "fb501e02f74120f665ce860e004bf214bd17381068e497e4986c2a56923167c9",
+    "itu_recipe_evidence_sha256": "128168ba9250d91a2cddb2e049c00681eb3c5badb64a8f2f172ee474cb48f413"
+  },
+  "helper_source_sha256": {
+    "prepare_ai_coding.py": "38e3cca302b456f5c918c03d93d5f71d77ffe636efbc3f90840cf89ac2d8badc",
+    "prepare_natural_cohort.py": "e856267e8478f7c65bbc5a1ca5da90f72e38029245f55d7cb9816b15a757430c",
+    "audit_brainvision_archive.py": "ee49f8b06bd6b0b7370b40d112eb21985ae68695a40b353e21532ee095debaff"
+  },
+  "unchanged_parent_sections": ["signal", "case_definition", "control_definition", "selection", "history_features"],
+  "helper_reuse": ["read_recorded_events", "make_candidates", "select_case_control", "history_features", "require_parent_phase_hash"],
+  "inclusion": {
+    "audit_recordings": 26,
+    "clock_passed_recordings_expected": 25,
+    "require_both_pass_status_and_verified_clock": true,
+    "clock_max_error_ms": 100,
+    "clock_max_drift_ppm": 5000,
+    "clock_phase_scale": 1,
+    "phase_file_must_match_frozen_clock_audit_sha256": true,
+    "process_every_clock_pass_recording": true,
+    "zero_window_recording_policy": "Retain the recording and exclusion reason in the audit; do not adjust quotas or invent windows.",
+    "failed_clock_policy": "Keep the failed record in the audit and create no windows; no threshold or scale changes."
+  },
+  "selection_identity": "Pass the original header stem to the unchanged control ranking helper; use site-qualified recording and observation IDs in output.",
+  "signal_confirmation": {
+    "channels": ["CP3", "C3", "F5", "PO3", "PO4", "F6", "C4", "CP4"],
+    "sample_rate_hz": 256,
+    "window_samples": 448,
+    "window_seconds": 1.75,
+    "eeg_window_minimum_lead_s": 4.5,
+    "assumed_filter_lookahead_s": 4.125,
+    "nominal_decision_minimum_lead_s": 0.375,
+    "new_filtering_resampling_rereferencing": false
+  },
+  "identity_and_overlap": {
+    "observation_subject_id": "itu:<source participant label>",
+    "raw_waveform_hash_comparison": "Every audited ITU binary SHA256 versus every raw EEG SHA256 referenced by the frozen UniBa v3 manifest, across all UniBa partitions.",
+    "on_exact_cross_site_binary_match": "Fail preparation; do not silently move or discard a record.",
+    "same_participant_label_across_sites": "Neither proof of the same person nor a guarantee of different people.",
+    "human_identity_disjointness_verified": false,
+    "byte_distinctness_implies_independent_people": false
+  },
+  "history": {
+    "primary_cutoff": "window_start_s minus clock_guard_s",
+    "additional_cutoff": "decision_time_s minus clock_guard_s",
+    "strict_source_onset_rule": "Only source onsets strictly less than cutoff; cutoff must be before target event.",
+    "prohibited_features": ["GPT events", "target label", "future events", "key contents", "mouse coordinates", "event duration"],
+    "context_cutoff": "Unchanged pre-EEG oTree context, at or before window start minus clock guard."
+  },
+  "use_constraints": {
+    "train_examples": 0,
+    "validation_examples": 0,
+    "model_selection_on_itu": false,
+    "label_counts_used_to_adjust_protocol": false,
+    "model_inference_in_this_stage": false,
+    "training_in_this_stage": false,
+    "online_causality_verified": false,
+    "latent_intent_labels_available": false,
+    "natural_population_precision_estimated": false,
+    "source_recording_hours_are_not_additive_to_prepared_window_hours": true
+  }
+}

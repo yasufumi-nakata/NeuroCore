@@ -53,7 +53,7 @@ prepared archive:
 
 ## 固定した実行と最終評価
 
-M1 の SmolLM2-1.7B v3 は3 epochsを完了し，validationのみで選んだbestを固定しました．203 test窓を同じbestで5条件評価する処理を実行中です．元波形から10秒前の区間を取り出す対照は，全203窓でsourceとの一致を検証済みです．評価完了・性能達成を先取りして主張しません．
+M1 の SmolLM2-1.7B v3 は3 epochsを完了し，validationのみで選んだbestを固定して，8人・203 test窓の5条件評価を完了しました．元波形から10秒前の区間を取り出す対照も，全203窓でsourceとの一致を検証済みです．strict検証のintegrity errorsは0，shuffle／raw time shiftは各203件passedでした．目的の自律操作は未検証です．
 
 ColabのQwen8Bは，別に事前保存した `../benchmark/protocol.qwen3_8b_uniba_v3_30e.json` に従い，30 epochs／最大3600秒のrunを開始しました．当初の3-epoch提案はsupersededとしてhandoffへ保全し，重複起動しません．M1とColabでは学習予算が異なるため，差をモデルサイズだけの効果と解釈できません．
 
@@ -69,4 +69,14 @@ ColabのQwen8Bは，別に事前保存した `../benchmark/protocol.qwen3_8b_uni
 
 Validationのbalanced accuracyは1〜3 epochで33.33%，37.63%，33.87%となり，2 epoch目をbestに選びました．この時点でAI送信のrecallは0であり，目的達成を主張できません．best checkpointは2,022,605 bytes，SHA-256は `281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475` です．学習集計は `../reports/smollm2_1_7b_m1_natural_v3_training.aggregate.json` にあります．
 
-M1のvalidation scoringは約1秒／例で，仮定上のdecision→event余裕0.375秒より長くなっています．この同じdeadlineでのオンライン操作達成を示すものではありません．5条件の最終評価と履歴対照の比較は別のreceiptで確認します．
+M1のvalidation scoringは約1秒／例で，仮定上のdecision→event余裕0.375秒より長くなっています．この同じdeadlineでのオンライン操作達成を示すものではありません．5条件の最終評価と履歴対照の比較も完了し，それぞれのreceiptを保存しました．
+
+## M1 の最終 held-out 結果と試用
+
+5条件の固定best評価は1177.71秒で完了しました．強制3分類のbalanced accuracyはfused 35.37%，context only 35.77%，EEG only 33.33%，同一記録内shuffle 35.37%，raw 10秒前のEEG 34.55%です．EEGの上乗せは示せていません．同じfused checkpointの入力除去比較であり，別に最適化した単一modalityモデルの比較ではありません．
+
+固定したabstention threshold 0.8ではfusedの全203件が保留され，coverageは0でした．AI送信対その他の補助二値集計でも，0.5閾値のrecallは0/39，balanced accuracyは50%，AUROCは0.6165（被験者bootstrap 95%区間0.5296–0.6886）です．EEGなしのguarded操作履歴＋coarse context baselineは，この同じcase-control標本でbalanced accuracy 86.59%でした．日常の誤操作率へ変換できず，その履歴情報をEEGモデルが超えたとも言えません．集計は `../reports/smollm2_1_7b_m1_natural_v3_evaluation.aggregate.json` と `../benchmark/smollm2_1_7b_uniba_v3_history_aggregate.json` です．
+
+M1 fused推論はp50 1097.46 ms，p95 1460.66 msでした．同じworkstationで取得・metadata/controller・軽いCPU監査が並行しており，無負荷・隔離したlatency測定ではありません．MPS driver memoryの終了時sampleは4,318,724,096 bytes，真の瞬間peakは計測していません．実機での学習・推論成功は確認していますが，strict resource gateのpeak証拠不足は残ります．これはOOMの発生を意味しません．
+
+固定train例3件のEEG入力からモデル推論，ControlRouter，DryRunActionSinkまでの試用も1回完了しました．3件とも閾値未満でabstainし，routerがblockしました．OS操作0，cloud agent呼出0，heldout利用0，model／閾値変更0です．これらは試用経路の確認であり，汎化性能の追加評価ではありません．

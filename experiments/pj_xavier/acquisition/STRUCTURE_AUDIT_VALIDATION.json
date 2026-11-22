@@ -1,0 +1,27 @@
+{
+  "schema_version": "pj-xavier-structure-audit-validation-v1",
+  "status": "validated_read_only",
+  "source_code_sha256": "4ab96724e3b3ea48f27bc14fadbf12e32cc161fdca7875115f3fc860bb7949d3",
+  "rules_sha256": "8c941233ce3cb54785f4af43d8aa0099e3a2b96b52845888d5f4e4fba5a38387",
+  "test_source_sha256": "5b3f864827f5007185142bf17ede0f380c2906405da1db18def489df0e8b652f",
+  "local_fixture_tests": {"passed": 8, "failed": 0},
+  "workstation_fixture_tests": {"passed": 8, "failed": 0},
+  "full_queue": {
+    "files": 468040,
+    "known_bytes": 15821047310466,
+    "unknown_size_files": 38,
+    "zero_size_files": 1074,
+    "releases": 609,
+    "ordered_metadata_sha256": "67f7749a4cad41ab871d90ae1b5e58d985b3549f85a02d735e5122d0a0e13688",
+    "classification_stream_sha256": "fd4d2d4d829b7e916f88a5592c7f70e97bc8762ede8ff5ebbb56b4a04820f928",
+    "summary_sha256": "f887797e320336ef510c8bc0bea9811bc710c2f5ae7d53c43a854e2378026ab4",
+    "all_sql_totals_equal": true,
+    "categories_exclusive": true,
+    "release_review_groups_exclusive": true,
+    "elapsed_s": 18.138761043548584
+  },
+  "queue_changed": false,
+  "downloads_started": 0,
+  "header_verifications_performed": 0,
+  "recording_hours_estimated": false
+}

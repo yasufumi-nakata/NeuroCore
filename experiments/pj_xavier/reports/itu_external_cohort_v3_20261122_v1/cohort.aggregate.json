@@ -1,0 +1,77 @@
+{
+  "schema": "xavier-itu-external-natural-cohort-v3-v1",
+  "status": "prepared",
+  "site": "itu",
+  "partition": "external_test",
+  "source_release": "zenodo:20801101",
+  "protocol_sha256": "6dae42f26833eab36028b886907a4cfcf9047f3ad76af182c497129cd885eca0",
+  "preparer_sha256": "d3b3dc3b7daf8c1eba55d7ee8ae4ddf3eeac4807d16f9e6ef3c0bb1e9ef76256",
+  "helper_source_sha256": {
+    "prepare_ai_coding.py": "38e3cca302b456f5c918c03d93d5f71d77ffe636efbc3f90840cf89ac2d8badc",
+    "prepare_natural_cohort.py": "e856267e8478f7c65bbc5a1ca5da90f72e38029245f55d7cb9816b15a757430c",
+    "audit_brainvision_archive.py": "ee49f8b06bd6b0b7370b40d112eb21985ae68695a40b353e21532ee095debaff"
+  },
+  "frozen_inputs": {
+    "uniba_v3_protocol_sha256": "d4e6c5f685dce53e73b3aa88d12ed07c88a8ac08a27fb78392dbd99aed0a6396",
+    "uniba_v3_manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+    "itu_alignment_audit_sha256": "b7d2bd664c661c2328f5394a7f3a2c24d8177e154974b21ef86cf4788c7ce916",
+    "itu_source_verification_sha256": "fd62aae6d772038c55a5e80c21d1b5472adb5f235666e2ae485346a91ae0a476",
+    "itu_extracted_members_sha256": "c598e398e305084ff988650191312b283294a58034346c07600bc8e06eb282be",
+    "itu_eeg_archive_sha256": "1e192b5e65931b9a44858acd987d540d3436de3fddf99454170b93434c2c99b5",
+    "itu_behavior_archive_sha256": "fb501e02f74120f665ce860e004bf214bd17381068e497e4986c2a56923167c9",
+    "itu_recipe_evidence_sha256": "128168ba9250d91a2cddb2e049c00681eb3c5badb64a8f2f172ee474cb48f413"
+  },
+  "recordings_audited": 26,
+  "clock_pass_recordings_processed": 25,
+  "clock_blocked_recordings": 1,
+  "status_counts": {
+    "prepared": 25,
+    "blocked": 1
+  },
+  "selected_windows": 630,
+  "counts": {
+    "train": {},
+    "val": {},
+    "external_test": {
+      "mouse_click": 252,
+      "keyboard": 252,
+      "ai_prompt_submit": 126
+    }
+  },
+  "external_observation_subjects": 25,
+  "eeg_array_files": 25,
+  "prepared_eeg_bytes": 9034880,
+  "selected_input_hours": 0.30625,
+  "source_recording_hours_all": 21.30617947048611,
+  "clock_passed_recording_hours": 20.516737196180557,
+  "source_hours_and_window_hours_are_not_additive": true,
+  "raw_request_events_in_clock_passed_records": 126,
+  "cross_site_comparison": {
+    "uniba_raw_waveform_hashes": 32,
+    "itu_raw_waveform_hashes": 26,
+    "exact_binary_hash_matches": 0,
+    "shared_unqualified_participant_labels": 21,
+    "canonical_observation_id_overlap": 0,
+    "human_identity_disjointness_verified": false,
+    "scope": "All source hashes referenced by frozen UniBa v3 versus all audited ITU raw binaries; byte distinction does not establish different people."
+  },
+  "source_members_rehashed": 204,
+  "manifest_sha256": "cfd93863b8f8e263174e6ab59395496efbd397e821542fa3a1f0c1e5faa503b0",
+  "history_features_sha256": "1326aef4ea7b0a3010f21c13cff56f7e476ff6da948673dac99dd8974ab853c9",
+  "labels_sha256": "59933900a4998579bcf3d0484d0b07dc128859b2a8cbb023e9362db3ddab5d41",
+  "membership_sha256": "66351f4e59cf84f6e51eff0032139ab685327a2afbf6916ec5dcb9bdb52f3762",
+  "eeg_artifacts_sha256": "87d5e0b944df33ac27f4101308022a9aa769c1080f043332a2d06feb0d2e3f02",
+  "online_causality_verified": false,
+  "latent_intent_labels_available": false,
+  "natural_population_precision_estimated": false,
+  "training_started": false,
+  "model_loaded": false,
+  "model_selection_on_itu": false,
+  "predictions_created": false,
+  "gpu_execution": false,
+  "preparation_device": "cpu",
+  "cpu_threads_maximum": 2,
+  "mne_version": "1.13.2",
+  "numpy_version": "2.4.6",
+  "elapsed_s": 39.5508553981781
+}

@@ -1,0 +1,91 @@
+{
+  "schema": "xavier-cbramod-symbol-capacity-aggregate-v1",
+  "status": "measured_all_registered_candidates",
+  "model_source_sha256": "b0c397176f8cb9e6dd759ed7169c0029c870f756c501ce317c2e6c7c41f32505",
+  "protocol_sha256": "fddc652d9cf963154d1dc07ff5903b3c7e1b4cfaf7f1d3b22ba00b0085e79bcb",
+  "selection_sha256": "b480a6b5e97fabfe36c721e02b6de875565ce783b632f2933c9051a92d3671b1",
+  "selected_batch": 32,
+  "selection_rule": "largest_stable_train_only_candidate",
+  "fresh_main_initialization": true,
+  "probe_weights_reused": false,
+  "validation_or_test_scores_used": false,
+  "capacity_limit_gib": 21,
+  "candidates": [
+    {
+      "batch_size": 8,
+      "source_report_sha256": "0839c44161d21d1afe36cd27224bc88e597fb521ff576e40d7b4e68fa027c00a",
+      "status": "completed_train_only_probe",
+      "steps": 50,
+      "elapsed_seconds": 7.632009983999524,
+      "train_step_seconds_p50": 0.12809063300028356,
+      "train_step_seconds_p95": 0.13400729230015712,
+      "memory": {
+        "process_peak_rss_bytes": 4379889664,
+        "cuda_peak_allocated_bytes": 4866475008,
+        "cuda_peak_reserved_bytes": 4892655616
+      },
+      "probe": {
+        "training_examples_processed": 400,
+        "validation_examples": 0,
+        "test_examples": 0,
+        "requested_steps": 50,
+        "completed_requested_steps": true,
+        "at_least_one_train_epoch_equivalent": true,
+        "last_ten_reserved_range_bytes": 0,
+        "allocator_stable_last_ten": true,
+        "weights_must_not_seed_main_training": true
+      }
+    },
+    {
+      "batch_size": 16,
+      "source_report_sha256": "28961c18451068227fd34a2b82fc8f012a7e432c218b0a01bba53c49ecc61a42",
+      "status": "completed_train_only_probe",
+      "steps": 50,
+      "elapsed_seconds": 14.109650292999504,
+      "train_step_seconds_p50": 0.25380422649959655,
+      "train_step_seconds_p95": 0.2578453192501001,
+      "memory": {
+        "process_peak_rss_bytes": 4379574272,
+        "cuda_peak_allocated_bytes": 6287908864,
+        "cuda_peak_reserved_bytes": 6341787648
+      },
+      "probe": {
+        "training_examples_processed": 800,
+        "validation_examples": 0,
+        "test_examples": 0,
+        "requested_steps": 50,
+        "completed_requested_steps": true,
+        "at_least_one_train_epoch_equivalent": true,
+        "last_ten_reserved_range_bytes": 0,
+        "allocator_stable_last_ten": true,
+        "weights_must_not_seed_main_training": true
+      }
+    },
+    {
+      "batch_size": 32,
+      "source_report_sha256": "7642fc582555fe9023281804e5f53bf9e778974ce94204d056d4aa44073077e4",
+      "status": "completed_train_only_probe",
+      "steps": 50,
+      "elapsed_seconds": 26.58873885400135,
+      "train_step_seconds_p50": 0.5104524260004837,
+      "train_step_seconds_p95": 0.5167726978502287,
+      "memory": {
+        "process_peak_rss_bytes": 4381700096,
+        "cuda_peak_allocated_bytes": 9130740736,
+        "cuda_peak_reserved_bytes": 9219080192
+      },
+      "probe": {
+        "training_examples_processed": 1552,
+        "validation_examples": 0,
+        "test_examples": 0,
+        "requested_steps": 50,
+        "completed_requested_steps": true,
+        "at_least_one_train_epoch_equivalent": true,
+        "last_ten_reserved_range_bytes": 0,
+        "allocator_stable_last_ten": true,
+        "weights_must_not_seed_main_training": true
+      }
+    }
+  ],
+  "interpretation": "Largest measured eligible candidate among8/16/32, not proof of maximum possible hardware batch or sustained future fit."
+}

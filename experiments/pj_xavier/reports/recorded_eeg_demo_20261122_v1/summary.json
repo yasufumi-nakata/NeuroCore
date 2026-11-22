@@ -1,0 +1,96 @@
+{
+  "schema_version": "pj-xavier-recorded-train-demo-public-v1",
+  "status": "completed",
+  "completed_epoch": 1795310934.394249,
+  "selected_partition": "train",
+  "heldout_records_used_for_demo": 0,
+  "model_or_threshold_changed": false,
+  "os_actions_executed": 0,
+  "cloud_agent_calls": 0,
+  "autonomous_agent_validated": false,
+  "generalization_accuracy_estimated": false,
+  "probabilities_are_calibrated_intent_confidence": false,
+  "checkpoint_sha256": "281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475",
+  "source_manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "examples": [
+    {
+      "source_split": "train",
+      "recorded_action_label": "ai_prompt_submit",
+      "predicted_label": "mouse_click",
+      "probabilities": {
+        "ai_prompt_submit": 0.1591651737689972,
+        "keyboard": 0.39450258016586304,
+        "mouse_click": 0.44633227586746216
+      },
+      "abstain": true,
+      "abstain_threshold": 0.8,
+      "router_blocked": true,
+      "reason": "model_abstained_or_abstention_flag_missing",
+      "os_action_executed": false
+    },
+    {
+      "source_split": "train",
+      "recorded_action_label": "keyboard",
+      "predicted_label": "mouse_click",
+      "probabilities": {
+        "ai_prompt_submit": 0.16037411987781525,
+        "keyboard": 0.3938480019569397,
+        "mouse_click": 0.44577789306640625
+      },
+      "abstain": true,
+      "abstain_threshold": 0.8,
+      "router_blocked": true,
+      "reason": "model_abstained_or_abstention_flag_missing",
+      "os_action_executed": false
+    },
+    {
+      "source_split": "train",
+      "recorded_action_label": "mouse_click",
+      "predicted_label": "mouse_click",
+      "probabilities": {
+        "ai_prompt_submit": 0.13187435269355774,
+        "keyboard": 0.32781410217285156,
+        "mouse_click": 0.5403115153312683
+      },
+      "abstain": true,
+      "abstain_threshold": 0.8,
+      "router_blocked": true,
+      "reason": "model_abstained_or_abstention_flag_missing",
+      "os_action_executed": false
+    }
+  ],
+  "artifacts": {
+    "predictions.jsonl": {
+      "bytes": 2074,
+      "sha256": "9581778ba5608b084b27df85793d3219f9c2a15f74116ec98a67da23741c88ec"
+    },
+    "predictions.metadata.json": {
+      "bytes": 1659,
+      "sha256": "bd97ea95b55bd00afb13597a122655e6f3ab589a5b352f2488eab05e2ac7b32e"
+    },
+    "dry_run_audit.jsonl": {
+      "bytes": 1284,
+      "sha256": "18dc57b92cc40e78d01beef1a314a366d3dcc1f347fb68bb4195d6887767f3eb"
+    },
+    "dry_run_audit.summary.json": {
+      "bytes": 521,
+      "sha256": "a2db3e33d66439c28348a66064e49cae087e6b7e1d9959fe9d479e1ddbabdcc9"
+    }
+  },
+  "private_summary_sha256": "2975e744870eb69b876157f5b22d610c2b29c814551d155a22e6a262b3c18211",
+  "plan_sha256": "65150113bbc0760552d76b7c52ad389832562c9495101b7e9688ed8365db67e5",
+  "wrapper_sha256": "8387729dedf3bacba2c68d496db489079b03709d7e209f3f9b24bfd6cfdbc7d6",
+  "arrays_verified": 32,
+  "execution_attempts": 1,
+  "elapsed_s": 16.538283109664917,
+  "all_sources_unchanged_at_publication": true,
+  "cpu_fixture_tests_passed": 9,
+  "runtime": {
+    "n_examples": 3,
+    "runtime_dtype": "bfloat16",
+    "checkpoint_training_dtype": "bfloat16",
+    "memory_budget_gib": 8.0,
+    "candidate_batch_size": 2,
+    "abstain_threshold": 0.8
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "n": 630,
+  "label_counts": {
+    "mouse_click": 252,
+    "keyboard": 252,
+    "ai_prompt_submit": 126
+  },
+  "site_participant_observation_ids": 25,
+  "raw_sources": 25,
+  "train_or_validation_rows": 0,
+  "cross_site_raw_sha_matches": 0,
+  "human_identity_disjointness_verified": false,
+  "identity_limit": "Site-qualified participant labels distinguish observations; matching short labels neither prove nor exclude the same human across sites.",
+  "prepared_artifact_files": 25,
+  "prepared_artifact_bytes": 9034880,
+  "independent_raw_validation_sha256": "4c9d066e99a8db6e72d192565b3c6d7406a7253cb7b84ab9a66212cc262ce7a5",
+  "current_run_raw_rederivation": false,
+  "current_run_prepared_hash_reverification": true
+}

@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "source_sha256": "9161261bdada59f83f1080d17bcf30f303445fbf8002b5cc210b90ccc4c39a31",
+  "test_source_sha256": "8fa6f4ff7d9096364a5e0f9a07c321000ac37f6d74371e36c887fc4ace45de1c",
+  "local_unit_tests": 11,
+  "workstation_unit_tests": 11,
+  "unit_tests_failed": 0,
+  "external_input_preflight_passed": true,
+  "original_uniba_probabilities_compared": 1624,
+  "original_uniba_max_absolute_difference": 0.0,
+  "no_model_fit_or_test_tuning": true,
+  "preserved_initial_attempt_external_predictions": 0
+}

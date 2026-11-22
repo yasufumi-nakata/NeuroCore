@@ -1,0 +1,116 @@
+{
+  "schema": "xavier-external-history-uniba-parity-v1",
+  "status": "passed",
+  "source_sha256": "9161261bdada59f83f1080d17bcf30f303445fbf8002b5cc210b90ccc4c39a31",
+  "history_source_sha256": "5be7b7c4e91f6776895e2454adbec2ba12bfba1548e572e69b61ce7b9704ea13",
+  "common_source_sha256": "1b74445e9a85c34c86eaa435805b427ba8dbee4d675f6d3e0a4b301b1c10ff08",
+  "uniba_manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "frozen_baseline_files": {
+    "protocol.json": "102593d8c1e5fd0c69600950e93f37aae098f90af55194cdc7fdd314ab06f25a",
+    "completion.json": "e7ff81f57cc6286e7942cbb1aa1119814dbd98fb3edfd398ef31356b06c79232",
+    "selection.json": "0576e0d46e2add279e8a1145431a51c00f8d978772acd37c95f2bb786af83631",
+    "history_report.json": "8444307baa019ca4de01987962d7473b095ec4b943be8620bf3759af711fd795",
+    "test_predictions.jsonl": "884bd99377c45103502a260aa778ddd760f54ccb60b88a3976107b6ec9eb3f75",
+    "ai_vs_other__history_pre_eeg.npz": "eefc3dbe70c123a532d792ed622cdbf63720833993baa7ee17592830afc5ec63",
+    "ai_vs_other__history_pre_eeg_plus_context.npz": "255eecc1b295861d325101da7b1f415a001b22b8e603213510ad3ea0e4968701",
+    "ai_vs_other__history_pre_decision_guarded.npz": "dbf67b450c1c57cabdc44896e575b960172a21ddc0174bddc379c5f14ab9e6be",
+    "ai_vs_other__history_pre_decision_guarded_plus_context.npz": "4161c5f87730bc2a07984541e89c81a6a0c045d419dec564e9a18068a70875c0"
+  },
+  "models": {
+    "ai_vs_other:history_pre_eeg": {
+      "status": "passed",
+      "n": 203,
+      "probability_values_compared": 406,
+      "absolute_tolerance": 1e-10,
+      "max_absolute_difference": 0.0,
+      "class_order": [
+        "ai_prompt_submit",
+        "other_observed_action"
+      ],
+      "selected_model_unchanged": true
+    },
+    "ai_vs_other:history_pre_eeg_plus_context": {
+      "status": "passed",
+      "n": 203,
+      "probability_values_compared": 406,
+      "absolute_tolerance": 1e-10,
+      "max_absolute_difference": 0.0,
+      "class_order": [
+        "ai_prompt_submit",
+        "other_observed_action"
+      ],
+      "selected_model_unchanged": true
+    },
+    "ai_vs_other:history_pre_decision_guarded": {
+      "status": "passed",
+      "n": 203,
+      "probability_values_compared": 406,
+      "absolute_tolerance": 1e-10,
+      "max_absolute_difference": 0.0,
+      "class_order": [
+        "ai_prompt_submit",
+        "other_observed_action"
+      ],
+      "selected_model_unchanged": true
+    },
+    "ai_vs_other:history_pre_decision_guarded_plus_context": {
+      "status": "passed",
+      "n": 203,
+      "probability_values_compared": 406,
+      "absolute_tolerance": 1e-10,
+      "max_absolute_difference": 0.0,
+      "class_order": [
+        "ai_prompt_submit",
+        "other_observed_action"
+      ],
+      "selected_model_unchanged": true
+    }
+  },
+  "cohort": {
+    "label_counts": {
+      "train": {
+        "ai_prompt_submit": 80,
+        "keyboard": 160,
+        "mouse_click": 160
+      },
+      "val": {
+        "ai_prompt_submit": 31,
+        "keyboard": 62,
+        "mouse_click": 62
+      },
+      "test": {
+        "ai_prompt_submit": 39,
+        "keyboard": 82,
+        "mouse_click": 82
+      }
+    },
+    "samples": {
+      "train": 400,
+      "val": 155,
+      "test": 203
+    },
+    "subjects": {
+      "train": 18,
+      "val": 6,
+      "test": 8
+    },
+    "subject_disjoint": true,
+    "physical_source_disjoint": true,
+    "split_id_hashes": {
+      "train": "28cd039c7bef7b1022702d1cc3902072806cf629870904c4f6309b91b836ddb1",
+      "val": "a5cd051e9261c4b263493c2ee18a8b07abca9914165cbafb01a4502c7394ffc3",
+      "test": "207ca0bce22fdc608ebb3e3f958ae12428c9f2b508be1fb65f2aed9483a67770"
+    },
+    "prepared_artifact_files": 32,
+    "prepared_artifact_bytes": 10870784,
+    "prepared_artifact_manifest_sha256": "a430d9318af1791f9df646bbe0d182eb5d003b8b6fc1b10971b6758cd652172d",
+    "raw_archive_reverification": "not performed here; prepared waveform bytes matched the running LLM's frozen artifact ledger"
+  },
+  "model_fit_calls": 0,
+  "vocabulary_fit_calls": 0,
+  "C_selection_calls": 0,
+  "probability_convention": "column 1 = sigmoid(standardized_x @ coefficient + intercept); column 0 = 1 - column 1; classes order read from each saved artifact",
+  "artifact_solver_description_note": "The original portable solver field says multinomial logistic; the original two-class sklearn estimator uses binary logistic. Exact saved-prediction parity, not that descriptive string, authenticates the probability mapping.",
+  "external_predictions_created": false,
+  "elapsed_s": 1.196471708943136
+}

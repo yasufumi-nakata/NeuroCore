@@ -1,0 +1,9 @@
+{
+  "change": "Public CSV line endings normalized CRLF to LF; private audit export preserved",
+  "old_sha256": "17490f7ac8fcc575afb8e3c3a4bf260b06c9b90e11e85814e7e5a3f49bb9a411",
+  "new_sha256": "6a4f90529bc2184aea401f16fafbfd54f5ff50d3ffc84819a81fa3344472fc92",
+  "release_rows": 609,
+  "all_csv_values_unchanged": true,
+  "classification_or_queue_changed": false,
+  "audited_source_and_rules_unchanged": true
+}

@@ -1,0 +1,299 @@
+{
+  "started_epoch": 1795310712.530616,
+  "rules_sha256": "8c941233ce3cb54785f4af43d8aa0099e3a2b96b52845888d5f4e4fba5a38387",
+  "code_sha256": "4ab96724e3b3ea48f27bc14fadbf12e32cc161fdca7875115f3fc860bb7949d3",
+  "rules": {
+    "schema_version": "pj-xavier-path-structure-rules-v1",
+    "fixed_before_first_full_queue_audit": true,
+    "unit": "one queued file job in one pinned provider release",
+    "scope": "Path and extension evidence only; no file payload, archive inventory, header or channel metadata is read",
+    "path_field_precedence": [
+      "original_relative_path if nonempty",
+      "relative_path"
+    ],
+    "normalization": "Unicode casefold; backslash becomes slash; no file or URL is opened",
+    "precedence": [
+      "unusable path",
+      "uninspected archive or archive volume",
+      "video, audio, image or neuroimage payload extension",
+      "software or documentation extension",
+      "explicit physiological suffix overrides surrounding EEG or MEG directory",
+      "conflicting explicit EEG, iEEG or MEG path tokens",
+      "explicit modality plus signal, numeric container, sidecar or other suffix",
+      "modality-unspecified signal format, numeric container, sidecar, compression or unknown"
+    ],
+    "modality_directory_tokens": {
+      "eeg": [
+        "eeg"
+      ],
+      "ieeg": [
+        "ieeg",
+        "seeg",
+        "ecog"
+      ],
+      "meg": [
+        "meg"
+      ],
+      "neuroimage": [
+        "anat",
+        "func",
+        "dwi",
+        "fmap",
+        "pet",
+        "mri"
+      ]
+    },
+    "modality_filename_tokens": {
+      "eeg": [
+        "eeg"
+      ],
+      "ieeg": [
+        "ieeg",
+        "seeg",
+        "ecog"
+      ],
+      "meg": [
+        "meg"
+      ]
+    },
+    "token_boundary": "Complete underscore, hyphen, dot or space-delimited token in filename stem; exact directory component",
+    "archive_suffixes": [
+      ".tar.gz",
+      ".tar.bz2",
+      ".tar.xz",
+      ".tar.zst",
+      ".zip",
+      ".7z",
+      ".rar",
+      ".tar",
+      ".tgz",
+      ".tbz",
+      ".tbz2",
+      ".txz",
+      ".cab"
+    ],
+    "archive_volume_regex": "(?:\\.(?:zip|7z|rar)\\.\\d{3}|\\.z\\d{2}|\\.r\\d{2})$",
+    "single_compression_suffixes": [
+      ".gz",
+      ".bz2",
+      ".xz",
+      ".zst"
+    ],
+    "video_extensions": [
+      ".mp4",
+      ".avi",
+      ".mov",
+      ".mkv",
+      ".mpg",
+      ".mpeg",
+      ".webm",
+      ".wmv",
+      ".flv",
+      ".m4v",
+      ".mj2"
+    ],
+    "audio_extensions": [
+      ".wav",
+      ".flac",
+      ".mp3",
+      ".ogg",
+      ".aac",
+      ".m4a",
+      ".aiff",
+      ".aif",
+      ".wma"
+    ],
+    "image_extensions": [
+      ".png",
+      ".jpg",
+      ".jpeg",
+      ".tif",
+      ".tiff",
+      ".bmp",
+      ".gif",
+      ".webp",
+      ".svg",
+      ".eps"
+    ],
+    "neuroimage_extensions": [
+      ".nii",
+      ".mnc",
+      ".mgz",
+      ".mgh",
+      ".gii",
+      ".nrrd",
+      ".dcm",
+      ".dicom"
+    ],
+    "signal_extensions": [
+      ".edf",
+      ".bdf",
+      ".gdf",
+      ".eeg",
+      ".set",
+      ".fdt",
+      ".cnt",
+      ".fif",
+      ".sqd",
+      ".con",
+      ".meg4",
+      ".nwb",
+      ".xdf",
+      ".dat",
+      ".bin",
+      ".raw",
+      ".ns1",
+      ".ns2",
+      ".ns3",
+      ".ns4",
+      ".ns5",
+      ".ns6",
+      ".nev",
+      ".tdat"
+    ],
+    "generic_eeg_format_extensions": [
+      ".edf",
+      ".bdf",
+      ".gdf",
+      ".eeg",
+      ".set",
+      ".fdt",
+      ".cnt"
+    ],
+    "generic_meeg_format_extensions": [
+      ".fif",
+      ".sqd",
+      ".con",
+      ".meg4"
+    ],
+    "generic_neurophysiology_extensions": [
+      ".nwb",
+      ".xdf",
+      ".ns1",
+      ".ns2",
+      ".ns3",
+      ".ns4",
+      ".ns5",
+      ".ns6",
+      ".nev"
+    ],
+    "numeric_container_extensions": [
+      ".mat",
+      ".h5",
+      ".hdf5",
+      ".npy",
+      ".npz",
+      ".csv",
+      ".tsv",
+      ".txt",
+      ".parquet",
+      ".pkl",
+      ".pickle",
+      ".xls",
+      ".xlsx",
+      ".dat",
+      ".bin",
+      ".raw"
+    ],
+    "sidecar_extensions": [
+      ".json",
+      ".xml",
+      ".yaml",
+      ".yml",
+      ".log",
+      ".vhdr",
+      ".vmrk",
+      ".res4",
+      ".hsp",
+      ".elp",
+      ".sfp",
+      ".locs",
+      ".elc",
+      ".ced",
+      ".xyz",
+      ".pos",
+      ".bval",
+      ".bvec",
+      ".hdr",
+      ".tidx",
+      ".mrk"
+    ],
+    "sidecar_stems": [
+      "channels",
+      "events",
+      "electrodes",
+      "coordsystem",
+      "scans",
+      "participants",
+      "sessions",
+      "samples",
+      "aslcontext",
+      "headshape",
+      "markers"
+    ],
+    "sidecar_exact_names": [
+      "readme",
+      "license",
+      "changes",
+      "authors",
+      "dataset_description"
+    ],
+    "physiology_filename_tokens": [
+      "physio",
+      "stim",
+      "ecg",
+      "eog",
+      "emg",
+      "eyetrack",
+      "eyetracking",
+      "pupil",
+      "motion"
+    ],
+    "documentation_extensions": [
+      ".md",
+      ".rst",
+      ".pdf",
+      ".html",
+      ".htm",
+      ".doc",
+      ".docx",
+      ".rtf",
+      ".tex"
+    ],
+    "software_extensions": [
+      ".py",
+      ".ipynb",
+      ".m",
+      ".r",
+      ".sh",
+      ".bash",
+      ".c",
+      ".cpp",
+      ".h",
+      ".jl",
+      ".js",
+      ".ts",
+      ".exe",
+      ".dll",
+      ".so",
+      ".dylib"
+    ],
+    "special_packages": {
+      "mff": "A .mff directory and signal*.bin child is an EEG-format candidate without confirmed scalp channels",
+      "mefd": "A .mefd directory is an intracranial format hint; payload still unverified",
+      "ds": "A .ds directory is a MEG-format hint; simultaneous EEG content remains unknown"
+    },
+    "critical_limitations": [
+      "A meg recording may contain simultaneous EEG channels; meg paths never establish absence of EEG",
+      "EDF, BDF, FIF, NWB and general numeric extensions never establish scalp EEG content without headers",
+      "Archive filenames remain uninspected even when the name contains EEG",
+      "EEG JSON, VHDR and VMRK are tracked as companion candidates, not waveform byte totals",
+      "EEGLAB SET can embed samples or refer to FDT; queue bytes are not unique recordings or hours",
+      "Known bytes sum published file sizes, including other modalities and distinct release versions",
+      "Category file and byte totals are additive; category release counts overlap and must not be added",
+      "No queue status, ordering, inclusion, download or training approval is changed"
+    ],
+    "primary_reference": "Brain Imaging Data Structure 1.11.2, Electroencephalography, Intracranial Electroencephalography, Magnetoencephalography including simultaneous EEG, Magnetic Resonance Imaging; consulted 2026-11-22"
+  },
+  "rules_frozen_before_full_queue_scan": true
+}

@@ -1,6 +1,6 @@
 {
   "schema": "xavier-m1-natural-v3-training-aggregate-v1",
-  "status": "training_completed_final_evaluation_running",
+  "status": "training_and_frozen_five_condition_evaluation_completed_goal_unproven",
   "model": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
   "revision": "31b70e2e869a7173562077fd711b654946d38674",
   "architecture": "Frozen causal LLM with a trainable EEG encoder/projector prepended as input embeddings; answer-token loss only",
@@ -252,10 +252,14 @@
     "cpu_fallback": false
   },
   "final_test": {
-    "status": "running_separate_frozen_five_condition_evaluation",
+    "status": "completed_separate_frozen_five_condition_evaluation",
+    "public_aggregate": "smollm2_1_7b_m1_natural_v3_evaluation.aggregate.json",
+    "public_aggregate_sha256": "4f62dc11ff498551c66eeba182a1abcf75974c56dd289313d1294ac26726ee41",
     "selected_checkpoint_sha256": "281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475",
     "test_used_for_model_selection": false,
-    "thresholds_unchanged": true
+    "thresholds_unchanged": true,
+    "frozen_test_records": 203,
+    "frozen_test_subjects": 8
   },
   "interpretation": {
     "model_can_train_in_current_workstation": true,

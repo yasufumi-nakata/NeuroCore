@@ -1,0 +1,3 @@
+-r requirements.txt
+# Explicit dependency for the frozen 256 -> 200 Hz input transformation.
+scipy>=1.14,<2

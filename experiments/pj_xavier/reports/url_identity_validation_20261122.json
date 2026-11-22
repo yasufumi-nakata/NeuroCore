@@ -19,7 +19,7 @@
     "duration_seconds": 1.78,
     "ruff": "passed",
     "git_diff_whitespace": "passed",
-    "codeql_rerun": "pending_new_pull_request"
+    "codeql_rerun": "passed"
   },
   "source_sha256": {
     "acquisition/acquire.py": "1c3c2099d0ded2009c098c2f3b3eabbe5148f6b0e50fdb22754f0dbaad33f597",
@@ -32,5 +32,14 @@
     "download_rows_changed": 0,
     "raw_files_changed": 0
   },
-  "note": "Existing workers retain their previously recorded loaded source. The corrected source is used by future launches; frozen training source is unchanged."
+  "note": "Existing workers retain their previously recorded loaded source. The corrected source is used by future launches; frozen training source is unchanged.",
+  "codeql_followup": {
+    "observed_at": "2026-11-22T10:40:00.784650+09:00",
+    "pull_request": 71,
+    "head_sha": "2bd3f08d2e9439f7ed9b2fcba8a19008b3d23c2b",
+    "check_run_id": 137051913994,
+    "conclusion": "success",
+    "all_nine_pr_checks": "success",
+    "url": "https://github.com/yasufumi-nakata/NeuroCore/runs/137051913994"
+  }
 }

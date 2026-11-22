@@ -1,0 +1,85 @@
+{
+  "schema": "xavier-local-validation-v3",
+  "runtime": "workstation Python3.12.13",
+  "status": "passed",
+  "pytest": {
+    "argv": [
+      "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/.venv-xavier/bin/python",
+      "-m",
+      "pytest",
+      "experiments/pj_xavier/acquisition/test_acquire.py",
+      "experiments/pj_xavier/acquisition/test_append_public_queue.py",
+      "experiments/pj_xavier/acquisition/test_audit_queue_structure.py",
+      "experiments/pj_xavier/acquisition/test_hold_access_requirement.py",
+      "experiments/pj_xavier/acquisition/test_portable_eeg_audit.py",
+      "experiments/pj_xavier/acquisition/test_report_progress.py",
+      "experiments/pj_xavier/baselines/test_cpu_baselines.py",
+      "experiments/pj_xavier/baselines/test_summary.py",
+      "experiments/pj_xavier/benchmark/test_compare_frozen_v3_models.py",
+      "experiments/pj_xavier/benchmark/test_evaluate_variants.py",
+      "experiments/pj_xavier/benchmark/test_external_evaluation.py",
+      "experiments/pj_xavier/benchmark/test_external_history_baselines.py",
+      "experiments/pj_xavier/benchmark/test_final_gates.py",
+      "experiments/pj_xavier/benchmark/test_history_baselines.py",
+      "experiments/pj_xavier/benchmark/test_score_external_predictions.py",
+      "experiments/pj_xavier/benchmark/test_xavier_benchmark.py",
+      "experiments/pj_xavier/controller/test_chunk_recovery.py",
+      "experiments/pj_xavier/controller/test_controller.py",
+      "experiments/pj_xavier/fleet/test_fleet.py",
+      "experiments/pj_xavier/integration/test_replay_to_neurocore.py",
+      "experiments/pj_xavier/integration/test_try_cbramod_recorded_eeg.py",
+      "experiments/pj_xavier/integration/test_try_recorded_eeg.py",
+      "experiments/pj_xavier/labeling/test_ollama_label_worker.py",
+      "experiments/pj_xavier/labeling/test_propagate_weak_labels.py",
+      "experiments/pj_xavier/model/test_ai_coding.py",
+      "experiments/pj_xavier/model/test_brainvision_archive_audit.py",
+      "experiments/pj_xavier/model/test_cbramod_token_llm.py",
+      "experiments/pj_xavier/model/test_eeg_llm.py",
+      "experiments/pj_xavier/model/test_natural_cohort.py",
+      "experiments/pj_xavier/model/test_prepare_itu_external.py",
+      "experiments/pj_xavier/previous_probes/test_eeglab_action_probe.py",
+      "experiments/pj_xavier/previous_probes/test_label_probe.py",
+      "-q",
+      "--junitxml",
+      "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/private/xavier/validation_20261122_03/junit.xml"
+    ],
+    "started_epoch": 1795313198.153606,
+    "finished_epoch": 1795313217.405897,
+    "elapsed_seconds": 19.252290964126587,
+    "exit_code": 0,
+    "status": "completed",
+    "test_files": 32,
+    "source_files": 74,
+    "source_files_changed_during_validation": [],
+    "log_sha256": "47bbbdcd90d70b7e6bab0f90b3722f064a0e7e151562fb82d1eafaf9b8907073",
+    "thread_limit": 2,
+    "official_CBraMod_fixture_enabled": true,
+    "scope": "All test files present when this validation began. Files added afterwards require their own validation."
+  },
+  "pytest_log_tail": "............................................................................................ [ 28%]\n.................................................. [ 43%]\n................................................................................................................................... [ 84%]\n...................................................               [100%]\n324 passed, 94 subtests passed in 17.63s\n",
+  "junit": {
+    "sha256": "3a1e2aed93a2c09a1f9771b36ca3742b9f3e6474b1562fd3dc426c2473bd8f82",
+    "suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "418",
+        "time": "17.613",
+        "timestamp": "2026-11-22T11:06:38.419832+09:00"
+      }
+    ]
+  },
+  "ruff": {
+    "exit_code": 0,
+    "stdout": "All checks passed!\n",
+    "stderr": ""
+  },
+  "git_diff_check": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "scope": "Snapshot of32 test files and74 source files present at launch. Later-added or revised modules require separate focused validation; this does not attest future code."
+}
