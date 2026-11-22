@@ -1,5 +1,9 @@
 # S Macでの取得・追加学習（2026-11-22）
 
+## 最新追加：BCI8089820のZIP全量取得・元グループ分離とtrain1記録QC（2026-11-23 04:26 JST）
+
+**smac05上で27,475,466,178BのZIP実取得と全体SHAを再検証**しました．ファイル1,071＋dir96，オリジナルGDF694件です．87元グループをmetadata-onlyでtrain56／val12／test12／author-review7へ凍結し，クロス名義完全重複グループを同一foldに拘束しました．元GDF1件（27ch，512Hz）だけをsmac05→smac35へSHA一致直接転送し，S Macでの固定因果処理後の3秒窓**61／61件が数値QC合格**を確認しました．元eventレート0の問題・他445件のQC・独立test・実OS動作は未検証．**今回のgradient0，累積22.581667h**のままです．[詳細](BCI8089820_SMAC_SPLIT_AND_QC_20261123.md)．
+
 ## 最新：SSVEP9970619 metadata-only splitをS Macで凍結（2026-11-23 03:18 JST）
 
 取得済み44記録を11名義token単位で7train／2val／2testに事前固定し，train28記録／名目18,320秒のFDTについてS Macだけで全SHAと数値診断を完了しました．val/test信号は未読込，metadata SHAは`5a896a2d8031846743dfd8f80379672ecf8879f77f5226d7d8ebf195d40f9f70`．物理Vの校正証拠とcross-ID重複が未解決のため**fit0窓／0steps**で保留します．2026-11-23 03:17:35 JSTの37台実測は**complete192,660files／1,920,312,507,448B**，partial553,929,410,805B，supervisor37/37，欠損・不一致・error0．累積CBraMod学習量は22.581667hのまま．詳細は[SSVEP split/QC実績](SSVEP9970619_METADATA_FROZEN_20261123.md)．
