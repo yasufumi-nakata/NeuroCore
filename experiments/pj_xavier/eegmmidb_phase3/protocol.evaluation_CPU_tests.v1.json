@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "tests": 15,
+  "test_modules": [
+    "benchmark_test_ssl_audit",
+    "benchmark_test_adapter"
+  ],
+  "workstation_receipt_sha256": "5b38f09963fc0b63a0bb3347b96d81186ecdcb3001445c73bc5d251f92550e5e",
+  "evaluation_execution_seal_sha256": "564017c4cba3d01fe6a9d47fe152b52aee8fc0df84b51c4276b25dc006a660cc",
+  "model_forward_calls": 0,
+  "source_sha256": {
+    "benchmark_adapter.py": "93492090008e8a8258a289f5d798b8e7c1a291f21fff032fbe44c88061fde3aa",
+    "benchmark_ssl_audit.py": "3275cbb7fce1b284ad7345749b151a234603a7e3435aaf3cc0b09ef6479a045c",
+    "benchmark_test_ssl_audit.py": "84c76fb4fb2b92f3ad43dedc7114f28d7b9f07e2ba580ff8017c5099c71ef6fb",
+    "benchmark_test_adapter.py": "bdd2255a0f8ac118faf8e4d59560090f3a6c691add8d39c22c853fd9272e9931",
+    "harness_compare.py": "c7b098d74d13be95666aaeee46feb66ac06fb4a40124dbd436130991c701f974",
+    "protocol.evaluation.v1.json": "d3d654a5d91b77e7b47e7117740c64af1bcd1bf0d903deb261191afd7d645ae8"
+  },
+  "scope": "Pre-evaluation tests of saved-loss subject averaging, epoch0/earliest selection, recorded exposure identity/native-time unions, source admission and unchanged multi-model evaluation receipts. These tests do not claim successful empirical model evaluation."
+}

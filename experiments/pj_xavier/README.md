@@ -4,13 +4,15 @@ NeuroCore の EEG デコーダと LLM 接続部を開発する実験コードで
 
 **実 EEG による 1.7B・8B モデルの学習，checkpoint 保存，held-out 評価，workstation での推論，NeuroCore router への dry-run を実行しました．目的の自律エージェント能力と，負対照まで含めた安定したEEGの追加寄与は，まだ実証できていません．** 最初の基盤を追加した [PR #70](https://github.com/yasufumi-nakata/NeuroCore/pull/70) はマージ済みで，追加監査・評価・修正は [PR #71](https://github.com/yasufumi-nakata/NeuroCore/pull/71) で継続しています．最新の実行場所と再開手順は [HANDOFF.md](HANDOFF.md) を参照してください．
 
-## 進行中：運動想起EEGと学習量の拡張
+## EEGMMIDB：学習・評価完了と追加学習
 
-2026-11-22 13:36 JST．最新指示に従い，smac19を使わず，workstationとworkstation経由のColabで追加実験を進めています．EEGMMIDBの全64chを使う因果的な前処理が完了し，train6,359／val1,360／test1,489の計9,208窓を固定しました．被験者は分割をまたぎません．学習候補の3秒区間は5.299167時間で，元記録時間や反復提示とは分けます．[データ準備の実測](reports/eegmmidb_phase2_preparation_20261122_v1/README.md)を参照してください．
+2026-11-22 14:30 JST．CSP＋LDA，scratch EEG encoder，EEG＋凍結SmolLM2の学習と固定test評価，負対照，T0診断，合成環境ハーネス，全成果物回収，M1試用を完了しました．主左右想起の被験者平均balanced accuracyは **59.92%／59.09%／57.44%** で，この条件ではLLM融合による上積みは確認できませんでした．[全結果と区間推定](eegmmidb_phase2/RESULTS.md)を保存しています．
 
-CSP＋LDAのtrain／val fitは完了しました．scratch EEG encoderと凍結SmolLM2への接続モデルは，新L4上で容量検証を通過し，13:35:38 JSTに本学習workflowを開始しました．全モデルのcheckpointを固定した後に，全test，EEGなし／入替え／実波形−10秒，独立T0休止診断，有界な操作ハーネスを評価します．test成績と実機試用結果はまだありません．[phase2の設計と進捗](eegmmidb_phase2/RESULTS.md)に記録します．
+train6,359／val1,360／test1,489の分割を固定し，同じ被験者が分割をまたがないようにしています．固有train入力は3秒×6,359＝5.299167時間です．モデルを固定してからtestを評価し，rootが保存済み予測から3モデル全5条件の主要点指標を独立に再計算して一致を確認しました．bootstrap区間は参加者単位の探索的な不確実性で，学習seedや多重比較まで含みません．
 
-追加量の指示を受け，同じtrain群の全14runsから，review保留を除く32.171944時間の連続EEGを自己教師学習候補にしました．5秒warmup・3秒非重複窓では品質検査前の上限30.5時間です．既存test17群は学習へ入れず，SSL→同じMI教師あり学習→同じSmol接続という[新しい科学設定](eegmmidb_phase3/protocol.scientific.v1.json)を，phase2 test閲覧前に固定しました．採用量と追加学習の完了は，これから実測します．
+fusedの主課題採用率は固定0.8で14.11%，採用内正解率63.21%，T0二択誤採用23.80%です．合成環境の主episode成功7.99%と，正解classを渡したrouting上限62.5%を分けて保存しました．M1のtrain3例は20.53秒で12fresh routingを実行できましたが，全件棄権のため操作成功は0でした．[実機試用手順](integration/README_TRY_EEGMMIDB_RECORDED.md)を参照してください．
+
+さらに，phase2 test閲覧前に固定したphase3で，**29.8875時間の連続train EEG**を使うmasked SSL→同じMI教師あり学習→同じSmol接続を実行中です．SSLとMIの準備済み区間unionは29.985889時間で，最終実学習量は選択checkpointまでの実seen-IDから別途監査します．既存test17群は学習へ入れません．[準備済み全入力](reports/eegmmidb_phase3_preparation_20261122_v1/README.md)と[固定科学設定](eegmmidb_phase3/protocol.scientific.v1.json)を公開しています．
 
 ## データ量：候補・取得済み・検証済みを区別
 
@@ -21,11 +23,12 @@ CSP＋LDAのtrain／val fitは完了しました．scratch EEG encoderと凍結S
 | EEG-dataset の目録 | 5,165 行 | 全 ID と取得先解決結果を照合し，不足・余剰 0 |
 | workstation の取得キュー | 783 releases，650,483 file jobs | EEG を含む候補の release 全体．認証・規約操作・metadata の保留を含む |
 | 上記キューの既知の容量 | 24,172,262,716,513 B，約 24.17 TB | 動画・補助データ・版の重複を含む候補容量．42,398 files はサイズ未確定 |
-| 取得完了し SHA-256 の検証記録がある内容 | 40 files，16,566,958,252 B，約 16.57 GB | 12:28 の workstation台帳観測．同一内容の複製を二重加算しない |
-| 元 EEG の header／binary を数量検証した範囲 | 1,644 記録，136.44190981 時間 | チャンネル数を掛けた時間ではなく，記録の長さの合計 |
-| 上記の物理 EEG 値の非圧縮容量 | 14,484,459,152 B，約 14.48 GB | 補助チャンネル・動画・header・窓配列・モデル重みを除く．元の保存形式のまま |
+| 取得完了し SHA-256 の検証記録がある内容 | 175 files，44,432,880,979 B，約44.43GB | 14:17 JSTのsnapshot005．同一内容は重複加算せず，P300は取得途中の66filesを含む |
+| 元EEGのheader／binaryを数量検証した範囲 | 2,405記録，210.50324878時間 | 記録長の合計．channel-hoursではない |
+| binary EEG scalarの保存容量 | 43,382,368,656 B，約43.38GB | 補助channel・動画・header・窓配列・重みを除く．校正の正しさを保証する名称ではない |
+| UTF-8のEEG数値tokenの保存容量 | 31,065,967 B | 元TXTの数値表現．binary値のbytesとは区別 |
 
-取得状況の根拠は [acquired_progress_004.json](reports/acquired_progress_004.json)，最新キュー更新は [fresh_queue_append_20261122_02](reports/fresh_queue_append_20261122_02/README.md)，数量の定義は [verified_eeg_quantities_20261122_004.json](reports/verified_eeg_quantities_20261122_004.json) にあります．既存39内容は前回003の全量SHAと現在の台帳・保全記録を照合し，新規EEGMMIDBは全archive・memberを新たにSHA検証しました．未完了のpartial 19,442,311,408 Bは取得済み容量に加算しません．取得候補全体のEEG時間は未確定です．ZIP容量からEEG時間への一律換算はしません．
+取得の根拠は[acquired_progress_005.json](reports/acquired_progress_005.json)，数量は[verified_eeg_quantities_20261122_005.json](reports/verified_eeg_quantities_20261122_005.json)です．既存部分は過去の全量SHAと保全記録を照合し，新規compactデータとBCI archiveは全ファイル／memberを新たに検証しました．約44GB全てをこのsnapshotで再hashしたという意味ではありません．partialは完了容量やEEG時間に加算しません．P300の未完release，新規MI releaseは完了・header監査後のsnapshotへ反映します．ZIPのbytesからEEG時間を一律換算しません．
 
 前段の468,040 file jobsは固定規則で構造監査済みです．これは新たに加えた182,443件を含む全650,483件の構造監査ではありません．そのうち EEG と明示された path の信号形式は 62,303 files／7,209,327,960,212 B，135 releases でした．これは header を検証した純 EEG 量ではなく，取得順序を検討するための候補量です．未展開 archive，EEG を含み得る MEG container，動画・視線等の companion は別々に残し，EEG の有無を確かめる前に一律除外していません．詳細と全 609 releases の分類は [全キュー構造監査](reports/queue_structure_20261122_v1/README.md) にあります．
 
@@ -36,7 +39,10 @@ CSP＋LDAのtrain／val fitは完了しました．scratch EEG encoderと凍結S
 | AI-assisted coding：ITU | 26 | 21.30617947 h | 64 |
 | Portable EEG systems comparison | 57 | 34.89706111 h | 32 |
 | EEGMMIDB：運動実行・運動想起 | 1,526 | 48.53444444 h | 64 |
-| 合計 | 1,644 | 136.44190981 h | 記録ごとに異なる |
+| Kinesthetic force MI | 60 | 0.70076172 h | 14 |
+| Right hand／feet MI | 8 | 1.10371962 h | 16 |
+| BCI users profile MI | 693 | 72.25685764 h | 27 |
+| 合計 | 2,405 | 210.50324878 h | 記録ごとに異なる |
 
 新規EEGMMIDBは1,997,435,063BのZIPを477.51秒で取得し，公式全3,058 member＋チェックサム一覧，1,526 EDFを23.46秒で監査しました．実headerは160Hzが1,490記録，128Hzが36記録です．注釈区間の5〜50msの重なり・25msのはみ出しやbaselineのT1を含む50記録を，ラベルreview対象としました．[全取得・数量・注釈監査](reports/eegmmidb_acquisition_20261122_v1/README.md)と，[9代表記録・209注釈のMNE独立照合](reports/eegmmidb_mne_representative_audit_20261122_v1/README.md)を参照してください．この追加データは前段のUniBa／ITUモデルを変更せず，独立したphase2のデータ準備・CSP学習に使いました．初期案の[EEGMMIDB benchmark設計](benchmark/NEXT_EEGMMIDB_BENCHMARK.md)から具体化した新protocolをeegmmidb_phase2に保存しています．
 
@@ -119,7 +125,7 @@ AI 送信対その他の fused AUROC は 0.6053 です．fused minus shuffle の
 
 L4 の fused 推論 p95 は46.92 ms，最大CUDA予約は3.47 GBでした．これはCPU EEG encoder・転送・投影・LLM scoringの範囲で，読み込み・resampling・tokenization・harnessを含む端から端までの遅延ではありません．旧結果を閲覧した後の探索実験であり，encoder，出力方式，入力長，正規化，学習予算，実機を同時に変えているため，差を個別要素の効果とは同定しません．
 
-**取得済み136.44時間を全てこのLLM接続部へ学習させたわけではありません．** UniBa v3 の train は 400 窓で，元構成では 700 秒＝11 分40秒，新 CBraMod 構成では末尾 1 秒ずつの計 400 秒＝6 分40秒を使用しています．全窓を原記録 SHA ごとに照合した時間区間の和集合も同じで，窓の重なりは 0 でした．新構成で 30 epochs 反復した 12,000 秒は，新しい EEG の追加時間ではありません．[時間区間の独立監査](reports/selected_eeg_interval_audit_20261122.json) に記録しました．
+**前段で取得していた136.44時間を全てこのLLM接続部へ学習させたわけではありません．** UniBa v3 の train は 400 窓で，元構成では 700 秒＝11 分40秒，新 CBraMod 構成では末尾 1 秒ずつの計 400 秒＝6 分40秒を使用しています．全窓を原記録 SHA ごとに照合した時間区間の和集合も同じで，窓の重なりは 0 でした．新構成で 30 epochs 反復した 12,000 秒は，新しい EEG の追加時間ではありません．[時間区間の独立監査](reports/selected_eeg_interval_audit_20261122.json) に記録しました．
 
 ### 連続EEGによる追加学習の入力
 
