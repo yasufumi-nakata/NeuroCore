@@ -1,5 +1,9 @@
 # S Macでの取得・追加学習（2026-11-22）
 
+## 最新：SSVEP9970619 metadata-only splitをS Macで凍結（2026-11-23 03:18 JST）
+
+取得済み44記録を11名義token単位で7train／2val／2testに事前固定し，train28記録／名目18,320秒のFDTについてS Macだけで全SHAと数値診断を完了しました．val/test信号は未読込，metadata SHAは`5a896a2d8031846743dfd8f80379672ecf8879f77f5226d7d8ebf195d40f9f70`．物理Vの校正証拠とcross-ID重複が未解決のため**fit0窓／0steps**で保留します．2026-11-23 03:17:35 JSTの37台実測は**complete192,660files／1,920,312,507,448B**，partial553,929,410,805B，supervisor37/37，欠損・不一致・error0．累積CBraMod学習量は22.581667hのまま．詳細は[SSVEP split/QC実績](SSVEP9970619_METADATA_FROZEN_20261123.md)．
+
 ## 最新追加：EEG＋判定前環境→X/Yの漏洩防止スコアラーをS Macで検証（2026-11-23 02:19 JST）
 
 新しい `next_multichannel/score_joint_alignment.py` に固定registry SHAとsource A/B cue goldの独立照合，4配置×同一trialのcounterbalance，6条件のpaired負対照とmust-link単位bootstrapを実装しました．15新規テストがsmac35のtask PythonでもPASS，旧関連23テストもPASS．コードとfixtureのみS Macへ配置し，EEG rawをworkstationへ戻していません．**今回の実gradientは0時間／0stepsであり，EEG→X/Yの実性能やOS成功は未測定です．** [検証内容](reports/smac_training_20261122_v1/JOINT_PROXY_SCORER_CPU_SMOKE_20261123.md)．
