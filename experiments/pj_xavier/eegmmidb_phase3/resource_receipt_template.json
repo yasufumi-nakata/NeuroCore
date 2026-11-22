@@ -1,0 +1,15 @@
+{
+  "absolute_deadline_epoch": null,
+  "allowed_remote_session": "xavier-eegmmidb-20261122-p2",
+  "cpu_threads": 2,
+  "disk_reserve_bytes": 37580963840,
+  "max_output_bytes": 8589934592,
+  "new_workstation_raw_bytes": 0,
+  "prep_source_sha256": "8e68f381fc69664777606610be120dd2aecfa07872db59165576c5509d0a746a",
+  "protocol_sha256": "69716a6ebb740bc43e7dede5aac1309102186037f442d8a215015e26db2500c1",
+  "requires_root_registration": true,
+  "schema": "pj-xavier-phase3-preparation-resource-v1",
+  "source_archive_bytes": 1997435063,
+  "source_archive_sha256": "0ff5f7f38d1d14b8e485581ad4cf5b327e6494bc2ac7c7d7d4f7e9518a950cbe",
+  "status": "proposal_not_registered"
+}

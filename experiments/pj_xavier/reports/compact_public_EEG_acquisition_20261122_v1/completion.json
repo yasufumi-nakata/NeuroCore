@@ -1,0 +1,9 @@
+{
+  "status": "completed",
+  "exit_code": 0,
+  "completed_epoch": 1795322878.955023,
+  "header_summary_sha256": "312191592b0935b096717d8af6e005974322740f16c12bf04c263e6292ce746f",
+  "reconciliation_sha256": "5ddc9f54f1e959cc7034655927468795f22c79ece5d0b414dcd1fadb4b0498b6",
+  "raw_files": 68,
+  "other_original_rows_changed": 0
+}

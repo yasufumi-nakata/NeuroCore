@@ -1,0 +1,13 @@
+{
+  "commands": [
+    "python -m unittest discover -s experiments/pj_xavier/eegmmidb_phase3 -p test_prep_ssl.py -v"
+  ],
+  "errors": 0,
+  "failures": 0,
+  "observed_epoch": 1795321481.3646789,
+  "observed_runtime_seconds": 0.759,
+  "prep_source_sha256": "8e68f381fc69664777606610be120dd2aecfa07872db59165576c5509d0a746a",
+  "status": "passed",
+  "test_source_sha256": "79d63a73968cf5379d868e3e18802f4cc2096e393bb205908c26dc3a9e7ecf23",
+  "tests_run": 7
+}

@@ -1,0 +1,12 @@
+{
+  "status": "completed",
+  "completed_epoch": 1795323011.7670689,
+  "source": "workstation_serial_CLI_owned_phase2_session",
+  "archive_sha256": "72528eaa14f94f2e764d1c82bab10337dd7780af30b8bc122b57d647aeeaff46",
+  "archive_bytes": 4414501,
+  "archive_manifest_sha256": "07babce61d01437dc4cf38a49423e5e309a8e5446814146bbdb1da0ec2323682",
+  "member_count": 24,
+  "all_member_SHA256_verified": true,
+  "raw_or_waveform_arrays_copied": false,
+  "uncompressed_metadata_bytes": 112310717
+}

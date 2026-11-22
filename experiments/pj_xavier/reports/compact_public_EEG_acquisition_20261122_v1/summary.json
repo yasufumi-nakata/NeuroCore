@@ -1,0 +1,72 @@
+{
+  "actual_gradient_input_hours_added": 0,
+  "all_original_checksums_and_before_after_SHA_verified": true,
+  "completed_epoch": 1795322878.373261,
+  "datasets": {
+    "000413": {
+      "amplitude_unit_unresolved": true,
+      "clock_not_strict_monotonic_records": 0,
+      "counter_discontinuity_records": 60,
+      "duplicate_decoded_EEG_records": 0,
+      "eeg_numeric_payload_bytes_deduplicated": 31065967,
+      "eeg_scalar_count_deduplicated": 4520754,
+      "event_onsets_are_publisher_schedule_not_observed_markers": true,
+      "force_condition_record_counts": {
+        "10": 20,
+        "40": 20,
+        "70": 20
+      },
+      "new_protocol_required_before_training": true,
+      "participant_groups": 10,
+      "rate_channel_combinations": {
+        "128.0Hz/14ch": 60
+      },
+      "record_count": 60,
+      "record_ledger_contains_original_label_evidence": true,
+      "scheduled_trials_per_record": 5,
+      "source_file_bytes": 47689594,
+      "stored_signal_hours_deduplicated": 0.70076171875,
+      "stored_signal_seconds_deduplicated": 2522.7421875,
+      "unique_decoded_EEG_records": 60
+    },
+    "001035": {
+      "duplicate_decoded_EEG_records": 0,
+      "eeg_numeric_payload_bytes_deduplicated": 130200064,
+      "eeg_scalar_count_deduplicated": 32550016,
+      "new_protocol_required_before_training": true,
+      "non_EEG_signal_data_buffer_bytes": 8137504,
+      "participant_groups": 8,
+      "rate_channel_combinations": {
+        "512.0Hz/16ch": 8
+      },
+      "record_count": 8,
+      "record_ledger_contains_original_label_evidence": true,
+      "semantic_event_counts": {
+        "both_feet_imagery": 160,
+        "rest": 160,
+        "right_hand_imagery": 160
+      },
+      "semantic_event_windows_outside_record": 0,
+      "source_file_bytes": 138420368,
+      "stored_signal_hours_deduplicated": 1.1037196180555555,
+      "stored_signal_seconds_deduplicated": 3973.390625,
+      "unique_decoded_EEG_records": 8,
+      "unmapped_stim_code_records": 0
+    }
+  },
+  "existing_frozen_datasets_or_models_modified": false,
+  "limitations": [
+    "Text amplitude unit unresolved; its time is counted as declared-rate stored EEG, not physically calibrated volts.",
+    "14ch/16ch sources do not match frozen64ch input; no arbitrary channel padding or relabeling was performed.",
+    "Filename/scheduled KMI labels and actual FIF stimulation labels are distinguished; neither demonstrates free-form intent."
+  ],
+  "protocol_sha256": "48b63bf6b1670060aa6f2f25d2efca30d1a158bb7f4ba7fd3357ac1e46dffff2",
+  "record_count": 68,
+  "records_sha256": "e2e77605ad7494717a1b7d796a6db72eeca795903d5305693b79f323ca743578",
+  "schema": "pj-xavier-compact-public-EEG-audit-summary-v1",
+  "source_file_bytes": 186109962,
+  "started_epoch": 1795322876.267197,
+  "status": "completed",
+  "stored_signal_hours_deduplicated": 1.8044813368055554,
+  "stored_signal_seconds_deduplicated": 6496.1328125
+}
