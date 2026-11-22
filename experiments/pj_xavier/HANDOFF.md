@@ -164,3 +164,7 @@ automation `Automation_f439325b5d888191bc75e92d1ba97be7` は毎時15分26秒，A
 取得済み履歴760 unique・49,539,668,378B・連続EEG255.33hは保持実体ではありません．削除manifestの773ファイル／50,476,724,659Bはworkstationから削除済みで，現在 `raw` と `colab_raw_archive` は存在しません．smac側への取得はSSH認証未成立につき0B．GPU学習追加・実機再試用はこの保存先ガード作業では開始していません．
 
 新規取得を再開する際はsmacノードに同じpolicy・registryと固定codeを配し，物理hostname／root実体／認証／remote空き・帯域・元URL条件を直接確認してから限定budgetで開始してください．workstationへのfallbackは禁止します．
+
+## 2026-11-22 18時台：P300の情報リーク防止fixture（別段CPU）
+
+新規実装 `experiments/pj_xavier/next_multichannel/p300_context_gate.py` で表示候補・過去提示と保護ラベル／既存decoder出力を分離し，未来時刻・未校正clock・未検証mappingをfail-closedとしました．別protocolと合成テストを保存しました．実DATは再取得せず，新データgradient入力0h／新GPU0回／新実機OS操作0回です．workstationの生データとColab raw archiveはユーザー依頼で削除された状態を維持し，smac認証・永続容量確認前の追加取得は禁止です．元sourceの時計補正，独立test cohort，学習適格性QCが通るまではP300 action評価を行いません．

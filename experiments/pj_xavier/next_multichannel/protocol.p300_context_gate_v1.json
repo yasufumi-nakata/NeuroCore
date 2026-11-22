@@ -1,0 +1,40 @@
+{
+  "schema": "xavier_next_P300_metadata_context_separation_v1",
+  "status": "cpu_contract_synthetic_tests_only_not_real_timing_certification",
+  "parent": "experiments/pj_xavier/eegmmidb_phase3/protocol.next_P300_label_context_addendum.v1.json",
+  "model_input_allowlist": [
+    "candidate_ids",
+    "slot_to_id",
+    "presentations"
+  ],
+  "reserved_for_oracle_only": [
+    "TextToSpell",
+    "StimulusType",
+    "target_character",
+    "target_row",
+    "target_column"
+  ],
+  "reserved_for_decoder_history_only": [
+    "SelectedTarget",
+    "SelectedRow",
+    "SelectedColumn",
+    "TextResult"
+  ],
+  "forbidden": [
+    "future display",
+    "late availability",
+    "unverified fallback as observed onset",
+    "subject/target/evaluation gold as input"
+  ],
+  "trust_requirements": [
+    "display must be verified prior screen log",
+    "external onset clock evidence must be independently audited",
+    "source DAT SHA and available-at sample checked",
+    "person must-link & fresh holdout required before real benchmark"
+  ],
+  "actual_dat_read": false,
+  "new_gpu_seconds": 0,
+  "new_gradient_hours": 0,
+  "free_intent_gold": false,
+  "action_benchmark_authorized": false
+}

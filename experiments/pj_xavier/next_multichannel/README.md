@@ -22,3 +22,7 @@
 次回は既存leaseと実jobを再確認し，train群の原source identity・cross-source payload denyを照合してから，rawでphysical-V証明できるrecordのsource別QCをtrain-onlyで固定します．新しい未使用group testを先に確保し，新scientific protocolとbudget，最大形状のreal backward/CU/disk recovery probeを封印してからColab CLIを**workstationから直列使用**します．全checkpoint validation→best固定→独立test/負対照→全回収SHA→M1試用→physical停止を新receiptに残してください．今回のmetadata-only提案splitをそのまま独立評価の証明と扱わないでください．
 
 再実行コマンド（git repo root）：` .venv-xavier/bin/python -m unittest discover -s experiments/pj_xavier/next_multichannel -p 'test_*.py' -v `．公開資料には個人別EEG・参加者ID・予測・重み・認証情報を含めていません．
+
+## 2026-11-22 P300の時刻・oracle漏洩ガード（追加CPU検証）
+
+`p300_context_gate.py` は，試験用の固定schemaで画面候補・過去提示だけをmodel_inputへ抽出し，TextToSpell／StimulusType等のoracleとSelectedTarget／TextResult等のdecoder結果を別領域へ隔離します．未来の表示・時刻，誤ったslot mapping，未検証clockからの見かけ上のonset採用を拒否します．合成fixtureの8テストで確認しました．**実DATの時刻校正・元EEG読込・真の教師gold・GPU学習・実OS成功は未実施／未承認です．**
