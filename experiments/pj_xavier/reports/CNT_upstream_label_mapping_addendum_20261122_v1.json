@@ -1,0 +1,86 @@
+{
+  "schema": "xavier_CNT_upstream_label_reference_addendum_v1",
+  "status": "source_linked_software_mapping_identified_not_model_admission",
+  "created_epoch": 1795327155.498168,
+  "parent_quantity_summary_sha256": "8e058329db32c2de02c65249df495a4521a36e75fcd0ac8235e4e4bcb3810b3a",
+  "record_ledger_sha256": "c8b8ad27c34c072cc26bf371a61282c646ddf39977677de503fc41646bbcfa22",
+  "source_archive_sha256": "1cf9c47c55c18f3bc272b86e1849ebfb7a2dca08159409de67b53a8a9263c41b",
+  "upstream_reader": {
+    "repository": "NeuroTechX/moabb",
+    "tag": "v1.2.0",
+    "commit": "631a07819392effc4fef56ace5eb20a0a64c654b",
+    "source_url": "https://github.com/NeuroTechX/moabb/blob/631a07819392effc4fef56ace5eb20a0a64c654b/moabb/datasets/Zhou2016.py",
+    "source_SHA256": "81c590d57770dd8593c36379edbcddf7decdc29f0b7ac783a41ccbd1548a2790",
+    "git_blob_SHA1": "fb7f07b046611b896362bfe67c56df645f92a7ed",
+    "source_file_bytes": 4996,
+    "direct_CNT_source_file_id": 3662952,
+    "direct_source_same_as_acquired_manifest": true,
+    "raw_reader": "mne.io.read_raw_cnt",
+    "event_annotation_mapping": {
+      "1": "left_hand",
+      "2": "right_hand",
+      "3": "feet"
+    },
+    "selection_scope": "4 source IDs x 3 sessions x A/B runs; 24 specific filename-matched records"
+  },
+  "cohorts": {
+    "upstream_reader_selected": {
+      "record_count": 24,
+      "source_ID_group_count": 4,
+      "EEG_seconds_exact_fraction": [
+        564148,
+        25
+      ],
+      "EEG_hours": 6.268311111111111,
+      "original_stimulus_code_counts": {
+        "1": 600,
+        "15": 5,
+        "2": 599,
+        "207": 98,
+        "223": 22,
+        "255": 146,
+        "3": 601
+      }
+    },
+    "additional_archive_records": {
+      "record_count": 2,
+      "source_ID_group_count": 1,
+      "EEG_seconds_exact_fraction": [
+        53543,
+        25
+      ],
+      "EEG_hours": 0.5949222222222222,
+      "original_stimulus_code_counts": {
+        "1": 50,
+        "2": 50,
+        "207": 3,
+        "255": 9,
+        "3": 50,
+        "4": 150
+      }
+    }
+  },
+  "primary_paper": {
+    "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0162657",
+    "section": "Methods 2.1",
+    "confirms": "Four participants, 14 scalp channels, 250 Hz, left/right/foot imagery, 1 s preparation then 5 s directional cue then 4 s black screen",
+    "numeric_stimulation_code_mapping_explicit_in_paper": false
+  },
+  "interpretation": {
+    "mapping_evidence_level": "Source-linked official benchmark reader convention for the same CNT archive; the paper independently confirms the task, but does not explicitly establish the integer code mapping",
+    "upstream_preamble_DOI_mismatch": "The reader module top-level docstring points to a different article; use the dataset class DOI and source file ID, both matched here",
+    "record_count_difference": "Upstream reader selects 24 files while source archive contains 26; the remaining 2 must not automatically inherit the same interpretation",
+    "original_counts_policy": "Keep 600/599/601 codes1/2/3 in the selected cohort; do not relabel an event to enforce 600 per class",
+    "code4_policy": "150 occurrences in the two extra records have no mapped meaning from this reader; hold for separate source evidence",
+    "event_time_scope": "Original saved sample offsets only; physical stimulus latency, independent clock alignment and compliance with the requested imagery remain unvalidated",
+    "quality_and_split": "New subject/group split, original metadata verification, source-specific train-only quality thresholds, and causal window protocol are still required before a supervised experiment"
+  },
+  "changes": {
+    "source_waveform_changes": 0,
+    "original_event_changes": 0,
+    "new_training_labels_materialized": 0,
+    "model_forward_calls": 0,
+    "additional_gradient_training_hours": 0,
+    "existing_models_or_seals_changed": false
+  }
+}
