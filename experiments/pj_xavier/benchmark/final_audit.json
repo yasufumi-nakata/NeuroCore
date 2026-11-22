@@ -1,0 +1,344 @@
+{
+  "schema_version": "pj-xavier-final-independent-audit-v1",
+  "audited_at": "2026-11-22T00:06:37.629Z",
+  "status": "implemented_and_verified_goal_unproven",
+  "scope": "Read-only workstation verification of frozen empirical files plus local code review and regression tests. No additional training, teacher inference, or OS action was executed by this audit.",
+  "tests": {
+    "benchmark": {
+      "passed": 27,
+      "failed": 0,
+      "command": "python -m unittest discover -s xavier_implementation/benchmark -p 'test_*.py'"
+    },
+    "labeling": {
+      "passed": 20,
+      "failed": 0,
+      "command": "python -m unittest discover -s xavier_implementation/labeling -p 'test_*.py'"
+    }
+  },
+  "audited_code_sha256": {
+    "xavier_benchmark": "9f0ca4f12804e8ab5bd7710edbd5d22e3a76c6ad542828c2467aaa0883be6ad7",
+    "model_adapter": "899ed6ff5b030eda88cd81fc7b6b88b55de2141b14f314c86866979b50c8dae6",
+    "ollama_label_worker": "5adee4bbd74926487e6a4a50fd348bc5b832bdd0badb5e918de852578d62d541",
+    "propagate_weak_labels": "ee17adf8c7693d1673911130714b4f11ef517fe86e803b3759fddb7da0e454bd"
+  },
+  "fixed_findings": [
+    {
+      "id": "preprocessing_future_support",
+      "status": "fixed",
+      "evidence": "Missing/false online_causality_verified remains blocked; explicit availability proof plus end+future_support<=decision required."
+    },
+    {
+      "id": "negative_control_identity",
+      "status": "fixed",
+      "evidence": "Different real held-out source IDs, same canonical participant/session, full shuffle permutation, time-shift raw asset and exact timestamp difference validated. This checks logged metadata, not an independent model rerun."
+    },
+    {
+      "id": "temporal_order_and_frozen_identity",
+      "status": "fixed",
+      "evidence": "Chronological train->validation->test enforced; canonical source/subject identities preserved; original full JSONL bytes and membership hashes checked; shared raw SHA intervals checked independent of participant aliases."
+    },
+    {
+      "id": "labeling_frozen_membership",
+      "status": "fixed",
+      "evidence": "--source-records mandatory. All source IDs, including representative, must be train in actual frozen source manifest. Hash/source changes rejected before teacher or resume."
+    },
+    {
+      "id": "dictionary_propagation",
+      "status": "implemented_and_real_evidence_verified",
+      "evidence": "15 teacher jobs map to 225 frozen train references with original citations preserved and separate target-event evidence; no held-out references or new gold."
+    },
+    {
+      "id": "legacy_decision_timestamp",
+      "status": "explicit_compatibility_migration",
+      "evidence": "Original manifest bytes unchanged. Only decision metadata normalized under explicit flag and provenance recorded; no promotion of preprocessing to causal."
+    }
+  ],
+  "review_observations": [
+    {
+      "id": "learner_prompt",
+      "status": "reviewed",
+      "finding": "tokenized_prompt contains class vocabulary and optional predecision environment only; original_gold and original_event_description are not included in learner input. Teacher sees event text only for metadata normalization, not EEG decoding."
+    },
+    {
+      "id": "model_live_action_path",
+      "status": "dry_run_only",
+      "finding": "Model predict writes categorical results with action_executed=false; no model-controlled OS call occurs in eeg_llm.py."
+    },
+    {
+      "id": "acquisition_generation_mixing",
+      "status": "fix_confirmed_by_source_review",
+      "finding": "206 resume validates unchanged ETag/Last-Modified before appending; prior mixed-generation defect has dedicated tests. AI pseudo labels stay downstream of raw byte acquisition."
+    },
+    {
+      "id": "fleet_completion",
+      "status": "limited_contract",
+      "finding": "node_worker polls and waits its child, so zombie PID presence is not running proof. Artifacts completion only proves nonempty paths; label/train remain unconfigured in fleet. Future controllers must verify matching run/job/checkpoint/hash/status rather than treating file presence as model success."
+    },
+    {
+      "id": "controller_zombies",
+      "status": "requirement_communicated_to_root",
+      "finding": "External controller must reject /proc state Z/X, protect against PID reuse, and require matching completion receipts; this audit did not independently test the root controller."
+    }
+  ],
+  "empirical_runs": [
+    {
+      "run": "smollm2_1_7b_eeglass",
+      "source_manifest_sha256": "87e98a0d50f6288bc9b293de32a40e118431eaf3431514b87271da6b3a9daf5a",
+      "checkpoint_sha256": "f00535fb2a58d296a63a06634342e0709093293b3d2f160a1b98cf6b93ae4631",
+      "elapsed_seconds": 35.00592733899998,
+      "training_time_scope": "run training, validation and final test; excludes initial backbone load and download",
+      "global_step": 171,
+      "original_label_sources": {
+        "recorded_event": 379
+      },
+      "n": 78,
+      "class_names": [
+        "keyboard",
+        "mouse_click",
+        "mouse_scroll"
+      ],
+      "class_support": [
+        9,
+        65,
+        4
+      ],
+      "confusion_matrix": [
+        [
+          0,
+          9,
+          0
+        ],
+        [
+          0,
+          65,
+          0
+        ],
+        [
+          0,
+          4,
+          0
+        ]
+      ],
+      "accuracy": 0.8333333333333334,
+      "balanced_accuracy": 0.3333333333333333,
+      "macro_f1": 0.30303030303030304,
+      "eeg_shuffle_balanced_accuracy_difference": 0,
+      "interpretation": "All 78 predictions are mouse_click; 83.33% accuracy reflects majority-class prediction. EEG-specific predictive gain and autonomous ability were not demonstrated.",
+      "strict_status": "evaluated_goal_unproven",
+      "integrity_errors": [],
+      "resource_status": "passed",
+      "resource": {
+        "measurement_mode": "actual",
+        "checkpoint_sha256": "f00535fb2a58d296a63a06634342e0709093293b3d2f160a1b98cf6b93ae4631",
+        "machine_id": "colab-xavier-eeg-20261122",
+        "runtime": "torch 2.14.1+cu130; transformers 5.22.1",
+        "accelerator": "NVIDIA L4",
+        "hardware_compatible": true,
+        "inference_succeeded": true,
+        "measurement_method": "CUDA allocator peak and process ru_maxrss during completed training, validation and heldout candidate inference; accelerator-synchronized per-record timings",
+        "memory_measurement_scope": "peak CUDA reserved bytes; separate host RSS check against physical host RAM; CPU and GPU bytes are not pooled",
+        "peak_memory_bytes": 3900702720,
+        "memory_budget_bytes": 21474836480,
+        "host_peak_rss_bytes": 4377653248,
+        "host_ram_bytes": 56863301632,
+        "device_physical_memory_bytes": 23659151360,
+        "p95_latency_ms": 38.83431969994717,
+        "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution",
+        "raw_run_summary_sha256": "467d71f00190aa32b215d4ff9d4b51a0a29edc42d36274a5dca867564d93da71",
+        "raw_hardware_sha256": "b0e669671648869c03be8a4388c76921f9a4048380f432cf404bc64dff52e1a1",
+        "created_at": "2026-11-21T23:45:06.410023+00:00",
+        "scope": "This measures feasibility on this actual Colab L4 runtime, not on M1 or SFC Mac nodes. End-to-end harness latency and autonomous capability remain unmeasured."
+      },
+      "preprocessing": {
+        "status": "blocked",
+        "records_checked": 78,
+        "blocked_record_count": 78,
+        "interpretation": "Metadata availability contract; successful retrospective classification alone does not establish prospective causal preprocessing."
+      },
+      "negative_controls": {
+        "eeg_shuffled": {
+          "status": "passed",
+          "records_checked": 78,
+          "issues": [],
+          "evidence_scope": "Consistency of logged source IDs and original recording times; not an independent rerun of model inputs."
+        },
+        "eeg_time_shifted": {
+          "status": "unavailable",
+          "reason": "identical complete held-out record set not supplied"
+        }
+      },
+      "held_out_replay_validated": false,
+      "autonomous_agent_validated": false,
+      "goal_blockers": [
+        "ablation/negative control predictions incomplete",
+        "synchronized pre-decision context with leakage review missing",
+        "online_preprocessing_unverified: future filter support/availability has not passed",
+        "shuffle/time-shift source evidence has not passed",
+        "measured checkpoint execution is not linked to a verified available user environment",
+        "measured latency does not cover end-to-end preprocessing, inference and harness execution",
+        "held-out harness task completion has not been measured",
+        "positive EEG contribution over context_only not established",
+        "positive EEG contribution over eeg_shuffled not established",
+        "positive EEG contribution over eeg_time_shifted not established",
+        "configured project acceptance criteria have not passed"
+      ],
+      "evidence_sha256": {
+        "run_summary.json": "467d71f00190aa32b215d4ff9d4b51a0a29edc42d36274a5dca867564d93da71",
+        "test_metrics.json": "d54cb081b6b5009fa6f79a22811a0f97c907ae029823ba16a2b290e0cdb0ba8c",
+        "resource_colab.json": "5cb867716fe587144d855f538087dd9a78ab47afc94fb4f624b3374b85c92281",
+        "hardware.json": "b0e669671648869c03be8a4388c76921f9a4048380f432cf404bc64dff52e1a1",
+        "training_membership.json": "4b64e2f2b09b96de50dc5d0b98b32086517709148f3c536a445e5a6e43e59c99",
+        "test_predictions.jsonl": "ec91eef7f7ccb4cbac9f4932af5cbd3aca86e659c25954b2522e85c58d460f58",
+        "test_shuffled_predictions.jsonl": "0f9234160c51e4b4a5367eda47a96eeae4c116ca2b4c5ffe8cb05bb4d9b3d73b"
+      }
+    },
+    {
+      "run": "qwen3_8b_eeglass",
+      "source_manifest_sha256": "87e98a0d50f6288bc9b293de32a40e118431eaf3431514b87271da6b3a9daf5a",
+      "checkpoint_sha256": "6638b0d1eb3c9e21496449eaf60adc4bc880c2ae233e77502d76b31f5dd1dc25",
+      "elapsed_seconds": 227.3539082929999,
+      "training_time_scope": "run training, validation and final test; excludes initial backbone load and download",
+      "global_step": 675,
+      "original_label_sources": {
+        "recorded_event": 379
+      },
+      "n": 78,
+      "class_names": [
+        "keyboard",
+        "mouse_click",
+        "mouse_scroll"
+      ],
+      "class_support": [
+        9,
+        65,
+        4
+      ],
+      "confusion_matrix": [
+        [
+          0,
+          9,
+          0
+        ],
+        [
+          0,
+          65,
+          0
+        ],
+        [
+          0,
+          4,
+          0
+        ]
+      ],
+      "accuracy": 0.8333333333333334,
+      "balanced_accuracy": 0.3333333333333333,
+      "macro_f1": 0.30303030303030304,
+      "eeg_shuffle_balanced_accuracy_difference": 0,
+      "interpretation": "All 78 predictions are mouse_click; 83.33% accuracy reflects majority-class prediction. EEG-specific predictive gain and autonomous ability were not demonstrated.",
+      "strict_status": "evaluated_goal_unproven",
+      "integrity_errors": [],
+      "resource_status": "passed",
+      "resource": {
+        "measurement_mode": "actual",
+        "checkpoint_sha256": "6638b0d1eb3c9e21496449eaf60adc4bc880c2ae233e77502d76b31f5dd1dc25",
+        "machine_id": "colab-xavier-eeg-20261122",
+        "runtime": "torch 2.14.1+cu130; transformers 5.22.1",
+        "accelerator": "NVIDIA L4",
+        "hardware_compatible": true,
+        "inference_succeeded": true,
+        "measurement_method": "CUDA allocator peak and process ru_maxrss during completed training, validation and heldout candidate inference; accelerator-synchronized per-record timings",
+        "memory_measurement_scope": "peak CUDA reserved bytes; separate host RSS check against physical host RAM; CPU and GPU bytes are not pooled",
+        "peak_memory_bytes": 16821256192,
+        "memory_budget_bytes": 22548578304,
+        "host_peak_rss_bytes": 9197645824,
+        "host_ram_bytes": 56863301632,
+        "device_physical_memory_bytes": 23659151360,
+        "p95_latency_ms": 262.9665508500693,
+        "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution",
+        "raw_run_summary_sha256": "873f1e9709bb0565921841bb68ea50b35d1e60e9dda80317de8c67f274e7285e",
+        "raw_hardware_sha256": "0adb8056edbc07f0f601507fc57beda2b203531e740a80d0eadcc3e10c06c1ca",
+        "created_at": "2026-11-21T23:45:06.410518+00:00",
+        "scope": "This measures feasibility on this actual Colab L4 runtime, not on M1 or SFC Mac nodes. End-to-end harness latency and autonomous capability remain unmeasured."
+      },
+      "preprocessing": {
+        "status": "blocked",
+        "records_checked": 78,
+        "blocked_record_count": 78,
+        "interpretation": "Metadata availability contract; successful retrospective classification alone does not establish prospective causal preprocessing."
+      },
+      "negative_controls": {
+        "eeg_shuffled": {
+          "status": "passed",
+          "records_checked": 78,
+          "issues": [],
+          "evidence_scope": "Consistency of logged source IDs and original recording times; not an independent rerun of model inputs."
+        },
+        "eeg_time_shifted": {
+          "status": "unavailable",
+          "reason": "identical complete held-out record set not supplied"
+        }
+      },
+      "held_out_replay_validated": false,
+      "autonomous_agent_validated": false,
+      "goal_blockers": [
+        "ablation/negative control predictions incomplete",
+        "synchronized pre-decision context with leakage review missing",
+        "online_preprocessing_unverified: future filter support/availability has not passed",
+        "shuffle/time-shift source evidence has not passed",
+        "measured checkpoint execution is not linked to a verified available user environment",
+        "measured latency does not cover end-to-end preprocessing, inference and harness execution",
+        "held-out harness task completion has not been measured",
+        "positive EEG contribution over context_only not established",
+        "positive EEG contribution over eeg_shuffled not established",
+        "positive EEG contribution over eeg_time_shifted not established",
+        "configured project acceptance criteria have not passed"
+      ],
+      "evidence_sha256": {
+        "run_summary.json": "873f1e9709bb0565921841bb68ea50b35d1e60e9dda80317de8c67f274e7285e",
+        "test_metrics.json": "a42f82b023ab3ce002bf7646064260d0dcfb6b08be3889f81953c726ae4053be",
+        "resource_colab.json": "48aa3dfc127b155fa381d80b7b142ea77de80ccafb226b1f09fa6f99463e5258",
+        "hardware.json": "0adb8056edbc07f0f601507fc57beda2b203531e740a80d0eadcc3e10c06c1ca",
+        "training_membership.json": "4b64e2f2b09b96de50dc5d0b98b32086517709148f3c536a445e5a6e43e59c99",
+        "test_predictions.jsonl": "c553bfdafd8febdb948523973d6309e60353a5d99988b64dcfbab271dd1caf19",
+        "test_shuffled_predictions.jsonl": "b6d10bc6d0fe06cb04b4be0c84f59700beb428559e82f8eb51e271e5ae482aee"
+      }
+    }
+  ],
+  "weak_labels": {
+    "schema_version": "xavier-exact-event-weak-label-propagation-v1",
+    "status": "verified_train_only_dictionary_reuse",
+    "input_sha256": {
+      "source_records": "87e98a0d50f6288bc9b293de32a40e118431eaf3431514b87271da6b3a9daf5a",
+      "training_membership": "4b64e2f2b09b96de50dc5d0b98b32086517709148f3c536a445e5a6e43e59c99",
+      "all_train_jobs": "44f35583e7593a0f95810e070008ba175f01fb6fd232c6ebf149e29e8d8b5b38",
+      "dictionary_jobs": "8b3f80d0b398098a84b3b20ea5ad25659bae75d6deee10e4cd23ebbfa5035d37",
+      "teacher_results": "7dfae9f9758c7d5230f7c2511c4c5a809a22c15ae7451ce01a07812b19f34993",
+      "teacher_results_manifest": "bbd24d89c728451bf4289fa056f9b1ab1f5e17f298297477f859428c7ef1b5c7"
+    },
+    "source_manifest_sha256": "87e98a0d50f6288bc9b293de32a40e118431eaf3431514b87271da6b3a9daf5a",
+    "independent_teacher_jobs": 15,
+    "training_record_references": 225,
+    "held_out_records_touched": 0,
+    "original_gold_labels_modified": 0,
+    "new_waveform_records_created": 0,
+    "new_latent_intent_gold_labels_created": 0,
+    "teacher_calls_performed_by_propagation": 0,
+    "dictionary_results_with_usable_observed_action": 15,
+    "references_without_single_action_label": 0,
+    "agreement_with_original_event_labels": {
+      "count": 225,
+      "denominator": 225,
+      "fraction": 1,
+      "interpretation": "Event-name normalization consistency, not a new intent-decoding accuracy estimate."
+    },
+    "legacy_result_membership_verified_posthoc": true,
+    "note": "The original source files, original train/validation/test assignments, teacher outputs, and gold labels were preserved."
+  },
+  "limits": [
+    "Read-only re-evaluation supplied no engineering acceptance JSON; root's final CLI evaluation should pass the frozen acceptance.proposed.json explicitly.",
+    "Both measured training runs used 379 source recorded_event labels; new dictionary pseudo labels are not claimed to have trained these already-frozen checkpoints.",
+    "No aligned environment was available for these EEGlass runs; context-only/fused and actual harness completion remain unmeasured.",
+    "No prospective causal preprocessing, cross-person generalization, time-shift control, independent idle exposure, or end-to-end agent latency was established by the EEGlass pilot.",
+    "Colab resource reports establish the measured L4 configuration only. Any separate M1 test is outside this audit's read-only run comparison."
+  ]
+}

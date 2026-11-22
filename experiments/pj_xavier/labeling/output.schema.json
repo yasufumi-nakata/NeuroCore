@@ -1,0 +1,83 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "labels",
+    "abstain_reason"
+  ],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "labeled",
+        "abstain",
+        "unknown"
+      ]
+    },
+    "abstain_reason": {
+      "type": "string",
+      "enum": [
+        "none",
+        "insufficient_evidence",
+        "ambiguous_evidence",
+        "unsupported_task"
+      ]
+    },
+    "labels": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "namespace",
+          "value",
+          "evidence"
+        ],
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "enum": [
+              "observed_action",
+              "task_protocol",
+              "environment_context",
+              "recording_metadata",
+              "source_label"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "evidence_id",
+                "quote"
+              ],
+              "properties": {
+                "evidence_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "quote": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2048
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

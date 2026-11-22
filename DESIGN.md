@@ -2,9 +2,11 @@
 
 ## Purpose
 
-NeuroCore is a runtime concept for EEG-driven control. It should feel like a Codex or Claude Code layer for EEG devices: a user wears a device, an external decoder estimates intent, and NeuroCore turns that intent into safe, inspectable mouse, keyboard, or AI-agent actions.
+**pj-xavier (Project Xavier) is the research and development project that builds NeuroCore's AI.** This repository implements NeuroCore's runtime layer for EEG-driven control: a user wears a device, an external decoder estimates intent, and the runtime turns that intent into safe, inspectable mouse, keyboard, or AI-agent actions.
 
-The important boundary is that NeuroCore does not own the model weights. Decoder training, calibration, and intent weighting happen elsewhere. NeuroCore owns the portable signal container, deterministic kernels, settings surface, action envelope, and breakage tests.
+The implementation boundary is that the core runtime does not bundle model weights. Decoder research, training, calibration, and evaluation belong to pj-xavier's AI development work and are maintained separately from the runtime package. The runtime owns the portable signal container, deterministic kernels, settings surface, action envelope, and breakage tests. Separating packages does not make pj-xavier merely an application that uses NeuroCore.
+
+EEG representations and foundation models, multimodal integration, high-level intent estimation, and AI-agent integration are research workstreams toward that purpose. Computer use is an initial evaluation and application setting. These are development objectives, not claims that the AI has already been trained or validated. See [project positioning](docs/project-positioning.md).
 
 ## Core Idea
 
@@ -33,7 +35,7 @@ Research code often mixes these concerns. NeuroCore should make them explicit so
 - NeuroCore is not a medical diagnostic product.
 - NeuroCore should not silently coerce incompatible EEG layouts.
 - NeuroCore should not prioritize speed over traceability in early versions.
-- NeuroCore does not train or ship intent-decoder weights.
+- This core runtime repository does not train or ship intent-decoder weights; pj-xavier develops and evaluates NeuroCore's AI separately.
 - NeuroCore does not directly execute OS input or third-party agent side effects.
 
 ## Architecture

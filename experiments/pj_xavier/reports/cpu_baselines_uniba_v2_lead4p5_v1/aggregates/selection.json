@@ -1,0 +1,1272 @@
+{
+  "models": {
+    "eeg_spectrum_only": {
+      "selected_C": 0.1,
+      "selected_val": {
+        "accuracy": 0.5292164674634794,
+        "balanced_accuracy": 0.3349723597084338,
+        "macro_f1": 0.3356863537245511,
+        "samples": 1506,
+        "class_order": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "confusion_rows_true_columns_predicted": [
+          [
+            0,
+            2,
+            0
+          ],
+          [
+            4,
+            220,
+            325
+          ],
+          [
+            8,
+            370,
+            577
+          ]
+        ],
+        "per_class": {
+          "ai_prompt_submit": {
+            "support": 2,
+            "predicted": 12,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "keyboard": {
+            "support": 549,
+            "predicted": 592,
+            "precision": 0.3716216216216216,
+            "recall": 0.4007285974499089,
+            "f1": 0.38562664329535495
+          },
+          "mouse_click": {
+            "support": 955,
+            "predicted": 902,
+            "precision": 0.6396895787139689,
+            "recall": 0.6041884816753926,
+            "f1": 0.6214324178782983
+          }
+        }
+      },
+      "selection": "maximum validation balanced accuracy; macro-F1 then smaller C break ties",
+      "trials": [
+        {
+          "C": 0.001,
+          "val": {
+            "accuracy": 0.546480743691899,
+            "balanced_accuracy": 0.33268992965156385,
+            "macro_f1": 0.3387853562864735,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                0,
+                0,
+                2
+              ],
+              [
+                23,
+                176,
+                350
+              ],
+              [
+                39,
+                269,
+                647
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 62,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 445,
+                "precision": 0.3955056179775281,
+                "recall": 0.3205828779599271,
+                "f1": 0.35412474849094566
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 999,
+                "precision": 0.6476476476476476,
+                "recall": 0.6774869109947644,
+                "f1": 0.6622313203684749
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            42
+          ],
+          "fit_seconds": 0.08713449399965612,
+          "convergence_warnings": []
+        },
+        {
+          "C": 0.01,
+          "val": {
+            "accuracy": 0.545816733067729,
+            "balanced_accuracy": 0.33414776032577076,
+            "macro_f1": 0.3374947919170553,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                0,
+                0,
+                2
+              ],
+              [
+                10,
+                183,
+                356
+              ],
+              [
+                25,
+                291,
+                639
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 35,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 474,
+                "precision": 0.3860759493670886,
+                "recall": 0.3333333333333333,
+                "f1": 0.35777126099706746
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 997,
+                "precision": 0.6409227683049148,
+                "recall": 0.669109947643979,
+                "f1": 0.6547131147540983
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            115
+          ],
+          "fit_seconds": 0.18367266899986134,
+          "convergence_warnings": []
+        },
+        {
+          "C": 0.1,
+          "val": {
+            "accuracy": 0.5292164674634794,
+            "balanced_accuracy": 0.3349723597084338,
+            "macro_f1": 0.3356863537245511,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                4,
+                220,
+                325
+              ],
+              [
+                8,
+                370,
+                577
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 12,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 592,
+                "precision": 0.3716216216216216,
+                "recall": 0.4007285974499089,
+                "f1": 0.38562664329535495
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 902,
+                "precision": 0.6396895787139689,
+                "recall": 0.6041884816753926,
+                "f1": 0.6214324178782983
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            320
+          ],
+          "fit_seconds": 0.4557266609999715,
+          "convergence_warnings": []
+        },
+        {
+          "C": 1.0,
+          "val": {
+            "accuracy": 0.5066401062416999,
+            "balanced_accuracy": 0.332139349030603,
+            "macro_f1": 0.328971453548564,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                1,
+                255,
+                293
+              ],
+              [
+                4,
+                443,
+                508
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 5,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 700,
+                "precision": 0.36428571428571427,
+                "recall": 0.4644808743169399,
+                "f1": 0.40832666132906326
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 801,
+                "precision": 0.634207240948814,
+                "recall": 0.5319371727748691,
+                "f1": 0.5785876993166287
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            652
+          ],
+          "fit_seconds": 0.8876478739994127,
+          "convergence_warnings": []
+        },
+        {
+          "C": 10.0,
+          "val": {
+            "accuracy": 0.49734395750332006,
+            "balanced_accuracy": 0.3300921554977001,
+            "macro_f1": 0.32510458485538957,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                1,
+                266,
+                282
+              ],
+              [
+                3,
+                469,
+                483
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 4,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 737,
+                "precision": 0.36092265943012214,
+                "recall": 0.48451730418943534,
+                "f1": 0.41368584758942456
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 765,
+                "precision": 0.6313725490196078,
+                "recall": 0.5057591623036649,
+                "f1": 0.5616279069767441
+              }
+            }
+          },
+          "converged": false,
+          "iterations": [
+            2000
+          ],
+          "fit_seconds": 2.6209203600001274,
+          "convergence_warnings": [
+            "lbfgs failed to converge (status=1):\nSTOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.\n\nIncrease the number of iterations (max_iter) or scale the data as shown in:\n    https://scikit-learn.org/stable/modules/preprocessing.html\nPlease also refer to the documentation for alternative solver options:\n    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression"
+          ]
+        },
+        {
+          "C": 100.0,
+          "val": {
+            "accuracy": 0.49269588313413015,
+            "balanced_accuracy": 0.3289394965302613,
+            "macro_f1": 0.3227141906355117,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                0,
+                271,
+                278
+              ],
+              [
+                1,
+                483,
+                471
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 1,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 756,
+                "precision": 0.3584656084656085,
+                "recall": 0.4936247723132969,
+                "f1": 0.4153256704980843
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 749,
+                "precision": 0.6288384512683578,
+                "recall": 0.4931937172774869,
+                "f1": 0.5528169014084507
+              }
+            }
+          },
+          "converged": false,
+          "iterations": [
+            2000
+          ],
+          "fit_seconds": 2.585315319000074,
+          "convergence_warnings": [
+            "lbfgs failed to converge (status=1):\nSTOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.\n\nIncrease the number of iterations (max_iter) or scale the data as shown in:\n    https://scikit-learn.org/stable/modules/preprocessing.html\nPlease also refer to the documentation for alternative solver options:\n    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression"
+          ]
+        }
+      ],
+      "train_examples": 4357,
+      "val_examples": 1506,
+      "feature_count": 72
+    },
+    "coarse_context_only": {
+      "selected_C": 0.001,
+      "selected_val": {
+        "accuracy": 0.33665338645418325,
+        "balanced_accuracy": 0.5619978574403087,
+        "macro_f1": 0.28195002132516356,
+        "samples": 1506,
+        "class_order": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "confusion_rows_true_columns_predicted": [
+          [
+            2,
+            0,
+            0
+          ],
+          [
+            285,
+            203,
+            61
+          ],
+          [
+            340,
+            313,
+            302
+          ]
+        ],
+        "per_class": {
+          "ai_prompt_submit": {
+            "support": 2,
+            "predicted": 627,
+            "precision": 0.003189792663476874,
+            "recall": 1.0,
+            "f1": 0.006359300476947536
+          },
+          "keyboard": {
+            "support": 549,
+            "predicted": 516,
+            "precision": 0.39341085271317827,
+            "recall": 0.3697632058287796,
+            "f1": 0.3812206572769953
+          },
+          "mouse_click": {
+            "support": 955,
+            "predicted": 363,
+            "precision": 0.8319559228650137,
+            "recall": 0.3162303664921466,
+            "f1": 0.4582701062215478
+          }
+        }
+      },
+      "selection": "maximum validation balanced accuracy; macro-F1 then smaller C break ties",
+      "trials": [
+        {
+          "C": 0.001,
+          "val": {
+            "accuracy": 0.33665338645418325,
+            "balanced_accuracy": 0.5619978574403087,
+            "macro_f1": 0.28195002132516356,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                2,
+                0,
+                0
+              ],
+              [
+                285,
+                203,
+                61
+              ],
+              [
+                340,
+                313,
+                302
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 627,
+                "precision": 0.003189792663476874,
+                "recall": 1.0,
+                "f1": 0.006359300476947536
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 516,
+                "precision": 0.39341085271317827,
+                "recall": 0.3697632058287796,
+                "f1": 0.3812206572769953
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 363,
+                "precision": 0.8319559228650137,
+                "recall": 0.3162303664921466,
+                "f1": 0.4582701062215478
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            15
+          ],
+          "fit_seconds": 0.037709334999817656,
+          "convergence_warnings": []
+        },
+        {
+          "C": 0.01,
+          "val": {
+            "accuracy": 0.33665338645418325,
+            "balanced_accuracy": 0.5619978574403087,
+            "macro_f1": 0.28195002132516356,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                2,
+                0,
+                0
+              ],
+              [
+                285,
+                203,
+                61
+              ],
+              [
+                340,
+                313,
+                302
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 627,
+                "precision": 0.003189792663476874,
+                "recall": 1.0,
+                "f1": 0.006359300476947536
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 516,
+                "precision": 0.39341085271317827,
+                "recall": 0.3697632058287796,
+                "f1": 0.3812206572769953
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 363,
+                "precision": 0.8319559228650137,
+                "recall": 0.3162303664921466,
+                "f1": 0.4582701062215478
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            37
+          ],
+          "fit_seconds": 0.055787618000067596,
+          "convergence_warnings": []
+        },
+        {
+          "C": 0.1,
+          "val": {
+            "accuracy": 0.33665338645418325,
+            "balanced_accuracy": 0.5619978574403087,
+            "macro_f1": 0.28195002132516356,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                2,
+                0,
+                0
+              ],
+              [
+                285,
+                203,
+                61
+              ],
+              [
+                340,
+                313,
+                302
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 627,
+                "precision": 0.003189792663476874,
+                "recall": 1.0,
+                "f1": 0.006359300476947536
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 516,
+                "precision": 0.39341085271317827,
+                "recall": 0.3697632058287796,
+                "f1": 0.3812206572769953
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 363,
+                "precision": 0.8319559228650137,
+                "recall": 0.3162303664921466,
+                "f1": 0.4582701062215478
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            79
+          ],
+          "fit_seconds": 0.09268664699993678,
+          "convergence_warnings": []
+        },
+        {
+          "C": 1.0,
+          "val": {
+            "accuracy": 0.3154050464807437,
+            "balanced_accuracy": 0.5526354437864179,
+            "macro_f1": 0.265973038945314,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                2,
+                0,
+                0
+              ],
+              [
+                285,
+                210,
+                54
+              ],
+              [
+                340,
+                352,
+                263
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 627,
+                "precision": 0.003189792663476874,
+                "recall": 1.0,
+                "f1": 0.006359300476947536
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 562,
+                "precision": 0.3736654804270463,
+                "recall": 0.3825136612021858,
+                "f1": 0.37803780378037805
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 317,
+                "precision": 0.8296529968454258,
+                "recall": 0.2753926701570681,
+                "f1": 0.41352201257861637
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            135
+          ],
+          "fit_seconds": 0.14033000400013407,
+          "convergence_warnings": []
+        },
+        {
+          "C": 10.0,
+          "val": {
+            "accuracy": 0.3154050464807437,
+            "balanced_accuracy": 0.5526354437864179,
+            "macro_f1": 0.265973038945314,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                2,
+                0,
+                0
+              ],
+              [
+                285,
+                210,
+                54
+              ],
+              [
+                340,
+                352,
+                263
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 627,
+                "precision": 0.003189792663476874,
+                "recall": 1.0,
+                "f1": 0.006359300476947536
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 562,
+                "precision": 0.3736654804270463,
+                "recall": 0.3825136612021858,
+                "f1": 0.37803780378037805
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 317,
+                "precision": 0.8296529968454258,
+                "recall": 0.2753926701570681,
+                "f1": 0.41352201257861637
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            187
+          ],
+          "fit_seconds": 0.20425733600040985,
+          "convergence_warnings": []
+        },
+        {
+          "C": 100.0,
+          "val": {
+            "accuracy": 0.3154050464807437,
+            "balanced_accuracy": 0.5526354437864179,
+            "macro_f1": 0.265973038945314,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                2,
+                0,
+                0
+              ],
+              [
+                285,
+                210,
+                54
+              ],
+              [
+                340,
+                352,
+                263
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 627,
+                "precision": 0.003189792663476874,
+                "recall": 1.0,
+                "f1": 0.006359300476947536
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 562,
+                "precision": 0.3736654804270463,
+                "recall": 0.3825136612021858,
+                "f1": 0.37803780378037805
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 317,
+                "precision": 0.8296529968454258,
+                "recall": 0.2753926701570681,
+                "f1": 0.41352201257861637
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            132
+          ],
+          "fit_seconds": 0.14399022499947023,
+          "convergence_warnings": []
+        }
+      ],
+      "train_examples": 4357,
+      "val_examples": 1506,
+      "feature_count": 26
+    },
+    "eeg_plus_coarse_context": {
+      "selected_C": 0.1,
+      "selected_val": {
+        "accuracy": 0.5239043824701195,
+        "balanced_accuracy": 0.3856117898002715,
+        "macro_f1": 0.3504215239701327,
+        "samples": 1506,
+        "class_order": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "confusion_rows_true_columns_predicted": [
+          [
+            0,
+            2,
+            0
+          ],
+          [
+            4,
+            427,
+            118
+          ],
+          [
+            9,
+            584,
+            362
+          ]
+        ],
+        "per_class": {
+          "ai_prompt_submit": {
+            "support": 2,
+            "predicted": 13,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "keyboard": {
+            "support": 549,
+            "predicted": 1013,
+            "precision": 0.4215202369200395,
+            "recall": 0.7777777777777778,
+            "f1": 0.5467349551856594
+          },
+          "mouse_click": {
+            "support": 955,
+            "predicted": 480,
+            "precision": 0.7541666666666667,
+            "recall": 0.37905759162303665,
+            "f1": 0.5045296167247387
+          }
+        }
+      },
+      "selection": "maximum validation balanced accuracy; macro-F1 then smaller C break ties",
+      "trials": [
+        {
+          "C": 0.001,
+          "val": {
+            "accuracy": 0.5272244355909694,
+            "balanced_accuracy": 0.37599951681146426,
+            "macro_f1": 0.3556253557089412,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                15,
+                383,
+                151
+              ],
+              [
+                19,
+                525,
+                411
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 34,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 910,
+                "precision": 0.4208791208791209,
+                "recall": 0.697632058287796,
+                "f1": 0.5250171350239891
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 562,
+                "precision": 0.7313167259786477,
+                "recall": 0.43036649214659684,
+                "f1": 0.5418589321028345
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            47
+          ],
+          "fit_seconds": 0.09877588199924503,
+          "convergence_warnings": []
+        },
+        {
+          "C": 0.01,
+          "val": {
+            "accuracy": 0.5225763612217795,
+            "balanced_accuracy": 0.3789768482756209,
+            "macro_f1": 0.35135529662892845,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                9,
+                404,
+                136
+              ],
+              [
+                15,
+                557,
+                383
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 24,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 963,
+                "precision": 0.4195223260643821,
+                "recall": 0.7358834244080146,
+                "f1": 0.5343915343915344
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 519,
+                "precision": 0.7379576107899807,
+                "recall": 0.40104712041884816,
+                "f1": 0.519674355495251
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            120
+          ],
+          "fit_seconds": 0.20791037199978746,
+          "convergence_warnings": []
+        },
+        {
+          "C": 0.1,
+          "val": {
+            "accuracy": 0.5239043824701195,
+            "balanced_accuracy": 0.3856117898002715,
+            "macro_f1": 0.3504215239701327,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                4,
+                427,
+                118
+              ],
+              [
+                9,
+                584,
+                362
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 13,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 1013,
+                "precision": 0.4215202369200395,
+                "recall": 0.7777777777777778,
+                "f1": 0.5467349551856594
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 480,
+                "precision": 0.7541666666666667,
+                "recall": 0.37905759162303665,
+                "f1": 0.5045296167247387
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            349
+          ],
+          "fit_seconds": 0.5434807310002725,
+          "convergence_warnings": []
+        },
+        {
+          "C": 1.0,
+          "val": {
+            "accuracy": 0.5139442231075697,
+            "balanced_accuracy": 0.3829574317257778,
+            "macro_f1": 0.3418756142520254,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                1,
+                437,
+                111
+              ],
+              [
+                3,
+                615,
+                337
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 4,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 1054,
+                "precision": 0.4146110056925996,
+                "recall": 0.7959927140255009,
+                "f1": 0.545227698066126
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 448,
+                "precision": 0.7522321428571429,
+                "recall": 0.35287958115183243,
+                "f1": 0.4803991446899501
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            908
+          ],
+          "fit_seconds": 1.3325134570004593,
+          "convergence_warnings": []
+        },
+        {
+          "C": 10.0,
+          "val": {
+            "accuracy": 0.5132802124833997,
+            "balanced_accuracy": 0.3836408891940606,
+            "macro_f1": 0.34093095155031444,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                0,
+                441,
+                108
+              ],
+              [
+                2,
+                621,
+                332
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 2,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 1064,
+                "precision": 0.4144736842105263,
+                "recall": 0.8032786885245902,
+                "f1": 0.5468071915685059
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 440,
+                "precision": 0.7545454545454545,
+                "recall": 0.34764397905759165,
+                "f1": 0.4759856630824373
+              }
+            }
+          },
+          "converged": true,
+          "iterations": [
+            1943
+          ],
+          "fit_seconds": 2.806996170000275,
+          "convergence_warnings": []
+        },
+        {
+          "C": 100.0,
+          "val": {
+            "accuracy": 0.5112881806108898,
+            "balanced_accuracy": 0.382077519971263,
+            "macro_f1": 0.33962568226363404,
+            "samples": 1506,
+            "class_order": [
+              "ai_prompt_submit",
+              "keyboard",
+              "mouse_click"
+            ],
+            "confusion_rows_true_columns_predicted": [
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                0,
+                439,
+                110
+              ],
+              [
+                2,
+                622,
+                331
+              ]
+            ],
+            "per_class": {
+              "ai_prompt_submit": {
+                "support": 2,
+                "predicted": 2,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0
+              },
+              "keyboard": {
+                "support": 549,
+                "predicted": 1063,
+                "precision": 0.4129821260583255,
+                "recall": 0.7996357012750456,
+                "f1": 0.5446650124069479
+              },
+              "mouse_click": {
+                "support": 955,
+                "predicted": 441,
+                "precision": 0.7505668934240363,
+                "recall": 0.34659685863874345,
+                "f1": 0.47421203438395415
+              }
+            }
+          },
+          "converged": false,
+          "iterations": [
+            2000
+          ],
+          "fit_seconds": 2.8848903870002687,
+          "convergence_warnings": [
+            "lbfgs failed to converge (status=1):\nSTOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.\n\nIncrease the number of iterations (max_iter) or scale the data as shown in:\n    https://scikit-learn.org/stable/modules/preprocessing.html\nPlease also refer to the documentation for alternative solver options:\n    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression"
+          ]
+        }
+      ],
+      "train_examples": 4357,
+      "val_examples": 1506,
+      "feature_count": 98
+    }
+  },
+  "test_used_for_selection": false,
+  "selection_frozen_epoch": 1795307245.0894458
+}

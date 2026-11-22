@@ -1,0 +1,73 @@
+{
+  "source": "https://zenodo.org/records/20801101",
+  "site": "uniba",
+  "recording_count": 34,
+  "subject_count": 34,
+  "status_counts": {
+    "prepared": 32,
+    "blocked": 2
+  },
+  "prepared_windows": 7819,
+  "counts": {
+    "train": {
+      "mouse_click": 2449,
+      "keyboard": 1906,
+      "ai_prompt_submit": 2
+    },
+    "val": {
+      "mouse_click": 955,
+      "keyboard": 549,
+      "ai_prompt_submit": 2
+    },
+    "test": {
+      "mouse_click": 1070,
+      "keyboard": 885,
+      "ai_prompt_submit": 1
+    }
+  },
+  "manifest_sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac",
+  "source_recording_hours": 30.61540256076389,
+  "selected_unique_input_hours": 3.800902777777778,
+  "per_split_unique_input_hours": {
+    "train": 2.117986111111111,
+    "val": 0.7320833333333333,
+    "test": 0.9508333333333333
+  },
+  "prepared_eeg_bytes": 112097280,
+  "online_causality_verified": false,
+  "latent_intent_labels_available": false,
+  "goal_benchmark_status": "blocked_pending_causal_preprocessing_real_harness_goals_and_intent_ground_truth",
+  "prepared_subjects": 32,
+  "subjects_per_split": {
+    "train": 18,
+    "val": 6,
+    "test": 8
+  },
+  "synchronized_recording_hours": 28.589534505208334,
+  "eeg_archive_bytes": 881786830,
+  "eeg_binary_bytes_all_channels": 1128606200,
+  "eeg_binary_channel_note": "8 physical EEG channels plus 2 auxiliary channels in the released BrainVision binary; all 10 channels count toward binary bytes; model uses 8 physical EEG channels only",
+  "audit_sha256": "b445c7229f1f4f9e2fab4a169c9882e474319c33809c5ce5e18dbfba827cd140",
+  "loader_sha256": "38e3cca302b456f5c918c03d93d5f71d77ffe636efbc3f90840cf89ac2d8badc",
+  "window_samples": 448,
+  "sample_rate_hz": 256,
+  "window_minimum_lead_s": 4.5,
+  "assumed_filter_lookahead_s": 4.125,
+  "decision_minimum_lead_s": 0.375,
+  "clock_error_ms_range": [
+    1.2807691264242749,
+    76.81228241392546
+  ],
+  "raw_gpt_events_in_aligned_subjects": {
+    "GPTStartPrompting": 463,
+    "GPTSentPrompt": 150,
+    "GPTReceiveText": 148
+  },
+  "raw_key_actions_in_aligned_subjects": {
+    "down": 87276,
+    "up": 76823
+  },
+  "source_eeg_archive_sha256": "801e3e29ce6c58151c7a3a7aa1be17a6a0ee64d3cd355d43dd09418368a8e195",
+  "rare_class_limitation": "ai_prompt_submit has only 2 training,2 validation,1 test windows after strict prior-action and overlap guards; no reliable delegation-performance conclusion",
+  "training_started": false
+}

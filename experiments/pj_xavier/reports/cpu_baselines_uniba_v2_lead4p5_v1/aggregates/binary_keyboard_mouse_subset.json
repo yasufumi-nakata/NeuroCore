@@ -1,0 +1,245 @@
+{
+  "schema_version": "pj-xavier-frozen-confusion-diagnostic-v1",
+  "primary_report_sha256": "3c93b42fbba07aecc55f551c41bae98e31422a5e743afd245254cef448dbfaaf",
+  "primary_source_sha256": "1b74445e9a85c34c86eaa435805b427ba8dbee4d675f6d3e0a4b301b1c10ff08",
+  "manifest_sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac",
+  "posthoc_descriptive_analysis_only": true,
+  "new_model_fits": 0,
+  "new_test_predictions": 0,
+  "selection_unchanged": true,
+  "latent_intent_goal_validated": false,
+  "models": {
+    "eeg_spectrum_only": {
+      "true_classes": [
+        "keyboard",
+        "mouse_click"
+      ],
+      "prediction_columns": [
+        "ai_prompt_submit",
+        "keyboard",
+        "mouse_click"
+      ],
+      "confusion_2_true_rows_3_prediction_columns": [
+        [
+          2,
+          363,
+          520
+        ],
+        [
+          6,
+          396,
+          668
+        ]
+      ],
+      "samples": 1955,
+      "excluded_true_AI_examples": 1,
+      "AI_predictions_on_common_action_examples_counted_as_errors": 8,
+      "accuracy": 0.5273657289002558,
+      "balanced_accuracy": 0.5172342784729922,
+      "macro_f1": 0.5166399436229983,
+      "per_class": {
+        "keyboard": {
+          "support": 885,
+          "precision": 0.4782608695652174,
+          "recall": 0.4101694915254237,
+          "f1": 0.4416058394160584,
+          "true_positive": 363,
+          "false_positive": 396,
+          "false_negative_including_AI_prediction": 522
+        },
+        "mouse_click": {
+          "support": 1070,
+          "precision": 0.5622895622895623,
+          "recall": 0.6242990654205608,
+          "f1": 0.591674047829938,
+          "true_positive": 668,
+          "false_positive": 520,
+          "false_negative_including_AI_prediction": 402
+        }
+      },
+      "policy": "Condition on true keyboard/mouse labels; retain every such example. Predicted AI remains an error, never discarded or reassigned. No binary classifier was refit."
+    },
+    "coarse_context_only": {
+      "true_classes": [
+        "keyboard",
+        "mouse_click"
+      ],
+      "prediction_columns": [
+        "ai_prompt_submit",
+        "keyboard",
+        "mouse_click"
+      ],
+      "confusion_2_true_rows_3_prediction_columns": [
+        [
+          440,
+          366,
+          79
+        ],
+        [
+          417,
+          346,
+          307
+        ]
+      ],
+      "samples": 1955,
+      "excluded_true_AI_examples": 1,
+      "AI_predictions_on_common_action_examples_counted_as_errors": 857,
+      "accuracy": 0.3442455242966752,
+      "balanced_accuracy": 0.3502376049421828,
+      "macro_f1": 0.4400313603115732,
+      "per_class": {
+        "keyboard": {
+          "support": 885,
+          "precision": 0.5140449438202247,
+          "recall": 0.4135593220338983,
+          "f1": 0.45835942391984974,
+          "true_positive": 366,
+          "false_positive": 346,
+          "false_negative_including_AI_prediction": 519
+        },
+        "mouse_click": {
+          "support": 1070,
+          "precision": 0.7953367875647669,
+          "recall": 0.2869158878504673,
+          "f1": 0.4217032967032967,
+          "true_positive": 307,
+          "false_positive": 79,
+          "false_negative_including_AI_prediction": 763
+        }
+      },
+      "policy": "Condition on true keyboard/mouse labels; retain every such example. Predicted AI remains an error, never discarded or reassigned. No binary classifier was refit."
+    },
+    "eeg_plus_coarse_context": {
+      "true_classes": [
+        "keyboard",
+        "mouse_click"
+      ],
+      "prediction_columns": [
+        "ai_prompt_submit",
+        "keyboard",
+        "mouse_click"
+      ],
+      "confusion_2_true_rows_3_prediction_columns": [
+        [
+          1,
+          665,
+          219
+        ],
+        [
+          1,
+          612,
+          457
+        ]
+      ],
+      "samples": 1955,
+      "excluded_true_AI_examples": 1,
+      "AI_predictions_on_common_action_examples_counted_as_errors": 2,
+      "accuracy": 0.5739130434782609,
+      "balanced_accuracy": 0.5892576165584245,
+      "macro_f1": 0.5693266914835337,
+      "per_class": {
+        "keyboard": {
+          "support": 885,
+          "precision": 0.5207517619420516,
+          "recall": 0.751412429378531,
+          "f1": 0.6151711378353376,
+          "true_positive": 665,
+          "false_positive": 612,
+          "false_negative_including_AI_prediction": 220
+        },
+        "mouse_click": {
+          "support": 1070,
+          "precision": 0.6760355029585798,
+          "recall": 0.42710280373831777,
+          "f1": 0.5234822451317297,
+          "true_positive": 457,
+          "false_positive": 219,
+          "false_negative_including_AI_prediction": 613
+        }
+      },
+      "policy": "Condition on true keyboard/mouse labels; retain every such example. Predicted AI remains an error, never discarded or reassigned. No binary classifier was refit."
+    }
+  },
+  "train_majority_reference": {
+    "true_classes": [
+      "keyboard",
+      "mouse_click"
+    ],
+    "prediction_columns": [
+      "ai_prompt_submit",
+      "keyboard",
+      "mouse_click"
+    ],
+    "confusion_2_true_rows_3_prediction_columns": [
+      [
+        0,
+        0,
+        885
+      ],
+      [
+        0,
+        0,
+        1070
+      ]
+    ],
+    "samples": 1955,
+    "excluded_true_AI_examples": 1,
+    "AI_predictions_on_common_action_examples_counted_as_errors": 0,
+    "accuracy": 0.5473145780051151,
+    "balanced_accuracy": 0.5,
+    "macro_f1": 0.3537190082644628,
+    "per_class": {
+      "keyboard": {
+        "support": 885,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative_including_AI_prediction": 885
+      },
+      "mouse_click": {
+        "support": 1070,
+        "precision": 0.5473145780051151,
+        "recall": 1.0,
+        "f1": 0.7074380165289256,
+        "true_positive": 1070,
+        "false_positive": 885,
+        "false_negative_including_AI_prediction": 0
+      }
+    },
+    "policy": "Condition on true keyboard/mouse labels; retain every such example. Predicted AI remains an error, never discarded or reassigned. No binary classifier was refit."
+  },
+  "ai_class": {
+    "support": {
+      "train": 2,
+      "val": 2,
+      "test": 1
+    },
+    "performance_estimable": false,
+    "per_model": {
+      "eeg_spectrum_only": {
+        "support": 1,
+        "predicted": 8,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "coarse_context_only": {
+        "support": 1,
+        "predicted": 858,
+        "precision": 0.0011655011655011655,
+        "recall": 1.0,
+        "f1": 0.002328288707799767
+      },
+      "eeg_plus_coarse_context": {
+        "support": 1,
+        "predicted": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    }
+  },
+  "interpretation": "The two common actions have 1955 held-out windows; AI-submission test support is one. Three-class balanced accuracy gives that single AI example one third of the mean recall. These descriptive diagnostics do not establish population performance or latent intent."
+}

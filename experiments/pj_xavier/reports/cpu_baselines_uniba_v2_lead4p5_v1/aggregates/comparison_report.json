@@ -1,0 +1,505 @@
+{
+  "schema_version": "pj-xavier-cpu-baselines-v1",
+  "status": "completed",
+  "manifest_sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac",
+  "source_sha256": "1b74445e9a85c34c86eaa435805b427ba8dbee4d675f6d3e0a4b301b1c10ff08",
+  "protocol_sha256": "0d8baa688eaa32bd334a004ef000053cc3c95a023f851dab235dc5b42014de4a",
+  "selection_sha256": "10f7feacf778bf9117c7d541225a62ec14af34cabdf1f76ddaa55b7c4680f3af",
+  "cohort": {
+    "label_counts": {
+      "train": {
+        "ai_prompt_submit": 2,
+        "keyboard": 1906,
+        "mouse_click": 2449
+      },
+      "val": {
+        "ai_prompt_submit": 2,
+        "keyboard": 549,
+        "mouse_click": 955
+      },
+      "test": {
+        "ai_prompt_submit": 1,
+        "keyboard": 885,
+        "mouse_click": 1070
+      }
+    },
+    "samples": {
+      "train": 4357,
+      "val": 1506,
+      "test": 1956
+    },
+    "subjects": {
+      "train": 18,
+      "val": 6,
+      "test": 8
+    },
+    "subject_disjoint": true,
+    "physical_source_disjoint": true,
+    "split_id_hashes": {
+      "train": "68eefdf581ab173771c6e5355570e11321bc3ad13104f155e7b3ff6006f9c866",
+      "val": "825c9bf6a64aafdf977b9c3466ef281ddd4c95962c3d3179dfb73caf7bf73621",
+      "test": "174cf2297d8bb105eea1b4b377be0cbfb98fad53d3dbd265d8f0d92dc27ae42f"
+    },
+    "prepared_artifact_files": 32,
+    "prepared_artifact_bytes": 112097280,
+    "prepared_artifact_manifest_sha256": "bffe14ad7ed0aa2184ce721febe8792972e5711538f63ec331d465fd8d63c503",
+    "raw_archive_reverification": "not performed here; prepared waveform bytes matched the running LLM's frozen artifact ledger"
+  },
+  "classes": [
+    "ai_prompt_submit",
+    "keyboard",
+    "mouse_click"
+  ],
+  "models": {
+    "eeg_spectrum_only": {
+      "selected_C": 0.1,
+      "feature_count": 72,
+      "test": {
+        "accuracy": 0.5270961145194274,
+        "balanced_accuracy": 0.3448228523153281,
+        "macro_f1": 0.34433932289226443,
+        "samples": 1956,
+        "class_order": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "confusion_rows_true_columns_predicted": [
+          [
+            0,
+            0,
+            1
+          ],
+          [
+            2,
+            363,
+            520
+          ],
+          [
+            6,
+            396,
+            668
+          ]
+        ],
+        "per_class": {
+          "ai_prompt_submit": {
+            "support": 1,
+            "predicted": 8,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "keyboard": {
+            "support": 885,
+            "predicted": 759,
+            "precision": 0.4782608695652174,
+            "recall": 0.4101694915254237,
+            "f1": 0.4416058394160584
+          },
+          "mouse_click": {
+            "support": 1070,
+            "predicted": 1189,
+            "precision": 0.5618166526492852,
+            "recall": 0.6242990654205608,
+            "f1": 0.5914121292607348
+          }
+        }
+      },
+      "test_predict_calls": 1,
+      "test_batch_predict_seconds": 0.01789651600029174,
+      "model_artifact_sha256": "01120601e60d93dc8b9a7643b4c8b3cb51b540448a7a31c8447dfb484acfc19b"
+    },
+    "coarse_context_only": {
+      "selected_C": 0.001,
+      "feature_count": 26,
+      "test": {
+        "accuracy": 0.3445807770961145,
+        "balanced_accuracy": 0.5668250699614551,
+        "macro_f1": 0.2941303364436487,
+        "samples": 1956,
+        "class_order": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "confusion_rows_true_columns_predicted": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            440,
+            366,
+            79
+          ],
+          [
+            417,
+            346,
+            307
+          ]
+        ],
+        "per_class": {
+          "ai_prompt_submit": {
+            "support": 1,
+            "predicted": 858,
+            "precision": 0.0011655011655011655,
+            "recall": 1.0,
+            "f1": 0.002328288707799767
+          },
+          "keyboard": {
+            "support": 885,
+            "predicted": 712,
+            "precision": 0.5140449438202247,
+            "recall": 0.4135593220338983,
+            "f1": 0.45835942391984974
+          },
+          "mouse_click": {
+            "support": 1070,
+            "predicted": 386,
+            "precision": 0.7953367875647669,
+            "recall": 0.2869158878504673,
+            "f1": 0.4217032967032967
+          }
+        }
+      },
+      "test_predict_calls": 1,
+      "test_batch_predict_seconds": 0.017016746000081184,
+      "model_artifact_sha256": "47aa47bed1add8f6427aa033735866b8dcfe0f63faccae0116f86e9cd7afe635"
+    },
+    "eeg_plus_coarse_context": {
+      "selected_C": 0.1,
+      "feature_count": 98,
+      "test": {
+        "accuracy": 0.5736196319018405,
+        "balanced_accuracy": 0.3928384110389496,
+        "macro_f1": 0.3794563255077718,
+        "samples": 1956,
+        "class_order": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "confusion_rows_true_columns_predicted": [
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            665,
+            219
+          ],
+          [
+            1,
+            612,
+            457
+          ]
+        ],
+        "per_class": {
+          "ai_prompt_submit": {
+            "support": 1,
+            "predicted": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "keyboard": {
+            "support": 885,
+            "predicted": 1278,
+            "precision": 0.5203442879499217,
+            "recall": 0.751412429378531,
+            "f1": 0.6148867313915858
+          },
+          "mouse_click": {
+            "support": 1070,
+            "predicted": 676,
+            "precision": 0.6760355029585798,
+            "recall": 0.42710280373831777,
+            "f1": 0.5234822451317297
+          }
+        }
+      },
+      "test_predict_calls": 1,
+      "test_batch_predict_seconds": 0.0178831370003536,
+      "model_artifact_sha256": "fe27ca08c5b940c811e4c127594d44a4dee1cea0c07c95987a34a02926e309ce"
+    }
+  },
+  "train_majority_reference": {
+    "selected_class_from_train": "mouse_click",
+    "test": {
+      "accuracy": 0.5470347648261759,
+      "balanced_accuracy": 0.3333333333333333,
+      "macro_f1": 0.23573474333553646,
+      "samples": 1956,
+      "class_order": [
+        "ai_prompt_submit",
+        "keyboard",
+        "mouse_click"
+      ],
+      "confusion_rows_true_columns_predicted": [
+        [
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          885
+        ],
+        [
+          0,
+          0,
+          1070
+        ]
+      ],
+      "per_class": {
+        "ai_prompt_submit": {
+          "support": 1,
+          "predicted": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "keyboard": {
+          "support": 885,
+          "predicted": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "mouse_click": {
+          "support": 1070,
+          "predicted": 1956,
+          "precision": 0.5470347648261759,
+          "recall": 1.0,
+          "f1": 0.7072042300066094
+        }
+      }
+    }
+  },
+  "regularization": {
+    "penalty": "L2",
+    "class_weight": "balanced",
+    "C_grid": [
+      0.001,
+      0.01,
+      0.1,
+      1.0,
+      10.0,
+      100.0
+    ],
+    "fit_partition": "train",
+    "selection_partition": "val",
+    "test_used_for_tuning": false,
+    "refit_train_plus_val": false,
+    "selection": "val balanced accuracy, then val macro-F1, then smaller C"
+  },
+  "coarse_context_features": {
+    "variables": [
+      "previous_experiment_page_or_event",
+      "AI_availability",
+      "their_joint_category"
+    ],
+    "encoding": "train-only DictVectorizer; unknown categories ignored",
+    "features": [
+      "context:ai_availability=False",
+      "context:ai_availability=None",
+      "context:ai_availability=True",
+      "context:page=breakBegin",
+      "context:page=done",
+      "context:page=eyeCalibrationPageBegin",
+      "context:page=hideTask",
+      "context:page=instructions",
+      "context:page=nasatlxBegin",
+      "context:page=showTask",
+      "context:page=taskBegin",
+      "context:page=taskDescription",
+      "context:page_ai_pair=breakBegin|False",
+      "context:page_ai_pair=done|None",
+      "context:page_ai_pair=eyeCalibrationPageBegin|False",
+      "context:page_ai_pair=hideTask|False",
+      "context:page_ai_pair=hideTask|True",
+      "context:page_ai_pair=instructions|False",
+      "context:page_ai_pair=nasatlxBegin|False",
+      "context:page_ai_pair=nasatlxBegin|True",
+      "context:page_ai_pair=showTask|False",
+      "context:page_ai_pair=showTask|True",
+      "context:page_ai_pair=taskBegin|False",
+      "context:page_ai_pair=taskBegin|True",
+      "context:page_ai_pair=taskDescription|False",
+      "context:page_ai_pair=taskDescription|True"
+    ],
+    "excluded": [
+      "subject/session/record IDs",
+      "absolute or relative timestamps",
+      "target event and evidence-row number",
+      "future actions",
+      "prompt/key content"
+    ]
+  },
+  "spectral_features": {
+    "sample_rate_hz": 256,
+    "samples_per_window": 448,
+    "channels": [
+      "CP3",
+      "C3",
+      "F5",
+      "PO3",
+      "PO4",
+      "F6",
+      "C4",
+      "CP4"
+    ],
+    "feature_count": 72,
+    "welch": {
+      "window": "hann",
+      "nperseg": 256,
+      "noverlap": 128,
+      "nfft": 256,
+      "detrend": "constant",
+      "scaling": "density"
+    },
+    "bands_hz_lower_inclusive_upper_exclusive": [
+      [
+        "theta",
+        4.0,
+        8.0
+      ],
+      [
+        "alpha",
+        8.0,
+        13.0
+      ],
+      [
+        "beta",
+        13.0,
+        30.0
+      ],
+      [
+        "low_gamma",
+        30.0,
+        40.0
+      ]
+    ],
+    "features": "per-channel log10 absolute and relative band power, plus log10 total power 3<=f<40 Hz; train-only feature standardization"
+  },
+  "ai_prompt_submit_support": {
+    "train": 2,
+    "val": 2,
+    "test": 1
+  },
+  "ai_prompt_submit_performance_estimable": false,
+  "ai_prompt_submit_interpretation": "Train=2, validation=2, test=1 in this frozen cohort. Point metrics are descriptive only; this cannot support a useful generalization estimate of AI submission intent or operation.",
+  "latent_intent_goal_validated": false,
+  "autonomous_agent_validated": false,
+  "limitations": [
+    "Recorded event-conditioned action windows, not latent intent labels or continuous autonomous operation.",
+    "Published EEG is offline filtered; original XDF and binary-to-recipe equivalence are unverified; 4.125s lookahead is an assumption.",
+    "Mouse movement/EMG and phase or subject-state confounding remain possible.",
+    "32 subjects with 8 held-out subjects; windows are not independent participants; point metrics are not a population confidence claim.",
+    "Only 5 AI submission examples across all splits; three-class balanced accuracy and macro-F1 are highly sensitive to this rare class.",
+    "A difference from the LLM cannot be attributed only to parameter count: representation, optimization and EEG amplitude normalization differ.",
+    "This comparison cannot prove the EEG contains no useful information when a baseline fails."
+  ],
+  "input_write_operations": 0,
+  "gpu_imports_or_calls": 0,
+  "elapsed_seconds": 25.30640616599976,
+  "peak_process_rss_bytes": 1170587648,
+  "native_threadpools": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 2,
+      "prefix": "libscipy_openblas",
+      "filepath": "/usr/local/lib/python3.13/dist-packages/numpy.libs/libscipy_openblas64_-32a4b2a6.so",
+      "version": "0.3.31.188.0",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    },
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 2,
+      "prefix": "libscipy_openblas",
+      "filepath": "/usr/local/lib/python3.13/dist-packages/scipy.libs/libscipy_openblas-b75cc656.so",
+      "version": "0.3.29.dev",
+      "threading_layer": "pthreads",
+      "architecture": "SkylakeX"
+    },
+    {
+      "user_api": "openmp",
+      "internal_api": "openmp",
+      "num_threads": 2,
+      "prefix": "libgomp",
+      "filepath": "/usr/local/lib/python3.13/dist-packages/scikit_learn.libs/libgomp-a34b3233.so.1.0.0",
+      "version": null
+    }
+  ],
+  "provenance": {
+    "source_sha256": "1b74445e9a85c34c86eaa435805b427ba8dbee4d675f6d3e0a4b301b1c10ff08",
+    "protocol_sha256": "0d8baa688eaa32bd334a004ef000053cc3c95a023f851dab235dc5b42014de4a",
+    "manifest_sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac",
+    "reference_file_sha256": {
+      "training_membership.json": "4a6f5d566f1054f474728083d2f6c6872194b9395a464571d83f73430185486a",
+      "eeg_artifacts.json": "5f666e0234e3ab4cbad4271f486840219ce4b70605b84135261e9b990bb496ec"
+    },
+    "validation": {
+      "label_counts": {
+        "train": {
+          "ai_prompt_submit": 2,
+          "keyboard": 1906,
+          "mouse_click": 2449
+        },
+        "val": {
+          "ai_prompt_submit": 2,
+          "keyboard": 549,
+          "mouse_click": 955
+        },
+        "test": {
+          "ai_prompt_submit": 1,
+          "keyboard": 885,
+          "mouse_click": 1070
+        }
+      },
+      "samples": {
+        "train": 4357,
+        "val": 1506,
+        "test": 1956
+      },
+      "subjects": {
+        "train": 18,
+        "val": 6,
+        "test": 8
+      },
+      "subject_disjoint": true,
+      "physical_source_disjoint": true,
+      "split_id_hashes": {
+        "train": "68eefdf581ab173771c6e5355570e11321bc3ad13104f155e7b3ff6006f9c866",
+        "val": "825c9bf6a64aafdf977b9c3466ef281ddd4c95962c3d3179dfb73caf7bf73621",
+        "test": "174cf2297d8bb105eea1b4b377be0cbfb98fad53d3dbd265d8f0d92dc27ae42f"
+      },
+      "prepared_artifact_files": 32,
+      "prepared_artifact_bytes": 112097280,
+      "prepared_artifact_manifest_sha256": "bffe14ad7ed0aa2184ce721febe8792972e5711538f63ec331d465fd8d63c503",
+      "raw_archive_reverification": "not performed here; prepared waveform bytes matched the running LLM's frozen artifact ledger"
+    },
+    "versions": {
+      "numpy": "2.4.6",
+      "scipy": "1.16.3",
+      "scikit-learn": "1.6.1",
+      "threadpoolctl": "3.7.0"
+    },
+    "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+    "cpu_only": true,
+    "gpu_imports_or_calls": 0,
+    "thread_environment": {
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "CUDA_VISIBLE_DEVICES": ""
+    }
+  }
+}

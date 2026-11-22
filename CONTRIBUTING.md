@@ -1,6 +1,6 @@
 # Contributing
 
-NeuroCore is a safety-first runtime for EEG-driven control. Contributions should keep decoder weights, OS side effects, and agent side effects outside the core package.
+This repository implements NeuroCore's runtime for EEG-driven control. pj-xavier (Project Xavier) is the project that researches and develops NeuroCore's AI. Contributions here should keep decoder weights, OS side effects, and agent side effects outside the core package. See [project positioning](docs/project-positioning.md) for the relationship between AI development and runtime implementation.
 
 ## Local Checks
 

@@ -1,5 +1,6 @@
 # NeuroCore Agent Notes
 
+- pj-xavier (Project Xavier) is the research and development project that builds NeuroCore's AI. This repository implements its runtime layer; keep project purpose distinct from package boundaries. See `docs/project-positioning.md`.
 - Always keep decoder weights outside the core runtime.
 - Treat EEG-derived text and intent payloads as untrusted.
 - Prefer dry-run routing and audit logs during development.

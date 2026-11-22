@@ -1,0 +1,94 @@
+{
+  "schema": "pj-xavier-local-validation-v1",
+  "observed_at": "2026-11-22T09:32:54.930079+09:00",
+  "environment": {
+    "python": "Python 3.12.13",
+    "platform": "darwin"
+  },
+  "checks": [
+    {
+      "command": ".venv-xavier/bin/python -m pytest experiments/pj_xavier -q",
+      "exit_code": 0,
+      "tests_passed": 191,
+      "subtests_passed": 18,
+      "duration_seconds": 20.46
+    },
+    {
+      "command": ".venv-xavier/bin/python -m pytest backend/tests -q",
+      "exit_code": 0,
+      "tests_passed": 192,
+      "duration_seconds": 1.05
+    },
+    {
+      "command": ".venv-xavier/bin/python -m pytest experiments/pj_xavier/baselines -q",
+      "exit_code": 0,
+      "tests_passed": 12,
+      "duration_seconds": 1.23,
+      "note": "Includes two new summary tests added after the full 191-test suite; counts overlap and must not be summed."
+    }
+  ],
+  "prior_setup_failures": [
+    {
+      "command": ".venv-xavier/bin/python -m pytest experiments/pj_xavier -q",
+      "result": "collection error: threadpoolctl missing",
+      "resolution": "installed baseline dependencies into .venv-xavier; full rerun passed"
+    },
+    {
+      "command": ".venv-xavier/bin/python -m pytest tests -q",
+      "result": "wrong tests path; no tests ran",
+      "resolution": "used actual pyproject test path backend/tests; 192 passed"
+    }
+  ],
+  "secret_scan": {
+    "kind": "known key/token/private-key patterns over text experiment files",
+    "actual_secret_matches": 0,
+    "reviewed_fixture_matches": 1,
+    "fixture_note": "literal user:pass loopback URL in a rejection unit test; no actual credential"
+  },
+  "source_sha256": {
+    "acquisition/acquire.py": "0430315971c1e77cff2872b46b67dc1921ac656eea1b6ae04a81063302e144e7",
+    "acquisition/build_cached_queue.py": "9e86026dbd79a4cfc4531c471159402c72872c69bb2626653bc4288dcf78304c",
+    "acquisition/neurocore_resolver_bridge.py": "9d7baca9d246386fcef49835dd169f6e394dedbf88bce6540ed5026152614f9b",
+    "acquisition/test_acquire.py": "9db132b90be2c08dc73b5df869b625023467909c3e4e8d1c78735ebe78c0818b",
+    "baselines/cpu_baselines.py": "1b74445e9a85c34c86eaa435805b427ba8dbee4d675f6d3e0a4b301b1c10ff08",
+    "baselines/summarize_report.py": "3e11e2f0be36d0ee138bdd8f280ed9642baf8375f3e49a988459fc8b4c35f247",
+    "baselines/test_cpu_baselines.py": "131076e99b41f7b8ac33d165ec6f66705ed70daf365f9885c10c36cf4da2024c",
+    "baselines/test_summary.py": "f85977ad463dd5676813dfabf14fcaf76ce121ff42df518e5e742b09e68b346a",
+    "benchmark/evaluate_variants.py": "bd92732e088ff633d2ff299161cf47a8a5630435c4c425dbae7992f563bc0447",
+    "benchmark/model_adapter.py": "899ed6ff5b030eda88cd81fc7b6b88b55de2141b14f314c86866979b50c8dae6",
+    "benchmark/test_evaluate_variants.py": "4b6790f8faf093c39e1776295fbdd8881dd13427065aa9555552326bfb5c6ba1",
+    "benchmark/test_final_gates.py": "992f76b00a9a665d49c3dae149f13153fcda533388ea4af3434f74445af058e6",
+    "benchmark/test_xavier_benchmark.py": "72a49e71a43327cd5bcbe3e583e3a2172b057f5d0d4176c2ef1c98bde5dfd6da",
+    "benchmark/xavier_benchmark.py": "3044e8e406f8fe73c9b5a7e58d23d1011d370241637e282f125175e018595956",
+    "controller/controller.py": "74838b6e80b97964c6221c8df3a977747943d3f025502ae1b2d73ed050dab523",
+    "controller/remote_core.py": "cbb4e02a73d19e5f1dcfd18edf0d6bfe8a433a46ea33ba01b836ac55d9a0fd34",
+    "controller/test_controller.py": "2d02fbb708764a75fff24837abf99b5528c4b77752b8917471ff7d2925697920",
+    "fleet/fleet.py": "22ef08243ca01d174ee08d2020ee7f4d9a3e2a1eb7f6e119ac0b35d9f7d57aeb",
+    "fleet/node_worker.py": "889df924b5dadb927663067ab2a155128fbe15b3a06153e337fa2a1901d0bc9c",
+    "fleet/test_fleet.py": "643fe2b47585c2cd84e7fcb1c8030078bb8c1564cfb6653fa5d7b50efbfc2101",
+    "integration/replay_to_neurocore.py": "87ea9eddaf839c1ec900350aca20b2baca374d560b0fdec1a7fb686673e56c1e",
+    "integration/test_replay_to_neurocore.py": "151ceb08288a3f0cb4bc57aa962d3bd044f4d44d1ab25983e40c35d3e677fc47",
+    "labeling/ollama_label_worker.py": "5adee4bbd74926487e6a4a50fd348bc5b832bdd0badb5e918de852578d62d541",
+    "labeling/propagate_weak_labels.py": "ee17adf8c7693d1673911130714b4f11ef517fe86e803b3759fddb7da0e454bd",
+    "labeling/test_ollama_label_worker.py": "cef0b0948de8c0823ed040fdb234a54be8601fc4a73b30394d0a72fe55aecb44",
+    "labeling/test_propagate_weak_labels.py": "6d01122fa585f30d9dff0ddb95d0e76570d9f09d11d95638b47fc308bb070dd5",
+    "model/audit_filter_support.py": "db5cbb97cbdb5f3a865bc6e4b3a0fa8cf692b5e88d5039b505fc59a1b48da5b2",
+    "model/eeg_llm.py": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+    "model/prepare_ai_coding.py": "38e3cca302b456f5c918c03d93d5f71d77ffe636efbc3f90840cf89ac2d8badc",
+    "model/prepare_eeglass.py": "eba3392c07f1ea7d5a5625ab95f8853eb765d7c17bce48000303c73bdc8068ab",
+    "model/prepare_natural_cohort.py": "e856267e8478f7c65bbc5a1ca5da90f72e38029245f55d7cb9816b15a757430c",
+    "model/profile_training.py": "f83496a47811c3b9757000fd66387104d768ff79fc63068ad9e428f9167f3c25",
+    "model/test_ai_coding.py": "39a193b2ad3ed4cb11daccee6fb587580544471762534c8842772ee65128e40c",
+    "model/test_eeg_llm.py": "4eda2b90d54eabd13a0a56b80d4d11624b75405db146b82bb330f3462c060dbc",
+    "model/test_natural_cohort.py": "ce4750c78419de07cbf0a6f03a05fc1c9912876105c6a6e3ebd77aee8294b42d",
+    "previous_probes/benchmark_mlx_connector.py": "953ab4dfcad8c73f37de4de3793a28781cb47a34e6402c18b8741d1e148b4783",
+    "previous_probes/eeglab_action_probe.py": "70335a972b5f9732d5b208fda3e256ffc9ad5bbb714e929a20080ee756cc7dc0",
+    "previous_probes/label_probe.py": "6d4699d317ec9cffe664502873240cb76f5afb7067349c5621999fed772573c9",
+    "previous_probes/test_eeglab_action_probe.py": "6a99d77da9be9a139f196b827a0306ef4086bf1fac2956a91d1fbf165a7f6b24",
+    "previous_probes/test_label_probe.py": "6e45bb49360e30160712082fbe9d664d4220496416b5299b0996bcbc68b16f3c"
+  },
+  "interpretation": "Tests validate implementation and gates; they do not establish EEG decoding, online causality, or autonomous agent performance.",
+  "publication_notes": [
+    "Public comparison.csv uses LF line endings; original Colab output is preserved with verified hashes in the private recovery bundle."
+  ]
+}

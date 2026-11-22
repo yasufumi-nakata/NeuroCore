@@ -1,0 +1,22 @@
+{
+  "status": "pass",
+  "tests": 26,
+  "test_command": "python -m unittest discover -s xavier_implementation/controller -p test_*.py -v",
+  "python_version": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "source_files": {
+    "controller.py": "74838b6e80b97964c6221c8df3a977747943d3f025502ae1b2d73ed050dab523",
+    "remote_core.py": "cbb4e02a73d19e5f1dcfd18edf0d6bfe8a433a46ea33ba01b836ac55d9a0fd34",
+    "test_controller.py": "2d02fbb708764a75fff24837abf99b5528c4b77752b8917471ff7d2925697920",
+    "config.example.json": "060ecacfd2fcdb91dc8a4c2ef40493ba6e7f8c512fecea2aaa867aacc6792be3"
+  },
+  "live_mutating_actions_by_this_subtask": 0,
+  "transport": "workstation /Users/yasufumi/.local/bin/colab CLI only",
+  "session": "xavier-eeg-20261122",
+  "notes": [
+    "Verified CLI v0.7.4 help through workstation read-only commands.",
+    "All runtime mutations in tests used fixtures or a fake CLI.",
+    "Root performs deployment and live execution.",
+    "All completed raw payloads require local SHA-256 verification before owned-session stop.",
+    "UniBa supervisor is included; required five-condition evaluation receipt and checkpoint/report SHA matches gate idle stop."
+  ]
+}

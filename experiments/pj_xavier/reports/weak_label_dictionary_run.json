@@ -1,0 +1,29 @@
+{
+  "schema_version": "pj-xavier-weak-label-v1",
+  "started_at": "2026-11-21T23:36:21.255917+00:00",
+  "updated_at": "2026-11-21T23:37:49.064908+00:00",
+  "status": "input_exhausted",
+  "jobs_file_sha256": "8b3f80d0b398098a84b3b20ea5ad25659bae75d6deee10e4cd23ebbfa5035d37",
+  "node_id": "workstation",
+  "shard_index": 0,
+  "num_shards": 1,
+  "model_requested": "qwen3.5:2b",
+  "system_prompt_sha256": "881a248561b67ddd778bb02c4b31dca0d7652441e002d85a915d1cbbfe965478",
+  "output_schema_sha256": "39c90bf2a6c00d24e583d0e1604b923f1071e80a2dc33ab4ce2fe39ee4887eb2",
+  "counts_this_run": {
+    "labeled": 15,
+    "pseudo_labels_created": 15,
+    "source_gold_labels_preserved_in_results": 15
+  },
+  "gold_labels_modified": 0,
+  "note": "Schema-valid AI output is unverified weak supervision, not independent gold or EEG-decoded intent.",
+  "teacher": {
+    "model": "qwen3.5:2b",
+    "model_digest_sha256": "324d162be6ca5629ae4517c8710434d0bd2d665bc94dbad46e9af8fbf8a2f0df",
+    "parameter_size": "2.3B",
+    "quantization_level": "Q8_0"
+  },
+  "results_file_sha256": "7dfae9f9758c7d5230f7c2511c4c5a809a22c15ae7451ce01a07812b19f34993",
+  "records_appended_this_run": 15,
+  "semantics": "15 distinct descriptions from 225 training windows were normalized; this creates neither new EEG recordings nor independent intention ground truth."
+}

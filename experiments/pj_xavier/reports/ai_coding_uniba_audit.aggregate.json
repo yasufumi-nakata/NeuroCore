@@ -1,0 +1,49 @@
+{
+  "source": "https://zenodo.org/records/20801101",
+  "subject_count": 34,
+  "recording_count": 34,
+  "source_recording_hours": 30.61540256076389,
+  "synchronized_subject_count": 32,
+  "synchronized_recording_hours": 28.589534505208334,
+  "rejected_subject_count": 2,
+  "rejection_reasons": {
+    "implausible_clock_scale": 2
+  },
+  "min_passed_clock_error_ms": 1.2807691264242749,
+  "max_passed_clock_error_ms": 76.81228241392546,
+  "eeg_compressed_bytes": 881786830,
+  "eeg_archive_extracted_bytes": 1129850210,
+  "audit_sha256": "3365c63f4310adf9d5f8c53b6d4a25a1dc110cf25767fd0288688f0a032771a5",
+  "source_verification": {
+    "verified": true,
+    "sources": [
+      {
+        "filename": "bids_eeg_uniba.tar.gz",
+        "bytes": 881786830,
+        "md5": "2940e51d135e45926b302442c3db11fb",
+        "sha256": "801e3e29ce6c58151c7a3a7aa1be17a6a0ee64d3cd355d43dd09418368a8e195",
+        "source_url": "https://zenodo.org/api/records/20801101/files/bids_eeg_uniba.tar.gz/content",
+        "ledger_status": "complete",
+        "reverified_before_extraction": true,
+        "extracted_members": 306,
+        "extracted_bytes": 1129850210
+      },
+      {
+        "filename": "bids_behavioral_uniba.tar.gz",
+        "bytes": 22128692,
+        "md5": "30441af9a7c603f6abaebf3ec8f80816",
+        "sha256": "fcdeeb7a2ee46b7f8b0a31459c919fc5b4050133ff699c76b7e722da87d6e848",
+        "source_url": "https://zenodo.org/api/records/20801101/files/bids_behavioral_uniba.tar.gz/content",
+        "ledger_status": "complete",
+        "reverified_before_extraction": true,
+        "extracted_members": 474,
+        "extracted_bytes": 83996710
+      }
+    ],
+    "scope": "full archive checksum and downloaded ledger match"
+  },
+  "online_causality_verified": false,
+  "goal_benchmark_status": "blocked_pending_causal_preprocessing_real_harness_goals_and_intent_ground_truth",
+  "audit_version": "v1_clock_audit_before_keyboard_down_normalization_fix",
+  "candidate_counts_usable_for_training": false
+}

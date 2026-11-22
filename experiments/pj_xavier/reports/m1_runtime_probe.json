@@ -1,0 +1,50 @@
+{
+  "status": "measured",
+  "condition": "normal",
+  "latency_ms_p50": 776.4002080075443,
+  "latency_ms_p95": 2985.6329827336594,
+  "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution",
+  "abstain_threshold": 0.8,
+  "coverage": 1.0,
+  "task_completion": null,
+  "false_actions_per_minute": null,
+  "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods",
+  "n_examples": 3,
+  "hardware": {
+    "platform": "macOS-27.2.1-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "arm",
+    "device": "mps",
+    "python": "3.12.13",
+    "torch": "2.15.0",
+    "transformers": "5.24.0",
+    "mps_recommended_max_memory_bytes": 12713115648,
+    "system_memory_bytes": 17179869184
+  },
+  "backbone": {
+    "base_parameter_count": 1711376384,
+    "resolved_revision": "31b70e2e869a7173562077fd711b654946d38674",
+    "pretrained": true,
+    "estimated_weight_bytes": 3422752768
+  },
+  "runtime_dtype": "bfloat16",
+  "checkpoint_training_dtype": "bfloat16",
+  "memory_budget_gib": 8.0,
+  "candidate_batch_size": 1,
+  "memory": {
+    "process_peak_rss_bytes": 543440896,
+    "mps_sampled_allocated_bytes": 3423408384,
+    "mps_sampled_driver_bytes": 4310319104
+  },
+  "allocator_limit": {
+    "kind": "mps_allocator",
+    "fraction": 0.6756750138862577,
+    "allocator_limit_bytes": 8589934592,
+    "recommended_bytes": 12713115648,
+    "scope": "PyTorch MPS allocator only; CPU allocations and other processes are outside this quota"
+  },
+  "checkpoint_sha256": "6a2d53ec17e2d902f6ac25e32c7b33278b3ab2fbb751770e482a1f2b1aee057c",
+  "checkpoint_modified": false,
+  "scope": "Three real training windows; actual M1 feasibility probe only, not heldout accuracy or a steady-state latency benchmark. Includes cold first scoring call.",
+  "original_report_sha256": "9a4098d3d7f17da071a81256b09b55de4dd67e6312b0e34c3d940462927ef02d"
+}

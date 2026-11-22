@@ -1,0 +1,13 @@
+{
+  "smollm2_1_7b_eeglass/run_summary.json": "467d71f00190aa32b215d4ff9d4b51a0a29edc42d36274a5dca867564d93da71",
+  "smollm2_1_7b_eeglass/hardware.json": "b0e669671648869c03be8a4388c76921f9a4048380f432cf404bc64dff52e1a1",
+  "smollm2_1_7b_eeglass/history.jsonl": "4580d78346277b2e15075be71b597e97b465a8f7f7ae7d0d83f223bb938373fd",
+  "smollm2_1_7b_eeglass/resource_colab.json": "5cb867716fe587144d855f538087dd9a78ab47afc94fb4f624b3374b85c92281",
+  "smollm2_1_7b_eeglass/revision_evidence.json": "203beb70eeaac9fab4a561e28f39da4903d412ecbe8cc2282fc4b53f86bd90e1",
+  "smollm2_1_7b_eeglass/data_validation.json": "238c13e4bde1116730f1987235a48d4d03b0cf025fa3b03f46021237c38fa2a4",
+  "qwen3_8b_eeglass/run_summary.json": "873f1e9709bb0565921841bb68ea50b35d1e60e9dda80317de8c67f274e7285e",
+  "qwen3_8b_eeglass/hardware.json": "0adb8056edbc07f0f601507fc57beda2b203531e740a80d0eadcc3e10c06c1ca",
+  "qwen3_8b_eeglass/history.jsonl": "eb9202144cb800ec90e690fa2ee22943270a987d1acbecd08d945ed7aa3c285c",
+  "qwen3_8b_eeglass/resource_colab.json": "48aa3dfc127b155fa381d80b7b142ea77de80ccafb226b1f09fa6f99463e5258",
+  "qwen3_8b_eeglass/data_validation.json": "238c13e4bde1116730f1987235a48d4d03b0cf025fa3b03f46021237c38fa2a4"
+}
