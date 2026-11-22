@@ -2,6 +2,12 @@
 
 更新：2026-11-23 JST．この文書を現在状態の入口とし，実PID/lock・immutable run・receiptを正とします．古い「最新」が積み重なった記録は[保存版](reports/handoff_snapshots/HANDOFF_20261123_before_full_BCI.md)へ分離しました．
 
+## 07:27 JST 追加：AoyamaLab catalogue bridge，OpenNeuro公式manifest
+
+[ソース照合・実機導入報告](reports/SMAC_CATALOG_BRIDGE_20261123.md)．既存高信頼5,165件は新規ダウンロード候補ではなく，canonical catalogue 5,165件へ全件対応（source-key 5,162件＋title/URL alias 3件）．広域発見22,327件の未対応13,792件は単なるmetadata差分であり，EEG実体・公開取得許可は未確認です．`ds005841`の公式OpenNeuro公開S3 manifest 872 objects／BDF 288／7,889,279,183B／CC0／v1.0.0を独立取得しました．元カタログ003254のfiles0解消の候補ですが，このrunでraw取得もfitもしていません．
+
+smac31の独立領域 `~/pj-xavier/catalog-bridge-v1/` でstdlib-only reader/CLI，CSV2件，公式S3 metadataをSHA照合して導入・実行しました．公開コードは [catalog_bridge](catalog_bridge/README.md) の5件unittestをPASS，公開版コードもsmac31でread-only実行して一致確認済みです．前の37台read-only pilotは全37台完了済みのため重複起動せず，GuardianはPID87453／37 windows activeを確認しました．既存取得DBやraw，重み・GPUは不変，追加gradient0です．次のroot ownerは固定manifestをprovenance・license・EEG scope・splitと照合してからsource単位にadmissionし，B案の同期画面／操作履歴との比較を最優先にしてください．
+
 ## 現在の目的と到達点
 
 **約23.07TBの全取得候補をS Macで取得し，適格train全体の学習・評価を継続します．BCI追加までの実累積は79,493窓／66.2441666667h，10epoch・12,460step完了，独立69／69 PASSです．** 全量取得と最終最大unionの再学習は未完了です．
