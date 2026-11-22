@@ -1,0 +1,17 @@
+{
+  "EDF_byte_partition_equal": true,
+  "EEG_scalar_bytes": 251317248,
+  "MAT_additional_original_hours": 0,
+  "all237_file_bytes_equal_release": true,
+  "all92_MNE_calibration_probes_passed": true,
+  "auxiliary_scalar_bytes": 789854208,
+  "exact_EEG_duplicate_records": 0,
+  "file_ledger_sha256": "2a581d3f5f002bb41f783d11c8f3a197b7031c3d160bea4cb91381f79feaf85a",
+  "header_bytes": 1389568,
+  "native_samples_divided_by_hz_seconds_exact_fraction": [
+    70122,
+    1
+  ],
+  "record_ledger_sha256": "e25206409c48ffd854cf3a3f45f3624d5471426a933f82885b1396b8d9af6669",
+  "status": "passed"
+}

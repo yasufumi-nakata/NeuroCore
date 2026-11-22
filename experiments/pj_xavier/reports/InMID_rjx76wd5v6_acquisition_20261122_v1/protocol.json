@@ -1,0 +1,17 @@
+{
+  "CPU_threads": 2,
+  "EDF_header_helper_sha256": "fc61fed2388ad26b5cf2b0c4bba907c3e1b5d0725bb06c989deed90d6728189b",
+  "MNE_version": "1.13.2",
+  "absolute_deadline_epoch": 1795328045.567842,
+  "channel_policy": "Exactly14 AF3..AF4 EEG names,58 total signals; timestamp/counter/quality/battery/markers are auxiliary even if their unit fields say uV",
+  "new_training_or_label_creation": false,
+  "official_metadata_sha256": "a35d1626daffb4153f8901bf0edcf9d8c3496e142bc007dac51459efd355771d",
+  "published_SHA256_all237_required": true,
+  "quantity_policy": "Original92EDF recording samples/128Hz only; MAT derivative/time overlap not added; video and metadata excluded from EEG duration",
+  "resource_sha256": "1b01729ff978b930118670ee4ca71cafdc287b2f909a634c229e023af960ea16",
+  "schema": "xavier_InMID_original_EDF_audit_v1",
+  "source_dataset": "https://data.mendeley.com/datasets/rjx76wd5v6/2",
+  "source_official_version": 2,
+  "source_sha256": "8288d629afefa11e653acb8788edb8d3da641e7d7b5658ab7d28137713c99b75",
+  "units_policy": "EEG-specific physical/digital header calibration compared to MNE; non-EEG generic uV fields not used for physical semantics"
+}

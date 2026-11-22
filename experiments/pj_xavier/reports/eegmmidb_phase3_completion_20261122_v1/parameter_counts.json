@@ -1,0 +1,63 @@
+{
+  "schema": "xavier-phase3-CPU-parameter-accounting-v1",
+  "status": "passed",
+  "observed_epoch": 1795327849.483957,
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "torch": "2.15.0",
+  "device": "cpu",
+  "seed": 20261122,
+  "same_seeded_initial_encoder_tensors_equal": true,
+  "model_forward_calls": 0,
+  "optimizer_steps": 0,
+  "LLM_model_loaded_by_this_operation": false,
+  "parameter_counts": {
+    "EEG_encoder": 4768,
+    "supervised_EEG_classifier": 4900,
+    "SSL_model": 24352,
+    "SSL_reconstruction_decoder": 19584,
+    "fused_encoder_and_projector_from_actual_L4_gradient_evidence": 72416,
+    "frozen_LLM_from_actual_L4_backbone": 1711376384
+  },
+  "named_parameter_counts": {
+    "supervised": {
+      "encoder.temporal.convolution.weight": 1024,
+      "encoder.temporal_norm.weight": 16,
+      "encoder.temporal_norm.bias": 16,
+      "encoder.spatial.weight": 2048,
+      "encoder.spatial_norm.weight": 32,
+      "encoder.spatial_norm.bias": 32,
+      "encoder.depth_temporal.convolution.weight": 512,
+      "encoder.pointwise.weight": 1024,
+      "encoder.output_norm.weight": 32,
+      "encoder.output_norm.bias": 32,
+      "heads.left_right.weight": 64,
+      "heads.left_right.bias": 2,
+      "heads.fists_feet.weight": 64,
+      "heads.fists_feet.bias": 2
+    },
+    "SSL": {
+      "encoder.temporal.convolution.weight": 1024,
+      "encoder.temporal_norm.weight": 16,
+      "encoder.temporal_norm.bias": 16,
+      "encoder.spatial.weight": 2048,
+      "encoder.spatial_norm.weight": 32,
+      "encoder.spatial_norm.bias": 32,
+      "encoder.depth_temporal.convolution.weight": 512,
+      "encoder.pointwise.weight": 1024,
+      "encoder.output_norm.weight": 32,
+      "encoder.output_norm.bias": 32,
+      "decoder.0.weight": 14336,
+      "decoder.0.bias": 64,
+      "decoder.3.weight": 960,
+      "decoder.3.bias": 64,
+      "decoder.5.weight": 4096,
+      "decoder.5.bias": 64
+    }
+  },
+  "source_sha256": {
+    "experiments/pj_xavier/eegmmidb_phase2/model.py": "5285c00e64bdcbc79b04bbfb236b85c05a035affed06a24b16e768fbcf5606ac",
+    "experiments/pj_xavier/eegmmidb_phase3/ssl_model.py": "45bee6dc52b308ce3af36acf8f90a6dcd153ba1bc039c4d4ef969eba2b3b4187",
+    "private/xavier/eegmmidb_phase3_v1/operations/head_equivalence_combined.json": "35eb2e92f4cb3d57c919e970572d1a17cca45eebfa2b366235f45ee2df4b9ace"
+  },
+  "public_training_aggregate_sha256": "d385bc863d0023e7ca42239774195c25bcd963494d555d6b71f36f470171ca17"
+}

@@ -1,54 +1,106 @@
 # PJ-Xavier：EEG と LLM の学習・評価
 
-NeuroCore の EEG デコーダと LLM 接続部を開発する実験コードです．目標は，判断以前の環境情報と EEG から操作を推定し，実ハーネスでタスク完了まで評価することです．現在の実装では，学習可能な EEG encoder／prefix を既存 LLM の `inputs_embeds` に渡し，出力トークンの損失から逆伝播します．
+NeuroCore の EEG デコーダと LLM 接続部を開発する実験コードです．目標は，判断以前の環境情報と EEG から操作を推定し，実ハーネスでタスク完了まで評価することです．学習可能な EEG encoder／prefix を既存 LLM の `inputs_embeds` に渡し，出力トークンの損失から逆伝播する構成を実装しています．
 
-**実 EEG による 1.7B・8B モデルの学習，checkpoint 保存，held-out 評価，workstation での推論，NeuroCore router への dry-run を実行しました．目的の自律エージェント能力と，負対照まで含めた安定したEEGの追加寄与は，まだ実証できていません．** 最初の基盤を追加した [PR #70](https://github.com/yasufumi-nakata/NeuroCore/pull/70) はマージ済みで，追加監査・評価・修正は [PR #71](https://github.com/yasufumi-nakata/NeuroCore/pull/71) で継続しています．最新の実行場所と再開手順は [HANDOFF.md](HANDOFF.md) を参照してください．
+**2026-11-22，追加データの取得・監査，EEGMMIDBでの追加学習，固定test評価，負対照，合成環境ハーネス，成果物回収，M1実機試用を完了しました．取得済みは49.54GB，連続EEGは255.33時間です．最新モデルの実学習入力は重複を除いて29.99時間です．目標の自由な意図からの自律操作は未実証です．** 基盤の [PR #70](https://github.com/yasufumi-nakata/NeuroCore/pull/70) はマージ済みで，追加監査・評価・修正は [PR #71](https://github.com/yasufumi-nakata/NeuroCore/pull/71) に保存しています．実行場所と再開条件は [HANDOFF.md](HANDOFF.md) を参照してください．
 
-## EEGMMIDB：学習・評価完了と追加学習
+## 最新の学習・評価結果
 
-2026-11-22 14:30 JST．CSP＋LDA，scratch EEG encoder，EEG＋凍結SmolLM2の学習と固定test評価，負対照，T0診断，合成環境ハーネス，全成果物回収，M1試用を完了しました．主左右想起の被験者平均balanced accuracyは **59.92%／59.09%／57.44%** で，この条件ではLLM融合による上積みは確認できませんでした．[全結果と区間推定](eegmmidb_phase2/RESULTS.md)を保存しています．
+同じ17 test群，主課題751窓，副課題738窓で比較しました．BAは参加者ごとのbalanced accuracyを平均した値です．95%区間は固定した1,000回の参加者bootstrapで，学習seedの違いや多重比較を含みません．
 
-train6,359／val1,360／test1,489の分割を固定し，同じ被験者が分割をまたがないようにしています．固有train入力は3秒×6,359＝5.299167時間です．モデルを固定してからtestを評価し，rootが保存済み予測から3モデル全5条件の主要点指標を独立に再計算して一致を確認しました．bootstrap区間は参加者単位の探索的な不確実性で，学習seedや多重比較まで含みません．
+| モデル | 主課題：左右の運動想起 BA［95%区間］ | 副課題：両拳／両足の運動想起 BA |
+| --- | ---: | ---: |
+| CSP＋LDA | 59.92%［53.00，66.84］ | 59.97% |
+| phase2：直接教師学習EEG | 59.09%［53.52，65.73］ | 65.10% |
+| phase2：EEG＋凍結SmolLM2 | 57.44%［53.18，61.73］ | 59.85% |
+| phase3：追加SSL→EEG | **62.45%［56.85，69.00］** | 64.80% |
+| phase3：追加SSL→EEG＋凍結SmolLM2 | 56.72%［52.21，61.70］ | 63.12% |
 
-fusedの主課題採用率は固定0.8で14.11%，採用内正解率63.21%，T0二択誤採用23.80%です．合成環境の主episode成功7.99%と，正解classを渡したrouting上限62.5%を分けて保存しました．M1のtrain3例は20.53秒で12fresh routingを実行できましたが，全件棄権のため操作成功は0でした．[実機試用手順](integration/README_TRY_EEGMMIDB_RECORDED.md)を参照してください．
+[phase2の全結果](eegmmidb_phase2/RESULTS.md)，[phase3の全結果](eegmmidb_phase3/RESULTS.md)，[機械可読な全条件の結果](eegmmidb_phase3/protocol.measured_results.v1.json)を保存しています．モデルと閾値を固定してからtestを評価し，rootが保存済み予測から全5条件×2課題の主要点指標を別実装で再計算して一致を確認しました．元3モデルの再推論は行っていません．
 
-さらに，phase2 test閲覧前に固定したphase3で，**29.8875時間の連続train EEG**を使うmasked SSL→同じMI教師あり学習→同じSmol接続を実行中です．SSLとMIの準備済み区間unionは29.985889時間で，最終実学習量は選択checkpointまでの実seen-IDから別途監査します．既存test17群は学習へ入れません．[準備済み全入力](reports/eegmmidb_phase3_preparation_20261122_v1/README.md)と[固定科学設定](eegmmidb_phase3/protocol.scientific.v1.json)を公開しています．
+追加データ比較の仕様をphase3 test閲覧前に固定し，同じ17群を対応させて計算した主課題の差は，EEG分類器で **＋3.3673ポイント［＋0.3064，＋6.4127］**，LLM融合で **−0.7189ポイント［−4.9788，＋3.6936］** でした．4比較は多重比較未調整，同じholdoutを再利用する探索的解析です．特に融合はbatch・実更新回数・時間枠も異なり，差をSSLだけの効果とは同定しません．[比較の仕様・結果・限界](eegmmidb_phase3/ADDED_DATA_COMPARISON.md)を参照してください．
 
-## データ量：候補・取得済み・検証済みを区別
+新EEG分類器の通常入力−shuffleの主BA差は＋11.89ポイント［5.91，18.10］，新LLM融合は＋8.19ポイント［1.66，15.11］でした．公開課題における整列したEEGの信号であり，自由な内的意図や因果的な生理機序の証明ではありません．固定0.8閾値での主課題採用率は新EEGが8.79%，新融合が3.60%です．融合の合成環境成功率は棄権を含め2.16%で，正解classを渡したroutingの上限も62.5%でした．
 
-2026-11-22 日本時間の観測です．GB／TB は十進，GiB は二進です．
+全5モデルの36,050保存予測を使い，16回の実LLM routing結果から173,980回の状態遷移を比較しました．独立EEG標本が増えたという意味ではありません．環境のX/Y配置はEEG分類後の別routingへ渡しており，任意画面の情報とEEGから操作を直接学ぶモデルは次の実験対象です．T0休止の誤採用も評価していますが，自然idleの誤操作回数／分や実OS操作の成功は未測定です．
+
+### 実際に使った量・時間・計算資源
+
+phase3はfresh同seedの小型EEG encoderから開始したmasked SSL→MI教師学習→Smol接続です．CBraModやphase2学習済み重みからの継続ではありません．旧test17群と50注釈review記録をSSLから除外しました．
+
+| 段階 | 実入力／更新 | 実測fit時間 |
+| --- | --- | ---: |
+| 連続EEG masked SSL | train35,865窓／75群，29.8875時間，20epochs・1,420steps | 694.855秒 |
+| SSL後のMI教師学習 | train6,359窓／72群，5.299167時間，60epochs・1,500steps | 306.493秒 |
+| EEG→SmolLM2-1.7B接続 | 同じMI train，20完了epochs＋43steps，計1,043steps | 1,800.418秒 |
+| fitタイマーの合計 | 準備・capacity probe・最終評価・回収を除く | **2,801.766秒＝46.70分** |
+
+**選択モデルまでに実際に学習した原区間のunionは107,949.2秒＝29.985888889時間**です．SSLとMIを単純に足さず，native source区間とphysical EEG payload区間の両方で独立照合しました．SSLの反復提示597.75時間も新しいEEG量へ加えません．最新追加取得分をこの固定済み実験へ後から入れておらず，その追加分からの新規gradient入力は0時間です．
+
+融合の1,800秒終了は登録した時間枠による正常partialで，30epoch完走ではありません．採用したbestはepoch11／550stepsで，最後の1,043steps checkpointとは区別して保存しています．SSLは初期epoch0を含む21候補から固定validationでepoch20を選び，subject平均masked MSEは0.090194から0.067171へ25.5%低下しました．
+
+更新対象はEEG分類器4,900 parameters，融合72,416 parameters，凍結Smol本体1,711,376,384 parametersです．L4で融合のCUDA最大予約は18,593,349,632Bでした．2行symbol-head高速化は実機BF16の固定gradient許容差を満たさず不採用とし，元のfull-vocabulary headで学習しています．[モデルカード](reports/eegmmidb_phase3_training_20261122_v1/MODEL_CARD.md)と[完了・回収・停止記録](reports/eegmmidb_phase3_completion_20261122_v1/README.md)を参照してください．
+
+### workstationで試す
+
+正worktreeのルートで，次を実行できます．
+
+```bash
+python3 scripts/try_pj_xavier_recorded.py
+```
+
+このlauncherを通じたM1／16GiBの実機試用は18.745秒で完了しました．固定train3例×4環境配置の12回は全て棄権し，成功操作0でした．EEG→LLM→合成状態遷移の実行確認であり，holdout成績や自律操作成功ではありません．生EEGのライブ入力，OS操作，cloud APIは実行しません．[固定条件と出力先](integration/EEGMMIDB_PHASE3_RECORDED_TRIAL.md)を参照してください．
+
+全476成果物，489,554,060Bをworkstationへ回収し，rootも全SHAを再照合しました．ColabはworkstationのCLI経由で操作し，15:18:59 JSTに停止，15:19:42にはactive assignments 0，課金速度0を確認しました．この工程でMac clusterの計算は使用していません．smac19は除外しています．
+
+## データ量：候補・取得済み・検証済み
+
+2026-11-22 15:21 JSTのsnapshot006です．GB／TBは十進，GiBは二進です．
 
 | 範囲 | 確認した量 | 意味 |
 | --- | ---: | --- |
-| EEG-dataset の目録 | 5,165 行 | 全 ID と取得先解決結果を照合し，不足・余剰 0 |
-| workstation の取得キュー | 783 releases，650,483 file jobs | EEG を含む候補の release 全体．認証・規約操作・metadata の保留を含む |
-| 上記キューの既知の容量 | 24,172,262,716,513 B，約 24.17 TB | 動画・補助データ・版の重複を含む候補容量．42,398 files はサイズ未確定 |
-| 取得完了し SHA-256 の検証記録がある内容 | 175 files，44,432,880,979 B，約44.43GB | 14:17 JSTのsnapshot005．同一内容は重複加算せず，P300は取得途中の66filesを含む |
-| 元EEGのheader／binaryを数量検証した範囲 | 2,405記録，210.50324878時間 | 記録長の合計．channel-hoursではない |
-| binary EEG scalarの保存容量 | 43,382,368,656 B，約43.38GB | 補助channel・動画・header・窓配列・重みを除く．校正の正しさを保証する名称ではない |
-| UTF-8のEEG数値tokenの保存容量 | 31,065,967 B | 元TXTの数値表現．binary値のbytesとは区別 |
+| EEG-dataset目録 | 5,165行 | 全IDと取得先の解決結果を照合，不足・余剰0 |
+| 取得キュー | 783 releases／650,483 file jobs | 認証・規約・metadata保留も含む候補 |
+| キューの既知容量 | 24,172,262,716,513B，約24.17TB | 動画・補助データ・複数版を含む．42,398 filesは容量未確定 |
+| 完全取得の異なる内容 | **760内容／49,539,668,378B，約49.54GB** | 保存766コピーから同一SHAの6コピーを除外．companionを含む |
+| 原形式として確認した連続EEG | **2,638記録／244.802595660時間** | canonical/native配布記録．未処理アンプ原信号の保証ではない |
+| 追加の処理済み連続EEG | **73 unique記録／10.526006944時間** | 原形式の時間とは別区分 |
+| 連続EEGの保存時間合計 | **255.328602604時間** | sample数÷sample rate．channel-hoursではない |
+| 処理済みepoch | **1,688 epochs／1.641111111時間** | 原連続区間の重なり不明のため上記とは別掲 |
+| Starlabの列対応未確定table | 公称1.295405556時間相当 | 5列とEEGの対応未確定．確認済みEEG時間へ非加算 |
+| 旧bulkの未完partial | 2件／912,924,912B | 完全取得量・EEG時間へ非加算 |
 
-取得の根拠は[acquired_progress_005.json](reports/acquired_progress_005.json)，数量は[verified_eeg_quantities_20261122_005.json](reports/verified_eeg_quantities_20261122_005.json)です．既存部分は過去の全量SHAと保全記録を照合し，新規compactデータとBCI archiveは全ファイル／memberを新たに検証しました．約44GB全てをこのsnapshotで再hashしたという意味ではありません．partialは完了容量やEEG時間に加算しません．P300の未完release，新規MI releaseは完了・header監査後のsnapshotへ反映します．ZIPのbytesからEEG時間を一律換算しません．
+[取得台帳集計006](reports/acquired_progress_006.json)，[EEG数量006](reports/verified_eeg_quantities_20261122_006.json)，[確度と除外時の合計](reports/quantity_scope_addendum_006_20261122_v1.json)に根拠があります．Brainstormの0.469455556時間は62 EEG候補chの記録としてnative合計に含みます．そのsourceを保留にした厳しいnative合計は244.333140104時間です．記録長の確認は，信号品質・意図の正解・オンライン処理の因果性の証明とは別です．異なるcorpus間の同一参加者照合も未実施です．
 
-前段の468,040 file jobsは固定規則で構造監査済みです．これは新たに加えた182,443件を含む全650,483件の構造監査ではありません．そのうち EEG と明示された path の信号形式は 62,303 files／7,209,327,960,212 B，135 releases でした．これは header を検証した純 EEG 量ではなく，取得順序を検討するための候補量です．未展開 archive，EEG を含み得る MEG container，動画・視線等の companion は別々に残し，EEG の有無を確かめる前に一律除外していません．詳細と全 609 releases の分類は [全キュー構造監査](reports/queue_structure_20261122_v1/README.md) にあります．
+native EEG scalarはbinary44,899,563,064BとUTF-8数値token31,065,967Bに分けています．処理済み連続EEGのbinaryは1,549,786,112B，epochの39,323,648Bは復号後配列です．配布ファイルの圧縮容量，signal payload，派生配列を同じ種類の容量として足しません．
 
-| 元データ | 記録数 | EEG 時間 | 物理 EEG チャンネル |
-| --- | ---: | ---: | ---: |
-| EEGlass | 1 | 1.08882222 h | 3 |
-| AI-assisted coding：UniBa | 34 | 30.61540256 h | 8 |
-| AI-assisted coding：ITU | 26 | 21.30617947 h | 64 |
-| Portable EEG systems comparison | 57 | 34.89706111 h | 32 |
-| EEGMMIDB：運動実行・運動想起 | 1,526 | 48.53444444 h | 64 |
-| Kinesthetic force MI | 60 | 0.70076172 h | 14 |
-| Right hand／feet MI | 8 | 1.10371962 h | 16 |
-| BCI users profile MI | 693 | 72.25685764 h | 27 |
-| 合計 | 2,405 | 210.50324878 h | 記録ごとに異なる |
+| 原形式として数量監査したsource | unique記録 | 時間 |
+| --- | ---: | ---: |
+| EEGlass | 1 | 1.088822222 h |
+| AI-assisted coding：UniBa | 34 | 30.615402561 h |
+| AI-assisted coding：ITU | 26 | 21.306179470 h |
+| Portable EEG systems comparison | 57 | 34.897061111 h |
+| EEGMMIDB | 1,526 | 48.534444444 h |
+| Kinesthetic force MI | 60 | 0.700761719 h |
+| Right hand／feet MI | 8 | 1.103719618 h |
+| BCI users profile MI | 693 | 72.256857639 h |
+| P300 ds005028：DAT | 105 | 7.488324653 h |
+| MI Figshare2061654：CNT | 26 | 6.863233333 h |
+| Brainstorm：62 EEG候補ch | 10 | 0.469455556 h |
+| InMID：14 EEG＋44補助信号 | 92 | 19.478333333 h |
+| native合計 | **2,638** | **244.802595660 h** |
 
-新規EEGMMIDBは1,997,435,063BのZIPを477.51秒で取得し，公式全3,058 member＋チェックサム一覧，1,526 EDFを23.46秒で監査しました．実headerは160Hzが1,490記録，128Hzが36記録です．注釈区間の5〜50msの重なり・25msのはみ出しやbaselineのT1を含む50記録を，ラベルreview対象としました．[全取得・数量・注釈監査](reports/eegmmidb_acquisition_20261122_v1/README.md)と，[9代表記録・209注釈のMNE独立照合](reports/eegmmidb_mne_representative_audit_20261122_v1/README.md)を参照してください．この追加データは前段のUniBa／ITUモデルを変更せず，独立したphase2のデータ準備・CSP学習に使いました．初期案の[EEGMMIDB benchmark設計](benchmark/NEXT_EEGMMIDB_BENCHMARK.md)から具体化した新protocolをeegmmidb_phase2に保存しています．
+処理済み連続EEGはSSVEP9970619の44記録／8.004722222時間と，Zenodo2392979の29 unique記録／2.521284722時間です．後者は36 FIFのうち異なるsubject IDをまたぐ7組の同一EEGを検出し，重複分を控除しました．7 IDを3つのmust-link連結成分に束ねる分割制約も保存しています．これは3名の実参加者を同定したという意味ではありません．[最終source監査一覧](acquisition/FINAL_SOURCE_AUDITS.md)に各台帳・checksum・MNE独立照合をまとめています．
 
-raw と filtered export，同じ archive の保全コピー，原波形から切り出した学習窓を新しい独立記録として数えません．記録時間の検証は，信号品質・意図の正解・オンライン処理の因果性の証明とは別です．異なる corpus 間の同一参加者照合も未実施です．
+今回開始した追加取得workerは全て終了し，release全件checksum／header／実sample長／原event／重複の監査と元台帳への照合を完了しました．以前の取得分には過去のSHA記録と現在の保存状態を使用し，49GB全体をこのsnapshotで新たに再hashしたとは扱いません．全catalogを取得したわけではありません．
 
-Colab の優先取得は EEGlass と AI-assisted coding の全 23 files／11,221,153,522 B が完了しています．AI-assisted coding は EEG に加えて gaze，screen，behavioral，補助情報も取得しています．モデルへ実際に入力しているのは EEG と判定前の page／AI availability です．画面動画を vision encoder で学習した実験ではありません．
+### ラベルと追加学習に残る条件
+
+P300のSelectedTargetは既存decoderの出力です．TextToSpell／StimulusTypeを操作判断時の環境入力へ混ぜず，終了時のTextResultを過去時点の情報にしません．CNTの既存MOABB対応は24記録のcode1／2／3をleft／right／feetに結びますが，追加2記録のcode4は未確定です．SSVEPの空event配列やfractional Statusを丸めて正解を作ることも行っていません．InMIDのaux，動画，MAT等を保持し，EEG時間や独立標本へ二重計上しません．
+
+既存label，観測event，AIによるweak labelを区別し，AIが推定した「意図」を評価用goldに昇格させません．現状の追加sourceには振幅単位・時計・event意味・元の非因果処理が未解決のものがあります．14／16／27／32／64chを扱える入力拡張とsource別の前処理・splitが必要です．[次の多channel／環境同時入力の設計](eegmmidb_phase3/protocol.next_multichannel_handoff.v1.json)と[P300の漏洩防止条件](eegmmidb_phase3/protocol.next_P300_label_context_addendum.v1.json)を保存しています．これらは設計であり，新しい学習完了を示しません．
+
+snapshot006のworkstation空きは34.48GiBで，35GiBの保全枠を下回っています．新たな大量取得・展開は止め，継続作業では実ストレージ計画を更新してから進めます．原本やモデルは消さず，完了済みrunを再実行しません．毎時の継続タスクは[HANDOFF.md](HANDOFF.md)にあるcoordinatorと実状態を確認して引き継ぎます．
 
 ## 実際に学習したモデル
 
@@ -175,7 +227,7 @@ UniBa は 34 記録中 32 記録，28.58953451 時間が時刻同期検査に通
 
 AI-assisted coding の公開 EEG は offline filter 済みです．公開 export recipe を再構成すると未来側の support は条件付きで 4.125 秒です．窓終端からイベントまで 4.5 秒＋時計誤差を確保しても，feature の可用時点からイベントまでは最低 0.375 秒です．配布 binary と recipe の同一性，元 XDF，online causality は未確認です．M1 の validation candidate scoring は約 1 秒であり，この名目 lead を満たすオンライン動作は実証できていません．
 
-Colabはworkstationの既存CLIを経由して使用し，全成果物回収後の12:26:40 JSTに所有sessionを正常停止しました．SFC VPN は接続でき，smac19 は DNS／SSH 到達まで確認しましたが，smac19／smac31 の SSH 認証は未成立です．11:45〜11:48 JSTのユーザー再承認後には実際のパスワード入力まで進めましたが，既存設定・過去の接続履歴のログイン指定とも認証は成立しませんでした．現在の障害は承認ではなく，SSHの認証情報またはサーバー側のアクセス設定です．今回 Mac cluster への計算投入はできていません．学習・推論が実証できた実機は workstation M1 と Colab L4 です．
+前段のColabはworkstationの既存CLIを経由して使用し，全成果物回収後の12:26:40 JSTに旧sessionを正常停止しました．最新phase3の物理sessionも15:18:59 JSTに停止済みです．SFC VPN は接続でき，smac19 は DNS／SSH 到達まで確認しましたが，smac19／smac31 の SSH 認証は未成立です．11:45〜11:48 JSTのユーザー再承認後には実際のパスワード入力まで進めましたが，既存設定・過去の接続履歴のログイン指定とも認証は成立しませんでした．現在の障害は承認ではなく，SSHの認証情報またはサーバー側のアクセス設定です．今回 Mac cluster への計算投入はできていません．学習・推論が実証できた実機は workstation M1 と Colab L4 です．
 
 workstation の取得は空き容量 35 GiB を残して進めます．Colab からの大きな保全コピーは，CLI の一括メモリ使用を避けるため，64 MiB ごとの SHA 検証・再開可能な転送にしました．保全コピーは新しい取得データ量へ加算しません．Dataverse の必須 Guestbook 応答がある 342 files は `access_action_required` として保持しています．
 
@@ -264,7 +316,7 @@ NeuroCore の実 router と dry-run sink への接続も実行確認済みです
 | `integration/` | モデル出力と NeuroCore router の dry-run |
 | `reports/` | 実測値，失敗・未達事項，成果物 hash |
 
-生 EEG，checkpoint，詳細ログ，イベント，ジョブ台帳は git 除外の `private/xavier/` に保持します．継続予約と実行中ジョブは [HANDOFF.md](HANDOFF.md) に記録しています．
+生 EEG，checkpoint，詳細ログ，イベント，ジョブ台帳は git 除外の `private/xavier/` に保持します．継続予約と完了状態は [HANDOFF.md](HANDOFF.md) に記録しています．
 
 ## 一次資料
 

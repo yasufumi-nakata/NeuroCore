@@ -1,0 +1,25 @@
+{
+  "EEG_candidate_channels_conservative": 62,
+  "all_observations_per_actual_person_share_future_fold": true,
+  "author_montage_override_does_not_resolve_original_channel_roles": true,
+  "catalog_id": "002070",
+  "current_model_inputs_changed": false,
+  "independent_acoustic_onset_or_intent_gold_unverified": true,
+  "license": "CC BY4.0",
+  "new_QC_split_and_training_protocol_required": true,
+  "original_marker_codes_preserved": true,
+  "publisher_channel_clarification_pending": true,
+  "software_and_tutorial_EEG_not_independent_study_hours": true,
+  "source_ID_groups": 10,
+  "source_header_channel19_20_labels": [
+    "IO",
+    "ECG"
+  ],
+  "source_release": "Figshare5756277 version2",
+  "source_signal_channels": 64,
+  "sources": [
+    "https://doi.org/10.6084/m9.figshare.5756277.v2",
+    "https://api.figshare.com/v2/articles/5756277/versions/2",
+    "https://doi.org/10.3389/fnins.2018.00309"
+  ]
+}

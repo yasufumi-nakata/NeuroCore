@@ -1,0 +1,188 @@
+{
+  "schema": "pj-xavier-acquired-progress-v1",
+  "locations": [
+    {
+      "location": "workstation_bulk",
+      "observed_started_utc": "2026-11-22T06:21:06.955502+00:00",
+      "observed_finished_utc": "2026-11-22T06:21:21.583612+00:00",
+      "ledger_rows": 650483,
+      "ledger_snapshot_sha256": "4561a9bbd79f951cf6da2e5765e30e8e2bdcccf4ae51a9b9a6db2645fd882f4d",
+      "ledger_status_counts": {
+        "queued": 606998,
+        "metadata_blocked": 42398,
+        "complete": 742,
+        "access_action_required": 342,
+        "retry": 3
+      },
+      "complete_file_copies": 742,
+      "complete_file_copy_bytes": 36345156702,
+      "partial_file_copies": 2,
+      "partial_observed_bytes": 912924912,
+      "held_file_count": 0,
+      "sha256_reverified": false
+    },
+    {
+      "location": "workstation_colab_raw_archive",
+      "observed_started_utc": "2026-11-22T06:21:21.589645+00:00",
+      "observed_finished_utc": "2026-11-22T06:21:21.593312+00:00",
+      "ledger_rows": 23,
+      "ledger_snapshot_sha256": "71ffcfbb697817f5c64d1623535f3dd2594b0ed7520a4efbe467be53d58f6ddc",
+      "ledger_status_counts": {
+        "complete": 23
+      },
+      "complete_file_copies": 23,
+      "complete_file_copy_bytes": 11221153522,
+      "partial_file_copies": 0,
+      "partial_observed_bytes": 0,
+      "held_file_count": 0,
+      "sha256_reverified": false
+    },
+    {
+      "location": "workstation_eegmmidb",
+      "observed_started_utc": "2026-11-22T06:21:21.593787+00:00",
+      "observed_finished_utc": "2026-11-22T06:21:21.611549+00:00",
+      "ledger_rows": 1,
+      "ledger_snapshot_sha256": "49e24dc0d0e0eb515992a5119663618602f7e14dac7d24daf0d0dc6a7b1d910a",
+      "ledger_status_counts": {
+        "complete": 1
+      },
+      "complete_file_copies": 1,
+      "complete_file_copy_bytes": 1997435063,
+      "partial_file_copies": 0,
+      "partial_observed_bytes": 0,
+      "held_file_count": 0,
+      "sha256_reverified": false
+    }
+  ],
+  "completed_file_copies": 766,
+  "completed_file_copy_bytes": 49563745287,
+  "completed_unique_sha256_contents": 760,
+  "completed_unique_sha256_bytes": 49539668378,
+  "deduplication": "Identical complete file content SHA-256 is counted once across all supplied ledgers.",
+  "interpretation": "Acquired release payload bytes, including multimodal sidecars. This is not pure EEG bytes, unique recordings, or all catalog data.",
+  "known_deduplication_limits": [
+    "Different raw/filtered exports can have different hashes for the same recording.",
+    "Archives are not compared with their extracted members.",
+    "Replica archives outside the selected acquisition ledgers are omitted."
+  ],
+  "recording_hours": null,
+  "hours_reason": "Requires independent header and recording-identity audits; never inferred from bytes.",
+  "all_catalog_files_downloaded": false,
+  "observation_scope": "Complete canonical release files from reconciled workstation main ledger, original EEGMMIDB ledger and23 preserved prior-Colab release files. All final explicitly started sources are terminal. No double addition of005 partial P300 or node-local delegated ledger copies.",
+  "integrity_refresh": {
+    "whole_existing_corpus_rehashed_again": false,
+    "new_source_full_checksum_audit_and_reconciliation": {
+      "P300_acquisition_v1": {
+        "completion_sha256": "18fb72ece3cfc0f68cb117dcb28acdd0c04f0f13a3135d4516eddaa547e6763e",
+        "reconciliation_sha256": "693e95773fcaac88c075b31dff55c3d34a7919d4d1def619b0563f1a6ad36ddf",
+        "files": 216,
+        "bytes": 1563795662
+      },
+      "MI_threeclass_acquisition_v1": {
+        "completion_sha256": "c239ed8e4cdd729a43ebcbe6b42d230da092a519817075fbc417f2c09b6fa60b",
+        "reconciliation_sha256": "a8401fbb092641b0537db8269afb86581a9798b91092c7cb06d9af1958340fc4",
+        "files": 1,
+        "bytes": 156181084
+      },
+      "SSVEP_acquisition_v1": {
+        "completion_sha256": "d0aacbcf05a95fbae1b39aa456dbf4f070623d084bbebdc147dd61c5126f2b20",
+        "reconciliation_sha256": "cf07973226eac54e52031a09ec6a1cec2e98dee64222e369ce8041c54709c1fa",
+        "files": 88,
+        "bytes": 1708501504
+      },
+      "Brainstorm_acquisition_v1": {
+        "completion_sha256": "a973aa43226c9ae34f30d8df2e6ebe3a6d518c669d03024ce5e332ebedad9ac0",
+        "reconciliation_sha256": "f1b46778f0780aa16537372da028e54a92b940c67eb106a8681b86cca81b6d08",
+        "files": 1,
+        "bytes": 280230370
+      },
+      "InMID_acquisition_v1": {
+        "completion_sha256": "31f9a475385cc58ed65fb8c5e8890a14c28b50dfd8d3470fe5609a9921eb6e78",
+        "reconciliation_sha256": "bd251ca10efe4f5f2f49e73c02817551790db460ca3b12eba6daee5e2a5f58e8",
+        "files": 237,
+        "bytes": 1410402579
+      },
+      "small_BCI_batch_acquisition_v1": {
+        "completion_sha256": "bd0003baf26c82da5f4bf1d82f10a2884b5f8546c1bb0e73ce1e10a3ba0d351d",
+        "reconciliation_sha256": "e45517cfec0459f6d2f2358248ddc03eeb52f0909bdd30d44864f9650835964a",
+        "files": 114,
+        "bytes": 216099696
+      }
+    },
+    "counts": {
+      "prior_005_content_identity_and_current_size": 85,
+      "new_completed_audit_reconciliation_and_current_size": 657
+    },
+    "old_Colab_preserved_stat_identities_checked": 23
+  },
+  "private_snapshot_hashes": {
+    "workstation_006.json": "08e85f8622a383418d34cead8755e6670aeeca438826be660d5c0d4d37b60431",
+    "preserved_colab_raw_006.json": "d5e3fe0de3c8e7ff5ca415f76b930cd41917ebbb5b82decae2f2a96f21b7e914",
+    "eegmmidb_006.json": "961c46a643529db1eca3c1a04b498f57583c9ba488e911abadf1bb0f78e444ee"
+  },
+  "capacity_observation": {
+    "observed_utc": "2026-11-22T06:21:21.613015+00:00",
+    "free_disk_bytes": 37020954624,
+    "free_disk_GiB": 34.478450775146484,
+    "minimum_raw_reserved_bytes": 37580963840,
+    "model_recovery_additional_reserved_bytes": 1073741824,
+    "effective_download_reserve_bytes": 38654705664,
+    "below_35GiB_minimum": true,
+    "below_36GiB_download_reserve": true,
+    "new_acquisition_blocked": true,
+    "new_download_expansion_stopped": true,
+    "large_temporary_extraction_stopped": true,
+    "cause_of_recent_free_space_change_not_inferred": true
+  },
+  "completed_final_sources": {
+    "source_file_count_before_content_dedup": 657,
+    "source_file_bytes_before_content_dedup": 5335210895,
+    "proofs": {
+      "P300_acquisition_v1": {
+        "completion_sha256": "18fb72ece3cfc0f68cb117dcb28acdd0c04f0f13a3135d4516eddaa547e6763e",
+        "reconciliation_sha256": "693e95773fcaac88c075b31dff55c3d34a7919d4d1def619b0563f1a6ad36ddf",
+        "files": 216,
+        "bytes": 1563795662
+      },
+      "MI_threeclass_acquisition_v1": {
+        "completion_sha256": "c239ed8e4cdd729a43ebcbe6b42d230da092a519817075fbc417f2c09b6fa60b",
+        "reconciliation_sha256": "a8401fbb092641b0537db8269afb86581a9798b91092c7cb06d9af1958340fc4",
+        "files": 1,
+        "bytes": 156181084
+      },
+      "SSVEP_acquisition_v1": {
+        "completion_sha256": "d0aacbcf05a95fbae1b39aa456dbf4f070623d084bbebdc147dd61c5126f2b20",
+        "reconciliation_sha256": "cf07973226eac54e52031a09ec6a1cec2e98dee64222e369ce8041c54709c1fa",
+        "files": 88,
+        "bytes": 1708501504
+      },
+      "Brainstorm_acquisition_v1": {
+        "completion_sha256": "a973aa43226c9ae34f30d8df2e6ebe3a6d518c669d03024ce5e332ebedad9ac0",
+        "reconciliation_sha256": "f1b46778f0780aa16537372da028e54a92b940c67eb106a8681b86cca81b6d08",
+        "files": 1,
+        "bytes": 280230370
+      },
+      "InMID_acquisition_v1": {
+        "completion_sha256": "31f9a475385cc58ed65fb8c5e8890a14c28b50dfd8d3470fe5609a9921eb6e78",
+        "reconciliation_sha256": "bd251ca10efe4f5f2f49e73c02817551790db460ca3b12eba6daee5e2a5f58e8",
+        "files": 237,
+        "bytes": 1410402579
+      },
+      "small_BCI_batch_acquisition_v1": {
+        "completion_sha256": "bd0003baf26c82da5f4bf1d82f10a2884b5f8546c1bb0e73ce1e10a3ba0d351d",
+        "reconciliation_sha256": "e45517cfec0459f6d2f2358248ddc03eeb52f0909bdd30d44864f9650835964a",
+        "files": 114,
+        "bytes": 216099696
+      }
+    },
+    "new_model_training_from_additional_sources": 0,
+    "snapshot005_replaced_by_fresh_whole_file_SHA_dedup_not_arithmetic_addition": true
+  },
+  "bulk_candidate_manifest": {
+    "file_jobs": 650483,
+    "known_whole_file_bytes": 24172262716513,
+    "unknown_size_jobs": 42398,
+    "release_storage_keys": 783,
+    "scope": "Candidate release files may include non-EEG modalities, aliases, processed variants and archives. Not acquired or deduplicated EEG."
+  }
+}

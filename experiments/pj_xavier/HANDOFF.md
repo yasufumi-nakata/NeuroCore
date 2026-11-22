@@ -1,12 +1,14 @@
 # PJ-Xavier 実行・引継ぎ
 
-更新：2026-11-22 14:30 JST．進行中の実状態はprivate receiptとcoordinatorを優先してください．
+更新：2026-11-22 15:35 JST．最新の公開状態はこのbranchのHEAD，運用所有権はprivate coordinatorと実jobを優先してください．
 
 ## 現在の到達点
 
-**EEGMMIDB phase2の3モデルは学習・固定test・負対照・T0診断・操作ハーネス・全成果物回収・M1試用を完了しました．phase3の追加学習と，公開EEGの取得を進めています．** 最新指示は，smac19を除外して学習・評価・試用まで完了し，現環境に収まる取得量と実学習量を増やすことです．workstationとworkstation経由のColab CLIを使います．SFC認証待ちを再開条件にしません．
+**phase3の学習・固定評価・全成果物回収・M1実機試用・Colab停止と，今回開始した追加取得sourceの全件監査を完了しました．** 取得済みは重複を除き49.54GB，連続EEG255.33時間です．phase3選択モデルの実入力unionは29.99時間で，新規追加sourceは未学習です．M1の12例は全棄権，成功操作0でした．環境とEEGから自由な意図を推定して自律操作する目標は未達です．
 
-前段のSmol1.7B・Qwen8B・CBraMod・追加SSL CBraModの実験は完了済みで，再実行しません．旧sessionは12:26:40 JSTに停止済みです．[前段](reports/handoff_snapshots/HANDOFF_20261122_1240.md)，[phase2開始時点](reports/handoff_snapshots/HANDOFF_20261122_1336.md)，[全体README](README.md)に履歴を保全しています．自由な意図の推定や実OS作業成功は未実証です．
+ユーザーは取得量の拡大，学習・評価・試用，GitHub／Google Doc保存，定期的な継続を許可済みです．workstationとworkstation経由Colab CLIを使用し，smac19は除外します．SFC認証待ちを作業の依存条件にしません．今回clusterへ計算を投入した事実はありません．
+
+前段／phase2／phase3の完了run，評価，失敗probe，元データを保持します．[12:40](reports/handoff_snapshots/HANDOFF_20261122_1240.md)，[13:36](reports/handoff_snapshots/HANDOFF_20261122_1336.md)，[14:30](reports/handoff_snapshots/HANDOFF_20261122_1430.md)の引継ぎを保存しています．旧状態の「進行中」は各観測時点の記録です．
 
 ## 作業場所と所有権
 
@@ -15,91 +17,118 @@
 | 正worktree | `/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training` |
 | repository／branch | `yasufumi-nakata/NeuroCore`／`feat/pj-xavier-validation-20261122` |
 | Draft PR | [71](https://github.com/yasufumi-nakata/NeuroCore/pull/71) |
-| 最新結果を公開したcommit | `47a4a9942623ecb08faeb3eb6a242914c4ec5ec8` |
 | Python | `.venv-xavier/bin/python`，3.12.13 |
 | Colab CLI | `/Users/yasufumi/.local/bin/colab`，0.7.4 |
 | 原本・重み・詳細証拠 | `private/xavier/`，git除外 |
-| 進行管理 | `private/xavier/eegmmidb_phase2_v1/coordinator.json` |
+| coordinator | `private/xavier/eegmmidb_phase2_v1/coordinator.json` |
+| 運用証拠 | `private/xavier/eegmmidb_phase3_v1/` |
+| 取得・監査証拠 | `private/xavier/expansion_candidates_v1/` |
 
-rootが公開対象を限定してcommit／pushします．他の作業変更，原EEG，個別予測，認証情報を公開しません．freezeしたsource／protocolはhashで保持し，後続実験は別runにします．有効なcoordinator leaseと実jobがある間は，automationも観測だけを行い，競合するkernel操作・編集・二重起動を避けてください．
+rootが公開allowlistだけをcommit／pushします．原EEG，個別予測，参加者ID，認証情報は公開しません．個別の科学source・protocol・checkpointはhashを固定し，次の変更は新しいrunへ分けます．有効leaseと実jobを確認し，active ownerがいる間は観測だけにしてください．rootの最終公開後にcoordinatorを解放し，後続ownerが排他的leaseを取って継続します．
 
-## phase2：完了したモデルと評価
+venv Pythonを起動する際にsymlinkを `.resolve()` しないでください．base interpreterへ解決するとvenvのnumpy等が見えません．直接のpathまたは `.absolute()` を使用します．rootの最初のmetric確認がこの理由で計算前に失敗し，同一source／入力のまま正しいinterpreterで成功しました．失敗receiptを保持しています．
 
-同一被験者が分割をまたがない固定splitです．train6,359窓／72群，validation1,360／16群，test1,489／17群．各3秒，train固有窓は19,077秒＝5.299167hです．全64ch，native160／128Hz，因果3–40Hzと200Hz変換，cue＋1〜4秒．50注釈review記録を保留しています．品質条件500µV・0.01µV・finiteはtrain-only診断で固定した粗い条件で，正常脳波の保証ではありません．
+## phase3：完了した学習
 
-| モデル | 学習完了 | 主左右想起test subject平均BA［95%CI］ |
+fresh同seed小型EEG encoder→連続EEG masked SSL→MI教師学習→凍結SmolLM2の順です．CBraModやphase2学習済みencoderを初期化に使った実験ではありません．科学設定はphase2 test閲覧前に固定しました．
+
+| 段階 | 実績 | fitタイマー |
 | --- | --- | ---: |
-| CSP＋LDA | CPU fit3.70秒 | 59.92%［53.00，66.84］ |
-| scratch EEG | 60epochs，1,500steps，304.28秒 | 59.09%［53.52，65.73］ |
-| EEG＋凍結Smol1.7B | 完了17epochs＋61steps，計1,761steps，1,394.16秒 | 57.44%［53.18，61.73］ |
+| SSL | 20epochs／1,420steps，正常完了 | 694.855秒 |
+| MI | 60epochs／1,500steps，正常完了 | 306.493秒 |
+| fused | 20完了epochs＋43steps，計1,043steps，登録1,800秒による正常partial | 1,800.418秒 |
+| 合計 | 準備・probe・最終評価・回収は別 | 2,801.766秒／46.70分 |
 
-fusedは元fit期限14:04:54 JSTに従う正常partial exit2で，30epoch完走ではありません．LLM融合による上積みは確認できていません．fusedの同一635窓でのBA差はEEGなし＋7.45ポイント，同記録shuffle＋9.90，実−10秒＋11.45です．公開cue分類の信号として扱い，自発意図や因果的な生理機序を同定した結果とはしません．
+SSL train35,865非重複3秒窓／75群＝29.8875時間，validation7,581窓／16群＝6.3175時間．MI train6,359窓／72群＝5.299167時間．test17群と50注釈review記録をSSLから除外しました．選択checkpoint経路のseen-IDを監査し，SSL＋MIのnative区間とphysical payloadのunionが**107,949.2秒＝29.985888889時間**で一致しました．epoch反復597.75時間を独立量には加えません．
 
-固定0.8でfused採用率14.11%，採用内正解率63.21%，T0二択誤採用23.80%です．16 promptの実LLM routingと104,388合成episodeを分けて計数しています．fused主episode成功7.99%，正解classをroutingへ渡す主課題上限62.5%．自然idleの誤操作／分や実OS成功ではありません．全結果は[RESULTS.md](eegmmidb_phase2/RESULTS.md)と[実測JSON](eegmmidb_phase2/protocol.measured_results.v1.json)を参照してください．
+SSLは初期epoch0を含む21候補の全validation ID／loss，最小値とtie，encoder tensor，heldout排除を独立に照合し，epoch20を選択しました．subject平均MSEは0.0901938974→0.0671713159です．融合bestはepoch11／550stepsで，最終1,043steps状態とは別です．
 
-M1／16GiBでtrain3例・12fresh routingを20.53秒，exit0で実行済みです．全12episodeは固定0.8未満のため棄権し，選択・成功0でした．test forward，OS操作，cloud APIは0です．[試用README](integration/README_TRY_EEGMMIDB_RECORDED.md)の既存契約と新output pathを使って再試用できます．
+LLMはSmolLM2-1.7B-Instruct revision `31b70e2e869a7173562077fd711b654946d38674`，更新対象72,416 parameters，凍結LLM1,711,376,384 parameters．EEG分類器は4,900 parametersです．L4最大予約18,593,349,632B．2行head最適化は実機BF16の固定gradient許容差を満たさず不採用とし，元full-vocabulary headを使用しました．許容差は変更していません．
 
-private phase2 base：`private/xavier/eegmmidb_phase2_v1/`
+[モデルカード](reports/eegmmidb_phase3_training_20261122_v1/MODEL_CARD.md)，[完了証拠](reports/eegmmidb_phase3_completion_20261122_v1/README.md)，[parameter実数](reports/eegmmidb_phase3_completion_20261122_v1/parameter_counts.json)を参照してください．
 
-- `benchmark_execution_seal_v2.json` SHA `e1847ae39ef284a49cdc34dbe1695593b6d9a3c46b8d4db046842c403b26eb7f`
-- `phase2_recovery_receipt_v1.json` SHA `81d7814c76c4d22da76ec5e67460bc97376109720e69a5f9c9e02b79bf6a788e`：294member／135,633,776B展開，全SHAをagentとrootが再照合済み．
-- `root_saved_predictions_check_v1.json` SHA `1594cda0abc38b77fbe6238a13a9133843bb5f25ff42653ba215dffda751c2d9`：全3モデル5条件の主要点指標を保存済み予測から独立再計算．追加model forward0．bootstrap CIの再計算ではありません．
-- fused best SHA `13df40e53dab6087bfef2fac1a4e413a2d00178413f05f4759a0aa1ea849d4ee`，scratch best `3d041e1a8c07e97ae1bebd873873964241d3856f8b6d7461f9134924f8c3f54d`．
+主要private receipt／SHA：
 
-## phase3：実行中の追加学習
+- 科学protocol：`984b516475b06f4e7641074596790c43f76e34d33b6f047239a4ddbd2d0d4016`
+- `source_seal_v1.json`：`4c713b5112ebae88885a7c6dae7dc429722df2543d78278a38de7174cf396be7`
+- `benchmark_execution_seal_v1.json`：`564017c4cba3d01fe6a9d47fe152b52aee8fc0df84b51c4276b25dc006a660cc`
+- SSL best：`d2f40f6ba1ac5b8ee3fe9b9063ead48bb74af2e375dc346ad535400c69480ed2`
+- EEG best：`3981052a799072e384be0ac003d1e272821ae080c2f55369e5f1764e76aa4138`
+- fused best：`b2373bc054dbdd883236b417d3679744e179f8b067c2289c6191984a8b0de471`
 
-phase2 testを見る前に科学設定を固定した，fresh同seed EEG encoder→連続EEG masked SSL→同じMI教師あり学習→同じ凍結Smol接続です．SSL初期epoch0も選択候補に含め，subject平均masked MSEの最小，tieは最初を選びます．下流は従来どおりvalidation主左右BAで選択します．
+## 固定評価と追加データ比較
 
-準備・独立照合済みのSSL入力はtrain35,865窓／75群／29.8875h，validation7,581窓／16群／6.3175h．計43,446窓，1,236配列，6,673,463,808Bです．test17群／原238記録とreview50記録を除外しています．MIとSSLの準備済みtrain区間unionは29.985889hですが，最終実学習量は実seen-IDと選択checkpoint経路から再集計してください．[準備証拠](reports/eegmmidb_phase3_preparation_20261122_v1/README.md)を参照してください．
+同じ17 test群，主課題751窓／副課題738窓．参加者平均BAです．
 
-phase2の学習・評価・全回収・全process終了後，14:12:55 JSTに同じ物理sessionを明示的にphase3へ移管しました．旧fit期限は変更していません．
+| モデル | 主左右BA［95%参加者bootstrap区間］ | 副両拳／足BA |
+| --- | ---: | ---: |
+| CSP＋LDA | 59.92%［53.00，66.84］ | 59.97% |
+| phase2 EEG | 59.09%［53.52，65.73］ | 65.10% |
+| phase2 EEG＋Smol | 57.44%［53.18，61.73］ | 59.85% |
+| phase3 SSL→EEG | 62.45%［56.85，69.00］ | 64.80% |
+| phase3 SSL→EEG＋Smol | 56.72%［52.21，61.70］ | 63.12% |
 
-| 項目 | 値 |
-| --- | --- |
-| 物理session | `xavier-eegmmidb-20261122-p2` |
-| phase3 remote root | `/content/xavier_phase3` |
-| workflow | 14:14:41 JST開始，PID16598，実receipt優先 |
-| boot ID | `d2656e10-f70e-4eb0-8915-009c4aa629bd` |
-| 新GPU予算 | 最大7200秒／5CU／21GiB，登録時408.93CU |
-| 絶対期限 | `1795331083.750155`＝16:04:43.75 JST |
-| 最終fit cutoff | 15:29:43.75 JST，評価900秒・回収900秒・停止300秒を確保 |
-| stage caps | capacity300／SSL1200／MI900／fused1800秒 |
-| CLI owner | model担当．training terminal後にbenchmark担当へ明示引継ぎ |
+新2モデルの全5条件，T0，16実LLM routingを独立SSL監査と共通900秒枠内の230.29秒で完了しました．旧3モデルの再推論は0です．全36,050保存予測と16 routingから173,980回のcached状態遷移を比較し，新fusedの主episode成功は2.16%，正解class routing上限は62.5%でした．4環境配置を独立EEGの4倍と数えません．
 
-L4 BF16の2行symbol-head最適化は事前固定のgradient許容誤差を満たさず不採用となりました．許容誤差を緩めず，従来のfull-vocabulary headを使います．CPU小fixtureでの合格だけを実機同値性と扱いません．
+新EEGの主採用率は固定0.8で8.79%，採用内正解率83.33%．新fusedは3.60%／70.37%です．0.8は二候補softmaxの閾値であり，校正済みの意図確信度ではありません．T0主誤採用の参加者平均は新EEG15.53%［7.12，26.57］，新fused3.68%［1.30，6.81］です．自然idle誤操作／分とは区別します．通常−shuffleの主BA差は＋11.89［5.91，18.10］／＋8.19［1.66，15.11］ポイントです．
 
-private phase3 base：`private/xavier/eegmmidb_phase3_v1/`
+rootが新2モデル×5条件×2課題の点指標を保存済み予測から独立に再計算し，最大差2.22e−16で一致しました．bootstrapの再計算ではありません．phase2の旧3モデルも別途独立確認済みです．[全結果](eegmmidb_phase3/RESULTS.md)を参照してください．
 
-- `handover_from_phase2_v1.json` SHA `1486c70467e0300d4047015dc15a6517e6029f86d22031dfb1d4ea2e196002c3`
-- `gpu_budget_v1.json` SHA `018cdaa6c81eba94178ce8e465b89360e425691c4d083c5e25855b6d5c6d25a5`
-- `source_seal_v1.json` SHA `4c713b5112ebae88885a7c6dae7dc429722df2543d78278a38de7174cf396be7`
-- 科学protocol SHA `984b516475b06f4e7641074596790c43f76e34d33b6f047239a4ddbd2d0d4016`
-- `benchmark_execution_seal_v1.json` SHA `564017c4cba3d01fe6a9d47fe152b52aee8fc0df84b51c4276b25dc006a660cc`．15CPU fixtures合格．原phase2 evaluatorのbytes・分析条件を維持した新runtime admissionです．
+15:03:03 JSTにphase3 test readout前の比較仕様を固定し，17群のpaired bootstrap1,000回／seed20261122を適用しました．主課題の新−旧はEEG**＋3.3673ポイント［＋0.3064，＋6.4127］**，融合**−0.7189［−4.9788，＋3.6936］**．副課題はEEG−0.3035［−4.0793，＋3.5105］，融合＋3.2704［−0.5985，＋7.5843］です．4比較は多重比較未調整，同じtest再利用・1seedの探索的比較です．融合ではbatch／更新回数／時間枠が変わり，SSLの単独効果と同定できません．[比較証拠](eegmmidb_phase3/ADDED_DATA_COMPARISON.md)を参照してください．
 
-学習後は独立SSL監査→新2モデルの全test／5条件／T0／16routingを**共通900秒**内で実行します．旧3モデルを再推論せず保存予測を使う5モデルharness比較を行います．同じtestを再利用する追加比較は探索的です．重み・閾値・prompt・QCをtestに合わせて変更しません．
+## 回収，M1試用，停止
 
-全checkpoint／optimizer／RNG／val／test／失敗probe／sourceを回収し，raw ZIPと再生成可能な配列だけをexact hash付きで除外します．原ZIPはworkstationに保存済みです．全回収hash照合・M1試用を完了し，この所有sessionの停止とactive一覧からの消失を確認します．未回収状態で停止を完了扱いにしません．
+全476member／489,554,060Bを回収し，担当者とrootが全件SHAを再照合しました．ZIPは77,992,715B．既にworkstationへ保存した2GB原ZIPと再生成可能な6.67GB配列だけを明示hash台帳付きで回収対象から除外し，checkpoint／optimizer／RNG／validation／test／失敗probe／sourceは保持しています．
 
-## 追加取得と量
+モデルは `private/xavier/eegmmidb_phase3_v1/runs/` の `masked_ssl_v1/`，`eegnet_ssl_supervised_v1/`，`eegnet_ssl_smollm_fused_v1/` にあります．試用はrepo rootで次の1コマンドです．
 
-[取得snapshot005](reports/acquired_progress_005.json)，[元EEG数量005](reports/verified_eeg_quantities_20261122_005.json)は14:17 JSTの観測です．
+```bash
+python3 scripts/try_pj_xavier_recorded.py
+```
 
-- 完了175内容，44,432,880,979B．このうちP300は66filesの途中時点で，release全完了とは扱いません．
-- 元EEGを数量監査した範囲は2,405記録，210.503248785h．binary EEG scalar43,382,368,656BとUTF-8数値token31,065,967Bを区別します．
-- BCI8089820の27,475,466,178B ZIPは全1,071member検証済み．694GDFから完全EEG重複1つを除いた693記録72.256857639hです．元event rate0の694記録は時刻確定と扱わず，27ch入力の新protocolも必要です．[BCI監査](reports/bci_8089820_acquisition_20261122_v1/README.md)を参照してください．
-- P300 OpenNeuro ds005028は版固定S3 object216files，1,563,795,662Bを取得中．原DATと派生EDFを両方保存し，時間は重複加算しません．deadline15:40:23 JST，新budget SHA5390924e4b4db084275b776a3f5077ee2113819a6591f3f31baeebe3ab81b1f6．
-- Figshare2061654 v1のMI完全release156,181,084Bも新規予算で取得中．現空きから未完P300・35GiB reserve・1GiB成果物回収枠を引き，全量が収まるものだけを追加します．
+固定train3例×4mappingの12 fresh routingを18.745秒，exit0で実行しました．全棄権，成功0，誤操作0，OS／cloud／test forward0です．同じ入力を使う再試用は新日時付きoutputを生成します．[契約と実測](integration/EEGMMIDB_PHASE3_RECORDED_TRIAL.md)を参照してください．MPSメモリはsample観測でtrue peakではありません．
 
-全catalog5,165行は不足・余剰0，固定queueは783releases／650,483jobs，既知24,172,262,716,513Bです．EEG・companion・複数版を含む候補量で，取得量ではありません．42,398jobsは容量未確定です．古いbulk PID8814と期限は終了済みで再起動しません．取得担当の新budget・delegation・checksum完了・reconciliationを確認してください．ライセンス／認証保留は維持し，他人の領域削除や追加購入を行いません．
+物理session `xavier-eegmmidb-20261122-p2`／boot `d2656e10-f70e-4eb0-8915-009c4aa629bd` はphase2から明示移管してphase3で使い，**15:18:59 JSTに停止・active一覧から消失**を確認しました．15:19:42の残高405.38CU，rate0，active assignments0．登録408.93CUとの差3.55CUは，fitだけに帰属する費用ではありません．前段sessionも12:26:40に停止済みです．
 
-## 継続と公開
+private phase3主要receipt：
 
-automation `Automation_f439325b5d888191bc75e92d1ba97be7` は毎時15分26秒，次回15:15:26 Asia/Tokyo，enabled=trueです．14:15の初回は観測のみで終了しました．Proモデル固定指定はAPIで保証できません．最新保存はphase3 privateの `automation_scope_hourly_1418_v1.json` です．
+- `phase3_recovery_receipt_v1.json`：`1bf122bba4744bd86c9a57d434bcc0c6d193f162afca03bdc465229a657e0c90`
+- `root_recovery_integrity_check_v1.json`：`60216274f57829c3c4bb5c764063742b2504930435127bb5d1c774cf072b936d`
+- `root_saved_predictions_check_v1.json`：`4ca9cf884ad3c31d5b852838156b9b81ad4760613442e1a42dda64145ee09fab`
+- `phase3_session_stop_receipt_v1.json`：`ebe049607eadfa8608c3a7a20aea62c8b1703b8ee385702a03ea41c8d06025c5`
 
-1．coordinator・実PID／argv／bootを照合し，active ownerと競合しないようにします．
-2．phase3 fitを同じprotocol・上限で完了します．同じ失敗や旧modelを理由なく再実行しません．
-3．独立SSL選択／実入力union監査，新2モデル評価，全5モデルharness，完全回収，M1試用，session停止を実行します．
-4．取得中releaseの全checksum・全記録header・duration／units／原event・重複を監査し，最新snapshotへ進めます．
-5．実測結果と未達をREADME・HANDOFF・PR71・[学校Google Doc](https://docs.google.com/document/d/1kGlNqvZEg_AzSYKGTiGF3Z0HcVIxNGNimNwpR6w1680/edit?tab=t.7cvfsge8pwil)へ反映し，push後のCIを確認します．旧Doc2tabsは保持します．
+M1後の空きが35GiB未満になり，最初のSTOPはCLIへ送る前のguardで終了しました．旧helper・失敗ログを保持し，全476SHAとowned terminal／GPU空を確認するSTOPだけの追補で停止しました．新しい取得・学習の容量guardは緩めていません．M1前後の2,320,908,288Bの空き減少は原因未特定です．
 
-ユーザーの最終目標は環境情報とEEGから自律的に操作できるモデルです．現実験のcue分類，合成環境，train例での実機smoke checkをその達成と同一視しません．不足は具体的な次の実験・入力条件として引き継いでください．
+## 追加取得006とラベルの制約
+
+[取得006](reports/acquired_progress_006.json)，[数量006](reports/verified_eeg_quantities_20261122_006.json)，[確度補足](reports/quantity_scope_addendum_006_20261122_v1.json)は15:21 JSTの観測です．
+
+- 完全コピー766／49,563,745,287B，SHA重複除去後760内容／**49,539,668,378B**．companionを含みます．
+- 原形式として確認した連続EEGは2,638記録／**244.802595659722h**．Brainstorm62候補chの.469455556hを保留にすると244.333140104167hです．
+- 処理済み連続は73 unique記録／**10.526006944444h**．nativeと合わせ255.328602604166hです．
+- 処理済みepochは1,688×3.5秒＝**1.641111111111h**．原区間の重なり不明のため別掲．
+- Starlab5列tableは公称1.295405556h相当ですが列対応未確定で確認済みEEGへ非加算．
+- 新規開始したP300／CNT／SSVEP／InMID／Brainstorm／small3 releasesは全件checksum・header監査・reconciliation完了．担当workerは全て終了．旧partial2件912,924,912Bは未完として保全．
+- [最終source監査](acquisition/FINAL_SOURCE_AUDITS.md)に18focused tests，MNE独立校正probe，入力／成果物のhashを保存．旧全49GBをこのsnapshotで新たに再hashした意味ではありません．
+
+BCI8089820は694 GDFから完全EEG重複1つを除き693記録／72.256857639h．eventrate0をMNEの512Hz fallbackで正解時刻へ確定しません．著者flag群と跨ID重複をsplit前に扱います．
+
+P300は原DAT105記録／7.488324653h，派生EDFを加算しません．SelectedTargetはdecoder出力，TextToSpell／StimulusTypeは教師側oracle，終了時TextResultは過去contextにできません．CNT24記録のMOABB旧版code1／2／3対応を固定sourceで確認しましたが，2追加記録のcode4は未確定です．SSVEPは原BDFなし，空eventsとfractional Statusを意味labelへ変換しません．
+
+InMIDは237files全取得，92 EDF／19.478333333h，14 EEGと44auxを区別．MAT／動画を独立EEG時間に加えません．Zenodo2392979のcross-ID同一EEG7組を除いた29 FIF／2.521284722hとし，7名義IDの3 must-link成分をsplit制約にします．8制約群を8実参加者と呼びません．MI-BMPIのSET／MAT全値一致を確認し，epochsは一度だけ加算．単位，code1／2の意味，原区間，商用許可noticeは未解決です．
+
+キューの783releases／650,483jobs，既知24.17TBは取得候補で，取得済みではありません．42,398 jobsは容量不明．snapshot006の空きは37,020,954,624B＝34.48GiBで，35GiB reserve＋必要な回収枠を満たしません．**新しい大量取得・展開は停止し，実ストレージ計画を先に更新します．** 古いbulk workerや期限切れbudgetを再起動しません．原データ・重み・ユーザーの既存ファイルを消しません．
+
+## 次の実行可能な作業
+
+[多channelの引継ぎ設計](eegmmidb_phase3/protocol.next_multichannel_handoff.v1.json)と[P300漏洩防止追補](eegmmidb_phase3/protocol.next_P300_label_context_addendum.v1.json)は設計済みで未実行です．
+
+1. coordinatorを読み，有効ownerと実jobがなければ排他的leaseを取ります．終了済みのphase1／2／3を再実行せず，最新git状態・容量・到達可能な計算資源を確認します．現在GPU sessionはありません．
+2. 新規large allocation前に，実在する永続保存先と容量，回収枠，帯域を測り，新たな上限を登録します．task所有の再生成可能containerのみ，保全原本とbyte-exact復元検証を伴う整理を検討できます．課金追加・他者領域削除は行いません．
+3. CPU上で新sourceの可用性をmanifest化します．原label／観測event／AI weak labelを区別し，train-onlyの教師推定を評価goldへ昇格させません．元のval／test／レビュー保留と原payloadのdeny，cross-ID must-linkを新splitへ継承します．
+4. 別moduleで14／16／27／32／64chを扱うcausal shard builder，source別単位・QC，同montage batching，variable-channel resamplerを実装します．既存CBraMod encoderは動的C/Pを受けられますが，旧trainerの8／32ch制約と接続部8ch制約は別修正が必要です．元の非因果処理は後段normalizationでは修復できません．
+5. 新しい固定protocolで，EEG＋判定前の環境配置からX/Yを直接出すalignmentを設計し，train側で配置をcounterbalanceします．cueの正解と自由意図の正解を区別します．環境のみ／EEGなし／shuffle／原時刻shift／配置同変性／T0／正解class routing上限を固定します．必要に応じて新しい未使用holdoutを作り，同じ17群への最適化を避けます．
+6. 実機のbackward・最大形状・回収容量probe，新たな時間／CU／メモリ予算と単一CLI ownerを登録してから学習します．ColabへはworkstationのCLI経由でアクセスします．checkpointごとのvalidation，固定bestのtest，回収hash，M1試用，停止まで一つの工程として扱います．
+7. 未達，実測量と時間，次の阻害要因をREADME・HANDOFF・PR71・[学校Google Doc](https://docs.google.com/document/d/1kGlNqvZEg_AzSYKGTiGF3Z0HcVIxNGNimNwpR6w1680/edit?tab=t.7cvfsge8pwil)へ反映します．過去Doc2tabsは保持します．
+
+automation `Automation_f439325b5d888191bc75e92d1ba97be7` は毎時15分26秒，Asia/Tokyoです．15:15 runは15:16:15に完了し，root activeを確認して競合操作を行いませんでした．次は16:15:26 JST．最終更新promptとreadbackはphase3 privateのautomation receiptを参照してください．Proモデル固定指定はAPIで保証できません．継続は進捗の要約だけで終えず，上記の独立して実行できる実装・検証・記録を進めます．

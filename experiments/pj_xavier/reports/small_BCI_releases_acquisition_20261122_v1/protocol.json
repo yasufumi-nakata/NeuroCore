@@ -1,0 +1,32 @@
+{
+  "FIF_rule": "Count actual EEG buffer bytes and continuous samples; original GDF absent; stim mapping not inferred from source OpenVibe codes",
+  "MI_rule": "HDF5 SET and MATLAB array all values/axes compared; once-only epoch sample duration, not independent continuous time",
+  "absolute_deadline_epoch": 1795328726.1927428,
+  "all_original_checksums_and_before_after_stat_required": true,
+  "cpu_threads": 2,
+  "expected_scope": {
+    "000541": [
+      48,
+      75523098
+    ],
+    "001148": [
+      36,
+      110071616
+    ],
+    "002355": [
+      30,
+      30504982
+    ]
+  },
+  "no_training_or_raw_mutation": true,
+  "resource_sha256": "010d23db802a138a5b87b3f87e248c4074b7e9a540c7980ce6857b557a28237d",
+  "runtime": {
+    "h5py": "3.16.0",
+    "mne": "1.13.2",
+    "numpy": "2.5.5",
+    "scipy": "1.18.1"
+  },
+  "schema": "xavier_three_small_release_quantity_audit_v1",
+  "source_sha256": "4f956ecb911691b6a9d2ce2d1745ee3c4c496a01089f827820555d9edee017f4",
+  "text_rule": "Five-column table row duration only at publisher250Hz; no EEG column map or physical unit assigned"
+}

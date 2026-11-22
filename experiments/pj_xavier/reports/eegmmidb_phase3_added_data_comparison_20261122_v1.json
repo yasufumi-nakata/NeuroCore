@@ -1,0 +1,126 @@
+{
+  "schema": "xavier-added-data-paired-subject-comparison-v1",
+  "status": "passed",
+  "created_epoch": 1795328262.155124,
+  "source_sha256": "d77bf77bc8ffc4d6b4b52337d078836c4a495eb0a58da3dc1943a2470a5aa620",
+  "plan_sha256": "9aef5ca49710a4e8ae81ed4d29b45522a0ba3bb9012c4c245ed7b375abd5550f",
+  "model_forward_calls": 0,
+  "model_or_threshold_selection_changed": false,
+  "scope": "Supplement to the sealed phase2/phase3 evaluations, using only completed saved predictions; existing phase2 results already known when this supplement was specified",
+  "interpretation_limits": [
+    "Four exploratory comparisons (two model pairs, two tasks); 95% intervals are not multiplicity adjusted",
+    "Existing 17-person heldout is reused; not an independent confirmatory evaluation",
+    "Phase3 SSL-to-MI and phase2 scratch use the same supervised batch256, epochs60 and updates1500; the encoder initialization path differs",
+    "Fused fits use different batch sizes and numbers of optimizer updates under fixed resource budgets; any difference cannot be attributed solely to extra EEG or SSL",
+    "No refitting, threshold tuning, model selection, new EEG/model forward, or change to the sealed evaluation is allowed by this analysis",
+    "Differences describe cue-response task decoding, not unrestricted intent or autonomous real-world action"
+  ],
+  "comparisons": [
+    {
+      "comparison": "ssl_mi_minus_scratch",
+      "baseline": {
+        "evaluation_name": "eegnet_scratch_v1",
+        "checkpoint_sha256": "3d041e1a8c07e97ae1bebd873873964241d3856f8b6d7461f9134924f8c3f54d",
+        "report_sha256": "6dc0ab99536da6880d4a1b6ce93ecc96fd72fcd99b5a4988dc9a2478e6eaa398",
+        "predictions_sha256": "83f3522e42720b6bb360020227cda4c019984478a0318acbeb6eba299f40c397"
+      },
+      "new": {
+        "evaluation_name": "eegnet_ssl_supervised_v1",
+        "checkpoint_sha256": "3981052a799072e384be0ac003d1e272821ae080c2f55369e5f1764e76aa4138",
+        "report_sha256": "8cb0e80658a35a70e184386a50fb8d1274b805de338243a8f5707c224142c1ea",
+        "predictions_sha256": "a587b914b35eeb815cff14d304f70ac4e02d16491cec8ee2f227be4fe8a582e9"
+      },
+      "tasks": {
+        "left_right": {
+          "records": 751,
+          "paired_participant_groups": 17,
+          "baseline_mean_subject_BA": 0.5908551628820171,
+          "new_mean_subject_BA": 0.6245280720984046,
+          "new_minus_baseline_BA": 0.03367290921638748,
+          "new_minus_baseline_percentage_points": 3.3672909216387477,
+          "paired_participant_percentile_95CI_BA": [
+            0.0030640126604001474,
+            0.06412676961430154
+          ],
+          "paired_participant_percentile_95CI_percentage_points": [
+            0.3064012660400147,
+            6.412676961430154
+          ],
+          "paired_IDs_sha256": "7406d32e8a98cb129b805ba5aa3589262f9fafa9863b32319c32f16d6ecea875",
+          "paired_delta_vector_sha256": "7a2fe25d79e62bab25300791b21d325432de5e58eed1939d01f80916953a9a6e"
+        },
+        "fists_feet": {
+          "records": 738,
+          "paired_participant_groups": 17,
+          "baseline_mean_subject_BA": 0.6510204505204228,
+          "new_mean_subject_BA": 0.6479850757101872,
+          "new_minus_baseline_BA": -0.0030353748102356394,
+          "new_minus_baseline_percentage_points": -0.3035374810235639,
+          "paired_participant_percentile_95CI_BA": [
+            -0.0407928521036408,
+            0.03510454460789199
+          ],
+          "paired_participant_percentile_95CI_percentage_points": [
+            -4.07928521036408,
+            3.510454460789199
+          ],
+          "paired_IDs_sha256": "988aa43117b25132cf8269aa008bf22240ec9d7088a36a598eeaaa0b4d250d59",
+          "paired_delta_vector_sha256": "b1263f2381c047d973c43002cd7459a31d3c5e44dcc571507d6a605d210c9177"
+        }
+      }
+    },
+    {
+      "comparison": "ssl_fused_minus_fused",
+      "baseline": {
+        "evaluation_name": "eegnet_smollm_fused_v1",
+        "checkpoint_sha256": "13df40e53dab6087bfef2fac1a4e413a2d00178413f05f4759a0aa1ea849d4ee",
+        "report_sha256": "e35244b2d728dc54cf64902fb10e405cc610f48b8af4145a49277d58f28af775",
+        "predictions_sha256": "3486445015e59c67e3b5a40a9ba20082989a3e9d49e29a73950d8e6fc7a769ec"
+      },
+      "new": {
+        "evaluation_name": "eegnet_ssl_smollm_fused_v1",
+        "checkpoint_sha256": "b2373bc054dbdd883236b417d3679744e179f8b067c2289c6191984a8b0de471",
+        "report_sha256": "545b9bdbcae33f377ff0c0f10726c1d568412d89652a585022ef7694eac92fdc",
+        "predictions_sha256": "e1c5a7ae8fd38951d15bc5d35261dea36fa5fc8bd796e9993951eb76b26af9ee"
+      },
+      "tasks": {
+        "left_right": {
+          "records": 751,
+          "paired_participant_groups": 17,
+          "baseline_mean_subject_BA": 0.5743909053809445,
+          "new_mean_subject_BA": 0.5672020354497808,
+          "new_minus_baseline_BA": -0.007188869931163626,
+          "new_minus_baseline_percentage_points": -0.7188869931163626,
+          "paired_participant_percentile_95CI_BA": [
+            -0.049787995731889564,
+            0.03693585622828287
+          ],
+          "paired_participant_percentile_95CI_percentage_points": [
+            -4.978799573188956,
+            3.693585622828287
+          ],
+          "paired_IDs_sha256": "7406d32e8a98cb129b805ba5aa3589262f9fafa9863b32319c32f16d6ecea875",
+          "paired_delta_vector_sha256": "7dc0feb77a8ac44c9eb6e3771ed1c6d637e1444f2ef8635edff4a8320c2d1588"
+        },
+        "fists_feet": {
+          "records": 738,
+          "paired_participant_groups": 17,
+          "baseline_mean_subject_BA": 0.5985216217815214,
+          "new_mean_subject_BA": 0.6312258840870383,
+          "new_minus_baseline_BA": 0.03270426230551693,
+          "new_minus_baseline_percentage_points": 3.270426230551693,
+          "paired_participant_percentile_95CI_BA": [
+            -0.005984899129808206,
+            0.07584322666232268
+          ],
+          "paired_participant_percentile_95CI_percentage_points": [
+            -0.5984899129808205,
+            7.584322666232268
+          ],
+          "paired_IDs_sha256": "988aa43117b25132cf8269aa008bf22240ec9d7088a36a598eeaaa0b4d250d59",
+          "paired_delta_vector_sha256": "897dd031443c5fbdd7b36877d6be96dbeced2976f22c7c57d3bba8ad7cb1e9d1"
+        }
+      }
+    }
+  ]
+}

@@ -69,6 +69,26 @@ class RecoveryTests(unittest.TestCase):
    self.assertEqual(result['stop_started_after_deadline_seconds'],30);self.assertFalse(result['postdeadline_training_or_download_authorized'])
    self.assertEqual(cli.call_args_list[0].args[0],[ops.CLI,'stop','--session',ops.SESSION])
    self.assertEqual(query.call_args.args[0],ops.TERMINAL_PROBE_SCRIPT)
+ def test_package_and_stop_both_detect_null_delimited_owned_argv(self):
+  class Proc:
+   name='1234'
+   def __init__(self,state,command):self.state=state;self.command=command
+   def __truediv__(self,name):
+    return SimpleNamespace(read_text=lambda:'1234 (python3) '+self.state+' 0',read_bytes=lambda:self.command)
+  package_loop=ops.REMOTE_PACKAGE.split("for proc in Path('/proc').iterdir():",1)[1].split('for launch in ',1)[0]
+  package_loop="for proc in Path('/proc').iterdir():"+package_loop
+  stop_loop=ops.TERMINAL_PROBE_SCRIPT.split('active=[]',1)[1].split('gpu=subprocess',1)[0]
+  stop_loop='active=[]'+stop_loop+"\nassert not active,'Owned compute not terminal'\n"
+  for root in ('xavier_phase2','xavier_phase3'):
+   for state,blocked in (('S',True),('R',True),('Z',False)):
+    command=b'/usr/bin/python3'+bytes([0])+('/content/'+root+'/workflow/train.py').encode()+bytes([0])
+    proc=Proc(state,command)
+    for program in (package_loop,stop_loop):
+     with self.subTest(root=root,state=state,package=program==package_loop):
+      scope={'Path':lambda ignored:SimpleNamespace(iterdir=lambda:[proc])}
+      if blocked:
+       with self.assertRaises(AssertionError):exec(program,scope)
+      else:exec(program,scope)
  def test_remote_program_compiles_without_execution(self):
   source=ops.REMOTE_PACKAGE.replace('ATTESTATION',repr('/content/xavier_phase3/audit.json'))
   source='def package():\n'+'\n'.join(' '+line for line in source.splitlines())

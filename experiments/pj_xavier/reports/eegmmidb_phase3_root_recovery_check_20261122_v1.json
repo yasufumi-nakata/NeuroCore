@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "created_epoch": 1795328232.643502,
+  "parent_recovery_receipt_sha256": "1bf122bba4744bd86c9a57d434bcc0c6d193f162afca03bdc465229a657e0c90",
+  "member_count": 476,
+  "bytes_rehashed": 489554060,
+  "elapsed_seconds": 0.4889211654663086,
+  "all_member_hashes_verified_again_by_root": true,
+  "model_forward_calls": 0
+}

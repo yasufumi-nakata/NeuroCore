@@ -1,0 +1,10 @@
+{
+  "README.md": "18b30d15710b248ff0984363898afdaa599be956b24d1f21ab0cd4f237a0abaf",
+  "acquisition_custody.json": "63bfe60017f682325323038406fce930b0386042177ca2edb44a5438ba4f7af4",
+  "completion.json": "29118c1acbcb9136511c9a82cce9155d744802a18dd27b5548fb8f1f57c7204d",
+  "duplicate_constraints.aggregate.json": "8ec5cfd12efa0f84786190def3dd60fd32757026c6196441971007332545321d",
+  "future_training_constraints.aggregate.json": "31d1252461e35ace7c400019b0acb26ea87ddb9bf543bb2457d5a4ebdf8390e1",
+  "independent_accounting.json": "f69acd8ee9b31e66a05d24720ae912eeb2864b1c0b5744fb2e55dbbaf68bc82a",
+  "protocol.json": "3c0c5fd291caf3f0f6c98f7dad082fcd8dd21c145e99366e2188f6f844b94fe6",
+  "summary.json": "1545e40683313934ff355edee106e7bb3dbebdecb7aabdcdd4286b8e089c24cd"
+}
