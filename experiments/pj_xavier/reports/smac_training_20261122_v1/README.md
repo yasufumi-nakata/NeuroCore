@@ -1,5 +1,19 @@
 # S Macでの取得・追加学習（2026-11-22）
 
+## 最新観測：S Mac 37台・SSVEP9970619元構造の独立監査（2026-11-22 22:25 JST）
+
+**37台の新live snapshotは完了99,527files／839,585,508,076B，partial203,790,046,364B（complete欠損・サイズ不一致0，全37supervisor alive）です．** smac02のSSVEP9970619は88files／1,708,501,504B取得済み，smac35で44個の`.set`と代表`.fdt`をcluster内SHA一致転送・別実装で監査しました．先頭64 EEG＋末尾8 EXG/Status，配布200Hz，44連続記録の名目28,817秒，イベント欄0，物理単位明記0です．元論文は512Hz収録→offline 200Hz resamplingを記載しています．unit/split/QC未確定なので新gradient0h，現累積固有学習量**21.563333hのまま**です．BCI8089820は5,241,833,568B／27,475,466,178Bの部分取得中でcompleteにしていません．
+
+詳細：[SSVEP9970619の監査結果](SSVEP9970619_SOURCE_AUDIT.md)．元のP300 validation／封印済みrunは保持し，smac19，workstation raw，Colab学習は使っていません．次は物理電圧校正と因果性の出典検証，別sourceの適格性・固定train-only QC，新学習runです．
+
+## P300未学習1被験者での新しい結果
+
+**S Macで元DAT9記録／85,040,079Bをsmac05→smac35へ直接SHA一致転送し，未学習のP300 validation1群・609窓（3秒／32ch）で2つの凍結checkpointを実MPS比較しました．** P300追加前の固定mask再構成MSE **0.00177100794** に対し，追加後は **0.00131386130**（同一validationで25.8128%減少）です．元runの再学習はなく，この1被験者群の結果を新たなcheckpoint選択やP300のtestに使いません．元のP300テスト2群・著者除外群の信号読込は0です．独立test，集団汎化，EEG→LLM行動，OS成功は未実証です．
+
+1回目は正しいmetadata-only admissionパスを指定せず信号読込前に失敗しましたが，失敗証拠を保持して一致する元metadata SHAを再指定し，2回目はexit0・9配列全SHA照合で完了しました．関連CPUテスト31件＋13 subtestsがPASSです．21:20:40 JSTの37台live snapshotは **complete78,614files／604,580,599,121B，partial129,871,796,126B**，全supervisor alive，完了ファイル欠損・サイズ不一致0でした．これは取得済みEEG時間ではありません．実学習固有量は前回の21.563333hのまま，今回のgradient追加は0hです．
+
+詳細：[P300追加学習後の別被験者validation検証](P300_HELDOUT_VALIDATION_RESULTS.md)．次段階は取得済み候補の単位・QC・source重複検査と新scientific runの実学習です．BCI8089820はretry partial，SSVEP9970619は単位未検証のまま保持します．workstationへrawを戻さず，smac19を除外します．
+
 ## 到達点
 
 **37台で公開データの分散取得を継続し，CBraModへ3 source・固有17.3991666667時間のEEGを実際に投入しました．** 初期FIF，CNT追加，InMID追加の3段階を，各10epochsで完了しています．取得・展開・新規学習・checkpointはS Mac側に置いています．smac19は除外，smac31は管理用，smac40はDNS未解決で割当なしです．
