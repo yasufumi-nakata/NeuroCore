@@ -1,0 +1,746 @@
+{
+  "accepted_statistics_origin": "Independent CPU inspection of sealed float32 arrays, physical microvolts restored; no new model inference",
+  "all": {
+    "accepted": {
+      "maximum_absolute_sample": {
+        "finite_value_count": 2200,
+        "max": 99.95542764663696,
+        "min": 21.062518656253815,
+        "missing_value_count": 0,
+        "p25": 54.14523333311081,
+        "p50": 70.18912136554718,
+        "p75": 85.64697057008743,
+        "p95": 96.6226428747177,
+        "p99": 99.49946790933609,
+        "unit": "microvolt",
+        "window_count": 2200
+      },
+      "maximum_per_channel_peak_to_peak": {
+        "finite_value_count": 2200,
+        "max": 197.4001407623291,
+        "min": 34.27356481552124,
+        "missing_value_count": 0,
+        "p25": 96.40199542045593,
+        "p50": 124.71415400505066,
+        "p75": 151.9927978515625,
+        "p95": 175.35506278276443,
+        "p99": 185.25773823261244,
+        "unit": "microvolt",
+        "window_count": 2200
+      },
+      "minimum_channel_population_std": {
+        "finite_value_count": 2200,
+        "max": 11.551687755622703,
+        "min": 0.3906519270821901,
+        "missing_value_count": 0,
+        "p25": 1.3050904782883759,
+        "p50": 1.7715620611463097,
+        "p75": 2.6380005064016,
+        "p95": 5.820990686692325,
+        "p99": 7.772839544615728,
+        "unit": "microvolt",
+        "window_count": 2200
+      }
+    },
+    "all_fixed_grid_windows": {
+      "maximum_absolute_sample": {
+        "finite_value_count": 6040,
+        "max": 594527.6803529279,
+        "min": 21.062518656253815,
+        "missing_value_count": 0,
+        "p25": 81.94201439619064,
+        "p50": 125.14807229995053,
+        "p75": 859.1758383544689,
+        "p95": 14689.41691115492,
+        "p99": 41569.23791751567,
+        "unit": "microvolt",
+        "window_count": 6040
+      },
+      "minimum_channel_population_std": {
+        "finite_value_count": 6040,
+        "max": 21335.467243066774,
+        "min": 2.9258679980184725e-11,
+        "missing_value_count": 0,
+        "p25": 1.580275001391999,
+        "p50": 4.218970595315337,
+        "p75": 7.159648913428478,
+        "p95": 20.020446490678147,
+        "p99": 69.0434617009067,
+        "unit": "microvolt",
+        "window_count": 6040
+      }
+    },
+    "rejected": {
+      "maximum_absolute_sample": {
+        "finite_value_count": 3840,
+        "max": 594527.6803529279,
+        "min": 100.00892304935272,
+        "missing_value_count": 0,
+        "p25": 129.92139251211944,
+        "p50": 230.6281903665544,
+        "p75": 3236.1858091307395,
+        "p95": 21920.612038611278,
+        "p99": 51299.7103518273,
+        "unit": "microvolt",
+        "window_count": 3840
+      },
+      "maximum_per_channel_peak_to_peak": {
+        "raw_redecoded_for_this_report": false,
+        "status": "not_measured_in_original_pass"
+      },
+      "minimum_channel_population_std": {
+        "finite_value_count": 3840,
+        "max": 21335.467243066774,
+        "min": 2.9258679980184725e-11,
+        "missing_value_count": 0,
+        "p25": 2.273922535238112,
+        "p50": 5.886174755160936,
+        "p75": 9.260479536479497,
+        "p95": 28.104005535826328,
+        "p99": 104.45781592996462,
+        "unit": "microvolt",
+        "window_count": 3840
+      }
+    }
+  },
+  "all_window_statistics_precision": "Accepted float32 reconstruction and rejected original float64 QC; do not infer greater physical accuracy from software agreement",
+  "by_dataset_device": {
+    "zenodo:15698441:BA": {
+      "accepted": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 746,
+          "max": 99.94686245918274,
+          "min": 24.42358285188675,
+          "missing_value_count": 0,
+          "p25": 61.13291084766388,
+          "p50": 74.33817088603973,
+          "p75": 86.45279854536057,
+          "p95": 96.99374735355377,
+          "p99": 99.59194153547286,
+          "unit": "microvolt",
+          "window_count": 746
+        },
+        "maximum_per_channel_peak_to_peak": {
+          "finite_value_count": 746,
+          "max": 197.4001407623291,
+          "min": 46.904997527599335,
+          "missing_value_count": 0,
+          "p25": 109.47952270507812,
+          "p50": 133.4594190120697,
+          "p75": 154.62721586227417,
+          "p95": 177.17210054397583,
+          "p99": 186.49828314781186,
+          "unit": "microvolt",
+          "window_count": 746
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 746,
+          "max": 4.508019908984314,
+          "min": 0.5508919778912289,
+          "missing_value_count": 0,
+          "p25": 0.7881088564230574,
+          "p50": 1.6642081173831627,
+          "p75": 2.0548978094285477,
+          "p95": 2.6879088025090443,
+          "p99": 3.6867313671089916,
+          "unit": "microvolt",
+          "window_count": 746
+        }
+      },
+      "all_fixed_grid_windows": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 1362,
+          "max": 2684.5125977712955,
+          "min": 24.42358285188675,
+          "missing_value_count": 0,
+          "p25": 71.8542218208313,
+          "p50": 95.36915421485901,
+          "p75": 124.56877668689563,
+          "p95": 233.64045734443187,
+          "p99": 390.86765620857807,
+          "unit": "microvolt",
+          "window_count": 1362
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 1362,
+          "max": 5.038943919840205,
+          "min": 0.5508919778912289,
+          "missing_value_count": 0,
+          "p25": 0.8944668316269688,
+          "p50": 1.7150552371939378,
+          "p75": 2.1210235018984536,
+          "p95": 2.6314186145399,
+          "p99": 4.035224001609759,
+          "unit": "microvolt",
+          "window_count": 1362
+        }
+      },
+      "rejected": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 616,
+          "max": 2684.5125977712955,
+          "min": 100.00968938439577,
+          "missing_value_count": 0,
+          "p25": 113.77194424541318,
+          "p50": 127.34012093061197,
+          "p75": 165.2821474301105,
+          "p95": 304.466902100554,
+          "p99": 905.5017940723562,
+          "unit": "microvolt",
+          "window_count": 616
+        },
+        "maximum_per_channel_peak_to_peak": {
+          "raw_redecoded_for_this_report": false,
+          "status": "not_measured_in_original_pass"
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 616,
+          "max": 5.038943919840205,
+          "min": 0.5513709266366934,
+          "missing_value_count": 0,
+          "p25": 0.9327163767570054,
+          "p50": 1.8149903023997191,
+          "p75": 2.167615794979903,
+          "p95": 2.5636094054910465,
+          "p99": 4.1141426142704,
+          "unit": "microvolt",
+          "window_count": 616
+        }
+      }
+    },
+    "zenodo:15698441:EM": {
+      "accepted": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 509,
+          "max": 99.95542764663696,
+          "min": 35.27642786502838,
+          "missing_value_count": 0,
+          "p25": 71.71733975410461,
+          "p50": 83.12162160873413,
+          "p75": 91.84584617614746,
+          "p95": 98.1238317489624,
+          "p99": 99.76114296913147,
+          "unit": "microvolt",
+          "window_count": 509
+        },
+        "maximum_per_channel_peak_to_peak": {
+          "finite_value_count": 509,
+          "max": 193.1671917438507,
+          "min": 63.735148310661316,
+          "missing_value_count": 0,
+          "p25": 125.66635608673096,
+          "p50": 146.54720425605774,
+          "p75": 162.74434328079224,
+          "p95": 180.28072834014893,
+          "p99": 186.9359381198883,
+          "unit": "microvolt",
+          "window_count": 509
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 509,
+          "max": 11.551687755622703,
+          "min": 2.232702523708133,
+          "missing_value_count": 0,
+          "p25": 4.368032864398636,
+          "p50": 4.814362145975542,
+          "p75": 5.672618268696654,
+          "p95": 7.61890848965257,
+          "p99": 10.680823663122679,
+          "unit": "microvolt",
+          "window_count": 509
+        }
+      },
+      "all_fixed_grid_windows": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 1438,
+          "max": 659.241768453384,
+          "min": 35.27642786502838,
+          "missing_value_count": 0,
+          "p25": 90.91894924640656,
+          "p50": 113.15113253090766,
+          "p75": 138.03809949399252,
+          "p95": 167.64060341902555,
+          "p99": 194.79080803067225,
+          "unit": "microvolt",
+          "window_count": 1438
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 1438,
+          "max": 40.82166220260398,
+          "min": 2.232702523708133,
+          "missing_value_count": 0,
+          "p25": 4.51411082602543,
+          "p50": 5.32205747931928,
+          "p75": 6.6221773446137,
+          "p95": 10.067165396059627,
+          "p99": 14.67279321279421,
+          "unit": "microvolt",
+          "window_count": 1438
+        }
+      },
+      "rejected": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 929,
+          "max": 659.241768453384,
+          "min": 100.00892304935272,
+          "missing_value_count": 0,
+          "p25": 114.40993938630226,
+          "p50": 130.1005977975803,
+          "p75": 145.7519139275753,
+          "p95": 177.66737414110605,
+          "p99": 200.1344206963903,
+          "unit": "microvolt",
+          "window_count": 929
+        },
+        "maximum_per_channel_peak_to_peak": {
+          "raw_redecoded_for_this_report": false,
+          "status": "not_measured_in_original_pass"
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 929,
+          "max": 40.82166220260398,
+          "min": 2.4345369197880684,
+          "missing_value_count": 0,
+          "p25": 4.647374736951475,
+          "p50": 5.704546261624273,
+          "p75": 7.236316561514455,
+          "p95": 10.96455109967241,
+          "p99": 19.037284272859296,
+          "unit": "microvolt",
+          "window_count": 929
+        }
+      }
+    },
+    "zenodo:15698441:LA": {
+      "accepted": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 937,
+          "max": 99.68461990356445,
+          "min": 21.062518656253815,
+          "missing_value_count": 0,
+          "p25": 42.703619599342346,
+          "p50": 57.7039897441864,
+          "p75": 74.54383969306946,
+          "p95": 93.51693630218504,
+          "p99": 98.4440758228302,
+          "unit": "microvolt",
+          "window_count": 937
+        },
+        "maximum_per_channel_peak_to_peak": {
+          "finite_value_count": 937,
+          "max": 191.3672924041748,
+          "min": 34.27356481552124,
+          "missing_value_count": 0,
+          "p25": 75.28811395168304,
+          "p50": 103.81740629673004,
+          "p75": 131.43197894096375,
+          "p95": 166.13211035728455,
+          "p99": 183.17640852928162,
+          "unit": "microvolt",
+          "window_count": 937
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 937,
+          "max": 3.4653540632520037,
+          "min": 0.5762372060184514,
+          "missing_value_count": 0,
+          "p25": 1.2071554882149975,
+          "p50": 1.4847615752644971,
+          "p75": 1.8064867841934997,
+          "p95": 2.2584215832578396,
+          "p99": 2.5370383689652742,
+          "unit": "microvolt",
+          "window_count": 937
+        }
+      },
+      "all_fixed_grid_windows": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 1338,
+          "max": 7227.66871904296,
+          "min": 21.062518656253815,
+          "missing_value_count": 0,
+          "p25": 49.28712397813797,
+          "p50": 70.95786035060883,
+          "p75": 112.0826162607427,
+          "p95": 311.631218006631,
+          "p99": 3368.656497105385,
+          "unit": "microvolt",
+          "window_count": 1338
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 1338,
+          "max": 11.90628418147449,
+          "min": 0.4739971128463984,
+          "missing_value_count": 0,
+          "p25": 1.2479325494373126,
+          "p50": 1.5240535121093974,
+          "p75": 1.901844859852273,
+          "p95": 2.5572150464423675,
+          "p99": 6.406144859792142,
+          "unit": "microvolt",
+          "window_count": 1338
+        }
+      },
+      "rejected": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 401,
+          "max": 7227.66871904296,
+          "min": 100.28755980503944,
+          "missing_value_count": 0,
+          "p25": 116.03202493516785,
+          "p50": 144.4144103065212,
+          "p75": 221.4296399595751,
+          "p95": 2821.8979458930685,
+          "p99": 4774.7172422290605,
+          "unit": "microvolt",
+          "window_count": 401
+        },
+        "maximum_per_channel_peak_to_peak": {
+          "raw_redecoded_for_this_report": false,
+          "status": "not_measured_in_original_pass"
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 401,
+          "max": 11.90628418147449,
+          "min": 0.4739971128463984,
+          "missing_value_count": 0,
+          "p25": 1.3613061990074813,
+          "p50": 1.6306744632601349,
+          "p75": 2.258095108795796,
+          "p95": 5.034899897407131,
+          "p99": 8.818712329012074,
+          "unit": "microvolt",
+          "window_count": 401
+        }
+      }
+    },
+    "zenodo:20801101:UniBa": {
+      "accepted": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 8,
+          "max": 97.45322465896606,
+          "min": 50.45522451400757,
+          "missing_value_count": 0,
+          "p25": 54.92912828922272,
+          "p50": 71.04766368865967,
+          "p75": 80.31025975942612,
+          "p95": 93.54893386363983,
+          "p99": 96.67236649990082,
+          "unit": "microvolt",
+          "window_count": 8
+        },
+        "maximum_per_channel_peak_to_peak": {
+          "finite_value_count": 8,
+          "max": 193.3202028274536,
+          "min": 66.99419021606445,
+          "missing_value_count": 0,
+          "p25": 72.06900678575039,
+          "p50": 124.47275221347809,
+          "p75": 145.4154536128044,
+          "p95": 185.26357024908066,
+          "p99": 191.70887631177902,
+          "unit": "microvolt",
+          "window_count": 8
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 8,
+          "max": 7.443557458692449,
+          "min": 0.3906519270821901,
+          "missing_value_count": 0,
+          "p25": 0.41601229624734143,
+          "p50": 0.44532353787592766,
+          "p75": 2.045691702002216,
+          "p95": 7.205837923668938,
+          "p99": 7.396013551687746,
+          "unit": "microvolt",
+          "window_count": 8
+        }
+      },
+      "all_fixed_grid_windows": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 1902,
+          "max": 594527.6803529279,
+          "min": 50.45522451400757,
+          "missing_value_count": 0,
+          "p25": 997.3489090002797,
+          "p50": 3211.185337527193,
+          "p75": 9332.68909622091,
+          "p95": 32760.834417868467,
+          "p99": 89540.95580002232,
+          "unit": "microvolt",
+          "window_count": 1902
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 1902,
+          "max": 21335.467243066774,
+          "min": 2.9258679980184725e-11,
+          "missing_value_count": 0,
+          "p25": 6.073586073414689,
+          "p50": 8.75269144195739,
+          "p75": 13.748395443645911,
+          "p95": 51.622866153620286,
+          "p99": 171.95034209179715,
+          "unit": "microvolt",
+          "window_count": 1902
+        }
+      },
+      "rejected": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 1894,
+          "max": 594527.6803529279,
+          "min": 111.70400877453103,
+          "missing_value_count": 0,
+          "p25": 1008.2213862742944,
+          "p50": 3234.4745601488753,
+          "p75": 9400.250868105286,
+          "p95": 32795.80330710524,
+          "p99": 90103.84059523496,
+          "unit": "microvolt",
+          "window_count": 1894
+        },
+        "maximum_per_channel_peak_to_peak": {
+          "raw_redecoded_for_this_report": false,
+          "status": "not_measured_in_original_pass"
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 1894,
+          "max": 21335.467243066774,
+          "min": 2.9258679980184725e-11,
+          "missing_value_count": 0,
+          "p25": 6.085930044207268,
+          "p50": 8.75880889282189,
+          "p75": 13.80963315509269,
+          "p95": 51.78879815866339,
+          "p99": 172.53036369267684,
+          "unit": "microvolt",
+          "window_count": 1894
+        }
+      }
+    }
+  },
+  "by_ssl_fold": {
+    "train": {
+      "accepted": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 1678,
+          "max": 99.95542764663696,
+          "min": 21.466130018234253,
+          "missing_value_count": 0,
+          "p25": 55.318182706832886,
+          "p50": 69.80408430099487,
+          "p75": 85.69487035274506,
+          "p95": 96.69552206993103,
+          "p99": 99.52930569648743,
+          "unit": "microvolt",
+          "window_count": 1678
+        },
+        "maximum_per_channel_peak_to_peak": {
+          "finite_value_count": 1678,
+          "max": 197.4001407623291,
+          "min": 41.92166328430176,
+          "missing_value_count": 0,
+          "p25": 98.56945723295212,
+          "p50": 124.41429048776627,
+          "p75": 151.4827698469162,
+          "p95": 175.27117788791656,
+          "p99": 184.93268859386444,
+          "unit": "microvolt",
+          "window_count": 1678
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 1678,
+          "max": 7.77097847288878,
+          "min": 0.3906519270821901,
+          "missing_value_count": 0,
+          "p25": 1.3315762854359678,
+          "p50": 1.789066563227982,
+          "p75": 2.5848269238617227,
+          "p95": 5.685740587979993,
+          "p99": 7.176550861089988,
+          "unit": "microvolt",
+          "window_count": 1678
+        }
+      },
+      "all_fixed_grid_windows": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 5168,
+          "max": 594527.6803529279,
+          "min": 21.466130018234253,
+          "missing_value_count": 0,
+          "p25": 86.94743514060974,
+          "p50": 135.5940645569508,
+          "p75": 1572.8427486102944,
+          "p95": 16828.7597615379,
+          "p99": 43444.6728935554,
+          "unit": "microvolt",
+          "window_count": 5168
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 5168,
+          "max": 21335.467243066774,
+          "min": 2.9258679980184725e-11,
+          "missing_value_count": 0,
+          "p25": 1.6393987852261482,
+          "p50": 4.500410347376288,
+          "p75": 7.518647313917927,
+          "p95": 21.927054860817524,
+          "p99": 77.15888356130984,
+          "unit": "microvolt",
+          "window_count": 5168
+        }
+      },
+      "rejected": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 3490,
+          "max": 594527.6803529279,
+          "min": 100.00892304935272,
+          "missing_value_count": 0,
+          "p25": 133.6980062649469,
+          "p50": 383.7944187413384,
+          "p75": 3832.4970712378063,
+          "p95": 23293.391274320034,
+          "p99": 54577.99509024571,
+          "unit": "microvolt",
+          "window_count": 3490
+        },
+        "maximum_per_channel_peak_to_peak": {
+          "raw_redecoded_for_this_report": false,
+          "status": "not_measured_in_original_pass"
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 3490,
+          "max": 21335.467243066774,
+          "min": 2.9258679980184725e-11,
+          "missing_value_count": 0,
+          "p25": 2.457791407812205,
+          "p50": 6.002661170662032,
+          "p75": 9.58439724265584,
+          "p95": 29.771328766359016,
+          "p99": 108.6842920516029,
+          "unit": "microvolt",
+          "window_count": 3490
+        }
+      }
+    },
+    "val": {
+      "accepted": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 522,
+          "max": 99.88788962364197,
+          "min": 21.062518656253815,
+          "missing_value_count": 0,
+          "p25": 49.806367605924606,
+          "p50": 71.88248336315155,
+          "p75": 85.03698259592056,
+          "p95": 96.54263317584991,
+          "p99": 98.9572570323944,
+          "unit": "microvolt",
+          "window_count": 522
+        },
+        "maximum_per_channel_peak_to_peak": {
+          "finite_value_count": 522,
+          "max": 195.16319632530212,
+          "min": 34.27356481552124,
+          "missing_value_count": 0,
+          "p25": 89.2903096973896,
+          "p50": 126.94699466228485,
+          "p75": 152.8324469923973,
+          "p95": 175.43869495391846,
+          "p99": 185.90236037969584,
+          "unit": "microvolt",
+          "window_count": 522
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 522,
+          "max": 11.551687755622703,
+          "min": 0.5762372060184514,
+          "missing_value_count": 0,
+          "p25": 1.235403513828156,
+          "p50": 1.6698784616864022,
+          "p75": 4.218925178910307,
+          "p95": 6.911929540442163,
+          "p99": 10.673133255834564,
+          "unit": "microvolt",
+          "window_count": 522
+        }
+      },
+      "all_fixed_grid_windows": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 872,
+          "max": 4125.134276758928,
+          "min": 21.062518656253815,
+          "missing_value_count": 0,
+          "p25": 62.861743569374084,
+          "p50": 89.65632617473602,
+          "p75": 122.53318027959328,
+          "p95": 215.9132159596189,
+          "p99": 483.7355154117119,
+          "unit": "microvolt",
+          "window_count": 872
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 872,
+          "max": 22.369611203489406,
+          "min": 0.5762372060184514,
+          "missing_value_count": 0,
+          "p25": 1.4081515290091442,
+          "p50": 2.080177622206267,
+          "p75": 5.094698664495538,
+          "p95": 9.937492194101145,
+          "p99": 12.299810034717149,
+          "unit": "microvolt",
+          "window_count": 872
+        }
+      },
+      "rejected": {
+        "maximum_absolute_sample": {
+          "finite_value_count": 350,
+          "max": 4125.134276758928,
+          "min": 100.01185962986693,
+          "missing_value_count": 0,
+          "p25": 114.69701783299564,
+          "p50": 131.67860843695252,
+          "p75": 159.60629792037474,
+          "p95": 339.66955214620043,
+          "p99": 1185.5402193007376,
+          "unit": "microvolt",
+          "window_count": 350
+        },
+        "maximum_per_channel_peak_to_peak": {
+          "raw_redecoded_for_this_report": false,
+          "status": "not_measured_in_original_pass"
+        },
+        "minimum_channel_population_std": {
+          "finite_value_count": 350,
+          "max": 22.369611203489406,
+          "min": 0.833573895077681,
+          "missing_value_count": 0,
+          "p25": 1.9564609219704105,
+          "p50": 2.470158909663641,
+          "p75": 7.12748142514045,
+          "p95": 11.278957195003596,
+          "p99": 15.020628717287998,
+          "unit": "microvolt",
+          "window_count": 350
+        }
+      }
+    }
+  },
+  "causal_explanation_of_model_performance_established": false,
+  "frozen_preprocessing_protocol_sha256": "642246adb9bf39a9652a2ccb9fdbead834c611fbd4f5325b8dfc08d54fba45a5",
+  "independent_amplifier_physical_calibration_verified": false,
+  "private_accepted_window_statistics_sha256": "2791e59169491ecf1f6f1cf420113ebd3cc555d867415253dfd9d1965c110a2c",
+  "quantile_definition": "linear interpolation at q*(n-1) in sorted values",
+  "reason_counts_can_overlap": true,
+  "recipe_changed_after_QC_observation": false,
+  "rejected_statistics_origin": "Statistics retained by original preprocessing pass before float32 storage; rejected peak-to-peak not saved",
+  "schema": "xavier-ssl-fixed-QC-distributions-v1",
+  "source_table_rows": 75,
+  "threshold_definition": {
+    "evaluation_stage": "post-filter/extraction/resample, physical volts, before V_x_1e4 float32 storage",
+    "kind": "maximum absolute sample amplitude, not peak-to-peak",
+    "maximum_absolute_sample_microvolt": 100.0,
+    "minimum_std_each_channel_microvolt": 0.01,
+    "std_ddof": 0
+  }
+}

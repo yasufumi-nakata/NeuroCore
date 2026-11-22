@@ -54,3 +54,11 @@ sealed protocolの記載を保ち，結果解釈ではencoderとラベル方式�
 実投入の窓長合計はtrain400秒です．独立のraw-source単位interval union監査でも400秒，overlap0と一致しています．元1.75秒窓では700秒，30epochsの反復提示は12,000秒です．取得済みの全原記録時間，採用時間区間のunion，反復提示量は別々に報告します．
 
 集計は ../reports/cbramod_symbol_final.aggregate.json，容量試験は ../reports/cbramod_symbol_capacity.aggregate.json，時刻union監査は ../reports/selected_eeg_interval_audit_20261122.json です．
+
+## Completed M1 train-example trial and AI ranking follow-up
+
+The recovered selected checkpoint completed the same CPU EEG encoder to MPS Smol pathway on three deterministic training examples, one per class. All three matched their recorded action labels; this is a training-example implementation check and cannot estimate generalization. All three downstream routes remained blocked because these proxy labels do not specify a usable agent intent. OS actions and cloud-agent calls were zero.
+
+Observed model-call p50 was 426.924 ms and p95 1,663.342 ms, including a cold first example and only n=3. MPS sampled driver memory was 4,310,302,720 bytes and sampled allocated memory 3,424,401,920 bytes; CPU process peak RSS was 593,936,384 bytes. The explicit MPS allocator quota was 8 GiB. These sampled MPS values are not true GPU peaks, and the shared workstation was not isolated from acquisition/metadata work.
+
+The separate saved-prediction comparison gives fused AI-vs-other AUROC 0.605300 (participant-bootstrap 95% CI 0.535555–0.667713), AP 0.255807, and at probability 0.5, 10/39 AI events detected with 36 false positives among 164 other selected actions. The AUROC differences against shuffled EEG and raw −10 s EEG were positive in this reused exploratory cohort; the difference against context-only has a CI spanning zero. The 19-condition report retains exact paired intervals. They are unadjusted for multiple comparisons and conditional on these fitted checkpoints. This does not establish natural-use precision, command semantics, or autonomous-agent readiness.

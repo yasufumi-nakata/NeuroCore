@@ -106,13 +106,40 @@ AI 送信対その他の fused AUROC は 0.6053 です．fused minus shuffle の
 
 L4 の fused 推論 p95 は46.92 ms，最大CUDA予約は3.47 GBでした．これはCPU EEG encoder・転送・投影・LLM scoringの範囲で，読み込み・resampling・tokenization・harnessを含む端から端までの遅延ではありません．旧結果を閲覧した後の探索実験であり，encoder，出力方式，入力長，正規化，学習予算，実機を同時に変えているため，差を個別要素の効果とは同定しません．
 
-**87.91 時間を全てこの LLM 接続部へ学習させたわけではありません．** UniBa v3 の train は 400 窓で，元構成では 700 秒＝11 分40秒，新 CBraMod 構成では末尾 1 秒ずつの計 400 秒＝6 分40秒を使用しています．全窓を原記録 SHA ごとに照合した時間区間の和集合も同じで，窓の重なりは 0 でした．新構成で 30 epochs 反復した 12,000 秒は，新しい EEG の追加時間ではありません．[時間区間の独立監査](reports/selected_eeg_interval_audit_20261122.json) に記録しました．ラベルなし連続 EEG を用いる encoder 自己教師学習は，別実験として，ITU と UniBa validation／test の原記録を除外して準備しています．
+**87.91 時間を全てこの LLM 接続部へ学習させたわけではありません．** UniBa v3 の train は 400 窓で，元構成では 700 秒＝11 分40秒，新 CBraMod 構成では末尾 1 秒ずつの計 400 秒＝6 分40秒を使用しています．全窓を原記録 SHA ごとに照合した時間区間の和集合も同じで，窓の重なりは 0 でした．新構成で 30 epochs 反復した 12,000 秒は，新しい EEG の追加時間ではありません．[時間区間の独立監査](reports/selected_eeg_interval_audit_20261122.json) に記録しました．
+
+### 連続EEGによる追加学習の入力
+
+encoderの自己教師学習に使う連続EEGを，ITU全量とUniBa validation／test・時計不合格の原記録を除外して準備しました．75記録50.888960時間の候補に，事前固定した30秒窓と品質検査を適用した実測です．
+
+| 範囲 | 窓数 | 原波形の採用区間の合計 |
+| --- | ---: | ---: |
+| 品質検査前の30秒窓 | 6,040 | 50.333333 h |
+| 品質検査通過・学習用 | 1,678 | 13.983333 h |
+| 品質検査通過・SSLモデル選択用 | 522 | 4.350000 h |
+| 品質検査通過・合計 | 2,200 | 18.333333 h |
+
+166配列，1,685,013,248Bを生成し，全421,248,000値の独立検査が通過しました．学習用とモデル選択用は参加者groupを分けています．品質基準はresampling後の最大絶対振幅100µV以下，各channelの標準偏差0.01µV以上，finiteです．元の50.889時間との差には端の除外・不完全窓も含みます．
+
+**UniBaは1,902候補から8窓・240秒しか残らず，採用データの大半はportable EEGです．** このdomainの偏りを保持した実験として評価し，歩留まりを上げるために品質基準や単位を後から変えていません．[固定前処理](model/SSL_PREPROCESSING.md)，[全75原記録の品質検査と集計](reports/ssl_corpus_preparation_20261122_v1/README.md)に根拠を保存しています．2026-11-22の入力検証終了時点では，最終protocolの封印まで完了しました．この表は準備済みの量であり，実学習の完了時間・成績ではありません．学習後にはモデルが実際に見たIDと原記録区間から実量を報告します．
 
 ## ラベリングと拡張可能性
 
 元データの gold，観測された操作イベント，AI の弱教師ラベルを別々に保持します．workstation の Ollama qwen3.5:2b で train の 15 種類のイベント表記を正規化し，225 窓へ出典付きで伝播しました．teacher digest／prompt hash／元ラベルを保存し，held-out のラベル作成には流用していません．これは新しい EEG や潜在意図の正解を増やしたという意味ではありません．
 
 UniBa は 34 記録中 32 記録，28.58953451 時間が時刻同期検査に通過しました．ITU は 26 記録中 25 記録，20.51673720 時間が同じ基準に通過し，外部 test 専用の 630 窓を抽出しました．AI 送信 126／keyboard 252／click 252，train・validation は 0 です．原波形 630 窓の全サンプル，実ログラベル 630 件，過去の履歴表現 1,260 件，source members 204 件を独立に再照合し，49 files を workstation へ hash 一致で回収しました．[ITU 外部 cohort の検証結果](reports/itu_external_cohort_v3_20261122_v1/README.md) を保存しています．サイト名を含む ID は分かれますが，UniBa と ITU 間の同一人物不存在を証明したものではありません．外部サイトが 1 つのため，サイト間一般化の信頼区間も求めません．
+
+### 別施設 ITU での完了した評価
+
+固定した3モデルの5条件と，学習済み履歴4モデルの計19条件を，各630例で評価・回収・独立再検証しました．ITUでの追加学習，閾値の調整，保存済み履歴モデルの再fitはありません．
+
+| 固定したモデルの fused 条件 | 3-class BA | AI送信 AUROC［参加者95%CI］ | 固定0.5で検出したAI送信 |
+| --- | ---: | ---: | ---: |
+| Smol1.7B | 34.52% | 0.5594［0.5143，0.6071］ | 0／126 |
+| Qwen8B | 36.11% | 0.5342［0.4706，0.5995］ | 0／126 |
+| CBraMod＋Smol1.7B | 34.13% | 0.5159［0.4592，0.5721］ | 7／126 |
+
+各モデルの fused minus context-only／shuffle／−10秒という計9比較のAI AUROC差は，全て95%区間に0を含みました．UniBaで見えたCBraModのEEG整列の信号は，この外部評価で再現を確認できませんでした．EEGを使わない履歴対照のAUROCは，EEG窓開始前の履歴で0.7239，判断直前までの履歴で0.8352でした．これらを超えるEEGの実用的な追加効果は未実証です．[外部評価の全結果と限界](benchmark/ITU_EXTERNAL_THREE_MODEL_RESULTS.md)，[全19条件の独立完了監査](benchmark/itu_external_completion_audit.json) に記録しています．
 
 先行する互換性確認では，公式 CBraMod の source／weights を固定し，M1 の CPU 上で実 train EEG 3 窓を通しました．約 19.8 MB の weights，2 CPU threads の 3 例 batch が 0.033 秒で完了しています．この数値は encoder 単体の資源確認で，LLM と結合した推論時間や解読性能は表していません．[単体実測 JSON](reports/cbramod_cpu_capacity_probe.json) と，その後に実行した上記結合学習を区別してください．
 
@@ -133,6 +160,23 @@ uv venv --python 3.12 .venv-xavier
 uv pip install --python .venv-xavier/bin/python -e '.[server,dev]'
 uv pip install --python .venv-xavier/bin/python -r experiments/pj_xavier/model/requirements.txt
 ```
+
+### CBraMod＋Smol の実機試用
+
+新構成も，Colabで選択した同じcheckpointをM1へ読み込み，実EEG→モデル→NeuroCore routerまで3例で実行確認しました．trainから事前に固定した各class1例であり，この3例の一致を汎化精度とは扱いません．routerは全件を `proxy_label_has_no_explicit_intent_mapping` として保留しました．現在の出力は「AIへ送信／keyboard／click」という観測操作の分類で，何を入力し，どの画面で何を達成するかという実行可能な意図までは含みません．
+
+正 worktree のルートで，未使用の出力先を指定すると準備と試用を一度に実行できます．この例は実施済みの試用先を上書きしません．モデル本体・source・全32配列・評価・回収証拠を実行前後に照合します．
+
+```bash
+.venv-xavier/bin/python experiments/pj_xavier/integration/try_cbramod_recorded_eeg.py \
+  --contract private/xavier/demos/cbramod_train_demo_contract_v1.json \
+  --expected-contract-sha256 a55521c8360bfe7b19dfc8b1b7a58b93f07e22ca790df9284e576ac013de9490 \
+  --output-dir private/xavier/demos/cbramod_train_trial_user_01
+```
+
+既に実行したtrialは `private/xavier/demos/cbramod_uniba_v3_train_examples_v1/summary.json` にあります．上のユーザー向け新しい出力先では，こちらから重複実行していません．[固定した入力と実行方法](integration/README_TRY_CBRAMOD_RECORDED_EEG.md) を参照してください．
+
+### 元の CNN＋Smol 構成の試用
 
 **新しい UniBa v3 checkpoint の一括試用を M1 上で実行確認しました．** 学習集合から固定規則で各 class 1 例を選び，実 EEG→学習済みモデル→NeuroCore router→dry-run sink を通しました．3 例とも confidence 0.8 未満で棄権し，router が保留しました．OS 操作・cloud agent 呼出は 0 件です．全 32 元配列と checkpoint は実行前後で hash が一致しました．[試用結果](reports/recorded_eeg_demo_20261122_v1/summary.json) と [詳細な実行手順](integration/README_TRY_RECORDED_EEG.md) を保存しています．
 

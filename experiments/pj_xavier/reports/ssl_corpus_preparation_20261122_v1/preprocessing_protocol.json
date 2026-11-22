@@ -1,0 +1,62 @@
+{
+  "QC": {
+    "finite": true,
+    "maximum_absolute_volts": 0.0001,
+    "minimum_std_every_channel_volts": 1e-08,
+    "population_std_ddof": 0,
+    "scope": "post-resample physical volts per 30-second window"
+  },
+  "absolute_deadline_epoch": 1795324658.879168,
+  "action_label_columns_read_or_used": false,
+  "channel_policy": "all and only original BIDS EEG channels, original header order; 32 portable or 8 UniBa; no fabricated/interpolated missing channels",
+  "cpu_native_thread_limit": 2,
+  "exclude_end_seconds": 5,
+  "fit_or_model_selection_performed": false,
+  "format_marker_note": "MNE may parse format annotations when opening raw files; no annotation or action label is selected, extracted or passed to SSL.",
+  "grid_origin_seconds": 5,
+  "maximum_native_working_estimate_bytes": 4294967296,
+  "online_causal_preprocessing_claimed": false,
+  "portable_filter": {
+    "application": "sosfiltfilt full recording, padtype odd, scipy default padlen formula explicit",
+    "band_hz": [
+      3,
+      40
+    ],
+    "order": 4,
+    "representation": "SOS",
+    "type": "Butterworth"
+  },
+  "portable_validation_role": "SSL masked reconstruction validation only; not a final test",
+  "registration_epoch": 1795314556.6134882,
+  "resampling": "After filtering and exact native 30 s extraction: scipy resample_poly, rational ratio to 200 Hz, Kaiser beta5.0, constant zero padding",
+  "sample_rate_hz": 200,
+  "schema": "xavier-ssl-preprocessing-v1",
+  "source_allowlist_sha256": "e2c44f7135afa8a3d5a896d6ad7f8f335d418d77a34d2815497e1335ef736215",
+  "source_code_sha256": "c2cb2eba98f6814815056db75307506d797e57c9a74bd0aa3322ed4833ba3cc4",
+  "source_inventory_hashes": {
+    "exclusions.json": "88a15eb1f3ef16d805eed741fdc573b9ff33c7ff7ff05dfcf2ff35743eb13c13",
+    "portable_records.jsonl": "9ba6dd425a0ed46628618de5a1898c5077fb21d5ad4c003799a3e8ae69623090",
+    "summary.json": "1a178d95582b09a830be3f53836fa29747b915e43c976e522b27d0d27c063a10",
+    "uniba_train_records.jsonl": "7a39fdacc148c0328f02b3224749e4f33aaf8728d5383f5afa3dacd593ffb6bc"
+  },
+  "storage": {
+    "array_shape": "[nwindows, channels, 30, 200]",
+    "max_windows_per_shard": 16,
+    "reserve_bytes": 37580963840
+  },
+  "stride_seconds": 30,
+  "training_started": false,
+  "uniba_filter": "none added; distributed 3-40 Hz source retained",
+  "units": {
+    "decode": "MNE physical volts from native binary header calibration; preserve BIDS/header disagreement metadata",
+    "output": "V_x_1e4",
+    "output_dtype": "float32"
+  },
+  "versions": {
+    "mne": "1.13.2",
+    "numpy": "2.5.5",
+    "scipy": "1.18.1",
+    "threadpoolctl": "3.8.0"
+  },
+  "window_seconds": 30
+}

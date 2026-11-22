@@ -1,0 +1,114 @@
+{
+  "schema": "xavier-cbramod-ssl-protocol-v1",
+  "run_name": "cbramod_ssl_portable_uniba_v1",
+  "registered_epoch": 1795314939.364897,
+  "stage_plan_sha256": "b547fb49aaac9b60c10aec6c48c668f632ff8b366b849a68c307ed10796959e3",
+  "model_source_sha256": "47f24f9429bdc9af9495b121c4bf2cbc94ce62dbeb6b1033eeff6a4a88fe60fd",
+  "frozen_encoder_module_sha256": "b0c397176f8cb9e6dd759ed7169c0029c870f756c501ce317c2e6c7c41f32505",
+  "implementation_sha256": {
+    "cbramod_ssl.py": "47f24f9429bdc9af9495b121c4bf2cbc94ce62dbeb6b1033eeff6a4a88fe60fd",
+    "cbramod_ssl_token_llm.py": "f246128e909d3581168fbda7a5d062dc31491f27e96b6cae999579795a04fe10",
+    "test_cbramod_ssl.py": "f8e0f6143b5a3c75ec2f60693dd3dc2a829bdcb5afcbbaebfa6aa9616b4ecafb",
+    "test_cbramod_ssl_token_llm.py": "65ebd853ca6d3b7f81611f0611cc1c290d3f73f1d72a6e92e2bcd33e6ba8cc13",
+    "verify_ssl_corpus.py": "dad1c83d4d459e7513c5542b0222e8ec7fe931e6d288cd806b132e573c795a71",
+    "run_ssl_workflow.py": "e22bd30087c179810d3d78eca569a6a2a7298c3650af38bfad11a5022afd6043",
+    "eeg_llm.py": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+    "cbramod_token_llm.py": "b0c397176f8cb9e6dd759ed7169c0029c870f756c501ce317c2e6c7c41f32505",
+    "cbramod_symbol_protocol.json": "fddc652d9cf963154d1dc07ff5903b3c7e1b4cfaf7f1d3b22ba00b0085e79bcb"
+  },
+  "CPU_verification_sha256": "cc2ebae250981706b1c0f336e96fb9f1fa1957a723b00661e41b62ae863cae80",
+  "corpus": {
+    "manifest_sha256": "216729840806ca20040331baf59ddeadea4e62bc48a19a57c183810e13dd9043",
+    "artifacts_sha256": "3dc4599eef7093584e806c15c39c99be42b0fef33851a60e2f5c7ade6f883be2",
+    "corpus_summary_sha256": "3c2cdec70ef0a00a0247f66f44375471e330c1b58d777c667c19b8187f19bcc0",
+    "source_allowlist_sha256": "e2c44f7135afa8a3d5a896d6ad7f8f335d418d77a34d2815497e1335ef736215",
+    "preprocessing_protocol_sha256": "642246adb9bf39a9652a2ccb9fdbead834c611fbd4f5325b8dfc08d54fba45a5",
+    "independent_model_input_validation_sha256": "8fe0ef8fdf44757da84165d6ca5789a46bb72a4a93809b1ee3b5b71c5edfc562"
+  },
+  "training": {
+    "epochs": 10,
+    "max_seconds": 1800,
+    "time_scope": "Training loop and validation/checkpoint wall time; a current step and final validation/save may finish after the deadline check",
+    "lr": 0.0001,
+    "optimizer": "AdamW",
+    "weight_decay": 0.05,
+    "gradient_clip_norm": 1.0,
+    "scheduler": "constant learning rate",
+    "seed": 20261122,
+    "precision": "bfloat16",
+    "parameter_and_FFT_input_dtype": "float32",
+    "memory_budget_gib": 21,
+    "cpu_threads": 2,
+    "batching": "8/32-channel buckets, no padding, complete epoch uses each train window once",
+    "resume": "Same run and sealed corpus, saved RNG/optimizer and exact next batch cursor"
+  },
+  "capacity": {
+    "candidate_batches": [
+      8,
+      16,
+      32,
+      64
+    ],
+    "steps_per_candidate": 50,
+    "shape_order": "Alternate true 32-channel and true 8-channel training batches",
+    "selection": "Largest tested batch within21GiB with last10 reserved-memory range <=256MiB",
+    "fresh_process_per_candidate": true,
+    "probe_weights_reused": false,
+    "main_initialization": "Official checkpoint and fixed fresh seed",
+    "validation_or_test_used": false
+  },
+  "objective": {
+    "mask_ratio": 0.5,
+    "mask_selection": "Exactly half of channel x one-second patches independently per example; training random, validation fixed by record ID + seed",
+    "loss": "Mean squared error on masked raw samples only; unmasked target errors excluded",
+    "labels_used": 0,
+    "best_selection": "Smallest fixed-mask portable validation reconstruction MSE; earliest tie wins; completed epoch or final partial epoch",
+    "val_mask_identity": "sha256(seed|ssl-validation-mask|record_id), seeded CPU torch.Generator and random permutation"
+  },
+  "fixed_following_alignment": {
+    "starting_point": "Freeze best SSL encoder and learn fresh projection into the same frozen SmolLM2-1.7B",
+    "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+    "train_examples": 400,
+    "actual_EEG_seconds_per_example": 1,
+    "input_scale": "Same V times1e4 and same resampling as the original frozen CBraMod symbol model",
+    "classes": [
+      "ai_prompt_submit",
+      "keyboard",
+      "mouse_click"
+    ],
+    "token_ids": [
+      330,
+      389,
+      340
+    ],
+    "prefix_tokens": 8,
+    "batch_size": 32,
+    "epochs": 30,
+    "max_seconds": 900,
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "seed": 20261122,
+    "abstain_threshold": 0.8,
+    "checkpoint_selection": "UniBa validation balanced accuracy, earliest tie wins",
+    "evaluation": "Same five conditions on frozen UniBa test and independent ITU external cohort, no test-based tuning",
+    "code_rule": "New module and new immutable SSL weights seal; original model source, checkpoints and protocols remain unchanged"
+  },
+  "actual_post_QC_input": {
+    "train_windows": 1678,
+    "train_unique_seconds": 50340,
+    "SSL_val_windows": 522,
+    "SSL_val_unique_seconds": 15660,
+    "UniBa_train_windows": 8,
+    "UniBa_train_seconds": 240,
+    "portable_train_windows": 1670,
+    "portable_SSL_val_windows": 522,
+    "prepared_array_bytes": 1685013248,
+    "QC_changed_after_observing_coverage": false,
+    "domain_skew": "Only three UniBa participants retain eight windows; continuation is overwhelmingly portable-task EEG, not natural coding EEG.",
+    "newly_adapted_model_total_input_not_yet_measured": true
+  },
+  "session_deadline_epoch": 1795321234.65,
+  "controller_deadline_epoch": 1795324658.879168,
+  "maximum_workflow_admission_reserve_seconds": 4200,
+  "test_results_used_for_design_after_stage_plan": false
+}

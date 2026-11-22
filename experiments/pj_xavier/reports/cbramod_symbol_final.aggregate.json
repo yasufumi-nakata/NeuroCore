@@ -1,6 +1,6 @@
 {
   "schema": "xavier-cbramod-symbol-final-aggregate-v1",
-  "status": "training_five_conditions_strict_recovered_m1_trial_pending",
+  "status": "training_five_conditions_strict_recovered_M1_trial_completed",
   "model_source_sha256": "b0c397176f8cb9e6dd759ed7169c0029c870f756c501ce317c2e6c7c41f32505",
   "protocol_sha256": "fddc652d9cf963154d1dc07ff5903b3c7e1b4cfaf7f1d3b22ba00b0085e79bcb",
   "checkpoint_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
@@ -2423,5 +2423,98 @@
     "examples_planned": 3,
     "no_test_tuning": true
   },
-  "os_actions_executed": 0
+  "os_actions_executed": 0,
+  "ai_history_comparison": {
+    "status": "completed_saved_predictions_only",
+    "source_path": "experiments/pj_xavier/benchmark/v3_cbramod_recorded_comparison_aggregate.json",
+    "source_sha256": "46543d49fd751b5a6e3b026c0a7190c15bd7e09201484944efaa96ec0b9089ba",
+    "fused_AI_vs_other": {
+      "n": 203,
+      "positive_support": 39,
+      "negative_support": 164,
+      "sample_prevalence": 0.1921182266009852,
+      "threshold": 0.5,
+      "recall": 0.2564102564102564,
+      "specificity": 0.7804878048780488,
+      "balanced_accuracy": 0.5184490306441526,
+      "precision_enriched_sample_only": 0.21739130434782608,
+      "auroc": 0.6053001876172607,
+      "auprc_average_precision_enriched_sample_only": 0.2558073074347686,
+      "brier_enriched_sample_only": 0.22559288475934744,
+      "confusion": {
+        "tp": 10,
+        "fn": 29,
+        "tn": 128,
+        "fp": 36
+      }
+    },
+    "participant_bootstrap_CI": {
+      "recall": {
+        "lower_95": 0.07497685185185185,
+        "upper_95": 0.4,
+        "valid_resamples": 1000,
+        "invalid_resamples": 0
+      },
+      "specificity": {
+        "lower_95": 0.68289911308204,
+        "upper_95": 0.8851658476658476,
+        "valid_resamples": 1000,
+        "invalid_resamples": 0
+      },
+      "balanced_accuracy": {
+        "lower_95": 0.4508441558441558,
+        "upper_95": 0.559770202020202,
+        "valid_resamples": 1000,
+        "invalid_resamples": 0
+      },
+      "auroc": {
+        "lower_95": 0.5355549950243255,
+        "upper_95": 0.6677133449840504,
+        "valid_resamples": 1000,
+        "invalid_resamples": 0
+      },
+      "auprc_average_precision_enriched_sample_only": {
+        "lower_95": 0.20724069515762947,
+        "upper_95": 0.3293616697721377,
+        "valid_resamples": 1000,
+        "invalid_resamples": 0
+      }
+    },
+    "conditional_effect_note": "Paired participant bootstrap differences are in the linked 19-condition report. Fused versus context AUROC CI includes zero; differences versus shuffled/shifted EEG are positive on this exploratory reused cohort. No multiple-comparison adjustment and no independent repeated fits.",
+    "new_model_inference": 0
+  },
+  "m1_trial": {
+    "status": "completed",
+    "checkpoint_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
+    "record_selection": "one deterministic fixed training example per observed-action class",
+    "examples": 3,
+    "source_partition": "train",
+    "heldout_examples_used": 0,
+    "classification_matches_recorded_labels": 3,
+    "latency_ms_p50": 426.9235839601606,
+    "latency_ms_p95": 1663.342495833058,
+    "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+    "latency_limitations": "Three examples only, including cold first example; shared workstation with background acquisition/CPU metadata work, not isolated.",
+    "memory": {
+      "process_peak_rss_bytes": 593936384,
+      "mps_sampled_allocated_bytes": 3424401920,
+      "mps_sampled_driver_bytes": 4310302720
+    },
+    "true_MPS_peak_measured": false,
+    "allocator_limit": {
+      "kind": "mps_allocator",
+      "fraction": 0.6756750138862577,
+      "allocator_limit_bytes": 8589934592,
+      "recommended_bytes": 12713115648,
+      "scope": "PyTorch MPS allocator only; CPU allocations and other processes are outside this quota"
+    },
+    "router_blocked_examples": 3,
+    "os_actions_executed": 0,
+    "cloud_agent_calls": 0,
+    "autonomous_agent_validated": false,
+    "generalization_accuracy_estimated": false,
+    "probability_kind": "restricted_three_next_token_softmax_uncalibrated",
+    "summary_sha256": "2effd8f1be1b31d09ab42cbddeac212694576abe82848f303df9e31c0e424ccd",
+    "prediction_metadata_sha256": "d77efcf73ab4d72b10fa54f76720d7a4761416b69171cc14a10fe8b0c7a765ab"
+  }
 }

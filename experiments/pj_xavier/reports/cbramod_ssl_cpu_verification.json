@@ -1,0 +1,33 @@
+{
+  "schema": "xavier-ssl-cpu-verification-v1",
+  "status": "passed",
+  "tests_run": 17,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "wall_seconds": 5.950279915938154,
+  "scope": [
+    "official full CBraMod 8/32-channel x30s masked forward/backward on synthetic diagnostic EEG",
+    "masked-only objective and fixed validation masks",
+    "integer/unique/complete array-slot provenance and physical scale",
+    "frozen LLM gradient to projection and identical original alignment logits at identical weights",
+    "optimizer/RNG/next-batch roundtrip",
+    "resume without validation improvement retains earlier selected best",
+    "CPU adapted-weight loader using a disclosed synthetic one-element weight delta"
+  ],
+  "real_SSL_training_started": false,
+  "actual_agent_performance_evaluated": false,
+  "GPU_used": false,
+  "source_sha256": {
+    "cbramod_ssl.py": "47f24f9429bdc9af9495b121c4bf2cbc94ce62dbeb6b1033eeff6a4a88fe60fd",
+    "test_cbramod_ssl.py": "f8e0f6143b5a3c75ec2f60693dd3dc2a829bdcb5afcbbaebfa6aa9616b4ecafb",
+    "cbramod_ssl_token_llm.py": "f246128e909d3581168fbda7a5d062dc31491f27e96b6cae999579795a04fe10",
+    "test_cbramod_ssl_token_llm.py": "65ebd853ca6d3b7f81611f0611cc1c290d3f73f1d72a6e92e2bcd33e6ba8cc13",
+    "cbramod_ssl_plan.json": "b547fb49aaac9b60c10aec6c48c668f632ff8b366b849a68c307ed10796959e3"
+  },
+  "official_weights_sha256": "0792cb808c14e6b7a2bb2ce1dff379bc47bc54c49a779825bdfeb33bf8157178",
+  "log_sha256": "c57b90bd58950cace7a66991a94ccc8b7fbf6cff9f3b176649bc3dd3cbcbf9e4",
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "python": "3.12.13",
+  "cpu_process_peak_rss_bytes": 608452608
+}

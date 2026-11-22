@@ -1,0 +1,10 @@
+{
+  "artifacts_sha256": "3dc4599eef7093584e806c15c39c99be42b0fef33851a60e2f5c7ade6f883be2",
+  "completed_epoch": 1795314789.0118122,
+  "exit_code": 0,
+  "manifest_sha256": "216729840806ca20040331baf59ddeadea4e62bc48a19a57c183810e13dd9043",
+  "protocol_sha256": "642246adb9bf39a9652a2ccb9fdbead834c611fbd4f5325b8dfc08d54fba45a5",
+  "source_allowlist_sha256": "e2c44f7135afa8a3d5a896d6ad7f8f335d418d77a34d2815497e1335ef736215",
+  "status": "completed",
+  "summary_sha256": "3c2cdec70ef0a00a0247f66f44375471e330c1b58d777c667c19b8187f19bcc0"
+}

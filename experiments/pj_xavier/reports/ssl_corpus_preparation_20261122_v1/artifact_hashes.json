@@ -1,0 +1,42 @@
+{
+  "QC_distributions.json": {
+    "bytes": 24872,
+    "sha256": "86dbc86763ccbcc21c239ce9cc70ddebd1fac80afc09b1238f2ccbd95b596313"
+  },
+  "README.md": {
+    "bytes": 7887,
+    "sha256": "f999597329a991cc7c64fa206fb35b40ce54e9876bfa7dd0fd7929ecbc026e78"
+  },
+  "accounting_audit.json": {
+    "bytes": 8354,
+    "sha256": "2665961bf78fa50c8a2abf86113501fafea342127bdc5a164d29e24f38f1e4b3"
+  },
+  "completion.json": {
+    "bytes": 540,
+    "sha256": "95c0502c7a4fdca9197f1ba012b9b09980c6df4e7ad98323ec671d1b580c0fb9"
+  },
+  "corpus_summary.json": {
+    "bytes": 2449,
+    "sha256": "3c2cdec70ef0a00a0247f66f44375471e330c1b58d777c667c19b8187f19bcc0"
+  },
+  "independent_model_input_validation.json": {
+    "bytes": 2034,
+    "sha256": "8fe0ef8fdf44757da84165d6ca5789a46bb72a4a93809b1ee3b5b71c5edfc562"
+  },
+  "per_source_QC.csv": {
+    "bytes": 36955,
+    "sha256": "0808ab3492ab23431ca107dda2e105ffd37bfc7b842c47fa7caf63dad89574f0"
+  },
+  "preprocessing_protocol.json": {
+    "bytes": 2651,
+    "sha256": "642246adb9bf39a9652a2ccb9fdbead834c611fbd4f5325b8dfc08d54fba45a5"
+  },
+  "source_inventory_summary.json": {
+    "bytes": 4189,
+    "sha256": "1a178d95582b09a830be3f53836fa29747b915e43c976e522b27d0d27c063a10"
+  },
+  "validation.json": {
+    "bytes": 1245,
+    "sha256": "41365d6db31c4cf9ce9e1b31c06e89e010c71c973b97625ebc035ec26714c75a"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "schema": "xavier-local-validation-v4",
+  "runtime": "workstation Python3.12.13",
+  "status": "passed_including_two_originally_skipped_official_fixture_cases",
+  "snapshot": {
+    "test_files": 38,
+    "python_source_files": 89,
+    "source_inventory_sha256": "a919e90ca419a09b7f89b2e214feccd12f98e334197e0c777929a11e5cf29f25",
+    "source_files_changed_during_validation": []
+  },
+  "pytest": {
+    "main_test_cases_passed": 363,
+    "main_subtests_passed": 125,
+    "main_skipped": 2,
+    "main_loop_seconds": 17.27,
+    "main_supervised_seconds": 18.397085189819336,
+    "official_fixture_supplement_cases_passed": 2,
+    "official_fixture_supplement_subtests_passed": 2,
+    "supplement_loop_seconds": 5.37,
+    "supplement_supervised_seconds": 6.337980031967163,
+    "unique_test_cases_passed_combined": 365,
+    "subtests_passed_combined": 127,
+    "remaining_unexecuted_skips": 0,
+    "initial_skip_reason": "Two full-suite tests skipped because new SSL modules use XAVIER_CBRAMOD_UPSTREAM/WEIGHTS while prior wrapper set XAVIER_CBRAMOD_TEST_*; only the two skipped real-weight tests were run with the correct existing fixtures.",
+    "exit_code": 0,
+    "native_threads": 2,
+    "started_epoch": 1795315078.688294,
+    "finished_epoch": 1795315136.322977
+  },
+  "junit": {
+    "main": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "2",
+        "tests": "490",
+        "time": "17.273",
+        "timestamp": "2026-11-22T11:37:58.917003+09:00"
+      }
+    ],
+    "supplement": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "4",
+        "time": "5.371",
+        "timestamp": "2026-11-22T11:38:50.189474+09:00"
+      }
+    ]
+  },
+  "source_checks": {
+    "AST_parsed_python_files": 89,
+    "checks": [
+      {
+        "argv": [
+          ".venv-xavier/bin/ruff",
+          "check",
+          "experiments/pj_xavier"
+        ],
+        "exit_code": 0,
+        "stdout": "All checks passed!\n",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ]
+  },
+  "evidence_sha256": {
+    "exit_receipt.json": "fbeba4c61a448beca23a518cdebefca2cad746547199b1795e5f9e4d3f63b4d7",
+    "pytest.log": "dc23cfa0638dca4c59d2314a346b55e46dceb2569595ee2b0b811a530ab63203",
+    "junit.xml": "8121043d1994859973fac3f69ae8a3d3dc3ced699bb97686e54da478c6a38b7a",
+    "source_inventory_before.json": "a919e90ca419a09b7f89b2e214feccd12f98e334197e0c777929a11e5cf29f25",
+    "source_inventory_after.json": "a919e90ca419a09b7f89b2e214feccd12f98e334197e0c777929a11e5cf29f25",
+    "official_fixtures_supplement.log": "fd82c785eafbb437716f552571363f9196e82e9962291e64fcad556c079d7bb9",
+    "official_fixtures_supplement.junit.xml": "ae1e1f6e39f2774c1a09a259d492ab03ea36537178d632eaf6b4b3bb2d7dd718",
+    "official_fixtures_supplement.receipt.json": "e6e419301ce4dfd77ef6a2ea29af64e4f6fdbef469a66c77afc7b89b2e67a582",
+    "static_checks.json": "a835bb101fb14ac011fd57cffc7a674d01e3b29f3f197070a7ad34533c380694"
+  },
+  "scope": "Snapshot of38 test files and89 Python source files. The main run skipped two fixture-dependent SSL tests; both were then run separately with the existing official pinned weights and passed. All89 source hashes were unchanged before/after those runs. Later-added or revised modules require separate validation; CPU code tests are not GPU training or scientific performance evidence."
+}

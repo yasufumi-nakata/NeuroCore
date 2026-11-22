@@ -1,0 +1,23 @@
+{
+  "Colab_session_deadline_epoch": 1795321234.65,
+  "accepted_windows": 2200,
+  "accounting_focused_tests": 3,
+  "additional_model_forward_for_QC_report": false,
+  "additional_raw_redecode_for_QC_report": false,
+  "all_grid_candidates_accounted_for": 6040,
+  "amplitude_rule_changed_after_QC": false,
+  "independent_full_array_validation_sha256": "8fe0ef8fdf44757da84165d6ca5789a46bb72a4a93809b1ee3b5b71c5edfc562",
+  "independent_physical_amplifier_calibration_established": false,
+  "metadata_only_publication_no_raw_data": true,
+  "per_source_public_rows": 75,
+  "preprocessing_focused_tests": 10,
+  "private_accepted_QC_aggregate_sha256": "fca91cd1a9e30c35283a375bc007e683ff2407d89910025e7ee6201d94c4fdd6",
+  "private_accepted_QC_statistics_sha256": "2791e59169491ecf1f6f1cf420113ebd3cc555d867415253dfd9d1965c110a2c",
+  "public_source_member_paths_or_publisher_participant_IDs_included": false,
+  "publication_builder_sha256": "97ff41bb8d92c6fdffdae892a59868362ebfd0306fdbf5db7e9cf8479130d295",
+  "rejected_p2p_unavailable": true,
+  "rejected_windows": 3840,
+  "source_allowlist_sha256": "e2c44f7135afa8a3d5a896d6ad7f8f335d418d77a34d2815497e1335ef736215",
+  "status": "passed",
+  "workstation_controller_deadline_epoch": 1795324658.879168
+}
