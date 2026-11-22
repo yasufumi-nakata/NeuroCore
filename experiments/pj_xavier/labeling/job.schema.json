@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PJ-Xavier train-only weak-label JSONL job",
+  "description": "One JSON object per line. Additional semantic checks enforce evidence provenance and timestamp cutoffs. No raw EEG input.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "job_id",
+    "record_id",
+    "dataset_id",
+    "split",
+    "source_manifest_sha256",
+    "source_assets",
+    "evidence",
+    "allowed_values"
+  ],
+  "properties": {
+    "job_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "record_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "source_record_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Optional source memberships. Must include record_id; every ID must be train in the supplied frozen original manifest.",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "dataset_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "split": {
+      "const": "train"
+    },
+    "source_manifest_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_payload_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_assets": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "uri",
+          "sha256"
+        ],
+        "properties": {
+          "uri": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "text",
+          "source_uri"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "recorded_event",
+              "task_protocol",
+              "predecision_context",
+              "recording_metadata",
+              "original_annotation"
+            ]
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 12000
+          },
+          "source_uri": {
+            "type": "string",
+            "minLength": 1
+          },
+          "timestamp_s": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "allowed_values": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "observed_action": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "task_protocol": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "environment_context": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "recording_metadata": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "source_label": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "original_gold": {
+      "type": "array",
+      "default": []
+    },
+    "decision_time_s": {
+      "type": "number"
+    }
+  }
+}

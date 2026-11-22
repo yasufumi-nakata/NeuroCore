@@ -1,0 +1,8 @@
+{
+  "expected_bytes": 881786830,
+  "expected_sha256": "801e3e29ce6c58151c7a3a7aa1be17a6a0ee64d3cd355d43dd09418368a8e195",
+  "started_epoch": 1795304949.706644,
+  "status": "verified_local_copy",
+  "sha256": "801e3e29ce6c58151c7a3a7aa1be17a6a0ee64d3cd355d43dd09418368a8e195",
+  "completed_epoch": 1795305023.1678889
+}

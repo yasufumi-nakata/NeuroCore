@@ -1,0 +1,26 @@
+{
+  "method": "Reconstruct finite impulse support of the published export recipe",
+  "mne": "1.10.2",
+  "scipy": "1.18.1",
+  "numpy": "2.5.5",
+  "release_requirements_mne": "1.10.2",
+  "mne_version_matches_release": true,
+  "sample_rate_hz": 256,
+  "filters": [
+    {
+      "taps": 423,
+      "coefficient_sha256": "3df912700443934b3efe818a106707f7c624e38521e9637f366b775da8c8ad27",
+      "phase": "zero"
+    },
+    {
+      "taps": 1691,
+      "coefficient_sha256": "6760d938eef1fc27c999cdbca8d297c88aba1bef41f2aa9d223aab8bd8ef1e9d",
+      "phase": "zero"
+    }
+  ],
+  "combined_fir_taps": 2113,
+  "future_support_seconds": 4.125,
+  "source": "https://zenodo.org/records/20801101/files/scripts.tar.gz#scripts/01-b_load.ipynb",
+  "source_requirements": "https://zenodo.org/records/20801101/files/requirements.txt",
+  "interpretation": "Conditional on release binaries being generated exactly by the published export. This reconstructs filter support, not original XDF or online data availability. A 0.25-second pre-action gap is insufficient under this recipe."
+}

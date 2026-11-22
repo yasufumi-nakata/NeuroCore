@@ -1,0 +1,7 @@
+{
+  "original_checkpoint_sha256": "f00535fb2a58d296a63a06634342e0709093293b3d2f160a1b98cf6b93ae4631",
+  "derived_checkpoint_sha256": "6a2d53ec17e2d902f6ac25e32c7b33278b3ab2fbb751770e482a1f2b1aee057c",
+  "revision": "31b70e2e869a7173562077fd711b654946d38674",
+  "evidence": "single snapshot directory in fresh Colab cache; original run and tensors preserved; only config.revision populated",
+  "tensor_state_unchanged": true
+}

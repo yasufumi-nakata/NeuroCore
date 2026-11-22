@@ -1,0 +1,64 @@
+{
+  "source_sha256": "1b74445e9a85c34c86eaa435805b427ba8dbee4d675f6d3e0a4b301b1c10ff08",
+  "protocol_sha256": "0d8baa688eaa32bd334a004ef000053cc3c95a023f851dab235dc5b42014de4a",
+  "manifest_sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac",
+  "reference_file_sha256": {
+    "training_membership.json": "4a6f5d566f1054f474728083d2f6c6872194b9395a464571d83f73430185486a",
+    "eeg_artifacts.json": "5f666e0234e3ab4cbad4271f486840219ce4b70605b84135261e9b990bb496ec"
+  },
+  "validation": {
+    "label_counts": {
+      "train": {
+        "ai_prompt_submit": 2,
+        "keyboard": 1906,
+        "mouse_click": 2449
+      },
+      "val": {
+        "ai_prompt_submit": 2,
+        "keyboard": 549,
+        "mouse_click": 955
+      },
+      "test": {
+        "ai_prompt_submit": 1,
+        "keyboard": 885,
+        "mouse_click": 1070
+      }
+    },
+    "samples": {
+      "train": 4357,
+      "val": 1506,
+      "test": 1956
+    },
+    "subjects": {
+      "train": 18,
+      "val": 6,
+      "test": 8
+    },
+    "subject_disjoint": true,
+    "physical_source_disjoint": true,
+    "split_id_hashes": {
+      "train": "68eefdf581ab173771c6e5355570e11321bc3ad13104f155e7b3ff6006f9c866",
+      "val": "825c9bf6a64aafdf977b9c3466ef281ddd4c95962c3d3179dfb73caf7bf73621",
+      "test": "174cf2297d8bb105eea1b4b377be0cbfb98fad53d3dbd265d8f0d92dc27ae42f"
+    },
+    "prepared_artifact_files": 32,
+    "prepared_artifact_bytes": 112097280,
+    "prepared_artifact_manifest_sha256": "bffe14ad7ed0aa2184ce721febe8792972e5711538f63ec331d465fd8d63c503",
+    "raw_archive_reverification": "not performed here; prepared waveform bytes matched the running LLM's frozen artifact ledger"
+  },
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.16.3",
+    "scikit-learn": "1.6.1",
+    "threadpoolctl": "3.7.0"
+  },
+  "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+  "cpu_only": true,
+  "gpu_imports_or_calls": 0,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "2",
+    "CUDA_VISIBLE_DEVICES": ""
+  }
+}

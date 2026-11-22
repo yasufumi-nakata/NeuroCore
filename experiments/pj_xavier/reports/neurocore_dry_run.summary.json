@@ -1,0 +1,12 @@
+{
+  "records": 3,
+  "dry_run_candidates": 3,
+  "blocked": 0,
+  "os_actions_executed": 0,
+  "cloud_agent_calls": 0,
+  "mode": "dry_run_only",
+  "autonomous_agent_validated": false,
+  "interpretation": "Router integration only. Class probabilities are not calibrated intent confidence; no task completion or EEG decoding accuracy is inferred.",
+  "predictions_sha256": "874c06807d6e107e06e66434abd9c7c98c55b07a3fbae267bb828de29b528c1a",
+  "audit_sha256": "b581c775d777c134e3d9f18f6135b596d1ebafcaeb75f7a62e5991426ccf58e2"
+}

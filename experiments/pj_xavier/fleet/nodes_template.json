@@ -1,0 +1,56 @@
+{
+  "nodes": [
+    {
+      "node_id": "smac31",
+      "transport": "ssh",
+      "ssh_target": "smac",
+      "status": "unverified",
+      "preflight_success": false,
+      "reserve_bytes": 32212254720,
+      "remote_root": "~/pj-xavier",
+      "note": "Historical node only; current capacity/authentication must be measured"
+    },
+    {
+      "node_id": "smac01",
+      "transport": "ssh",
+      "ssh_target": "smac01",
+      "status": "unverified",
+      "preflight_success": false,
+      "reserve_bytes": 32212254720,
+      "remote_root": "~/pj-xavier",
+      "note": "Historical node only; current capacity/authentication must be measured"
+    },
+    {
+      "node_id": "smac06",
+      "transport": "ssh",
+      "ssh_target": "smac06",
+      "status": "unverified",
+      "preflight_success": false,
+      "reserve_bytes": 32212254720,
+      "remote_root": "~/pj-xavier",
+      "note": "Historical node only; current capacity/authentication must be measured"
+    },
+    {
+      "node_id": "smac11",
+      "transport": "ssh",
+      "ssh_target": "smac11",
+      "status": "unverified",
+      "preflight_success": false,
+      "reserve_bytes": 32212254720,
+      "remote_root": "~/pj-xavier",
+      "note": "Historical node only; current capacity/authentication must be measured"
+    },
+    {
+      "node_id": "smac19",
+      "transport": "ssh",
+      "ssh_target": "smac19.sfc.keio.ac.jp",
+      "status": "authentication_blocked",
+      "preflight_success": false,
+      "reserve_bytes": 32212254720,
+      "remote_root": "~/pj-xavier",
+      "note": "User nominated this node. DNS and SSH transport responded on 2026-11-22; existing SSH authentication failed. Configure the institutional SSH account and remeasure hardware/capacity before allocation."
+    }
+  ],
+  "historical_fleet_count": 38,
+  "current_fleet_count_verified": false
+}

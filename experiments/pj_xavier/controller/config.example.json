@@ -1,0 +1,114 @@
+{
+  "cli": "/Users/yasufumi/.local/bin/colab",
+  "session": "xavier-eeg-20261122",
+  "remote_root": "/content/xavier",
+  "local_root": "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/private/xavier/controller",
+  "raw_archive_root": "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/private/xavier/colab_raw_archive",
+  "remote_reserve_bytes": 32212254720,
+  "local_reserve_bytes": 37580963840,
+  "compute_unit_reserve": 2,
+  "max_session_work_seconds": 18000,
+  "snapshot_interval_seconds": 900,
+  "allow_idle_stop": false,
+  "allow_stop_with_unpreserved_partials": false,
+  "idle_grace_seconds": 120,
+  "raw_recovery_max_files_per_cycle": 2,
+  "raw_recovery_max_bytes_per_cycle": 34359738368,
+  "raw_download_timeout_seconds": 3600,
+  "remote_jobs": [
+    {
+      "job_id": "download",
+      "kind": "download",
+      "pid_hint": 2312,
+      "pid_file": "download.pid",
+      "log_file": "download.log",
+      "db": "downloads.sqlite",
+      "max_runtime_seconds": 14400,
+      "allow_resume": true,
+      "expected_tokens": [
+        "/content/xavier/code/acquire.py",
+        "download",
+        "/content/xavier/downloads.sqlite"
+      ]
+    },
+    {
+      "job_id": "priority_eeg",
+      "kind": "download",
+      "pid_hint": 6406,
+      "pid_file": "priority_eeg.pid",
+      "log_file": "priority_eeg.log",
+      "db": "priority_eeg.sqlite",
+      "max_runtime_seconds": 14400,
+      "allow_resume": true,
+      "expected_tokens": [
+        "/content/xavier/code/acquire.py",
+        "download",
+        "/content/xavier/priority_eeg.sqlite"
+      ]
+    },
+    {
+      "job_id": "train",
+      "kind": "train",
+      "pid_file": "train.pid",
+      "max_runtime_seconds": 3600,
+      "allow_resume": false,
+      "run_id": "smollm2_1_7b_eeglass",
+      "expected_tokens": [
+        "/content/xavier/code/model/eeg_llm.py",
+        "train",
+        "HuggingFaceTB/SmolLM2-1.7B-Instruct"
+      ]
+    },
+    {
+      "job_id": "train_8b",
+      "kind": "train",
+      "pid_hint": 4471,
+      "pid_file": "train_8b.pid",
+      "max_runtime_seconds": 3600,
+      "allow_resume": false,
+      "run_id": "qwen3_8b_eeglass",
+      "expected_tokens": [
+        "/content/xavier/code/model/eeg_llm.py",
+        "train",
+        "Qwen/Qwen3-8B"
+      ]
+    },
+    {
+      "job_id": "train_uniba",
+      "kind": "train",
+      "pid_hint": 15167,
+      "pid_file": "train_uniba.pid",
+      "max_runtime_seconds": 4800,
+      "allow_resume": false,
+      "launch_receipt": "train_uniba_launch.json",
+      "receipt_command_field": "supervisor_command",
+      "run_id": "qwen3_8b_aicoding_uniba_fused_v1",
+      "expected_tokens": [
+        "/content/xavier/run_uniba_training.py"
+      ]
+    }
+  ],
+  "completion_gates": [
+    {
+      "gate_id": "uniba_five_variant_evaluation",
+      "receipt_path": "runs/qwen3_8b_aicoding_uniba_fused_v1/variant_evaluation_completion.json",
+      "checkpoint_path": "runs/qwen3_8b_aicoding_uniba_fused_v1/best.pt"
+    }
+  ],
+  "local_jobs": [
+    {
+      "job_id": "bulk",
+      "kind": "download",
+      "launch_receipts": [
+        "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/private/xavier/bulk_launch_v3.json",
+        "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/private/xavier/bulk_launch_v2.json"
+      ],
+      "db": "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/private/xavier/bulk_downloads.sqlite"
+    },
+    {
+      "job_id": "metadata_refresh",
+      "kind": "metadata",
+      "launch_receipt": "/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training/private/xavier/metadata_refresh_launch.json"
+    }
+  ]
+}

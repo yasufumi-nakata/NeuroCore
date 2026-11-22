@@ -20,6 +20,10 @@ pj-xavierで研究開発するAIと，このcore runtimeの実装範囲は分け
 
 PC操作・Computer Useはpj-xavierの初期の検証・応用対象です．プロジェクト全体の目的はNeuroCoreのAIを開発することであり，個々の研究課題の達成状況はそれぞれの評価結果で判断します．[プロジェクトの位置付けと実装境界](docs/project-positioning.md)を参照してください．
 
+## PJ-Xavier の学習・評価実験
+
+公開 EEG の取得台帳，LLM と EEG 接続部の学習，出典を保持する弱教師ラベル，実機評価を [experiments/pj_xavier](experiments/pj_xavier/README.md) に実装しています．実測値と未達事項を記録し，研究用 checkpoint は core runtime の外部デコーダとして扱います．
+
 ## いま入っているもの
 
 - `NeuroFrame`: EEG 時系列、チャンネル、時刻系、イベント、由来、検証結果をまとめる標準コンテナ。

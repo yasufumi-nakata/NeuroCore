@@ -1,0 +1,109 @@
+{
+  "schema": "xavier-aicoding-training-plan-v1",
+  "date_utc": "2026-11-22",
+  "status": "prepared_for_root_launch",
+  "training_started_by_model_agent": false,
+  "model": {
+    "id": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "base_frozen": true,
+    "lora_rank": 0,
+    "trainable_components": [
+      "EEG temporal encoder",
+      "EEG prefix projector"
+    ],
+    "mode": "fused"
+  },
+  "manifest": {
+    "path": "/content/xavier/prepared/ai_coding_uniba_v2_lead4p5/manifest.jsonl",
+    "sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac",
+    "samples_per_window": 448,
+    "channels": [
+      "CP3",
+      "C3",
+      "F5",
+      "PO3",
+      "PO4",
+      "F6",
+      "C4",
+      "CP4"
+    ],
+    "sample_rate_hz": 256,
+    "prepared_windows": 7819,
+    "split_policy": "subject",
+    "subjects_by_split": {
+      "train": 18,
+      "val": 6,
+      "test": 8
+    },
+    "windows_by_split": {
+      "train": 4357,
+      "val": 1506,
+      "test": 1956
+    }
+  },
+  "training": {
+    "seed": 20261122,
+    "epochs": 3,
+    "batch_size": 8,
+    "candidate_batch_size": 4,
+    "learning_rate": 0.001,
+    "dtype": "bfloat16",
+    "device": "cuda",
+    "prefix_tokens": 8,
+    "encoder_width": 64,
+    "max_prompt_tokens": 256,
+    "max_base_params": 9000000000,
+    "memory_budget_gib": 21,
+    "max_seconds": 3600,
+    "max_seconds_scope": "optimization loop budget; checkpoint validation/evaluation needs additional time",
+    "output": "/content/xavier/runs/qwen3_8b_aicoding_uniba_fused_v1"
+  },
+  "source_sha256": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+  "capacity_selection": {
+    "partitions_used": [
+      "train"
+    ],
+    "fresh_process_per_batch": true,
+    "steps_per_probe": 3,
+    "probe_weights_discarded": true,
+    "tested_batch_sizes": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "selected_largest_tested_batch": 8,
+    "selected_peak_allocated_bytes": 20422237696,
+    "selected_peak_reserved_bytes": 21162360832,
+    "selected_warm_examples_per_second": 16.759199549378863,
+    "selected_warm_median_step_seconds": 0.47734976699985054,
+    "scope": "short training-only memory/throughput diagnostic; not an end-to-end training duration guarantee"
+  },
+  "selection": {
+    "checkpoint": "highest validation balanced accuracy; earliest tie",
+    "test_used_for_tuning": false,
+    "finalize_test_during_training": false,
+    "planned_final_test_variants": [
+      "fused",
+      "context_only_input_ablation",
+      "eeg_only_input_ablation",
+      "within_recording_eeg_shuffle",
+      "recording_eeg_shift_minus_10_seconds"
+    ],
+    "ablation_note": "Same fused checkpoint with inputs removed is an ablation, not a separately trained context-only or EEG-only baseline"
+  },
+  "label_definitions": {
+    "keyboard": "Observed key-down event, action=down",
+    "mouse_click": "Observed mouseclick event",
+    "ai_prompt_submit": "Observed GPTSentPrompt event; agent request transmission, not inferred latent intention"
+  },
+  "limitations": [
+    "Only 5 eligible ai_prompt_submit windows remain: train2/val2/test1; cannot establish delegation performance",
+    "Environment input is the last pre-window oTree page/event and AI availability, not a reconstructed screen",
+    "Offline-filter lookahead of 4.125 seconds is conditional on published recipe; binary equivalence not verified",
+    "decision_time_s=end+4.125; EEG window-to-event gap 4.5s, nominal decision-to-event lead .375s; inference time adds latency",
+    "No real latent-intent or harness-goal success labels; goal benchmark remains blocked",
+    "No real OS or agent execution during this pilot"
+  ]
+}

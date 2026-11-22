@@ -1,0 +1,32 @@
+{
+  "schema_version": "xavier-exact-event-weak-label-propagation-v1",
+  "status": "verified_train_only_dictionary_reuse",
+  "input_sha256": {
+    "source_records": "87e98a0d50f6288bc9b293de32a40e118431eaf3431514b87271da6b3a9daf5a",
+    "training_membership": "4b64e2f2b09b96de50dc5d0b98b32086517709148f3c536a445e5a6e43e59c99",
+    "all_train_jobs": "44f35583e7593a0f95810e070008ba175f01fb6fd232c6ebf149e29e8d8b5b38",
+    "dictionary_jobs": "8b3f80d0b398098a84b3b20ea5ad25659bae75d6deee10e4cd23ebbfa5035d37",
+    "teacher_results": "7dfae9f9758c7d5230f7c2511c4c5a809a22c15ae7451ce01a07812b19f34993",
+    "teacher_results_manifest": "bbd24d89c728451bf4289fa056f9b1ab1f5e17f298297477f859428c7ef1b5c7"
+  },
+  "source_manifest_sha256": "87e98a0d50f6288bc9b293de32a40e118431eaf3431514b87271da6b3a9daf5a",
+  "independent_teacher_jobs": 15,
+  "training_record_references": 225,
+  "held_out_records_touched": 0,
+  "original_gold_labels_modified": 0,
+  "new_waveform_records_created": 0,
+  "new_latent_intent_gold_labels_created": 0,
+  "teacher_calls_performed_by_propagation": 0,
+  "dictionary_results_with_usable_observed_action": 15,
+  "references_without_single_action_label": 0,
+  "agreement_with_original_event_labels": {
+    "count": 225,
+    "denominator": 225,
+    "fraction": 1.0,
+    "interpretation": "Event-name normalization consistency, not a new intent-decoding accuracy estimate."
+  },
+  "legacy_result_membership_verified_posthoc": true,
+  "note": "The original source files, original train/validation/test assignments, teacher outputs, and gold labels were preserved.",
+  "propagated_weak_labels.jsonl_sha256": "3c2b112681178330b8160332192fcf338242017e4ca967fe9d68abee9c3fb192",
+  "dictionary_membership.jsonl_sha256": "a5aeb020a28e3a41712ff1717bf688593eba7a7da92d9ff7efe8878713e1b213"
+}

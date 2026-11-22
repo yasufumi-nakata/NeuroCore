@@ -19,3 +19,6 @@ docs/packages/
 docs/project-positioning/
 docs/settings-ui/
 docs/testing-strategy/
+
+# Local experiment environments
+.venv-*/
