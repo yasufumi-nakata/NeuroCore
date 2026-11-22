@@ -1,0 +1,76 @@
+{
+  "adapter": "fresh variable-channel to eight learned prefixes; CPU backward verified only on synthetic tensors, no CBraMod/LLM/GPU fit",
+  "benchmark_controls": [
+    "context_only",
+    "EEG_removed",
+    "within_record_shuffle",
+    "real_minus_10_seconds_matched",
+    "context_equivariance",
+    "correct_class_routing_upper_bound",
+    "T0_separate_diagnostic"
+  ],
+  "code_hashes": {
+    "P300_context_addendum": "ad7561b8f83d3644c00b19a3cb650814c0c894af5b69308b663504484ceca039",
+    "admission.py": "d6fd0d48762de26f83d566ca45e7c65011602c95f66be482aabfdf82a70ef3ce",
+    "causal_shards.py": "2580d54e17fb494eb23401bf02e056af6165b0783194cbdd0e5d6f21542cb42f",
+    "joint_alignment.py": "c4cb1e5170c9c746e07def4409cf7f6195eceecb97ce325fbd06a98954a03e85",
+    "parent_multichannel_notes": "c9b6590285e789d8edc49e02dffb3971cb78ee4bc13646038b630caefd259d4f",
+    "test_next_multichannel.py": "126c2f10efdf58984c7ed8d07ab7cadb412d3b03242094625fd45b287140a7d4"
+  },
+  "created_epoch": 1795332161.2312052,
+  "focused_CPU_tests_passed": 15,
+  "gpu_gate": {
+    "authorized_now": false,
+    "old_session_reuse": false,
+    "reason": "no signal-QC train seal or source/group deny closure, no fresh L4 BF16 max-shape backward probe, no persistent recovery volume above reserve, no new CU/time budget"
+  },
+  "montages": [
+    14,
+    16,
+    27,
+    32,
+    64
+  ],
+  "new_alignment": "two original cue classes and four synthetic display/mapping contexts; X/Y proxy gold distinct from free-intent truth; input context allowlist excludes target/oracle/history",
+  "new_gradients_hours": 0,
+  "new_source_metadata_proposals_only": true,
+  "new_source_records_indexed": 1121,
+  "old_heldout_split_reused_not_reassigned": {
+    "test": 17,
+    "train": 76,
+    "val": 16
+  },
+  "previous_phase1_phase2_phase3_source_and_results_immutable": true,
+  "primary_metric": "mean_subject_balanced_accuracy",
+  "privacy": "source rows and all individual signal information private; aggregate only GitHub",
+  "private_manifest_sha256": "555b3247b6a9eadcf48bed22f29ef381b06a601e87909241aedcc60900c70e1d",
+  "qc": "source-specific train-only threshold/stats not sealed; reject future-oracle and ambiguous data rather than tuning after validation/test",
+  "schema": "pj_xavier_next_multichannel_cpu_design_and_gates_v1",
+  "signal": "causal SOS 3-40Hz then extra causal lowpass80Hz for >200Hz native; streaming delayed-linear resample to200Hz, fixed one-native-sample delay; record0 filter state and 2s warmup; never patch across true gap",
+  "smoke": {
+    "causal_3s_shards": 2,
+    "online_provenance_certified": false,
+    "real_source_channel_count": 16,
+    "stored_native_samples_read": 4096,
+    "test_calls": 0,
+    "training_hours": 0
+  },
+  "source_selection": "train-only subject/group metadata split before signal QC; all new source train status held; BCI cross-ID/FIF must-link inherited; exact payload+calibration within source union; cross-source and old heldout deny requires further independent audit",
+  "status": "CPU_scaffold_executed_no_GPU_or_eval",
+  "storage": {
+    "measured_available_bytes": 39075487744,
+    "new_allocation_cap_bytes": 67108864,
+    "recovery_bytes": 1073741824,
+    "reserve_bytes": 37580963840
+  },
+  "test_forward_calls": 0,
+  "test_plan": "fresh untouched subject holdout before any training; old17 excluded from new selection",
+  "units": "source-specific physical V proof before signal QC; 14ch TXT and processed 64ch blocked; full raw preprocess provenance must precede causal train claim",
+  "warnings": [
+    "metadata components are not real participant counts",
+    "cached states/4 environments not additional EEG",
+    "FIF header empty processing history is not evidence of full physical causality",
+    "no new dataset used for gradient descent",
+    "not an actual OS or spontaneous intent benchmark"
+  ]
+}

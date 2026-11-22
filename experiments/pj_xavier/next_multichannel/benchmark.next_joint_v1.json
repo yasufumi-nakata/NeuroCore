@@ -1,0 +1,33 @@
+{
+  "action_truth": "A/B source cue transformed under 4 synthetic layout contexts; no free-intent gold",
+  "bootstrap": {
+    "repetitions": 1000,
+    "seed": 20261122,
+    "unit": "heldout_subject_or_must_link_component"
+  },
+  "generalization": "fresh_unused_subject_holdout_must_be_reserved_before_fit",
+  "harness": "fresh_state_per_trial; same cache-vs-live generation accounting; no OS actions",
+  "negative_controls": [
+    "context_only",
+    "EEG_removed",
+    "within_record_EEG_shuffle",
+    "real_EEG_minus_10_seconds_common_ids",
+    "correct_class_routing_upper_bound",
+    "T0_idle_diagnostic_not_natural_idle_false_actions_per_min"
+  ],
+  "new_model_performance": "NOT_EVALUATED",
+  "old_17test_usage": "exploratory_only_not_for_new_model_selection",
+  "primary": "mean_subject_balanced_accuracy",
+  "secondary": [
+    "macro_F1",
+    "AUROC",
+    "NLL",
+    "Brier",
+    "ECE",
+    "coverage_threshold_0.8",
+    "selective_accuracy",
+    "mapping_equivariance",
+    "routing_episode_success",
+    "abstention"
+  ]
+}

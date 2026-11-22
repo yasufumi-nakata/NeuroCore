@@ -1,6 +1,6 @@
 # PJ-Xavier 実行・引継ぎ
 
-更新：2026-11-22 15:35 JST．最新の公開状態はこのbranchのHEAD，運用所有権はprivate coordinatorと実jobを優先してください．
+更新：2026-11-22 16:25 JST．最新の公開状態はこのbranchのHEAD，運用所有権はprivate coordinatorと実jobを優先してください．
 
 ## 現在の到達点
 
@@ -132,3 +132,17 @@ InMIDは237files全取得，92 EDF／19.478333333h，14 EEGと44auxを区別．M
 7. 未達，実測量と時間，次の阻害要因をREADME・HANDOFF・PR71・[学校Google Doc](https://docs.google.com/document/d/1kGlNqvZEg_AzSYKGTiGF3Z0HcVIxNGNimNwpR6w1680/edit?tab=t.7cvfsge8pwil)へ反映します．過去Doc2tabsは保持します．
 
 automation `Automation_f439325b5d888191bc75e92d1ba97be7` は毎時15分26秒，Asia/Tokyoです．15:15 runは15:16:15に完了し，root activeを確認して競合操作を行いませんでした．次は16:15:26 JST．最終更新promptとreadbackはphase3 privateのautomation receiptを参照してください．Proモデル固定指定はAPIで保証できません．継続は進捗の要約だけで終えず，上記の独立して実行できる実装・検証・記録を進めます．
+
+
+## 2026-11-22 16:25 JST：次実験のCPU段階（phase4，別run）
+
+排他的owner確認後，旧phase1/2/3を再投入せず，追加取得sourceの学習適格性を新moduleで実装しました．[CPU段階／制限](next_multichannel/README.md)に仕様，結果，コマンドを保存しています．
+
+- 正worktreeは開始時clean，root lease解放を確認し，独立owner leaseを原子的に取得しました．旧Colab physical sessionと取得workerは再始動していません．
+- public audit＋private原台帳で追加1,121記録metadataを照合し，184個のmust-link連結成分を作りました．同一EEG跨ID制約／元76train・16val・17testを維持します．新しいmetadata-only splitは正式承認ではなく，**全記録fit/test gold保留**です．公開集計は `reports/next_multichannel_admission_20261122_1615.aggregate.json`，個別台帳はprivateで1,121件・SHA固定です．固有EEG時間・実人数とは別です．
+- 14/16/27/32/64chの因果SOS→200Hz状態付きshard，source cutoff，same-montage batching，可変C/P→8 prefix CPU backward，4配置joint cue→X/Y proxy，context leak拒否を実装しました．**15 focused CPU tests PASS**．既存CBraMod trainerとLLM adapterは未変更です．
+- 元SHAを照合した新16ch FIFの提案train記録の先頭4,096 native samplesだけを読み，3秒shard2件をCPU生成しました．試用はsource causality，train-only QC，online OS，LLM生成，実学習・実testを証明しません．GPUやM1実機推論はこのrunでは0です．
+- 16:17時点でworkstation available39,075,487,744B，reserve35GiB＋recovery1GiBを差し引くと420,782,080B．新一時割当はさらに64MiBまで．書込可能な追加永続volumeは未検証．新しい大型取得とColab実行はguardで保留，原本・重み・optimizer・失敗証拠は無削除です．
+- private証拠：`private/xavier/phase4_automation_1615/lease_acquired.json`，`storage_receipt.json`，`source_admission.private.jsonl`，`real_FIF_16ch_smoke_receipt.json`，`cpu_stage_receipt.json`．新protocolは `next_multichannel/protocol.cpu_stage_v1.json`．metadata-only splitをそのまま学習許可や新規holdoutと呼びません．
+
+**再開条件**：実owner・job・bootを再確認してlease取得→cross-source/旧test raw・payload deny照合とsource QC固定→未使用holdout確保→preprocessing因果性とunits確定→新scientific protocol＋新GPU/CU/disk/停止予算登録→real device backward＆最大C/P容量probe→fit／各checkpoint validation→固定独立test＋負対照→全成果物SHA回収→M1試用→物理session停止．旧17testを新モデルの選択には使いません．次の1時間間隔監視でも同じowner排他を維持します．
