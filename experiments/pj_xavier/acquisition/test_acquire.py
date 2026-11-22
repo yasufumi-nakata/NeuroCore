@@ -35,6 +35,47 @@ def job(data=b"abcdefgh"):
 
 
 class AcquisitionTests(unittest.TestCase):
+    def test_figshare_inferred_identity_requires_exact_host_or_subdomain(self):
+        cases = {
+            "https://figshare.com/files/7": "7",
+            "https://ndownloader.figshare.com/files/7": "7",
+            "https://NDOWNLOADER.FIGSHARE.COM/files/7": "7",
+            "https://figshare.com./files/7": "7",
+            "https://evilfigshare.com/files/7": None,
+            "https://figshare.com.other.example/files/7": None,
+            "https://other.example/figshare.com/files/7": None,
+            "https://other.example/files/7?provider=figshare.com": None,
+        }
+        for url, expected in cases.items():
+            with self.subTest(url=url):
+                identity = acquire.provider_identity({"provider": "figshare"}, {"url": url})
+                self.assertEqual(identity["provider_file_id"], expected)
+                if expected is None:
+                    self.assertIn(":url:", identity["identity"])
+
+    def test_physionet_detection_uses_url_hostname_not_embedded_text(self):
+        cases = {
+            "https://physionet.org/content/demo/1.0/": "physionet",
+            "https://data.physionet.org/content/demo/1.0/": "physionet",
+            "https://PHYSIONET.ORG./content/demo/1.0/": "physionet",
+            "https://evilphysionet.org/content/demo/1.0/": "unsupported",
+            "https://physionet.org.other.example/content/demo/1.0/": "unsupported",
+            "https://other.example/physionet.org/demo": "unsupported",
+            "https://other.example/?provider=physionet.org": "unsupported",
+            "https://physionet.org@other.example/demo": "unsupported",
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "catalog.csv"
+            with path.open("w", newline="") as handle:
+                writer = csv.DictWriter(handle, fieldnames=["catalog_id", "primary_url"])
+                writer.writeheader()
+                writer.writerows({"catalog_id": str(i), "primary_url": url}
+                                 for i, url in enumerate(cases, start=1))
+            rows = acquire.normalize_catalog(path)
+        for row, (url, expected) in zip(rows, cases.items()):
+            with self.subTest(url=url):
+                self.assertEqual(row["provider"], expected)
+
     def test_explicit_dataverse_guestbook_requires_action_without_logging_url_token(self):
         body = json.dumps({"status": "ERROR", "message": "You may not download this file without the required Guestbook response for guestbookID 217."}).encode()
         error = urllib.error.HTTPError("https://dataverse.harvard.edu/api/access/datafile/3144692?token=DO_NOT_LOG", 400, "Bad Request", {}, io.BytesIO(body))

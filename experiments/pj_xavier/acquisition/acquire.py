@@ -127,8 +127,9 @@ def provider_identity(row, file):
     provider = file.get("provider") or row.get("provider") or "unknown"
     url = validate_url(file["url"])
     parts = urllib.parse.urlsplit(url)
+    hostname = (parts.hostname or "").lower().rstrip(".")
     fid = file.get("provider_file_id") or file.get("file_id")
-    if fid is None and provider == "figshare" and (parts.hostname or "").endswith("figshare.com"):
+    if fid is None and provider == "figshare" and (hostname == "figshare.com" or hostname.endswith(".figshare.com")):
         m = re.search(r"/(?:files|file/download)/(\d+)(?:/|$)", parts.path)
         fid = m.group(1) if m else None
     if fid is None and provider == "dataverse":
@@ -230,6 +231,7 @@ def normalize_catalog(path):
         access = row.get("live_access_status") or row.get("取得条件の証拠") or "unknown"
         source_id = str(ev.get("source_id") or "")
         provider = ev.get("source_adapter") or ""
+        hostname = (urllib.parse.urlsplit(url).hostname or "").lower().rstrip(".")
         if not provider or provider == "landing":
             text = family + " " + url
             match = re.search(r"(?:zenodo(?:_record)?[.:/]|zenodo-concept:)(\d+)", text)
@@ -241,7 +243,7 @@ def normalize_catalog(path):
                 provider, source_id = "figshare", family.split(":", 1)[1]
             elif re.search(r"ds\d{6}", text) and "openneuro" in text:
                 provider, source_id = "openneuro", re.search(r"ds\d{6}", text).group()
-            elif "physionet.org" in url:
+            elif hostname == "physionet.org" or hostname.endswith(".physionet.org"):
                 provider = "physionet"
             elif family.startswith("osf:"):
                 provider, source_id = "osf", family.split(":", 1)[1]

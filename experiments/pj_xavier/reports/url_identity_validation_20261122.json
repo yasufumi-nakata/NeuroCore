@@ -1,0 +1,36 @@
+{
+  "schema": "pj-xavier-url-hostname-fix-validation-v1",
+  "observed_at": "2026-11-22T10:24:30.661162+09:00",
+  "finding_source": {
+    "tool": "GitHub CodeQL",
+    "check_run_id": 137039278619,
+    "analyzed_commit": "93c952209274721b25acdde4f49cf121b1d4b78e",
+    "findings": 2,
+    "rule": "Incomplete URL substring sanitization"
+  },
+  "changes": [
+    "Figshare inferred file ID accepts only parsed hostname equal to figshare.com or ending with .figshare.com",
+    "PhysioNet provider detection uses parsed hostname equal to physionet.org or ending with .physionet.org; embedded path/query/userinfo text is not trusted"
+  ],
+  "verification": {
+    "command": ".venv-xavier/bin/python -m pytest experiments/pj_xavier/acquisition/test_acquire.py experiments/pj_xavier/acquisition/test_append_public_queue.py experiments/pj_xavier/integration/test_try_recorded_eeg.py -q",
+    "passed": 51,
+    "subtests_passed": 27,
+    "duration_seconds": 1.78,
+    "ruff": "passed",
+    "git_diff_whitespace": "passed",
+    "codeql_rerun": "pending_new_pull_request"
+  },
+  "source_sha256": {
+    "acquisition/acquire.py": "1c3c2099d0ded2009c098c2f3b3eabbe5148f6b0e50fdb22754f0dbaad33f597",
+    "acquisition/test_acquire.py": "30f44b7fafd784432d51c87085e29f6185daad526b8a9eff9a2e693c1e45cdfb",
+    "integration/try_recorded_eeg.py": "8387729dedf3bacba2c68d496db489079b03709d7e209f3f9b24bfd6cfdbc7d6",
+    "integration/test_try_recorded_eeg.py": "bdcb87167e136f931cf34a9c95b5dd805016100d75e3e59eaee5bb184d643534"
+  },
+  "runtime_changes": {
+    "active_workers_restarted": 0,
+    "download_rows_changed": 0,
+    "raw_files_changed": 0
+  },
+  "note": "Existing workers retain their previously recorded loaded source. The corrected source is used by future launches; frozen training source is unchanged."
+}

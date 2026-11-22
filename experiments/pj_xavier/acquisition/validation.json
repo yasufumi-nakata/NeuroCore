@@ -43,5 +43,11 @@
   "test_scope": "Owned acquisition, official-access hold, append-only refreshed queue modules; separate progress reporting tests are not included in this count.",
   "verified_at": "2026-11-22T00:50:41.251647+00:00",
   "guestbook_behavior": "Only the explicit Dataverse required-Guestbook JSON message becomes access_action_required; other HTTP 400 responses are not reclassified. Existing release holds validate official PID/version/file IDs.",
-  "append_queue_behavior": "Immutable full-catalog snapshot and exact ID coverage; SQL authorizer rejects edits to existing downloads rows; file/version conflicts held per release; unresolved scope review is not acquisition or training approval."
+  "append_queue_behavior": "Immutable full-catalog snapshot and exact ID coverage; SQL authorizer rejects edits to existing downloads rows; file/version conflicts held per release; unresolved scope review is not acquisition or training approval.",
+  "subsequent_url_hostname_verification": {
+    "report": "../reports/url_identity_validation_20261122.json",
+    "current_acquire_sha256": "1c3c2099d0ded2009c098c2f3b3eabbe5148f6b0e50fdb22754f0dbaad33f597",
+    "current_test_acquire_sha256": "30f44b7fafd784432d51c87085e29f6185daad526b8a9eff9a2e693c1e45cdfb",
+    "note": "Earlier 42-test result and its source hashes above are preserved as a historical observation; 51-test combined verification includes the two new hostname boundary tests and the separate trial-wrapper tests."
+  }
 }
