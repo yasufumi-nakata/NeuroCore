@@ -1,0 +1,34 @@
+{
+  "schema": "xavier-added-data-paired-subject-comparison-plan-v1",
+  "status": "supplementary_exploratory_analysis_fixed_before_phase3_test_readout",
+  "created_epoch": 1795327383.268502,
+  "analysis_source_sha256": "d77bf77bc8ffc4d6b4b52337d078836c4a495eb0a58da3dc1943a2470a5aa620",
+  "comparisons": [
+    "ssl_mi_minus_scratch",
+    "ssl_fused_minus_fused"
+  ],
+  "tasks": {
+    "primary": "left_right",
+    "secondary": "fists_feet"
+  },
+  "condition": "fused",
+  "metric": "unweighted mean of within-participant balanced accuracies",
+  "bootstrap_replicates": 1000,
+  "bootstrap_seed": 20261122,
+  "CI": "paired participant percentile 95%; equal weights; 2.5th/97.5th quantiles; no multiplicity adjustment",
+  "baseline_checkpoints": {
+    "ssl_mi_minus_scratch": "3d041e1a8c07e97ae1bebd873873964241d3856f8b6d7461f9134924f8c3f54d",
+    "ssl_fused_minus_fused": "13df40e53dab6087bfef2fac1a4e413a2d00178413f05f4759a0aa1ea849d4ee"
+  },
+  "scope": "Supplement to the sealed phase2/phase3 evaluations, using only completed saved predictions; existing phase2 results already known when this supplement was specified",
+  "interpretation_limits": [
+    "Four exploratory comparisons (two model pairs, two tasks); 95% intervals are not multiplicity adjusted",
+    "Existing 17-person heldout is reused; not an independent confirmatory evaluation",
+    "Phase3 SSL-to-MI and phase2 scratch use the same supervised batch256, epochs60 and updates1500; the encoder initialization path differs",
+    "Fused fits use different batch sizes and numbers of optimizer updates under fixed resource budgets; any difference cannot be attributed solely to extra EEG or SSL",
+    "No refitting, threshold tuning, model selection, new EEG/model forward, or change to the sealed evaluation is allowed by this analysis",
+    "Differences describe cue-response task decoding, not unrestricted intent or autonomous real-world action"
+  ],
+  "model_forward_calls": 0,
+  "sealed_training_or_evaluation_files_modified": false
+}
