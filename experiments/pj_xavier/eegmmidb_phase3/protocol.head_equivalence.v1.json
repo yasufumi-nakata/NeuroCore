@@ -1,0 +1,27 @@
+{
+  "schema": "xavier-phase3-restricted-head-equivalence-protocol-v1",
+  "registered_before_any_numerical_comparison": true,
+  "seed": 20261122,
+  "reference": "frozen phase2 full-vocabulary forward followed by selection of A/B logits",
+  "candidate": "identical frozen decoder hidden states with only the two corresponding frozen linear lm_head rows evaluated",
+  "CPU_FP32": {
+    "fixture": "seeded tiny Llama, 3 synthetic physical-V EEG windows, unequal static prompt lengths, active EEG dropout with identical RNG reset",
+    "logits_max_absolute_error": 0.00001,
+    "loss_absolute_error": 0.000001,
+    "encoder_gradient_relative_L2_error": 0.0001,
+    "projector_gradient_relative_L2_error": 0.0001
+  },
+  "L4_BF16": {
+    "fixture": "actual pinned SmolLM2-1.7B, fixed train-only 3-window subset with both tasks, active EEG dropout with identical RNG reset",
+    "logits_max_absolute_error": 0.0625,
+    "loss_absolute_error": 0.02,
+    "encoder_gradient_relative_L2_error": 0.025,
+    "projector_gradient_relative_L2_error": 0.025
+  },
+  "always_required": ["finite logits/loss/gradients", "nonzero EEG encoder and projector gradients", "all LLM parameters frozen with zero gradients", "identical learned initial states and RNG", "no optimizer update", "no held-out or validation waveform access"],
+  "adoption_rule": "Both CPU_FP32 and actual L4_BF16 must pass all fixed tolerances. Otherwise retain the original full-vocabulary head for phase3 training and inference.",
+  "failure_changes_scientific_objective": false,
+  "threshold_relaxation_after_observation": false,
+  "bitwise_identity_claimed": false,
+  "interpretation": "The restricted objective is mathematically unchanged. Device GEMM rounding can differ and is measured rather than assumed bit-identical. This guard establishes bounded numerical agreement, not model quality."
+}

@@ -1,0 +1,166 @@
+{
+  "schema": "xavier-phase3-neural-training-plan-v1",
+  "purpose": "Additional label-free train-source adaptation followed by matched MI and frozen-LLM supervision; exploratory reuse of the same phase2 held-out test",
+  "seed": 20261122,
+  "acceptance_threshold": 0.8,
+  "memory_budget_gib": 21,
+  "architecture": {
+    "kind": "compact_EEGNet_style_from_scratch",
+    "channels": 64,
+    "samples": 600,
+    "sample_rate_hz": 200,
+    "input_unit": "V",
+    "fixed_input_multiplier": 10000,
+    "F1": 16,
+    "depth_multiplier": 2,
+    "F2": 32,
+    "temporal_kernel": 64,
+    "separable_kernel": 16,
+    "dropout": 0.5,
+    "prefix_tokens": 8
+  },
+  "backbone": {
+    "id": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
+    "revision": "31b70e2e869a7173562077fd711b654946d38674",
+    "frozen": true
+  },
+  "task_mapping": {
+    "left_right": [
+      "left_fist",
+      "right_fist"
+    ],
+    "fists_feet": [
+      "both_fists",
+      "both_feet"
+    ]
+  },
+  "source_units": {
+    "native_EDF": "microvolt calibration from each official header",
+    "prepared": "reader-decoded physical V",
+    "model_input": "V multiplied by 10000, i.e. microvolts divided by100",
+    "per_window_zscore": false,
+    "learned_scaling_from_test": false
+  },
+  "selection": {
+    "partition": "val",
+    "task": "left_right",
+    "metric": "mean_subject_balanced_accuracy",
+    "missing_class_subjects": "omit_and_report",
+    "zero_valid_subjects": "blocked",
+    "ties": "earliest_checkpoint",
+    "test_used_for_tuning": false
+  },
+  "capacity_probe": {
+    "optimizer_steps": 50,
+    "per_candidate_max_seconds": 150,
+    "total_capacity_reserve_seconds": 300,
+    "rule": "largest completed registered actual-train-only batch in fresh process",
+    "updates_used_for_main_training": false,
+    "scope": "50 repeated actual training optimizer steps; short capacity evidence does not guarantee long-run allocator stability"
+  },
+  "stages": {
+    "scratch": {
+      "max_epochs": 60,
+      "max_seconds": 900,
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "capacity_batch_candidates": [
+        64,
+        128,
+        256
+      ],
+      "validation_batch_ceiling": 256,
+      "initialization": "fixed-seed fresh classifier heads plus validation-selected phase3 masked-SSL encoder; initial SSL state is a selectable baseline"
+    },
+    "fused": {
+      "max_epochs": 30,
+      "max_seconds": 1800,
+      "learning_rate": 0.0003,
+      "weight_decay": 0.0001,
+      "capacity_batch_candidates": [
+        8,
+        16,
+        32,
+        64,
+        128
+      ],
+      "validation_batch_ceiling": 128,
+      "initialization": "validation-selected phase3 supervised EEG encoder; fixed-seed fresh prefix; pinned frozen Smol",
+      "trainable": [
+        "EEG encoder",
+        "prefix projector"
+      ],
+      "frozen": [
+        "LLM"
+      ]
+    }
+  },
+  "gradient_clip_norm": 1,
+  "periodic_checkpoint_steps": 100,
+  "target_handling": {
+    "loss": "binary cross entropy via cross_entropy on two task logits, or the same two single-symbol LLM logits used for evaluation",
+    "class_symbols": [
+      " A",
+      " B"
+    ],
+    "class_token_ids": [
+      330,
+      389
+    ],
+    "prompt_fields": [
+      "static task_family"
+    ],
+    "prompt_forbidden_fields": [
+      "cue code",
+      "true label",
+      "subject",
+      "recording",
+      "trial order",
+      "event onset"
+    ],
+    "all64channels_preserved": true
+  },
+  "resume": {
+    "scientific_config_immutable": true,
+    "optimizer_and_rng_saved": true,
+    "deterministic_epoch_order": true,
+    "epoch_batch_cursor_saved": true,
+    "mid_update_failure_resumable": false,
+    "partial_validation_selects_checkpoint": false
+  },
+  "test_access": {
+    "trainer_test_forward_calls": 0,
+    "once_only_independent_evaluator": true,
+    "checkpoint_and_threshold_fixed_before_test": true,
+    "EEGMMIDB_pretrained_encoder_used": false,
+    "CBraMod_primary_used": false,
+    "test_reuse_from_phase2_is_exploratory": true
+  },
+  "compute": {
+    "workstation_and_its_Colab_CLI_only": true,
+    "cluster_calls": 0,
+    "separately_registered_phase3_budget_required": true,
+    "phase2_completed_and_recovered_before_GPU_handover": true,
+    "max_CU": 5,
+    "purchase": false,
+    "global_deadline_must_cover_recovery_and_stop": true
+  },
+  "inference": {
+    "owned_M1_target_budget_gib": 8,
+    "live_spontaneous_EEG_goal_validated": false,
+    "final_smoke_records": "three training records only",
+    "probabilities_are_calibrated_intent_confidence": false
+  },
+  "expected_limitations": [
+    "Instructed cue-conditioned motor imagery does not provide agent delegation intentions.",
+    "Fixed task context tells the task family, never the observed cue class.",
+    "EEG-only prompt removal is a distribution-shift ablation for the fused model.",
+    "Checkpoint selection can use validation only; test results do not alter model, split, thresholds or prompts."
+  ],
+  "scientific_protocol_sha256": "984b516475b06f4e7641074596790c43f76e34d33b6f047239a4ddbd2d0d4016",
+  "numerical_optimization": {
+    "only_two_registered_lm_head_rows": "adopt only if predeclared CPU-FP32 and actual-L4-BF16 logits/loss/encoder+projector-gradient guards pass",
+    "guard_failure": "use unmodified full-vocabulary head objective",
+    "bitwise_identity_claimed": false
+  }
+}

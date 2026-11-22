@@ -1,0 +1,83 @@
+{
+  "status": "passed",
+  "errors": {
+    "logits_max_absolute_error": 1.4901161193847656e-08,
+    "loss_absolute_error": 0.0,
+    "encoder_gradient_relative_L2_error": 3.0007619817234563e-07,
+    "projector_gradient_relative_L2_error": 1.4119980758941344e-07
+  },
+  "checks": {
+    "logits_max_absolute_error": true,
+    "loss_absolute_error": true,
+    "encoder_gradient_relative_L2_error": true,
+    "projector_gradient_relative_L2_error": true
+  },
+  "gradient_diagnostics": {
+    "encoder": {
+      "reference_gradient_L2": 0.25636187195777893,
+      "candidate_gradient_L2": 0.25636184215545654,
+      "max_absolute_error": 9.313225746154785e-09,
+      "parameter_gradient_values": 4768
+    },
+    "projector": {
+      "reference_gradient_L2": 0.0815456211566925,
+      "candidate_gradient_L2": 0.0815456211566925,
+      "max_absolute_error": 1.862645149230957e-09,
+      "parameter_gradient_values": 1120
+    }
+  },
+  "reference_logits": [
+    [
+      0.12478037923574448,
+      -0.059584539383649826
+    ],
+    [
+      -0.13436396420001984,
+      -0.1293729543685913
+    ],
+    [
+      -0.020863180980086327,
+      0.12180130183696747
+    ]
+  ],
+  "candidate_logits": [
+    [
+      0.12478037178516388,
+      -0.05958453565835953
+    ],
+    [
+      -0.13436397910118103,
+      -0.1293729543685913
+    ],
+    [
+      -0.020863182842731476,
+      0.12180128693580627
+    ]
+  ],
+  "reference_loss": 0.6876278519630432,
+  "candidate_loss": 0.6876278519630432,
+  "frozen_LLM_gradients_absent": true,
+  "optimizer_steps": 0,
+  "bitwise_identity_claimed": false,
+  "schema": "xavier-phase3-restricted-head-comparison-v1",
+  "scope": "CPU_FP32",
+  "source": {
+    "synthetic_fixture": true,
+    "not_pretrained_model_performance": true
+  },
+  "protocol_sha256": "6ecdc9170d343865574f5329e30f36a253cfc8f7a4957d45a0e88f84e4f3897c",
+  "comparison_source_sha256": "54363ca17e8f4c35c445957bfdca84e0e3160eaca5254578f81db1396f0527f1",
+  "candidate_source_sha256": "d7eff12b5cab3309dae6e2c3d571994a988d68eb06c1567c848f51191ed65173",
+  "hardware": {
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "python": "3.12.14",
+    "torch": "2.15.0+cpu",
+    "device": "cpu",
+    "system_memory_bytes": 10451423232,
+    "available_host_memory_bytes_at_observation": null
+  },
+  "memory": {
+    "process_peak_rss_bytes": 462123008
+  },
+  "elapsed_seconds": 3.4003883590012265
+}

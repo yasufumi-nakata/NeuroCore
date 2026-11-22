@@ -1,0 +1,34 @@
+{
+  "schema": "xavier-phase3-model-CPU-validation-v1",
+  "status": "passed",
+  "tests": 17,
+  "runtime": {
+    "python": "3.12.13",
+    "torch": "2.15.0"
+  },
+  "source_sha256": {
+    "eegmmidb_phase3/__init__.py": "5aeb848f46b906a3a688349dcbc546b197c9c57a715552548741cb129d25e08a",
+    "eegmmidb_phase3/common.py": "e954fb99c36fccac6152ca4c1cf35cb03fb2d510f1c4bf91860bcc6811bf680f",
+    "eegmmidb_phase3/data_ssl.py": "80a855dcf1f5c46a41d5f84dbd58e5e378062fd144b98d3e81a4bdefa08312e6",
+    "eegmmidb_phase3/ssl_model.py": "45bee6dc52b308ce3af36acf8f90a6dcd153ba1bc039c4d4ef969eba2b3b4187",
+    "eegmmidb_phase3/train_ssl.py": "742538d7878175fde82cd98cca69982f630d229a99966a8ed169d3cb28afdd11",
+    "eegmmidb_phase3/model.py": "d7eff12b5cab3309dae6e2c3d571994a988d68eb06c1567c848f51191ed65173",
+    "eegmmidb_phase3/runtime.py": "810580f590e7293ba9d83ad2e4c9a0c81d300f891bd7c78472d21575d22478cb",
+    "eegmmidb_phase3/train_supervised.py": "e886250f6c7e42fce34e4a6bda974438bef508fc75cc08ea930293dd24639ad9",
+    "eegmmidb_phase3/compare_symbol_head.py": "54363ca17e8f4c35c445957bfdca84e0e3160eaca5254578f81db1396f0527f1",
+    "eegmmidb_phase3/protocol.head_equivalence.v1.json": "6ecdc9170d343865574f5329e30f36a253cfc8f7a4957d45a0e88f84e4f3897c",
+    "eegmmidb_phase3/protocol.supervised.v1.json": "3b9a6754ef639c6dcb31fd08b5ab60443b6acd9f0c4458bb68bed6a8b8b6c3f7",
+    "eegmmidb_phase3/protocol.scientific.v1.json": "984b516475b06f4e7641074596790c43f76e34d33b6f047239a4ddbd2d0d4016",
+    "eegmmidb_phase3/test_models.py": "97c08b967da22461781f3bc77ba3a95cab5aaef21f87c3c531bf70a21f1a43d6",
+    "eegmmidb_phase3/run_phase3_workflow.py": "f6b63c5c8cf899081c0dda83267eb6ca2be11feaace65dd6f7c8eb8ae5b3ed33",
+    "eegmmidb_phase2/__init__.py": "d981967c79ade19e2715af248d50380698870dbbc390976c720ca3cb51b008f2",
+    "eegmmidb_phase2/data_contract.py": "22510965669dd2f4180d37d0efe3d11ae5090667c5d2fdde31132756349849a5",
+    "eegmmidb_phase2/model.py": "5285c00e64bdcbc79b04bbfb236b85c05a035affed06a24b16e768fbcf5606ac",
+    "eegmmidb_phase2/runtime.py": "fea63a48172d65f136a1dc169ee9ffd027d90b9162efa527699c982bcae01ee5",
+    "eegmmidb_phase2/train_models.py": "19f3bd513003d717d4de48a50f310e0350e6c990ec2bd15cebc837f23dfbbffb"
+  },
+  "test_log_sha256": "50728c93fe400bd71cfcdba35e7d022ba4740ec7e0fb7e122900e48f54d70a52",
+  "initial_tensor_fixture": "test_encoder_initial_tensor_matches_seeded_original_and_gradient_exists: phase2 ScratchDecoder.encoder and fresh MaskedEEGModel.encoder complete tensor identity after identical seed",
+  "GPU_used": false,
+  "observed_epoch": 1795323688.107697
+}
