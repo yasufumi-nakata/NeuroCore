@@ -1,0 +1,8 @@
+{
+  "workstation_tests_passed": 9,
+  "workstation_tests_failed": 0,
+  "workstation_tests_skipped": 0,
+  "source_sha256": "9cdf8318b2cd2b1f97ea5e8ce9fd47ec9ff829504b45d8526d8c098acf84b816",
+  "test_source_sha256": "1b6487728691a6c227ad03cf1d9b8fafb6532f4481634aa0f926d2a5b0dde950",
+  "old_demo_source_unchanged": true
+}

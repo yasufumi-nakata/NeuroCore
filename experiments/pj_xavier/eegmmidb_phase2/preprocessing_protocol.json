@@ -1,0 +1,61 @@
+{
+  "FIR_group_delay_s_by_native_fs": {
+    "128": 0.078125,
+    "160": 0.0625
+  },
+  "QC": {
+    "absolute_amplitude_not_peak_to_peak": true,
+    "finite_required": true,
+    "maximum_absolute_V": 0.0005,
+    "measurement": "after causal filter and causal resampling, physical volts, before float32 save",
+    "minimum_channel_population_std_V": 1e-08,
+    "standard_deviation_ddof": 0,
+    "threshold_decision": "exploratory 500uV gross-amplitude hold selected from train-only distribution; 100uV initial flag retained; not a physiological normality guarantee or external standard"
+  },
+  "fixed_feature_window": {
+    "all_64_EEG_channels": true,
+    "duration_s": 3.0,
+    "maximum_grid_shift_exclusive_s": 0.005,
+    "minimum_record_history_s": 5.0,
+    "one_window_per_recorded_T1_or_T2_annotation": true,
+    "output_dtype": "float32",
+    "require_actual_window_inside_annotation_and_record": true,
+    "samples": 600,
+    "start_after_annotation_onset_s": 1.0,
+    "target_clock": "recording0 anchored; ceil start to200Hz grid; no output advance",
+    "target_fs_hz": 200,
+    "unit": "V"
+  },
+  "latency_note": "FIR delay retained; no acausal delay compensation. IIR delay is frequency-dependent.",
+  "metadata_protocol_sha256": "37ef67e3a6432eb3416afeeab7709fd432f2c69c8341b036aabf6fee08ccbbed",
+  "minimum_history_s": 5.0,
+  "original_CPU_deadline_epoch": 1795321866.2646809,
+  "pinned_header_helper_sha256": "b4e3979968c427a18509f9b2df9a2cdba452e66827300d212b48b49d11bd5c98",
+  "recipe": {
+    "bandpass_hz": [
+      3.0,
+      40.0
+    ],
+    "filter": "causal scipy.signal.sosfilt, zero initial state at recording0",
+    "native_unit_conversion": "official EDF calibration, uV to V exactly once",
+    "normalization": "none; no full-record mean/std/scale",
+    "resampling": "causal upfirdn; rational native->200Hz; firwin(20*max(up,down)+1,1/max(up,down),Kaiser beta5) *up; no delay compensation; trim only outputs at/after source-duration",
+    "scipy_butter_order": 4
+  },
+  "recording_metadata_sha256": "3edfe0014b52ff7d110732e43fa47f0f028b491d33d546b78fbba024ecbf0fa8",
+  "schema": "pj-xavier-eegmmidb-phase2-preprocessing-v1",
+  "sealed_epoch": 1795320607.292415,
+  "source_archive_sha256": "0ff5f7f38d1d14b8e485581ad4cf5b327e6494bc2ac7c7d7d4f7e9518a950cbe",
+  "source_code_sha256": "99ce752a91043a6e1b0b9a89d7c984d6fead9478076a8fb555747c123a758d95",
+  "static_task_context_only": true,
+  "status": "frozen_before_val_test_signal_processing",
+  "subject_split_sha256": "e5b38cbe78f1c0c8c06384c91266db40a8801be20b72262786502f6b5ce2e9c9",
+  "tests_receipt_sha256": "febd6802d672a8e614675a099f24ba3664b13413bd4b68b6379581aab97d335a",
+  "train_only_QC_decision_sha256": "94f3ab3337601cb85a6caac35d236e77d61f19b4e6213c3ee7a22ece7536a353",
+  "train_only_diagnostics_sha256": "761ad9a2fdb5243959bf5df7aa253ddfd4d23038bb0f94bfab0aa8cc820a05be",
+  "versions": {
+    "numpy": "2.5.5",
+    "python": "3.12.13",
+    "scipy": "1.18.1"
+  }
+}

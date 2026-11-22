@@ -127,8 +127,9 @@ def provider_identity(row, file):
     provider = file.get("provider") or row.get("provider") or "unknown"
     url = validate_url(file["url"])
     parts = urllib.parse.urlsplit(url)
+    hostname = (parts.hostname or "").lower().rstrip(".")
     fid = file.get("provider_file_id") or file.get("file_id")
-    if fid is None and provider == "figshare" and (parts.hostname or "").endswith("figshare.com"):
+    if fid is None and provider == "figshare" and (hostname == "figshare.com" or hostname.endswith(".figshare.com")):
         m = re.search(r"/(?:files|file/download)/(\d+)(?:/|$)", parts.path)
         fid = m.group(1) if m else None
     if fid is None and provider == "dataverse":
@@ -230,6 +231,7 @@ def normalize_catalog(path):
         access = row.get("live_access_status") or row.get("取得条件の証拠") or "unknown"
         source_id = str(ev.get("source_id") or "")
         provider = ev.get("source_adapter") or ""
+        hostname = (urllib.parse.urlsplit(url).hostname or "").lower().rstrip(".")
         if not provider or provider == "landing":
             text = family + " " + url
             match = re.search(r"(?:zenodo(?:_record)?[.:/]|zenodo-concept:)(\d+)", text)
@@ -241,7 +243,7 @@ def normalize_catalog(path):
                 provider, source_id = "figshare", family.split(":", 1)[1]
             elif re.search(r"ds\d{6}", text) and "openneuro" in text:
                 provider, source_id = "openneuro", re.search(r"ds\d{6}", text).group()
-            elif "physionet.org" in url:
+            elif hostname == "physionet.org" or hostname.endswith(".physionet.org"):
                 provider = "physionet"
             elif family.startswith("osf:"):
                 provider, source_id = "osf", family.split(":", 1)[1]
@@ -722,7 +724,7 @@ def transfer(job, root, http, reserve_bytes, deadline=None, transfer_limit=None)
         if not validator or validator.startswith("W/"):
             validator = meta.get("last_modified")
             validator_field = "Last-Modified"
-    if expected is not None and offset == expected:
+    if part.exists() and expected is not None and offset == expected:
         sha = verify_file(part, expected, checksum)
         os.replace(part, path)
         partial_metadata.unlink(missing_ok=True)
@@ -826,7 +828,31 @@ def transfer(job, root, http, reserve_bytes, deadline=None, transfer_limit=None)
     return {"status": "complete", "bytes_present": size, "sha256": sha, "transferred_bytes": transferred}
 
 
-def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=None, http=None):
+def access_requirement_from_http_error(error):
+    """Recognize an explicit access workflow; never store request tokens/body text."""
+    if not isinstance(error, urllib.error.HTTPError) or error.code != 400:
+        return None
+    try:
+        path = urllib.parse.urlsplit(error.url).path
+        if not path.startswith(("/api/access/datafile/", "/api/access/datafiles/", "/api/access/dataset/")):
+            return None
+        body = error.read(8193)
+        if len(body) > 8192:
+            return None
+        payload = json.loads(body.decode("utf-8"))
+        if not isinstance(payload, dict) or payload.get("status") != "ERROR":
+            return None
+        match = re.fullmatch(r"You may not download (?:this file|these files) without the required Guestbook response for guestbookID (\d{1,12})\.?",
+                             str(payload.get("message", "")).strip(), re.IGNORECASE)
+        if not match:
+            return None
+        return {"code": "guestbook_required", "guestbook_id": int(match.group(1)), "http_status": 400,
+                "response_body_sha256": hashlib.sha256(body).hexdigest(), "submission_performed": False}
+    except (OSError, ValueError, UnicodeDecodeError, TypeError):
+        return None
+
+
+def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=None, http=None, priority_catalog_ids=()):
     """One worker process per node; fixed 1 active transfer keeps host fanout bounded.
 
     SQLite leases prevent concurrent workers sharing a filesystem from claiming
@@ -836,6 +862,9 @@ def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=N
     db.row_factory = sqlite3.Row
     deadline = time.monotonic() + seconds
     transferred, processed = 0, 0
+    priority_catalog_ids = tuple(dict.fromkeys(str(value) for value in priority_catalog_ids))
+    priority_order = ("CASE WHEN catalog_id IN (" + ",".join("?" for _ in priority_catalog_ids)
+                      + ") THEN 0 ELSE 1 END, ") if priority_catalog_ids else ""
     Path(root).mkdir(parents=True, exist_ok=True)
     while time.monotonic() < deadline and (max_files is None or processed < max_files):
         if max_bytes is not None and transferred >= max_bytes:
@@ -845,7 +874,8 @@ def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=N
         row = db.execute("""SELECT * FROM downloads WHERE
             (status IN ('queued','paused','retry','capacity_blocked') OR
             (status='running' AND lease_until < ?)) AND retry_at <= ?
-            ORDER BY attempts, catalog_id, expected_bytes IS NULL, expected_bytes, relative_path LIMIT 1""", (timestamp, timestamp)).fetchone()
+            ORDER BY """ + priority_order + "attempts, catalog_id, expected_bytes IS NULL, expected_bytes, relative_path LIMIT 1",
+            (timestamp, timestamp, *priority_catalog_ids)).fetchone()
         if not row:
             db.commit()
             break
@@ -868,15 +898,18 @@ def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=N
                 break
         except (urllib.error.HTTPError, urllib.error.URLError, OSError, ValueError, socket.timeout) as e:
             code = getattr(e, "code", None)
-            status = "restricted" if code in {401, 403} else ("integrity_failed" if isinstance(e, ValueError) else "retry")
+            requirement = access_requirement_from_http_error(e)
+            status = "access_action_required" if requirement else ("restricted" if code in {401, 403} else ("integrity_failed" if isinstance(e, ValueError) else "retry"))
             pause = min(86400, 60 * 2 ** min(job["attempts"], 10))
             if code == 429 and e.headers.get("Retry-After", "").isdigit():
                 pause = max(pause, int(e.headers["Retry-After"]))
             partial = destination(root, job["dataset_key"], job["relative_path"])
             partial = partial.with_name(partial.name + ".part")
             actual_bytes = partial.stat().st_size if partial.exists() else 0
+            error_text = json.dumps(requirement, sort_keys=True) if requirement else (
+                "HTTPError:status=" + str(code) if isinstance(e, urllib.error.HTTPError) else f"{type(e).__name__}:{str(e)[:400]}")
             db.execute("UPDATE downloads SET status=?,error=?,retry_at=?,lease_until=0,bytes_present=?,updated_at=? WHERE id=?",
-                       (status, f"{type(e).__name__}:{str(e)[:400]}", time.time() + pause, actual_bytes, now(), job["id"]))
+                       (status, error_text, 0 if requirement else time.time() + pause, actual_bytes, now(), job["id"]))
             db.commit()
             processed += 1
             if code == 429:
@@ -925,6 +958,8 @@ def main(argv=None):
     d.add_argument("--max-bytes", type=int)
     d.add_argument("--max-files", type=int)
     d.add_argument("--catalog-ids", nargs="*")
+    d.add_argument("--priority-catalog-ids", nargs="*", default=[],
+                   help="Prefer eligible queued rows from these catalog IDs without changing IDs, leases, or source restrictions")
     s = sub.add_parser("report")
     s.add_argument("--db", required=True)
     args = p.parse_args(argv)
@@ -990,6 +1025,8 @@ def main(argv=None):
         write_jsonl(args.output, rows)
         print(json.dumps({"attempted": count, "rows": len(rows), "statuses": dict(Counter(r["status"] for r in rows))}))
     elif args.command == "download":
+        from smac_storage_guard import require_smac_raw_root
+        require_smac_raw_root(args.root)
         if args.reserve_gib < 1 or args.seconds < 1:
             raise SystemExit("reserve must be >=1 GiB and seconds must be positive")
         rows = read_jsonl(args.manifest)
@@ -998,7 +1035,8 @@ def main(argv=None):
         db = init_db(args.db)
         added = ingest(db, rows)
         result = worker(db, args.root, reserve_gib=args.reserve_gib, seconds=args.seconds,
-                        max_bytes=args.max_bytes, max_files=args.max_files)
+                        max_bytes=args.max_bytes, max_files=args.max_files,
+                        priority_catalog_ids=args.priority_catalog_ids)
         result["new_file_jobs_ingested"] = added
         print(json.dumps(result, ensure_ascii=False))
     else:

@@ -1,0 +1,838 @@
+{
+  "schema": "xavier-qwen8b-uniba-v2-aggregate-v1",
+  "evaluation_execution_status": "completed",
+  "goal_status": "evaluated_goal_unproven",
+  "checkpoint_sha256": "29f349c199bd99232a2431f83179085e136a1509beb9c84d5b25dd25edba21f7",
+  "manifest_sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac",
+  "model_source_sha256": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+  "evaluator_sha256": "bd92732e088ff633d2ff299161cf47a8a5630435c4c425dbae7992f563bc0447",
+  "variant_report_sha256": "95c7a6d6fb118e362567b18e985745ca811f4690b850e4458ea7af9a22e6193b",
+  "strict_report_sha256": "ba3bc7b5a550a7f6a57317b997daf6d94e25c006d2eac3bf01b8e4c56ab53106",
+  "forced_diagnostic_sha256": "37ef45056f83ab6ebf5318adf1078ddc441aa9db7148e78de30e56485c81fd3a",
+  "verified_private_recovery_archive_sha256": "d9646d138f00a81c6893c1dc5e636d5df0caaac697d7f23cd3b9082c0f53af9b",
+  "verified_private_recovery_archive_bytes": 49002964,
+  "source": "https://zenodo.org/records/20801101",
+  "cohort": {
+    "train": {
+      "windows": 4357,
+      "subjects": 18,
+      "keyboard": 1906,
+      "mouse_click": 2449,
+      "ai_prompt_submit": 2
+    },
+    "validation": {
+      "windows": 1506,
+      "subjects": 6,
+      "keyboard": 549,
+      "mouse_click": 955,
+      "ai_prompt_submit": 2
+    },
+    "test": {
+      "windows": 1956,
+      "subjects": 8,
+      "keyboard": 885,
+      "mouse_click": 1070,
+      "ai_prompt_submit": 1
+    },
+    "unique_selected_windows": 7819,
+    "channels": 8,
+    "sampling_rate_hz": 256,
+    "samples_per_window": 448,
+    "window_seconds": 1.75,
+    "selected_nonoverlapping_eeg_hours": 3.800902777777778,
+    "prepared_waveform_file_bytes": 112097280,
+    "target": "three recorded observed actions; not latent-intent gold",
+    "coarse_environment": "last recorded oTree page/event and AI availability; screen video is not a trained vision input"
+  },
+  "training": {
+    "status": "completed_epochs",
+    "global_step": 1635,
+    "completed_epochs": 3,
+    "attempt2_training_elapsed_seconds": 1332.9615489050002,
+    "prior_memory_stop_preserved_in_history": true,
+    "selected_epoch_metadata": [
+      {
+        "epoch": 1,
+        "global_step": 545,
+        "checkpoint_sha256": "29f349c199bd99232a2431f83179085e136a1509beb9c84d5b25dd25edba21f7"
+      }
+    ],
+    "configuration": {
+      "model": "Qwen/Qwen3-8B",
+      "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+      "mode": "fused",
+      "epochs": 3,
+      "batch_size": 8,
+      "candidate_batch_size": 4,
+      "lr": 0.001,
+      "seed": 20261122,
+      "prefix_tokens": 8,
+      "encoder_width": 64,
+      "lora_rank": 0,
+      "abstain_threshold": 0.8,
+      "dtype": "bfloat16",
+      "device": "cuda",
+      "memory_budget_gib": 21.0,
+      "max_seconds": 3600.0
+    },
+    "parameter_counts": {
+      "trainable_parameters": 299776,
+      "frozen_parameters": 8190735360
+    },
+    "memory": {
+      "process_peak_rss_bytes": 5144715264,
+      "cuda_peak_allocated_bytes": 20419574784,
+      "cuda_peak_reserved_bytes": 20631781376
+    },
+    "model_selection_partition": "validation",
+    "test_used_for_tuning": false,
+    "learning_curve": [
+      {
+        "epoch": 1,
+        "global_step": 24,
+        "epoch_completed": false,
+        "mean_train_token_loss": 6.324615101019542,
+        "val_balanced_accuracy": null,
+        "val_macro_f1": null,
+        "val_coverage": null
+      },
+      {
+        "epoch": 1,
+        "global_step": 545,
+        "epoch_completed": true,
+        "mean_train_token_loss": 0.3639430658258998,
+        "val_balanced_accuracy": 0.3831214615181657,
+        "val_macro_f1": 0.34969853574504733,
+        "val_coverage": 0.0
+      },
+      {
+        "epoch": 2,
+        "global_step": 1090,
+        "epoch_completed": true,
+        "mean_train_token_loss": 0.26862337250228324,
+        "val_balanced_accuracy": 0.34727522991191345,
+        "val_macro_f1": 0.32195131813035743,
+        "val_coverage": 0.035856573705179286
+      },
+      {
+        "epoch": 3,
+        "global_step": 1635,
+        "epoch_completed": true,
+        "mean_train_token_loss": 0.26404830736851476,
+        "val_balanced_accuracy": 0.3401679080161613,
+        "val_macro_f1": 0.2962376933895921,
+        "val_coverage": 0.04780876494023904
+      }
+    ]
+  },
+  "conditions": {
+    "fused": {
+      "status": "measured",
+      "forced_choice": {
+        "n": 1956,
+        "accuracy": 0.5720858895705522,
+        "balanced_accuracy": 0.3954203847440027,
+        "macro_f1": 0.37369515570004563,
+        "coverage": 0.0,
+        "latency_ms_p50": 120.21464700001161,
+        "latency_ms_p95": 130.3775400001541,
+        "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution"
+      },
+      "strict": {
+        "status": "measured",
+        "n": 1956,
+        "class_counts": {
+          "mouse_click": 1070,
+          "keyboard": 885,
+          "ai_prompt_submit": 1
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.5720858895705522,
+        "accepted_correct_over_all": 0.0,
+        "balanced_accuracy": 0.0,
+        "macro_f1": 0.0,
+        "coverage": 0.0,
+        "selective_accuracy": null,
+        "negative_log_likelihood": 0.7168835113050793,
+        "brier_multiclass_sum": 0.5179687678582209,
+        "expected_calibration_error": 0.13026287264984807,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 1
+          },
+          "keyboard": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 885
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 1070
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "prediction_sha256": "ecaede969b1b44950da7355eb7f85ab401c7170d09196b03dbd74de39baa4ea8"
+    },
+    "context_only": {
+      "status": "measured",
+      "forced_choice": {
+        "n": 1956,
+        "accuracy": 0.5587934560327198,
+        "balanced_accuracy": 0.39305137546860974,
+        "macro_f1": 0.35015963695379165,
+        "coverage": 0.0,
+        "latency_ms_p50": 120.36741149950103,
+        "latency_ms_p95": 130.9553125001912,
+        "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution"
+      },
+      "strict": {
+        "status": "measured",
+        "n": 1956,
+        "class_counts": {
+          "mouse_click": 1070,
+          "keyboard": 885,
+          "ai_prompt_submit": 1
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.5587934560327198,
+        "accepted_correct_over_all": 0.0,
+        "balanced_accuracy": 0.0,
+        "macro_f1": 0.0,
+        "coverage": 0.0,
+        "selective_accuracy": null,
+        "negative_log_likelihood": 0.7204124760910136,
+        "brier_multiclass_sum": 0.5220400684108036,
+        "expected_calibration_error": 0.11894656751297243,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 1
+          },
+          "keyboard": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 885
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 1070
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "prediction_sha256": "69211024f3a6bf3ff1fa8b9fc3629fae3052ac7db0bc407319bd6ee0988e6349"
+    },
+    "eeg_only": {
+      "status": "measured",
+      "forced_choice": {
+        "n": 1956,
+        "accuracy": 0.45245398773006135,
+        "balanced_accuracy": 0.3333333333333333,
+        "macro_f1": 0.20767335445265753,
+        "coverage": 0.03578732106339468,
+        "latency_ms_p50": 101.32426349991874,
+        "latency_ms_p95": 101.9588695000948,
+        "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution"
+      },
+      "strict": {
+        "status": "measured",
+        "n": 1956,
+        "class_counts": {
+          "mouse_click": 1070,
+          "keyboard": 885,
+          "ai_prompt_submit": 1
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.45245398773006135,
+        "accepted_correct_over_all": 0.017382413087934562,
+        "balanced_accuracy": 0.0128060263653484,
+        "macro_f1": 0.0237347294938918,
+        "coverage": 0.03578732106339468,
+        "selective_accuracy": 0.4857142857142857,
+        "negative_log_likelihood": 0.8845929996519482,
+        "brier_multiclass_sum": 0.6626649965559429,
+        "expected_calibration_error": 0.2858088547649559,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 1
+          },
+          "keyboard": {
+            "ai_prompt_submit": 0,
+            "keyboard": 34,
+            "mouse_click": 0,
+            "__abstain__": 851
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 0,
+            "keyboard": 36,
+            "mouse_click": 0,
+            "__abstain__": 1034
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "prediction_sha256": "7e496b96fdec91082565ae48f31b7272f7f4cc08babbfbf0020c5663b3ec8353"
+    },
+    "eeg_shuffled": {
+      "status": "measured",
+      "forced_choice": {
+        "n": 1956,
+        "accuracy": 0.570040899795501,
+        "balanced_accuracy": 0.39423940017952375,
+        "macro_f1": 0.37198821239563246,
+        "coverage": 0.0,
+        "latency_ms_p50": 120.22766550035158,
+        "latency_ms_p95": 130.69803675011826,
+        "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution"
+      },
+      "strict": {
+        "status": "measured",
+        "n": 1956,
+        "class_counts": {
+          "mouse_click": 1070,
+          "keyboard": 885,
+          "ai_prompt_submit": 1
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.570040899795501,
+        "accepted_correct_over_all": 0.0,
+        "balanced_accuracy": 0.0,
+        "macro_f1": 0.0,
+        "coverage": 0.0,
+        "selective_accuracy": null,
+        "negative_log_likelihood": 0.7155040300241656,
+        "brier_multiclass_sum": 0.5167465105970321,
+        "expected_calibration_error": 0.12241779782776945,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 1
+          },
+          "keyboard": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 885
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 1070
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "prediction_sha256": "5d81665fbb22c9b4044f68c1d7bb0bdd44a4ae6512b9a7bfce2d08cfe8bdb253"
+    },
+    "eeg_time_shifted": {
+      "status": "measured",
+      "forced_choice": {
+        "n": 1956,
+        "accuracy": 0.5577709611451943,
+        "balanced_accuracy": 0.386762764665505,
+        "macro_f1": 0.362248761648518,
+        "coverage": 0.0,
+        "latency_ms_p50": 120.2211449999595,
+        "latency_ms_p95": 130.30565800022487,
+        "latency_scope": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution"
+      },
+      "strict": {
+        "status": "measured",
+        "n": 1956,
+        "class_counts": {
+          "mouse_click": 1070,
+          "keyboard": 885,
+          "ai_prompt_submit": 1
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.5577709611451943,
+        "accepted_correct_over_all": 0.0,
+        "balanced_accuracy": 0.0,
+        "macro_f1": 0.0,
+        "coverage": 0.0,
+        "selective_accuracy": null,
+        "negative_log_likelihood": 0.7192290852480148,
+        "brier_multiclass_sum": 0.5203026970467106,
+        "expected_calibration_error": 0.11264630245589528,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 1
+          },
+          "keyboard": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 885
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 1070
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "prediction_sha256": "731f717172ec8246821e7d5ef7026076cfad2b0609073eb77ece3769951a3b83"
+    }
+  },
+  "strict_resource": {
+    "status": "passed",
+    "reasons": [],
+    "measurement": {
+      "measurement_mode": "actual",
+      "machine_id": "colab-xavier-eeg-20261122",
+      "runtime": "torch 2.14.1+cu130; transformers 5.22.1",
+      "accelerator": "NVIDIA L4",
+      "measurement_method": "PyTorch CUDA allocator peak counters and process getrusage RSS over the actual frozen 5-condition run; per-candidate synchronized scoring timing",
+      "memory_measurement_scope": "GPU peak reserved bytes; separate CPU RSS and physical host RAM",
+      "checkpoint_sha256": "29f349c199bd99232a2431f83179085e136a1509beb9c84d5b25dd25edba21f7",
+      "hardware_compatible": true,
+      "inference_succeeded": true,
+      "peak_memory_bytes": 16829644800,
+      "memory_budget_bytes": 22548578304,
+      "memory_capacity_bytes": 23659151360,
+      "p95_latency_ms": 130.3775400001541,
+      "host_peak_rss_bytes": 5156388864,
+      "host_ram_bytes": 56863301632,
+      "latency_scope": "candidate_scoring_excludes_eeg_preprocessing_and_harness",
+      "latency_details": "candidate scoring, includes accelerator sync; excludes EEG loading/preprocessing and harness execution",
+      "target_environment_verified": true,
+      "target_environment_id": "colab-xavier-eeg-20261122",
+      "hardware_evidence_sha256": "1e2db45d011a9a4d326be2de0a7ad5c6e1d6d584c8855aea4ba3ed8ce131b1f1",
+      "measurement_source_report_sha256": "95c7a6d6fb118e362567b18e985745ca811f4690b850e4458ea7af9a22e6193b",
+      "compatible_environment_scope": "Measured Colab L4 only; this does not prove the same 8B model fits the M1 workstation."
+    },
+    "target_environment_evidence": "recorded",
+    "limits_are": "project configuration; not research-established universal thresholds",
+    "scope": "Reported measured configuration only; accelerator and host memory scopes must not be conflated, and component latency is not end-to-end task latency."
+  },
+  "preprocessing_status": "blocked",
+  "negative_controls": {
+    "eeg_shuffled": {
+      "status": "passed",
+      "records_checked": 1956,
+      "issue_count": 0,
+      "evidence_scope": "Consistency of logged source IDs and original recording times; not an independent rerun of model inputs."
+    },
+    "eeg_time_shifted": {
+      "status": "passed",
+      "records_checked": 1956,
+      "issue_count": 0,
+      "evidence_scope": "Actual raw extraction certificates were independently decoded and compared; original inputs were matched to checkpoint-sealed bytes. This is not prospective causal preprocessing."
+    }
+  },
+  "strict_acceptance": {
+    "status": "blocked",
+    "criteria_id": "pj-xavier-proposed-replay-targets-v1",
+    "criteria_basis": "Proposed engineering targets for the first meaningful replay milestone. These values are not empirical predictions, published norms, or a claim of user approval. Version before starting model selection; modify only before a fresh evaluation freeze.",
+    "checks": {
+      "min_test_participants": {
+        "status": "passed",
+        "limit": 5,
+        "observed": 8
+      },
+      "min_replay_episodes": {
+        "status": "blocked",
+        "limit": 100,
+        "observed": null,
+        "reason": "required measurement unavailable"
+      },
+      "min_macro_f1": {
+        "status": "failed",
+        "limit": 0.6,
+        "observed": 0.0
+      },
+      "min_coverage": {
+        "status": "failed",
+        "limit": 0.5,
+        "observed": 0.0
+      },
+      "min_selective_accuracy": {
+        "status": "blocked",
+        "limit": 0.8,
+        "observed": null,
+        "reason": "required measurement unavailable"
+      },
+      "min_task_completion_rate": {
+        "status": "blocked",
+        "limit": 0.8,
+        "observed": null,
+        "reason": "required measurement unavailable"
+      },
+      "min_idle_minutes": {
+        "status": "failed",
+        "limit": 60,
+        "observed": 0.0
+      },
+      "max_false_actions_per_minute": {
+        "status": "blocked",
+        "limit": 0.1,
+        "observed": null,
+        "reason": "required measurement unavailable"
+      },
+      "max_p95_latency_ms": {
+        "status": "passed",
+        "limit": 2000,
+        "observed": 130.3775400001541
+      }
+    },
+    "interpretation": "Engineering targets chosen for this project; not established performance estimates."
+  },
+  "strict_eeg_increment": {
+    "context_only": {
+      "macro_f1_difference": 0.0,
+      "interval": {
+        "status": "measured",
+        "method": "paired participant-cluster percentile bootstrap",
+        "groups": 8,
+        "replicates": 500,
+        "seed": 1731,
+        "metric": "macro_f1",
+        "lower_95": 0.0,
+        "upper_95": 0.0
+      }
+    },
+    "eeg_shuffled": {
+      "macro_f1_difference": 0.0,
+      "interval": {
+        "status": "measured",
+        "method": "paired participant-cluster percentile bootstrap",
+        "groups": 8,
+        "replicates": 500,
+        "seed": 1731,
+        "metric": "macro_f1",
+        "lower_95": 0.0,
+        "upper_95": 0.0
+      }
+    },
+    "eeg_time_shifted": {
+      "macro_f1_difference": 0.0,
+      "interval": {
+        "status": "measured",
+        "method": "paired participant-cluster percentile bootstrap",
+        "groups": 8,
+        "replicates": 500,
+        "seed": 1731,
+        "metric": "macro_f1",
+        "lower_95": 0.0,
+        "upper_95": 0.0
+      }
+    }
+  },
+  "forced_choice_diagnostic": {
+    "analysis_type": "Additional descriptive forced-choice analysis; requested scoring threshold and strict goal gates remain unchanged. Calculated after partial condition results were visible; not confirmatory test-based model selection.",
+    "selection_or_weights_changed": false,
+    "confidence_gate_removed_for_this_diagnostic_only": true,
+    "classes": [
+      "ai_prompt_submit",
+      "keyboard",
+      "mouse_click"
+    ],
+    "metrics": {
+      "fused": {
+        "status": "measured",
+        "n": 1956,
+        "class_counts": {
+          "mouse_click": 1070,
+          "keyboard": 885,
+          "ai_prompt_submit": 1
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.5720858895705522,
+        "accepted_correct_over_all": 0.5720858895705522,
+        "balanced_accuracy": 0.39542038474400265,
+        "macro_f1": 0.37369515570004563,
+        "coverage": 1.0,
+        "selective_accuracy": 0.5720858895705522,
+        "negative_log_likelihood": 0.7168835113050793,
+        "brier_multiclass_sum": 0.5179687678582209,
+        "expected_calibration_error": 0.13026287264984807,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 0,
+            "keyboard": 1,
+            "mouse_click": 0,
+            "__abstain__": 0
+          },
+          "keyboard": {
+            "ai_prompt_submit": 0,
+            "keyboard": 719,
+            "mouse_click": 166,
+            "__abstain__": 0
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 0,
+            "keyboard": 670,
+            "mouse_click": 400,
+            "__abstain__": 0
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "context_only": {
+        "status": "measured",
+        "n": 1956,
+        "class_counts": {
+          "mouse_click": 1070,
+          "keyboard": 885,
+          "ai_prompt_submit": 1
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.5587934560327198,
+        "accepted_correct_over_all": 0.5587934560327198,
+        "balanced_accuracy": 0.39305137546860974,
+        "macro_f1": 0.3501596369537917,
+        "coverage": 1.0,
+        "selective_accuracy": 0.5587934560327198,
+        "negative_log_likelihood": 0.7204124760910136,
+        "brier_multiclass_sum": 0.5220400684108036,
+        "expected_calibration_error": 0.11894656751297243,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 0,
+            "keyboard": 1,
+            "mouse_click": 0,
+            "__abstain__": 0
+          },
+          "keyboard": {
+            "ai_prompt_submit": 0,
+            "keyboard": 807,
+            "mouse_click": 78,
+            "__abstain__": 0
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 0,
+            "keyboard": 784,
+            "mouse_click": 286,
+            "__abstain__": 0
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "eeg_only": {
+        "status": "measured",
+        "n": 1956,
+        "class_counts": {
+          "mouse_click": 1070,
+          "keyboard": 885,
+          "ai_prompt_submit": 1
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.45245398773006135,
+        "accepted_correct_over_all": 0.45245398773006135,
+        "balanced_accuracy": 0.3333333333333333,
+        "macro_f1": 0.20767335445265753,
+        "coverage": 1.0,
+        "selective_accuracy": 0.45245398773006135,
+        "negative_log_likelihood": 0.8845929996519482,
+        "brier_multiclass_sum": 0.6626649965559429,
+        "expected_calibration_error": 0.2858088547649559,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 0,
+            "keyboard": 1,
+            "mouse_click": 0,
+            "__abstain__": 0
+          },
+          "keyboard": {
+            "ai_prompt_submit": 0,
+            "keyboard": 885,
+            "mouse_click": 0,
+            "__abstain__": 0
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 0,
+            "keyboard": 1070,
+            "mouse_click": 0,
+            "__abstain__": 0
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "eeg_shuffled": {
+        "status": "measured",
+        "n": 1956,
+        "class_counts": {
+          "mouse_click": 1070,
+          "keyboard": 885,
+          "ai_prompt_submit": 1
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.570040899795501,
+        "accepted_correct_over_all": 0.570040899795501,
+        "balanced_accuracy": 0.39423940017952375,
+        "macro_f1": 0.37198821239563246,
+        "coverage": 1.0,
+        "selective_accuracy": 0.570040899795501,
+        "negative_log_likelihood": 0.7155040300241656,
+        "brier_multiclass_sum": 0.5167465105970321,
+        "expected_calibration_error": 0.12241779782776945,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 0,
+            "keyboard": 1,
+            "mouse_click": 0,
+            "__abstain__": 0
+          },
+          "keyboard": {
+            "ai_prompt_submit": 0,
+            "keyboard": 720,
+            "mouse_click": 165,
+            "__abstain__": 0
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 0,
+            "keyboard": 675,
+            "mouse_click": 395,
+            "__abstain__": 0
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "eeg_time_shifted": {
+        "status": "measured",
+        "n": 1956,
+        "class_counts": {
+          "mouse_click": 1070,
+          "keyboard": 885,
+          "ai_prompt_submit": 1
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.5577709611451943,
+        "accepted_correct_over_all": 0.5577709611451943,
+        "balanced_accuracy": 0.3867627646655051,
+        "macro_f1": 0.362248761648518,
+        "coverage": 1.0,
+        "selective_accuracy": 0.5577709611451943,
+        "negative_log_likelihood": 0.7192290852480148,
+        "brier_multiclass_sum": 0.5203026970467106,
+        "expected_calibration_error": 0.11264630245589528,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 0,
+            "keyboard": 1,
+            "mouse_click": 0,
+            "__abstain__": 0
+          },
+          "keyboard": {
+            "ai_prompt_submit": 0,
+            "keyboard": 720,
+            "mouse_click": 165,
+            "__abstain__": 0
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 0,
+            "keyboard": 699,
+            "mouse_click": 371,
+            "__abstain__": 0
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      }
+    },
+    "eeg_increment": {
+      "context_only": {
+        "macro_f1_difference": 0.023535518746253925,
+        "interval": {
+          "status": "measured",
+          "method": "paired participant-cluster percentile bootstrap",
+          "groups": 8,
+          "replicates": 500,
+          "seed": 1731,
+          "metric": "macro_f1",
+          "lower_95": 0.008483291979967222,
+          "upper_95": 0.03821361729759937
+        }
+      },
+      "eeg_shuffled": {
+        "macro_f1_difference": 0.0017069433044131777,
+        "interval": {
+          "status": "measured",
+          "method": "paired participant-cluster percentile bootstrap",
+          "groups": 8,
+          "replicates": 500,
+          "seed": 1731,
+          "metric": "macro_f1",
+          "lower_95": -0.007003176361171148,
+          "upper_95": 0.009461542578870608
+        }
+      },
+      "eeg_time_shifted": {
+        "macro_f1_difference": 0.011446394051527642,
+        "interval": {
+          "status": "measured",
+          "method": "paired participant-cluster percentile bootstrap",
+          "groups": 8,
+          "replicates": 500,
+          "seed": 1731,
+          "metric": "macro_f1",
+          "lower_95": 0.006163826127287608,
+          "upper_95": 0.01780967508821646
+        }
+      }
+    },
+    "rare_class_warning": "One ai_prompt_submit test event; this class cannot establish general agent-request performance."
+  },
+  "harness_replay": {
+    "status": "unavailable",
+    "reason": "no independent held-out harness replay traces supplied",
+    "task_completion_rate": null,
+    "false_actions_per_minute": null
+  },
+  "goal_validation_blockers": [
+    "online_preprocessing_unverified: future filter support/availability has not passed",
+    "measured latency does not cover end-to-end preprocessing, inference and harness execution",
+    "held-out harness task completion has not been measured",
+    "positive EEG contribution over context_only not established",
+    "positive EEG contribution over eeg_shuffled not established",
+    "positive EEG contribution over eeg_time_shifted not established",
+    "configured project acceptance criteria have not passed"
+  ],
+  "evaluation_elapsed_seconds": 1233.9391894199998,
+  "autonomous_agent_validated": false,
+  "held_out_replay_validated": false,
+  "input_ablation_scope": "same selected frozen fused checkpoint; no independently trained unimodal baselines",
+  "private_record_data_published": false
+}

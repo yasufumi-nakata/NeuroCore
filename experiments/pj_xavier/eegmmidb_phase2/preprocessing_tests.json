@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "suite": "python -m unittest discover -s experiments/pj_xavier/eegmmidb_phase2 -p test_prep_causal.py -v",
+  "tests_run": 12,
+  "failures": 0,
+  "errors": 0,
+  "observed_runtime_seconds": 0.081,
+  "prep_source_sha256": "0cec7cda7338b9e7aaf99865654740a315fd4a867dd3dd7f36ecf6cd835a1b3a",
+  "tests_source_sha256": "f2ebfb695fd08f6afe575e2580c51995a4e6c3aeb7fd49d6b9d1d47769bac121",
+  "future_changes_prefix_invariance_native_rates": [
+    128,
+    160
+  ],
+  "independent_MNE_calibration_fixture": true,
+  "observed_epoch": 1795320407.672519
+}

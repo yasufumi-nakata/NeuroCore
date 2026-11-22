@@ -1,0 +1,376 @@
+{
+  "schema": "xavier-eegmmidb-phase3-completed-recovered-trial-stopped-public-v1",
+  "status": "completed_recovered_local_trial_stopped",
+  "created_epoch": 1795328545.883289,
+  "model_training": {
+    "SSL": {
+      "status": "completed",
+      "stop_reason": null,
+      "completed_epochs": 20,
+      "optimizer_steps": 1420,
+      "best_checkpoint_sha256": "d2f40f6ba1ac5b8ee3fe9b9063ead48bb74af2e375dc346ad535400c69480ed2",
+      "memory": {
+        "process_peak_rss_bytes": 9327624192,
+        "cuda_allocated_bytes": 5208576,
+        "cuda_reserved_bytes": 4158652416,
+        "cuda_peak_allocated_bytes": 3999804928,
+        "cuda_peak_reserved_bytes": 4158652416
+      },
+      "hardware": {
+        "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+        "python": "3.13.16",
+        "torch": "2.14.1+cu130",
+        "device": "cuda",
+        "system_memory_bytes": 56863301632,
+        "available_host_memory_bytes_at_observation": 48612560896,
+        "accelerator": "NVIDIA L4",
+        "accelerator_memory_bytes": 23659151360
+      },
+      "elapsed_seconds": 694.855399391,
+      "training_batch_size": 512,
+      "validation_batch_size": 512,
+      "summary_sha256": "683ae9248a91707c9b832324efe2ffd1c5fa1112bc6a478b36284b55b3a3e75b",
+      "config_sha256": "245ab4f7a68de7ada33f5bca702139e0b9253d2659cffd5493196c51b1c70416",
+      "history_sha256": "a750a09484a9f73066623cd1976ca130827b0523040f0e1116113315172c1044",
+      "selected_epoch": 20,
+      "initial_validation_subject_MSE": 0.0901938973870404,
+      "selected_validation_subject_MSE": 0.06717131591917519,
+      "relative_reconstruction_MSE_reduction": 0.2552565321472984
+    },
+    "EEG": {
+      "status": "completed",
+      "stop_reason": null,
+      "completed_epochs": 60,
+      "optimizer_steps": 1500,
+      "best_checkpoint_sha256": "3981052a799072e384be0ac003d1e272821ae080c2f55369e5f1764e76aa4138",
+      "memory": {
+        "process_peak_rss_bytes": 3311251456,
+        "cuda_allocated_bytes": 50166784,
+        "cuda_reserved_bytes": 2080374784,
+        "cuda_peak_allocated_bytes": 2007008768,
+        "cuda_peak_reserved_bytes": 2080374784
+      },
+      "hardware": {
+        "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+        "python": "3.13.16",
+        "torch": "2.14.1+cu130",
+        "device": "cuda",
+        "system_memory_bytes": 56863301632,
+        "available_host_memory_bytes_at_observation": 49118072832,
+        "accelerator": "NVIDIA L4",
+        "accelerator_memory_bytes": 23659151360
+      },
+      "elapsed_seconds": 306.49272259200006,
+      "training_batch_size": 256,
+      "validation_batch_size": 256,
+      "summary_sha256": "ec65129f5194ad8f88086efd05982c9e9a920989503da71141e460651e041d34",
+      "config_sha256": "cd2576811110493f76d36dd5c1ee49c1a7c85e7732a5e5b007eef238b439e477",
+      "history_sha256": "d719c94d9b14fd35120963572eb4b388816bcf4fbad1e1440f11905390398905",
+      "selected_epoch": 37,
+      "selected_global_step": 925,
+      "selected_validation_subject_BA": 0.6723845108695652
+    },
+    "EEG_LLM": {
+      "status": "partial",
+      "stop_reason": "stage_time_budget",
+      "completed_epochs": 20,
+      "optimizer_steps": 1043,
+      "best_checkpoint_sha256": "b2373bc054dbdd883236b417d3679744e179f8b067c2289c6191984a8b0de471",
+      "memory": {
+        "process_peak_rss_bytes": 4603359232,
+        "cuda_allocated_bytes": 3460632576,
+        "cuda_reserved_bytes": 18593349632,
+        "cuda_peak_allocated_bytes": 18039724544,
+        "cuda_peak_reserved_bytes": 18593349632
+      },
+      "hardware": {
+        "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+        "python": "3.13.16",
+        "torch": "2.14.1+cu130",
+        "device": "cuda",
+        "system_memory_bytes": 56863301632,
+        "available_host_memory_bytes_at_observation": 48576753664,
+        "accelerator": "NVIDIA L4",
+        "accelerator_memory_bytes": 23659151360
+      },
+      "elapsed_seconds": 1800.4183082629997,
+      "training_batch_size": 128,
+      "validation_batch_size": 128,
+      "summary_sha256": "92c363c2cde77a88306689a67ad635f0c4e57df0c6d363cd164681d2552f0f68",
+      "config_sha256": "a8497a8eddebbf6f8f262f1847982b4d4b66fa015df68d3d842dcf606378f2fa",
+      "history_sha256": "61d8aa16b6d3faa00465eadef78cbeda2cbcaa8e3210f0740b28c2d101041682",
+      "selected_epoch": 11,
+      "selected_global_step": 550,
+      "selected_validation_subject_BA": 0.618661625964615
+    }
+  },
+  "parameter_counts": {
+    "EEG_encoder": 4768,
+    "supervised_EEG_classifier": 4900,
+    "SSL_model": 24352,
+    "SSL_reconstruction_decoder": 19584,
+    "fused_encoder_and_projector_from_actual_L4_gradient_evidence": 72416,
+    "frozen_LLM_from_actual_L4_backbone": 1711376384
+  },
+  "actual_input_exposure": {
+    "completed_SSL_optimizer_steps": {
+      "unique_window_ids": 35865,
+      "native_source_interval_union_seconds": 107595.0,
+      "physical_payload_interval_union_seconds": 107595.0,
+      "target_clock_interval_union_seconds": 107595.0,
+      "native_source_interval_union_hours": 29.8875,
+      "physical_payload_interval_union_hours": 29.8875,
+      "raw_recordings": 1013,
+      "unique_signal_payloads": 1013,
+      "filter_history_is_not_counted": true
+    },
+    "selected_SSL_encoder": {
+      "unique_window_ids": 35865,
+      "native_source_interval_union_seconds": 107595.0,
+      "physical_payload_interval_union_seconds": 107595.0,
+      "target_clock_interval_union_seconds": 107595.0,
+      "native_source_interval_union_hours": 29.8875,
+      "physical_payload_interval_union_hours": 29.8875,
+      "raw_recordings": 1013,
+      "unique_signal_payloads": 1013,
+      "filter_history_is_not_counted": true
+    },
+    "selected_downstream_path": {
+      "MI_supervised": {
+        "checkpoint_sha256": "3981052a799072e384be0ac003d1e272821ae080c2f55369e5f1764e76aa4138",
+        "own_selected_checkpoint_exposure": {
+          "unique_window_ids": 6359,
+          "native_source_interval_union_seconds": 19077.0,
+          "physical_payload_interval_union_seconds": 19077.0,
+          "target_clock_interval_union_seconds": 19077.0,
+          "native_source_interval_union_hours": 5.299166666666666,
+          "physical_payload_interval_union_hours": 5.299166666666666,
+          "raw_recordings": 431,
+          "unique_signal_payloads": 431,
+          "filter_history_is_not_counted": true
+        },
+        "selected_path_union": {
+          "unique_window_ids": 42224,
+          "native_source_interval_union_seconds": 107949.2,
+          "physical_payload_interval_union_seconds": 107949.2,
+          "target_clock_interval_union_seconds": 107949.2,
+          "native_source_interval_union_hours": 29.98588888888889,
+          "physical_payload_interval_union_hours": 29.98588888888889,
+          "raw_recordings": 1013,
+          "unique_signal_payloads": 1013,
+          "filter_history_is_not_counted": true
+        }
+      },
+      "fused_alignment": {
+        "checkpoint_sha256": "b2373bc054dbdd883236b417d3679744e179f8b067c2289c6191984a8b0de471",
+        "own_selected_checkpoint_exposure": {
+          "unique_window_ids": 6359,
+          "native_source_interval_union_seconds": 19077.0,
+          "physical_payload_interval_union_seconds": 19077.0,
+          "target_clock_interval_union_seconds": 19077.0,
+          "native_source_interval_union_hours": 5.299166666666666,
+          "physical_payload_interval_union_hours": 5.299166666666666,
+          "raw_recordings": 431,
+          "unique_signal_payloads": 431,
+          "filter_history_is_not_counted": true
+        },
+        "selected_path_union": {
+          "unique_window_ids": 42224,
+          "native_source_interval_union_seconds": 107949.2,
+          "physical_payload_interval_union_seconds": 107949.2,
+          "target_clock_interval_union_seconds": 107949.2,
+          "native_source_interval_union_hours": 29.98588888888889,
+          "physical_payload_interval_union_hours": 29.98588888888889,
+          "raw_recordings": 1013,
+          "unique_signal_payloads": 1013,
+          "filter_history_is_not_counted": true
+        }
+      }
+    },
+    "SSL_training_examples_presented": 717300,
+    "SSL_repeated_window_duration_hours": 597.75,
+    "repetition_does_not_add_independent_EEG_hours": true
+  },
+  "independent_SSL_audit": {
+    "status": "passed",
+    "complete_validation_candidates": 21,
+    "SSL_validation_windows": 7581,
+    "SSL_validation_subject_groups": 16,
+    "selected_epoch": 20,
+    "initial_validation_subject_MSE": 0.09019389738704038,
+    "selected_validation_subject_MSE": 0.06717131591917519,
+    "selected_encoder_updated_from_initial": true,
+    "earliest_minimum_including_epoch0_verified": true,
+    "all_validation_IDs_and_checkpoint_hashes_verified": true,
+    "source_person_and_payload_exclusions_verified": true,
+    "same_seeded_initial_encoder_verified": true,
+    "exported_encoder_tensors_equal_selected_checkpoint": true
+  },
+  "heldout_benchmark": {
+    "counts": {
+      "models": 5,
+      "new_models": 2,
+      "primary_test": 751,
+      "secondary_test": 738,
+      "test_subject_groups": 17,
+      "full_test": 1489,
+      "paired_test": 1254,
+      "T0_diagnostic_only": 1357,
+      "predictions_per_model": 7210,
+      "new_prediction_rows": 14420,
+      "all_five_prediction_rows": 36050,
+      "old_models_reinferred": false
+    },
+    "mean_subject_BA": {
+      "phase2_csp_lda": {
+        "left_right": 0.5992066721286671,
+        "fists_feet": 0.5997080731544934
+      },
+      "phase2_scratch_eeg": {
+        "left_right": 0.5908551628820171,
+        "fists_feet": 0.6510204505204228
+      },
+      "phase2_fused_smollm2": {
+        "left_right": 0.5743909053809445,
+        "fists_feet": 0.5985216217815214
+      },
+      "phase3_ssl_eeg": {
+        "left_right": 0.6245280720984046,
+        "fists_feet": 0.6479850757101872
+      },
+      "phase3_ssl_fused_smollm2": {
+        "left_right": 0.5672020354497808,
+        "fists_feet": 0.6312258840870383
+      }
+    },
+    "public_aggregate_relative_path": "../../eegmmidb_phase3/protocol.measured_results.v1.json",
+    "public_aggregate_sha256": "d9a84e929d7d89b4c7d191bc361ebe48eae62a5d97d108672dffa84574f6df21",
+    "old_models_reinferred": false
+  },
+  "M1_recorded_trial": {
+    "status": "completed",
+    "partition": "train",
+    "same_examples_as_phase2": true,
+    "train_records": 3,
+    "fresh_LLM_routing_calls": 12,
+    "routing_cache_hits": 0,
+    "synthetic_environment_episodes": 12,
+    "successful_synthetic_episodes": 0,
+    "abstained_episodes": 12,
+    "invalid_actions": 0,
+    "incorrect_target_actions": 0,
+    "acceptance_threshold": 0.8,
+    "probabilities_are_calibrated_intent_confidence": false,
+    "elapsed_model_and_routing_seconds": 18.745246083009988,
+    "child_wall_seconds_including_setup": 21.194427013397217,
+    "decoder_batch_size": 3,
+    "decoder_batch_latency_ms": 1667.9715419886634,
+    "amortized_decoder_latency_ms_per_example": 555.9905139962211,
+    "decoder_latency_scope": "amortized model call including EEG encoder; excludes array I/O, transfer before timer, prompt encoding and harness",
+    "resources": {
+      "hardware": {
+        "platform": "macOS-27.2.1-arm64-arm-64bit",
+        "python": "3.12.13",
+        "torch": "2.15.0",
+        "device": "mps",
+        "system_memory_bytes": 17179869184,
+        "available_host_memory_bytes_at_observation": 4283203584,
+        "mps_recommended_max_memory_bytes": 12713115648
+      },
+      "memory": {
+        "mps_sampled_driver_bytes": 4381786112,
+        "process_peak_rss_bytes": 1147863040,
+        "mps_sampled_allocated_bytes": 3423507712
+      },
+      "allocator": {
+        "kind": "mps_allocator",
+        "budget_bytes": 8589934592,
+        "recommended_bytes": 12713115648,
+        "scope": "PyTorch MPS allocator; host allocations and other applications excluded"
+      },
+      "MPS_values_are_samples_not_true_peaks": true,
+      "routing_generation_calls": 12,
+      "os_actions_executed": 0
+    },
+    "MPS_values_are_samples_not_true_peaks": true,
+    "workstation_latency_is_not_isolated_or_idle_machine_measurement": true,
+    "OS_actions": 0,
+    "cloud_API_calls": 0,
+    "test_forward_calls": 0,
+    "local_files_only": true,
+    "source_hashes_unchanged_before_after": true,
+    "checkpoint_sha256": "b2373bc054dbdd883236b417d3679744e179f8b067c2289c6191984a8b0de471",
+    "contract_sha256": "3ae5f2dfce28994b733adeb93eb4be419a8820455813d4d695c746ab74e34d39",
+    "launcher_sha256": "fe5db82ec92fe417f6798db6f10a36a318b7f8d2b60fbef977ed6fd40c3939da",
+    "public_command": "python3 scripts/try_pj_xavier_recorded.py",
+    "actual_trial_invocations_for_this_validation": 1
+  },
+  "recovery": {
+    "status": "completed",
+    "member_count": 476,
+    "all_member_hashes_verified": true,
+    "archive_bytes": 77992715,
+    "uncompressed_bytes": 489554060,
+    "archive_sha256": "833dacd04be05c7b2646980f93c1ffe9c6169168ac2f8b4b22ac62b5cfed5c5e",
+    "excluded_waveform_cache_reason": "Exact prepared array SHA and regeneration recipe retained; identical raw ZIP already on workstation.",
+    "mandatory_checkpoints_optimizer_RNG_history_predictions_probes_and_metadata_retained": true
+  },
+  "shutdown": {
+    "status": "stopped",
+    "observed_epoch": 1795328339.575295,
+    "owned_session_absent_from_active_listing": true,
+    "all_mandatory_artifacts_recovered_before_stop": true,
+    "new_GPU_session_started": false,
+    "original_compute_deadline_epoch": 1795331083.750155,
+    "stop_started_after_deadline_seconds": 0.0,
+    "workstation_free_bytes_before_stop": 37028466688,
+    "workstation_free_bytes_after_stop": 37028253696,
+    "original_recovery_helper_unchanged": true,
+    "original_blocked_stop_preserved": true
+  },
+  "stop_only_operational_correction": {
+    "initial_STOP_guard": "local free space below35GiB blocked stop before contacting Colab",
+    "all_recovered_member_bytes_still_verified": true,
+    "new_allocation_and_recovery_reserve_gates_relaxed": false,
+    "only_owned_idle_session_termination_allowed": true,
+    "free_bytes_after_recovery_before_M1": 39349374976,
+    "free_bytes_at_STOP_only_start": 37028466688,
+    "difference_bytes": -2320908288,
+    "cause_of_free_space_change": "not established; the observation is after M1, but no causal attribution is made"
+  },
+  "Colab_usage_after_stop": {
+    "remaining_CU": 405.38,
+    "usage_rate_CU_per_hour": 0.0,
+    "active_assignments": 0,
+    "phase3_budget_registration_baseline_CU": 408.93,
+    "balance_difference_since_registration_CU": 3.55,
+    "registered_maximum_CU": 5,
+    "new_compute_unit_purchase": false,
+    "difference_scope": "Observed balance change since budget registration; not isolated attribution to optimizer execution."
+  },
+  "evidence_sha256": {
+    "recovery": "1bf122bba4744bd86c9a57d434bcc0c6d193f162afca03bdc465229a657e0c90",
+    "stop": "ebe049607eadfa8608c3a7a20aea62c8b1703b8ee385702a03ea41c8d06025c5",
+    "SSL_audit": "093f515e7ca090e3bbff479ac0c597e2b3da8346934070da99fbe1881a6b03af",
+    "M1_summary": "bba97def9083f42b7822cd7444b542df01780d160b5b7dee3c05a7a2ced4551d",
+    "M1_completion": "d3675019e17636c5a741d6309b3ea8aebceffedfb914d90374dbacfedcb98aa8",
+    "launcher_completion": "08505272ac635bb8dbbdce934a30f320c4c29691f97702c50f2e4cd88843779e",
+    "parameter_accounting": "beaf4df4ddb52d18a015d8f9d626dfef5d3a0e2f4f2e5c6e89fa74739207a619",
+    "usage_after_stop": "79b249422f68d711520c50009cbef381ca06196c39cd281c8fefeec2f6e963be",
+    "STOP_only_amendment": "de1ba269c439472e7be36a953c4c704bb2bde05289d6e8e5bb12432b3aefb491",
+    "STOP_only_helper": "2f6a973d63ea35e5659775a3bbd625a3b3bcaf6b375cdc5e99550b97e841e0bf",
+    "unchanged_recovery_helper": "49c5e3501ee4cef43e51d0def81199734ac23601591bfa9fe6bdef0a64d1cd3c"
+  },
+  "limitations": [
+    "Controlled motor-imagery classification and bounded synthetic routing do not prove free-form intention decoding.",
+    "Additional model comparisons reuse the phase2 heldout cohort exploratorily.",
+    "Fused phase2/phase3 training batches and realized step/time budgets differ.",
+    "M1 trial uses3training examples and cannot estimate heldout accuracy.",
+    "Fixed0.8softmax threshold is uncalibrated; all12trial episodes abstained.",
+    "MPS values are samples, not verified peaks; measured latency includes concurrent workstation activity."
+  ],
+  "goal_validated": false,
+  "freeform_intention_validated": false,
+  "real_OS_actions": 0,
+  "new_model_forwards_by_this_report": 0
+}

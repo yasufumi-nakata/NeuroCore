@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "workstation_cpu_fixture_tests": {
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0
+  },
+  "scratch_cpu_fixture_tests": {
+    "passed": 7,
+    "failed": 0,
+    "skipped": 1,
+    "skip_reason": "MNE unavailable in scratch; full real BrainVision fixture passed on workstation"
+  },
+  "preparer_sha256": "d3b3dc3b7daf8c1eba55d7ee8ae4ddf3eeac4807d16f9e6ef3c0bb1e9ef76256",
+  "validator_sha256": "2f60e0240d58b2ca0ee5532526d1d0af2c1706682defac7ccf44c1c82ab50dd9",
+  "test_sha256": "52946bd2fc956fe715239ea6618c1223b53faeb2c99864906bfc382d29aea288",
+  "full_real_data_validation": "independent_validation.json",
+  "model_inference_or_training_in_preparation": false
+}

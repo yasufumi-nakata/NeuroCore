@@ -36,7 +36,7 @@ python3 experiments/pj_xavier/controller/controller.py run \
   --apply --interval-seconds 300 --max-seconds 18000
 ```
 
-既存 config を上書きする必要はありません．`config.example.json` は同じ既定値を保存した参照用です．`tick` と `run` は JSON の状態を原子的に更新し，file lock により同じ state の同時操作を防ぎます．`run` は daemon lock と PID ファイルも持ちます．1回の `run` は最大5時間の観測ループです．snapshot 回収中の外部 CLI は別途 timeout と disk reserve で管理します．既存 worker の元 deadline を後ろに延長しません．
+既存 config を上書きする必要はありません．`config.example.json` は同じ既定値を保存した参照用です．`tick` と `run` は JSON の状態を原子的に更新し，file lock により同じ state の同時操作を防ぎます．`run` は daemon lock と PID ファイルも持ちます．1回の `run` は最大5時間の観測ループです．再起動する場合は元 launch receipt の起動時刻＋上限秒数を `controller_deadline_epoch` に固定し，`--max-seconds` にもその残り時間だけを渡してください．この絶対 deadline は CLI 操作・chunk 回収にも適用します．既存 worker の元 deadline を後ろに延長しません．
 
 ## 監視と再開の判定
 
@@ -75,6 +75,12 @@ workstation の bulk worker は `bulk_launch_v3.json` を優先し，なけれ�
 
 原則として `colab_raw_archive/<dataset_key>/<relative_path>` へ保存します．root が先に回収した一意 basename のファイルも，実サイズと SHA-256 を確認して利用します．既存の不完全・不一致ファイルを勝手に上書きしません．新規転送は専用 `.controller.download.part` へ行い，全体 SHA-256 の照合後に，既存ファイルを上書きしない atomic hardlink で完成パスへ昇格させます．CLI 子プロセスはローカル reserve を監視し，超過しそうならその転送だけを止めます．
 
+installed Colab CLI v0.7.4 の `download` は JSON/base64 応答をすべて受信してから保存するため，数 GB の原本を直接渡すと RAM と回収時間が問題になります．64 MiB を超える raw は，controller 専用 protocol で **最大64 MiBの派生 chunk** を remote に作り，その chunk だけを workstation CLI で回収します．installed CLI のコードは変更しません．原本は read-only のままです．
+
+各 chunk は source SHA-256・source size・source identity・offset・size・chunk SHA-256 を照合します．workstation 側では 1 MiB buffer で追記し，`.chunks.json` に確認済み offset と pending chunk を原子的に保存します．append 後に receipt 保存前で中断しても，保存済み tail を chunk と照合して残りだけを追記します．確認済み prefix が変わった場合や，receipt のない未知の partial は上書きせず保留します．chunk の保存と receipt commit 後に，対応する派生 chunk だけを remote から削除します．最後に原本全体の SHA-256 が一致して初めて回収完了です．
+
+chunk の進捗は state の `raw_recovery_progress` にも保存します．原本の回収中でも，確認済み byte 数と再開 receipt の場所を確認できます．v3 追加学習には `uniba_natural_v3_five_variant_evaluation` gate を追加し，`runs/qwen3_8b_aicoding_uniba_natural_v3_fused_30e_v1/variant_evaluation_completion.json` と同 run の `best.pt` を照合します．daemon は config を起動時に読み込むため，gate を追加したら元絶対 deadline を保持した再起動が必要です．
+
 1 cycle の新規回収は既定2ファイルで，次の cycle が継続します．32 GiB の cycle 目安を超える一個のファイルも，実ディスク容量が満たせば取り残さないよう単独で回収できます．未回収ファイルがある限り，Colab の自動停止は許可しません．
 
 `allow_idle_stop` は既定 false です．root がこれを true に設定した場合にも，次の全条件が必要です．
@@ -102,4 +108,4 @@ workstation の bulk worker は `bulk_launch_v3.json` を優先し，なけれ�
 python -m unittest discover -s experiments/pj_xavier/controller -p 'test_*.py' -v
 ```
 
-26 tests が成功しました．zombie と PID 再利用，deadline・capacity・compute credit gate，priority 照合成功／SHA 不一致，raw の重複排除・欠落・正しい回収・不正 checksum・inventory 更新後の停止禁止，snapshot member と SHA 検証，CLI scope，既存停止 receipt の冪等性，fake CLI による一連の回収と停止，5 variants評価の完了・欠落・checkpoint変更まで検証しています．本番 workload や paid runtime をテストのために起動していません．実機の CLI が返す結果や回収速度の最終確認は，root の実行記録で報告してください．
+36 tests が成功しました．既存26件では zombie と PID 再利用，deadline・capacity・compute credit gate，priority 照合成功／SHA 不一致，raw の重複排除・欠落・正しい回収・不正 checksum・inventory 更新後の停止禁止，snapshot member と SHA 検証，CLI scope，既存停止 receipt の冪等性，fake CLI による一連の回収と停止，5 variants評価の完了・欠落・checkpoint変更を検証しています．追加10件では chunk 転送の途中再開，append と receipt commit 間の中断，local／remote 内容変更，chunk checksum と最終 source checksum，offset，64 MiB上限，元絶対 deadline，ack の同定，binary 削除後の ACK 中断からの復旧を確認しています．fixture のために新しい paid runtime を起動していません．実際の回収状況は private の実行 receipt と公開集計で区別して報告します．

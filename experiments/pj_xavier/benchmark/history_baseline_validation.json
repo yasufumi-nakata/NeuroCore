@@ -1,0 +1,20 @@
+{
+  "schema": "xavier-history-baselines-implementation-v1",
+  "source_sha256": "5be7b7c4e91f6776895e2454adbec2ba12bfba1548e572e69b61ce7b9704ea13",
+  "protocol_sha256": "0324dbbbc10706738723265b36d3478c0982714fdf3ab4597feb20eefcaa7cf5",
+  "common_source_sha256": "1b74445e9a85c34c86eaa435805b427ba8dbee4d675f6d3e0a4b301b1c10ff08",
+  "tests": {
+    "scratch": 10,
+    "workstation": 10,
+    "status": "passed"
+  },
+  "actual_run": {
+    "status": "completed",
+    "test_calls_per_model": 1,
+    "models": 8,
+    "cpu_threads": 2,
+    "elapsed_seconds": 10.354327625012957,
+    "aggregate_sha256": "8444307baa019ca4de01987962d7473b095ec4b943be8620bf3759af711fd795"
+  },
+  "autonomous_agent_validated": false
+}

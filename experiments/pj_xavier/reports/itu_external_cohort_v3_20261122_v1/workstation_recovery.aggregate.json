@@ -1,0 +1,17 @@
+{
+  "status": "recovered_and_all_hashes_verified",
+  "package_sha256": "7379269fe23ef3138c1d6db65daad78ac1ac28d0a91841cb755a4a6af9633a13",
+  "package_bytes": 8901045,
+  "verified_files": 49,
+  "manifest_sha256": "cfd93863b8f8e263174e6ab59395496efbd397e821542fa3a1f0c1e5faa503b0",
+  "cohort_aggregate_sha256": "a7fb97885734b89409835f1dbae2bf603419becadd8cc526e3897bc271426058",
+  "independent_validation_sha256": "4c9d066e99a8db6e72d192565b3c6d7406a7253cb7b84ab9a66212cc262ce7a5",
+  "eeg_artifacts_sha256": "87d5e0b944df33ac27f4101308022a9aa769c1080f043332a2d06feb0d2e3f02",
+  "labels_sha256": "59933900a4998579bcf3d0484d0b07dc128859b2a8cbb023e9362db3ddab5d41",
+  "history_features_sha256": "1326aef4ea7b0a3010f21c13cff56f7e476ff6da948673dac99dd8974ab853c9",
+  "external_membership_sha256": "66351f4e59cf84f6e51eff0032139ab685327a2afbf6916ec5dcb9bdb52f3762",
+  "arrays_recovered": 25,
+  "prepared_eeg_bytes": 9034880,
+  "recovered_epoch": 1795312066.9715,
+  "training_or_prediction_launched": false
+}

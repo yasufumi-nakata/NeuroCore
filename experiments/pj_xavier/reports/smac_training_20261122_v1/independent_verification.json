@@ -1,0 +1,213 @@
+{
+  "schema": "xavier-smac-readonly-encoder-verification-v1",
+  "created_epoch": 1795342369.443836,
+  "status": "passed",
+  "read_only": true,
+  "new_training_steps": 0,
+  "best_checkpoint_sha256": "3450e90e0c2cdf8b0b7f2fa28d39ae5037f7d9b70fea95cc5d93a885d98e6d10",
+  "official_weights_sha256": "0792cb808c14e6b7a2bb2ce1dff379bc47bc54c49a779825bdfeb33bf8157178",
+  "checks": {
+    "MPS_and_CPU_RNG_checkpointed": true,
+    "actual_next_stage_read_parent_accepts_checkpoint": true,
+    "all_optimizer_moments_finite_nonzero": true,
+    "all_optimizer_steps_match_selected_checkpoint": true,
+    "all_rows_are_offline_only": true,
+    "all_training_windows_in_selected_checkpoint": true,
+    "all_twelve_encoder_layers_changed": true,
+    "best_file_matches_external_and_summary_sha": true,
+    "checkpoint_was_not_mutated_by_verification": true,
+    "corpus_files_match_sealed_protocol": true,
+    "cumulative_partitions_match_all_rows": true,
+    "deployed_trainer_legacy_and_frozen_sources_match": true,
+    "every_trainable_tensor_changed": true,
+    "independent_best_validation_reproduces_saved": true,
+    "independent_official_validation_reproduces_saved": true,
+    "independent_subject_partitions": true,
+    "intentionally_frozen_mask_unchanged": true,
+    "latest_checkpoint_identity_and_steps": true,
+    "membership_lists_match_exact_corpus_partitions": true,
+    "membership_matches_summary_sha": true,
+    "no_known_heldout_raw_or_payload": true,
+    "no_test_rows_or_behavior_label_fields": true,
+    "official_and_trained_state_keys_shapes_match": true,
+    "official_checkpoint_matches_pinned_sha": true,
+    "optimizer_exactly_covers_trainable_parameters": true,
+    "prepared_arrays_match_seals": true,
+    "run_config_is_real_MPS_float32_training": true,
+    "schema_matches": true,
+    "selected_checkpoint_identity": true,
+    "selected_score_is_history_minimum": true,
+    "selected_step_matches_minimum_history": true,
+    "source_seals_match_run_protocol": true,
+    "unique_exposure_matches_exact_training_intervals": true
+  },
+  "all_layers": {
+    "encoder.layers.0": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 16,
+      "elements": 402600,
+      "max_absolute_delta": 0.010214921087026596,
+      "tensors": 16,
+      "updated_elements": 402600
+    },
+    "encoder.layers.1": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 16,
+      "elements": 402600,
+      "max_absolute_delta": 0.010930061020189896,
+      "tensors": 16,
+      "updated_elements": 402600
+    },
+    "encoder.layers.10": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 16,
+      "elements": 402600,
+      "max_absolute_delta": 0.010042725130915642,
+      "tensors": 16,
+      "updated_elements": 402599
+    },
+    "encoder.layers.11": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 16,
+      "elements": 402600,
+      "max_absolute_delta": 0.010345812886953354,
+      "tensors": 16,
+      "updated_elements": 402600
+    },
+    "encoder.layers.2": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 16,
+      "elements": 402600,
+      "max_absolute_delta": 0.00997358797576453,
+      "tensors": 16,
+      "updated_elements": 402600
+    },
+    "encoder.layers.3": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 16,
+      "elements": 402600,
+      "max_absolute_delta": 0.01086081424728036,
+      "tensors": 16,
+      "updated_elements": 402600
+    },
+    "encoder.layers.4": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 16,
+      "elements": 402600,
+      "max_absolute_delta": 0.009102548795169696,
+      "tensors": 16,
+      "updated_elements": 402599
+    },
+    "encoder.layers.5": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 16,
+      "elements": 402600,
+      "max_absolute_delta": 0.00884180343564367,
+      "tensors": 16,
+      "updated_elements": 402598
+    },
+    "encoder.layers.6": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 16,
+      "elements": 402600,
+      "max_absolute_delta": 0.009308519367550616,
+      "tensors": 16,
+      "updated_elements": 402599
+    },
+    "encoder.layers.7": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 16,
+      "elements": 402600,
+      "max_absolute_delta": 0.010484914251719601,
+      "tensors": 16,
+      "updated_elements": 402600
+    },
+    "encoder.layers.8": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 16,
+      "elements": 402600,
+      "max_absolute_delta": 0.009308132823207416,
+      "tensors": 16,
+      "updated_elements": 402599
+    },
+    "encoder.layers.9": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 16,
+      "elements": 402600,
+      "max_absolute_delta": 0.010122173465788364,
+      "tensors": 16,
+      "updated_elements": 402600
+    },
+    "patch_embedding.positional_encoding": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 2,
+      "elements": 26800,
+      "max_absolute_delta": 0.012411990202963352,
+      "tensors": 2,
+      "updated_elements": 26800
+    },
+    "patch_embedding.proj_in": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 12,
+      "elements": 5200,
+      "max_absolute_delta": 0.009810131043195724,
+      "tensors": 12,
+      "updated_elements": 5200
+    },
+    "patch_embedding.spectral_proj": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 2,
+      "elements": 20400,
+      "max_absolute_delta": 0.007947777630761266,
+      "tensors": 2,
+      "updated_elements": 20400
+    },
+    "proj_out": {
+      "all_moments_finite_nonzero": true,
+      "all_optimizer_steps_match": true,
+      "changed_tensors": 2,
+      "elements": 40200,
+      "max_absolute_delta": 0.00734923779964447,
+      "tensors": 2,
+      "updated_elements": 40200
+    }
+  },
+  "train_windows": 659,
+  "val_windows": 327,
+  "unique_train_seconds": 1977.0,
+  "selected_epoch": 10,
+  "selected_step": 110,
+  "final_epoch": 10,
+  "final_step": 110,
+  "relative_validation_MSE_decrease_percent": 10.183858668858177,
+  "next_stage_contract": {
+    "checkpoint_and_membership_hashes_sealed": true,
+    "cumulative_partition_history_present": true,
+    "deny_payload_count": 514,
+    "deny_source_count": 568,
+    "new_stage_protocol_and_capacity_measurement_required": true,
+    "selected_real_train_checkpoint": true,
+    "stage_optimizer_reset_required_by_trainer": true
+  },
+  "scientific_scope": "Offline masked EEG reconstruction on fixed validation subjects; no online, event/action mapping, behavioral decoding, or unseen-source generalization claim",
+  "trainable_parameter_tensors": 210,
+  "trainable_parameter_elements": 4923800,
+  "initial_validation_mean_subject_masked_mse": 0.0021402554759976803,
+  "best_validation_mean_subject_masked_mse": 0.0019222948831695787,
+  "private_receipt_sha256": "ed8ee7e558d0da51a657146f68a44f4cb9360df1af3b32cd3a93ba98527251a9"
+}

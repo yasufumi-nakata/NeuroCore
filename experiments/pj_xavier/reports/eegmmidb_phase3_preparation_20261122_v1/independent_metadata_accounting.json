@@ -1,0 +1,58 @@
+{
+  "accepted_windows": {
+    "train": 35865,
+    "val": 7581
+  },
+  "actual_training_seen_ID_accounting_pending": true,
+  "artifact_count": 1236,
+  "audit_source_sha256": "458f869a73ba6fc21e0d0132f9e46fdce45efe49550c6b2d70f05585428addfd",
+  "candidate_windows": 44664,
+  "combined_prepared_SSL_and_MI": {
+    "train": {
+      "MI_native_seconds": 19077.0,
+      "MI_windows": 6359,
+      "SSL_native_seconds": 107595.0,
+      "native_interval_intersection_seconds": 18722.8,
+      "native_interval_union_hours": 29.98588888888889,
+      "native_interval_union_seconds": 107949.2,
+      "target_clock_interval_union_seconds": 107949.2
+    },
+    "val": {
+      "MI_native_seconds": 4080.0,
+      "MI_windows": 1360,
+      "SSL_native_seconds": 22743.0,
+      "native_interval_intersection_seconds": 3969.1,
+      "native_interval_union_hours": 6.348305555555555,
+      "native_interval_union_seconds": 22853.9,
+      "target_clock_interval_union_seconds": 22853.9
+    }
+  },
+  "completed_epoch": 1795323107.151499,
+  "declared_array_bytes": 6673463808,
+  "each_array_slot_unique_complete_passed": true,
+  "model_forward_calls": 0,
+  "native_source_target_interval_union_hours": {
+    "train": 29.8875,
+    "val": 6.3175
+  },
+  "participant_groups": {
+    "train": 75,
+    "val": 16
+  },
+  "phase2_manifest_sha256": "d673ffa0bc54506fc5866a7092fa5ff81deffdcfdf0754b10902cb6fda8657a9",
+  "prepared_manifest_sha256": "154fd2becdc5bce63a856d69f5a3a48a588cdc7fb688c656d781fec3f0fcd35f",
+  "raw_source_intervals_nonoverlap_passed": true,
+  "rejected_windows": 1218,
+  "remote_waveform_validation_owner": "model loader independent source/array verification",
+  "remote_waveforms_rehashed_by_this_metadata_audit": false,
+  "schema": "pj-xavier-phase3-independent-metadata-audit-v1",
+  "scope": "Prepared windows, not actual seen-ID training exposure or selected checkpoint exposure. Source-native integer index union excludes filter history and never includes test.",
+  "source_group_payload_split_exclusion_passed": true,
+  "source_records_allowed": 1238,
+  "source_records_denied": 288,
+  "status": "passed",
+  "target_clock_interval_union_hours": {
+    "train": 29.8875,
+    "val": 6.3175
+  }
+}

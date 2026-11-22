@@ -1,0 +1,24 @@
+{
+  "CNT_generalization_evaluated": false,
+  "artifacts_sha256": "14579a7bf11ac7091485c93aa0fc1a56bbe86da7aad9832876ae74734467c3e2",
+  "base_completion_sha256": "fb7c5834520478f66cf45a9016e99153b078be33c88e346988b147d8dcddf0c4",
+  "candidate_records_before_current_QC": 14,
+  "certificates_sha256": "f8a3da6c5ea0029be4263978bd74ff12d134d9306125b82f3ec55e84b7612063",
+  "manifest_sha256": "671b7d2980dc2d00d927cb05fdfbcea9a2944b0993c72988f4e02d88818850f7",
+  "new_gradient_exposure_hours": 0,
+  "new_source_records": 14,
+  "new_source_unique_hours": 2.8208333333333333,
+  "new_source_windows": 3385,
+  "new_test_members_decompressed": 0,
+  "new_val_members_decompressed": 0,
+  "online_harness_allowed": false,
+  "protocol_sha256": "e612a6abb380ffbc8e37099afa23b7a8f265ce25aea7991f874389cc13c91803",
+  "retained_base_windows": 986,
+  "source_admission_sha256": "5961e8f27105c669cbd1e93f682e347693f89b379f719f89ac00ba6876b85862",
+  "status": "prepared_verified_new_offline_SSL_corpus",
+  "validation_domain": "806023 only",
+  "windows": {
+    "train": 4044,
+    "val": 327
+  }
+}

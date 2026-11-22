@@ -1,0 +1,3 @@
+# Add-on used for the final MI-BMPI MATLAB v7.3 audit.
+# Keep the existing sealed scientific environment unchanged.
+h5py==3.16.0

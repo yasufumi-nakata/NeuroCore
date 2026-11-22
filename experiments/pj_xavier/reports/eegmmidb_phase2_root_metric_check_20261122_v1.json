@@ -1,0 +1,520 @@
+{
+  "schema": "xavier-independent-saved-binary-prediction-check-v1",
+  "source_sha256": "25837e9eddec106032aae5bd5182c375b2b9060851e59ae4f39f72b925e02b27",
+  "created_epoch": 1795325164.214658,
+  "scope": "Saved point metrics only; no EEG/model forward, refit, bootstrap recomputation, or free-intent validation",
+  "model_forward_calls": 0,
+  "evaluations": [
+    {
+      "evaluation_name": "csp_lda_v1",
+      "status": "passed",
+      "checkpoint_sha256": "6e04bd439c765a7ac2332762ffe7305f1fb0a1cf4f3d7542e5155a186ce6915d",
+      "report_sha256": "a39e3b7aaacdbdf59fa84d48adf1f60915665a0731b8a8327625f942935147f5",
+      "predictions_sha256": "f266f91617da9961092120ce38f32b2410b5e3b90f78466d6ad37ccc3197f32e",
+      "records_across_conditions": 7210,
+      "checks": {
+        "context_only::fists_feet": {
+          "recomputed": {
+            "n": 738,
+            "balanced_accuracy": 0.5,
+            "mean_subject_balanced_accuracy": 0.5,
+            "macro_f1": 0.3357335733573357,
+            "auroc": 0.5,
+            "brier": 0.25,
+            "negative_log_likelihood": 0.6931471805599453,
+            "coverage": 0.0,
+            "accepted": 0,
+            "selective_accuracy": null,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "context_only::left_right": {
+          "recomputed": {
+            "n": 751,
+            "balanced_accuracy": 0.5,
+            "mean_subject_balanced_accuracy": 0.5,
+            "macro_f1": 0.33480956598759964,
+            "auroc": 0.5,
+            "brier": 0.25,
+            "negative_log_likelihood": 0.6931471805599453,
+            "coverage": 0.0,
+            "accepted": 0,
+            "selective_accuracy": null,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_only::fists_feet": {
+          "recomputed": {
+            "n": 738,
+            "balanced_accuracy": 0.6008557053141871,
+            "mean_subject_balanced_accuracy": 0.5997080731544934,
+            "macro_f1": 0.5993699152955638,
+            "auroc": 0.6667964302765433,
+            "brier": 0.2267043563831997,
+            "negative_log_likelihood": 0.6416034147334506,
+            "coverage": 0.06368563685636856,
+            "accepted": 47,
+            "selective_accuracy": 0.9148936170212766,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_only::left_right": {
+          "recomputed": {
+            "n": 751,
+            "balanced_accuracy": 0.5949224789707364,
+            "mean_subject_balanced_accuracy": 0.5992066721286671,
+            "macro_f1": 0.5943252732881288,
+            "auroc": 0.6349206349206349,
+            "brier": 0.23806217614071548,
+            "negative_log_likelihood": 0.6736865136093682,
+            "coverage": 0.05858854860186418,
+            "accepted": 44,
+            "selective_accuracy": 0.7272727272727273,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 1.1102230246251565e-16
+        },
+        "eeg_shuffled::fists_feet": {
+          "recomputed": {
+            "n": 738,
+            "balanced_accuracy": 0.48702119064232985,
+            "mean_subject_balanced_accuracy": 0.48919242986907063,
+            "macro_f1": 0.48529219626108033,
+            "auroc": 0.48902273311542843,
+            "brier": 0.28248313088358706,
+            "negative_log_likelihood": 0.7717004153105516,
+            "coverage": 0.06368563685636856,
+            "accepted": 47,
+            "selective_accuracy": 0.425531914893617,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 2.220446049250313e-16
+        },
+        "eeg_shuffled::left_right": {
+          "recomputed": {
+            "n": 751,
+            "balanced_accuracy": 0.47774018752571035,
+            "mean_subject_balanced_accuracy": 0.48213384445380675,
+            "macro_f1": 0.4768931155557451,
+            "auroc": 0.4729846660141567,
+            "brier": 0.28153327210476436,
+            "negative_log_likelihood": 0.768658626361765,
+            "coverage": 0.05858854860186418,
+            "accepted": 44,
+            "selective_accuracy": 0.6136363636363636,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_time_shifted::fists_feet": {
+          "recomputed": {
+            "n": 619,
+            "balanced_accuracy": 0.46696536742281824,
+            "mean_subject_balanced_accuracy": 0.46897549689732354,
+            "macro_f1": 0.46255098694996394,
+            "auroc": 0.4502339474453774,
+            "brier": 0.28518553308550904,
+            "negative_log_likelihood": 0.7723802288966253,
+            "coverage": 0.030694668820678513,
+            "accepted": 19,
+            "selective_accuracy": 0.3684210526315789,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_time_shifted::left_right": {
+          "recomputed": {
+            "n": 635,
+            "balanced_accuracy": 0.43732761870746273,
+            "mean_subject_balanced_accuracy": 0.44307426319810217,
+            "macro_f1": 0.43653762505437144,
+            "auroc": 0.426701986229339,
+            "brier": 0.29207541441298396,
+            "negative_log_likelihood": 0.790915991948495,
+            "coverage": 0.03937007874015748,
+            "accepted": 25,
+            "selective_accuracy": 0.48,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "fused::fists_feet": {
+          "recomputed": {
+            "n": 738,
+            "balanced_accuracy": 0.6008557053141871,
+            "mean_subject_balanced_accuracy": 0.5997080731544934,
+            "macro_f1": 0.5993699152955638,
+            "auroc": 0.6667964302765433,
+            "brier": 0.2267043563831997,
+            "negative_log_likelihood": 0.6416034147334506,
+            "coverage": 0.06368563685636856,
+            "accepted": 47,
+            "selective_accuracy": 0.9148936170212766,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "fused::left_right": {
+          "recomputed": {
+            "n": 751,
+            "balanced_accuracy": 0.5949224789707364,
+            "mean_subject_balanced_accuracy": 0.5992066721286671,
+            "macro_f1": 0.5943252732881288,
+            "auroc": 0.6349206349206349,
+            "brier": 0.23806217614071548,
+            "negative_log_likelihood": 0.6736865136093682,
+            "coverage": 0.05858854860186418,
+            "accepted": 44,
+            "selective_accuracy": 0.7272727272727273,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 1.1102230246251565e-16
+        }
+      }
+    },
+    {
+      "evaluation_name": "eegnet_scratch_v1",
+      "status": "passed",
+      "checkpoint_sha256": "3d041e1a8c07e97ae1bebd873873964241d3856f8b6d7461f9134924f8c3f54d",
+      "report_sha256": "6dc0ab99536da6880d4a1b6ce93ecc96fd72fcd99b5a4988dc9a2478e6eaa398",
+      "predictions_sha256": "83f3522e42720b6bb360020227cda4c019984478a0318acbeb6eba299f40c397",
+      "records_across_conditions": 7210,
+      "checks": {
+        "context_only::fists_feet": {
+          "recomputed": {
+            "n": 738,
+            "balanced_accuracy": 0.5,
+            "mean_subject_balanced_accuracy": 0.5,
+            "macro_f1": 0.3357335733573357,
+            "auroc": 0.5,
+            "brier": 0.25003950354415844,
+            "negative_log_likelihood": 0.693226254751576,
+            "coverage": 0.0,
+            "accepted": 0,
+            "selective_accuracy": null,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "context_only::left_right": {
+          "recomputed": {
+            "n": 751,
+            "balanced_accuracy": 0.5,
+            "mean_subject_balanced_accuracy": 0.5,
+            "macro_f1": 0.3318505338078292,
+            "auroc": 0.5,
+            "brier": 0.25000537090009844,
+            "negative_log_likelihood": 0.6931579223680906,
+            "coverage": 0.0,
+            "accepted": 0,
+            "selective_accuracy": null,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 1.1102230246251565e-16
+        },
+        "eeg_only::fists_feet": {
+          "recomputed": {
+            "n": 738,
+            "balanced_accuracy": 0.6470491020603033,
+            "mean_subject_balanced_accuracy": 0.6510204505204228,
+            "macro_f1": 0.6451367459169668,
+            "auroc": 0.7068640052884791,
+            "brier": 0.2243352644160614,
+            "negative_log_likelihood": 0.651089378500834,
+            "coverage": 0.13279132791327913,
+            "accepted": 98,
+            "selective_accuracy": 0.7857142857142857,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_only::left_right": {
+          "recomputed": {
+            "n": 751,
+            "balanced_accuracy": 0.587280309800417,
+            "mean_subject_balanced_accuracy": 0.5908551628820171,
+            "macro_f1": 0.5723872964979684,
+            "auroc": 0.6312963672213001,
+            "brier": 0.2362207523506371,
+            "negative_log_likelihood": 0.6647346478803349,
+            "coverage": 0.05992010652463382,
+            "accepted": 45,
+            "selective_accuracy": 0.7777777777777778,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_shuffled::fists_feet": {
+          "recomputed": {
+            "n": 738,
+            "balanced_accuracy": 0.48442836681479307,
+            "mean_subject_balanced_accuracy": 0.4898562537510263,
+            "macro_f1": 0.4819812267983309,
+            "auroc": 0.4743618935693562,
+            "brier": 0.29577765274188905,
+            "negative_log_likelihood": 0.8749292865568772,
+            "coverage": 0.13279132791327913,
+            "accepted": 98,
+            "selective_accuracy": 0.4489795918367347,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_shuffled::left_right": {
+          "recomputed": {
+            "n": 751,
+            "balanced_accuracy": 0.4807509539413025,
+            "mean_subject_balanced_accuracy": 0.4853672461981117,
+            "macro_f1": 0.46167850594728066,
+            "auroc": 0.48626182674440044,
+            "brier": 0.26667517454179457,
+            "negative_log_likelihood": 0.7316309522722217,
+            "coverage": 0.05992010652463382,
+            "accepted": 45,
+            "selective_accuracy": 0.6222222222222222,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_time_shifted::fists_feet": {
+          "recomputed": {
+            "n": 619,
+            "balanced_accuracy": 0.47691335589255124,
+            "mean_subject_balanced_accuracy": 0.478430981643056,
+            "macro_f1": 0.4595189629312192,
+            "auroc": 0.45512177800058484,
+            "brier": 0.2992685940535932,
+            "negative_log_likelihood": 0.8738534000955833,
+            "coverage": 0.14378029079159935,
+            "accepted": 89,
+            "selective_accuracy": 0.4606741573033708,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_time_shifted::left_right": {
+          "recomputed": {
+            "n": 635,
+            "balanced_accuracy": 0.4610343869674782,
+            "mean_subject_balanced_accuracy": 0.4654334930332016,
+            "macro_f1": 0.44445299651845066,
+            "auroc": 0.43171220509157293,
+            "brier": 0.2782642533408842,
+            "negative_log_likelihood": 0.7573483231010869,
+            "coverage": 0.028346456692913385,
+            "accepted": 18,
+            "selective_accuracy": 0.5,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "fused::fists_feet": {
+          "recomputed": {
+            "n": 738,
+            "balanced_accuracy": 0.6470491020603033,
+            "mean_subject_balanced_accuracy": 0.6510204505204228,
+            "macro_f1": 0.6451367459169668,
+            "auroc": 0.7068640052884791,
+            "brier": 0.2243352644160614,
+            "negative_log_likelihood": 0.651089378500834,
+            "coverage": 0.13279132791327913,
+            "accepted": 98,
+            "selective_accuracy": 0.7857142857142857,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "fused::left_right": {
+          "recomputed": {
+            "n": 751,
+            "balanced_accuracy": 0.587280309800417,
+            "mean_subject_balanced_accuracy": 0.5908551628820171,
+            "macro_f1": 0.5723872964979684,
+            "auroc": 0.6312963672213001,
+            "brier": 0.2362207523506371,
+            "negative_log_likelihood": 0.6647346478803349,
+            "coverage": 0.05992010652463382,
+            "accepted": 45,
+            "selective_accuracy": 0.7777777777777778,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        }
+      }
+    },
+    {
+      "evaluation_name": "eegnet_smollm_fused_v1",
+      "status": "passed",
+      "checkpoint_sha256": "13df40e53dab6087bfef2fac1a4e413a2d00178413f05f4759a0aa1ea849d4ee",
+      "report_sha256": "e35244b2d728dc54cf64902fb10e405cc610f48b8af4145a49277d58f28af775",
+      "predictions_sha256": "3486445015e59c67e3b5a40a9ba20082989a3e9d49e29a73950d8e6fc7a769ec",
+      "records_across_conditions": 7210,
+      "checks": {
+        "context_only::fists_feet": {
+          "recomputed": {
+            "n": 738,
+            "balanced_accuracy": 0.5,
+            "mean_subject_balanced_accuracy": 0.5,
+            "macro_f1": 0.3357335733573357,
+            "auroc": 0.5,
+            "brier": 0.26366881590337443,
+            "negative_log_likelihood": 0.7213669582073098,
+            "coverage": 0.0,
+            "accepted": 0,
+            "selective_accuracy": null,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 1.1102230246251565e-16
+        },
+        "context_only::left_right": {
+          "recomputed": {
+            "n": 751,
+            "balanced_accuracy": 0.5,
+            "mean_subject_balanced_accuracy": 0.5,
+            "macro_f1": 0.33480956598759964,
+            "auroc": 0.5,
+            "brier": 0.2719006078265744,
+            "negative_log_likelihood": 0.7391201225768648,
+            "coverage": 0.0,
+            "accepted": 0,
+            "selective_accuracy": null,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_only::fists_feet": {
+          "recomputed": {
+            "n": 738,
+            "balanced_accuracy": 0.5673105879760549,
+            "mean_subject_balanced_accuracy": 0.5674015987285527,
+            "macro_f1": 0.5289832750466595,
+            "auroc": 0.6112967791692681,
+            "brier": 0.25156160606923295,
+            "negative_log_likelihood": 0.6988567624100517,
+            "coverage": 0.009485094850948509,
+            "accepted": 7,
+            "selective_accuracy": 0.42857142857142855,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_only::left_right": {
+          "recomputed": {
+            "n": 751,
+            "balanced_accuracy": 0.5091067705008724,
+            "mean_subject_balanced_accuracy": 0.5104741334853058,
+            "macro_f1": 0.4493133824977972,
+            "auroc": 0.5566797168673844,
+            "brier": 0.27043959283987506,
+            "negative_log_likelihood": 0.7397597515859867,
+            "coverage": 0.006657789613848202,
+            "accepted": 5,
+            "selective_accuracy": 0.4,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 2.220446049250313e-16
+        },
+        "eeg_shuffled::fists_feet": {
+          "recomputed": {
+            "n": 738,
+            "balanced_accuracy": 0.4827059385214294,
+            "mean_subject_balanced_accuracy": 0.4846340182262897,
+            "macro_f1": 0.4820767195767196,
+            "auroc": 0.4653237357229424,
+            "brier": 0.30401368099538223,
+            "negative_log_likelihood": 0.8728370796305606,
+            "coverage": 0.18292682926829268,
+            "accepted": 135,
+            "selective_accuracy": 0.4444444444444444,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_shuffled::left_right": {
+          "recomputed": {
+            "n": 751,
+            "balanced_accuracy": 0.48431848163751645,
+            "mean_subject_balanced_accuracy": 0.4835568538489524,
+            "macro_f1": 0.48291211870513195,
+            "auroc": 0.4916698582918423,
+            "brier": 0.29104163412992134,
+            "negative_log_likelihood": 0.8266150867113554,
+            "coverage": 0.1411451398135819,
+            "accepted": 106,
+            "selective_accuracy": 0.4716981132075472,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "eeg_time_shifted::fists_feet": {
+          "recomputed": {
+            "n": 619,
+            "balanced_accuracy": 0.5024334711952207,
+            "mean_subject_balanced_accuracy": 0.5008519795477999,
+            "macro_f1": 0.48862061613900437,
+            "auroc": 0.4941408697831809,
+            "brier": 0.30621871899298697,
+            "negative_log_likelihood": 0.891946556547248,
+            "coverage": 0.2310177705977383,
+            "accepted": 143,
+            "selective_accuracy": 0.4825174825174825,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 2.220446049250313e-16
+        },
+        "eeg_time_shifted::left_right": {
+          "recomputed": {
+            "n": 635,
+            "balanced_accuracy": 0.4619421790979622,
+            "mean_subject_balanced_accuracy": 0.46003481231126464,
+            "macro_f1": 0.4604418429003021,
+            "auroc": 0.45751731253844474,
+            "brier": 0.3116009679854433,
+            "negative_log_likelihood": 0.9031032008891035,
+            "coverage": 0.2110236220472441,
+            "accepted": 134,
+            "selective_accuracy": 0.4253731343283582,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "fused::fists_feet": {
+          "recomputed": {
+            "n": 738,
+            "balanced_accuracy": 0.5938301076058614,
+            "mean_subject_balanced_accuracy": 0.5985216217815214,
+            "macro_f1": 0.5932539682539683,
+            "auroc": 0.6618935693562011,
+            "brier": 0.2368838382576875,
+            "negative_log_likelihood": 0.6705166188011342,
+            "coverage": 0.18292682926829268,
+            "accepted": 135,
+            "selective_accuracy": 0.7703703703703704,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 0.0
+        },
+        "fused::left_right": {
+          "recomputed": {
+            "n": 751,
+            "balanced_accuracy": 0.5748684341177639,
+            "mean_subject_balanced_accuracy": 0.5743909053809445,
+            "macro_f1": 0.5737699376406643,
+            "auroc": 0.5911138062612593,
+            "brier": 0.2558561338943922,
+            "negative_log_likelihood": 0.7251670170225712,
+            "coverage": 0.1411451398135819,
+            "accepted": 106,
+            "selective_accuracy": 0.6320754716981132,
+            "evaluated_subject_groups": 17
+          },
+          "max_absolute_difference": 2.220446049250313e-16
+        }
+      }
+    }
+  ],
+  "status": "passed"
+}

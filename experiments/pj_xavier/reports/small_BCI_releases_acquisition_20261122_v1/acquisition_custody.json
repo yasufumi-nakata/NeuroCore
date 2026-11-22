@@ -1,0 +1,15 @@
+{
+  "complete_bytes": 216099696,
+  "deadline_unchanged_epoch": 1795328726.1927428,
+  "download_completion_sha256": "bd0003baf26c82da5f4bf1d82f10a2884b5f8546c1bb0e73ce1e10a3ba0d351d",
+  "file_count": 114,
+  "h5py_installation_receipt_sha256": "2e463f0df372749fbfcb4816a2bdd463aa8e2f4a16c4671f84d058d0f135a229",
+  "original_budget_sha256": "c41f00c04c066635814be746c1329e9237fd3c8eb1d92941d649073c7f5f9bab",
+  "original_received_budget": 248514651,
+  "previous_capacity_stop_completion_sha256": "715a13b0a7a418b8dcf032a73a43979dcd5d2b9b27bd7ea6e946d365d1ede3ab",
+  "reconciliation_sha256": "e45517cfec0459f6d2f2358248ddc03eeb52f0909bdd30d44864f9650835964a",
+  "resume_budget_sha256": "010d23db802a138a5b87b3f87e248c4074b7e9a540c7980ce6857b557a28237d",
+  "status": "all_files_acquired_audited_reconciled",
+  "total_received_bytes_original_plus_resume": 216099696,
+  "unrelated_queue_rows_changed": 0
+}

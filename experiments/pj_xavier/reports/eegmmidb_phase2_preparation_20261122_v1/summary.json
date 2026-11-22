@@ -1,0 +1,183 @@
+{
+  "aggregation_epoch": 1795320798.3248682,
+  "all_used_EDF_member_SHA_verified_before_and_after": true,
+  "array_bytes": {
+    "control": 1210447872,
+    "idle": 208448256,
+    "main": 1414429184
+  },
+  "automatic_annotation_repairs": 0,
+  "blocked_control_reason_counts": {
+    "absolute_amplitude_above_500uV": 101,
+    "insufficient_past_filter_history": 1227
+  },
+  "by_split": {
+    "test": {
+      "label_counts": {
+        "both_feet": 365,
+        "both_fists": 373,
+        "left_fist": 378,
+        "right_fist": 373
+      },
+      "nominal_window_seconds": 4467.0,
+      "participant_groups": 17,
+      "recordings": 102,
+      "task_family_counts": {
+        "fists_feet": 738,
+        "left_right": 751
+      },
+      "unique_target_interval_seconds": 4467.0,
+      "windows": 1489
+    },
+    "train": {
+      "label_counts": {
+        "both_feet": 1596,
+        "both_fists": 1581,
+        "left_fist": 1610,
+        "right_fist": 1572
+      },
+      "nominal_window_seconds": 19077.0,
+      "participant_groups": 72,
+      "recordings": 431,
+      "task_family_counts": {
+        "fists_feet": 3177,
+        "left_right": 3182
+      },
+      "unique_target_interval_seconds": 19077.0,
+      "windows": 6359
+    },
+    "val": {
+      "label_counts": {
+        "both_feet": 337,
+        "both_fists": 344,
+        "left_fist": 340,
+        "right_fist": 339
+      },
+      "nominal_window_seconds": 4080.0,
+      "participant_groups": 16,
+      "recordings": 95,
+      "task_family_counts": {
+        "fists_feet": 681,
+        "left_right": 679
+      },
+      "unique_target_interval_seconds": 4080.0,
+      "windows": 1360
+    }
+  },
+  "completed_epoch": 1795320686.5367942,
+  "completion_receipt_sha256": "5041351f4fd80a80e4956034a7a479983cd921c6701062906a5dd68c5f30936c",
+  "control_artifacts_sha256": "b62f5e139bcc6da77f1a743e03f002f2c58a40b82904a9ac7853d601f2bc3736",
+  "controls_are_derived_same_source_not_additional_acquired_raw": true,
+  "controls_available": 7880,
+  "controls_blocked": 1328,
+  "elapsed_seconds": 78.66857814788818,
+  "final_QC_not_physiological_normality_or_external_standard": true,
+  "frozen_train_only_QC_decision_sha256": "94f3ab3337601cb85a6caac35d236e77d61f19b4e6213c3ee7a22ece7536a353",
+  "held_recording_count": 50,
+  "idle_artifacts_sha256": "c87a6617cb3faf05ecb5ad25ee5d522739d0ed94967ef49972c832e4a532fdeb",
+  "idle_manifest_sha256": "e166bf85fa12ec5f6e4596eb63c23c699ccff8af08e1cc78d0ecdf1b4cd23d09",
+  "idle_not_training_or_selection": true,
+  "idle_test_only_diagnostic": {
+    "label_counts": {
+      "rest": 1357
+    },
+    "nominal_window_seconds": 4071.0,
+    "participant_groups": 17,
+    "recordings": 102,
+    "task_family_counts": {
+      "fists_feet": 668,
+      "left_right": 689
+    },
+    "unique_target_interval_seconds": 4071.0,
+    "windows": 1357
+  },
+  "main": {
+    "label_counts": {
+      "both_feet": 2298,
+      "both_fists": 2298,
+      "left_fist": 2328,
+      "right_fist": 2284
+    },
+    "nominal_window_seconds": 27624.0,
+    "participant_groups": 105,
+    "recordings": 628,
+    "task_family_counts": {
+      "fists_feet": 4596,
+      "left_right": 4612
+    },
+    "unique_target_interval_seconds": 27624.0,
+    "windows": 9208
+  },
+  "main_artifacts_sha256": "c503d6d1336ee1042714f6a02769dbb6b061cd9a225387ab2081d87eb788be94",
+  "main_interval_hours": 7.673333333333333,
+  "main_rows_dropped_for_control_availability": 0,
+  "main_source_recordings_with_zero_accepted_windows": 2,
+  "metadata_protocol_sha256": "37ef67e3a6432eb3416afeeab7709fd432f2c69c8341b036aabf6fee08ccbbed",
+  "model_forward_calls": 0,
+  "native_rate_counts_of_decoded_sources": {
+    "160.0": 630
+  },
+  "original_archive_SHA_before_after_verified": "0ff5f7f38d1d14b8e485581ad4cf5b327e6494bc2ac7c7d7d4f7e9518a950cbe",
+  "original_deadline_epoch": 1795321866.2646809,
+  "paired_control_subset_sha256": "9148905ad394b998e912abc64d00fdf012c56c7821678fbd51c7002b6cc369b7",
+  "paired_counts_by_split_task": {
+    "test:fists_feet": 619,
+    "test:left_right": 635,
+    "train:fists_feet": 2731,
+    "train:left_right": 2731,
+    "val:fists_feet": 583,
+    "val:left_right": 581
+  },
+  "phase_incremental_bytes_observed": 2888989798,
+  "prep_source_sha256": "99ce752a91043a6e1b0b9a89d7c984d6fead9478076a8fb555747c123a758d95",
+  "prepared_data_only_not_yet_trained_exposure": true,
+  "prepared_manifest_sha256": "d673ffa0bc54506fc5866a7092fa5ff81deffdcfdf0754b10902cb6fda8657a9",
+  "preprocessing_protocol_sha256": "b8fc0c0def124e28e312b43818aecad68f7da2e5728c1833c7b18d25961cc1f4",
+  "quality_flag_above_initial_100uV": {
+    "idle": 774,
+    "main": 6058,
+    "main_by_split": {
+      "test": 808,
+      "train": 4418,
+      "val": 832
+    }
+  },
+  "raw_3s_intervals_distinct_from_causal_history": true,
+  "rejection_by_split_role": {
+    "test:idle:absolute_amplitude_above_500uV": 71,
+    "test:idle:insufficient_past_filter_history": 102,
+    "test:main:absolute_amplitude_above_500uV": 41,
+    "train:main:absolute_amplitude_above_500uV": 118,
+    "train:main:window_exceeds_annotation": 1,
+    "train:main:window_exceeds_record": 1,
+    "val:main:absolute_amplitude_above_500uV": 80
+  },
+  "rejection_counts": {
+    "absolute_amplitude_above_500uV": 310,
+    "insufficient_past_filter_history": 102,
+    "window_exceeds_annotation": 1,
+    "window_exceeds_record": 1
+  },
+  "schema": "pj-xavier-eegmmidb-phase2-corpus-v1",
+  "source_EEG_sample_bytes": 1592668160,
+  "source_corpus_summary_sha256": "0ff7ae2a74eed31341602b9506594fe75e917cb364d69a223fdce7fe55e01706",
+  "source_member_bytes": 1615755360,
+  "source_recording_hours": 21.601944444444445,
+  "source_recording_seconds": 77767.0,
+  "source_recordings_decoded": 630,
+  "split_assignments_original_counts": {
+    "test": 17,
+    "train": 76,
+    "val": 16
+  },
+  "status": "completed",
+  "test_performance_used_for_QC_or_protocol": false,
+  "tests_receipt_sha256": "febd6802d672a8e614675a099f24ba3664b13413bd4b68b6379581aab97d335a",
+  "train_interval_hours_available": 5.299166666666666,
+  "versions": {
+    "numpy": "2.5.5",
+    "python": "3.12.13",
+    "scipy": "1.18.1"
+  },
+  "workstation_free_bytes_observed": 48561651712
+}

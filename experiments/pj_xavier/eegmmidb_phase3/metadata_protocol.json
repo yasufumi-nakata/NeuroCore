@@ -1,0 +1,103 @@
+{
+  "candidate_unique_hours_before_QC": {
+    "train": 30.5,
+    "val": 6.72
+  },
+  "candidate_window_counts_before_QC": {
+    "train": 36600,
+    "val": 8064
+  },
+  "capacity_upper_bounds": {
+    "array_payload_bytes": 6860390400,
+    "metadata_and_staging_allowance_bytes": 536870912,
+    "new_remote_identical_raw_bytes": 1997435063,
+    "new_workstation_raw_bytes": 0,
+    "proposed_remote_output_budget_bytes": 8589934592,
+    "record_array_header_allowance_bytes": 158464
+  },
+  "created_epoch": 1795321481.3614771,
+  "dataset": "physionet:eegmmidb:1.0.0",
+  "forbidden": {
+    "all_held_recordings_excluded": true,
+    "annotation_review_recordings": 50,
+    "any_action_or_cue_target_used": false,
+    "test_groups": 17,
+    "test_model_forward_calls": 0,
+    "test_recordings": 238
+  },
+  "input_source": "same previously acquired EEGMMIDB1.0.0 ZIP; identical-hash remote copy is not new independent acquired EEG",
+  "phase2_final_QC_decision_sha256": "94f3ab3337601cb85a6caac35d236e77d61f19b4e6213c3ee7a22ece7536a353",
+  "phase2_operator_sha256": "99ce752a91043a6e1b0b9a89d7c984d6fead9478076a8fb555747c123a758d95",
+  "phase2_parent_metadata_sha256": "37ef67e3a6432eb3416afeeab7709fd432f2c69c8341b036aabf6fee08ccbbed",
+  "prepared_quantity_is_not_training_completion": true,
+  "processing": {
+    "bandpass_hz": [
+      3,
+      40
+    ],
+    "clipping": false,
+    "filter": "causal zero-state sosfilt at recording start",
+    "finite_required": true,
+    "initial_100uV_quality_flag_retained": true,
+    "maximum_absolute_V": 0.0005,
+    "minimum_channel_population_std_V": 1e-08,
+    "order": 4,
+    "resampling": "same unshifted causal polyphase FIR as pinned phase2 operator",
+    "std_ddof": 0,
+    "thresholds_not_reselected_from_new_val_or_test": true,
+    "unit_reinterpretation": false,
+    "whole_record_normalization": false
+  },
+  "runtime": {
+    "CPU_threads": 2,
+    "downstream_phase2_arrays_and_splits_unchanged": true,
+    "mandatory_workstation_preservation": [
+      "metadata",
+      "source_allowlist",
+      "source_denylist",
+      "manifest",
+      "artifacts",
+      "runtime_seal",
+      "checkpoint",
+      "training_membership",
+      "evaluation_reports"
+    ],
+    "must_register_new_resource_receipt_before_execution": true,
+    "remote_output_regenerable_from_preserved_original_ZIP_code_contract_and_member_hashes": true,
+    "runtime_versions_and_future_invariance_sealed_before_raw_member_decoding": true
+  },
+  "schema": "pj-xavier-eegmmidb-phase3-continuous-SSL-metadata-v1",
+  "source_allowlist_sha256": "487247d35b7447c7315494519e8c24de13eb20025c5d81163379f3874c99354f",
+  "source_archive_bytes": 1997435063,
+  "source_archive_sha256": "0ff5f7f38d1d14b8e485581ad4cf5b327e6494bc2ac7c7d7d4f7e9518a950cbe",
+  "source_counts": {
+    "groups": {
+      "train": 75,
+      "val": 16
+    },
+    "record_counts": {
+      "train": 1014,
+      "val": 224
+    },
+    "records": 1238
+  },
+  "source_denylist_sha256": "36b51aed3fbe9ad58755e5e6d5b8e0e501e1bd388a33981dad0171ade1961f3a",
+  "source_hours": {
+    "train": 32.17194444444444,
+    "val": 7.102777777777778
+  },
+  "status": "frozen_metadata_before_continuous_signal_processing",
+  "subject_split_sha256": "e5b38cbe78f1c0c8c06384c91266db40a8801be20b72262786502f6b5ce2e9c9",
+  "window": {
+    "anchor_seconds": 5.0,
+    "annotation_or_cue_anchoring": false,
+    "array_shape": "N,64,600",
+    "channels": "all64 original native order",
+    "dtype": "float32",
+    "duration_seconds": 3.0,
+    "stride_seconds": 3.0,
+    "target_sample_rate_hz": 200,
+    "trailing_incomplete_window": "exclude",
+    "unit": "V"
+  }
+}

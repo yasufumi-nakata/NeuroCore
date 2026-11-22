@@ -1,0 +1,49 @@
+{
+  "MI_BMPI": {
+    "13channel_epoched_only": true,
+    "API_license": "CC BY4.0",
+    "absolute_original_intervals_and_overlap_unresolved": true,
+    "catalog_id": "000541",
+    "commercial_use_eligibility_unresolved": true,
+    "current_use": "Research acquisition and read-only audit",
+    "event_and_epoch_metadata_empty": true,
+    "original_raw_hours_added": 0,
+    "paper": "https://doi.org/10.1007/s00521-024-10917-5",
+    "physical_amplitude_unit_and_class_1_2_semantics_unresolved": true,
+    "publisher_description_requests_commercial_permission": true
+  },
+  "SSVEP_exoskeleton": {
+    "affected_nominal_ID_groups": 7,
+    "author_flags_not_removed_from_acquisition_quantity": true,
+    "catalog_id": "001148",
+    "exoskeleton_not_used_during_recordings": true,
+    "matching_uses_recorded_datetime_as_candidate_only": true,
+    "must_link_nontrivial_components": 3,
+    "must_link_source_groups_before_any_future_split": true,
+    "original_OpenVibe_to_FIF_code_mapping_unverified": true,
+    "paper": "https://arxiv.org/abs/1501.03227",
+    "physical_units_are_FIF_declared_calibration_not_amplifier_validation": true,
+    "private_constraints_sha256": "549f87071ad1a415b80181f5ea0229f43d1797c180a65674fc077729b3b184b0",
+    "source_describes_five_potential_protocol_failure_recordings": true,
+    "source_gdf_absent_current36_files_are_FIF": true,
+    "split_components_not_actual_people_count": true
+  },
+  "Starlab_LED": {
+    "catalog_id": "002355",
+    "filename_condition_not_per_trial_gold": true,
+    "five_column_actual_table_role_mapping_unverified": true,
+    "integer_scale_and_physical_unit_unverified": true,
+    "paper": "https://doi.org/10.1371/journal.pone.0218771",
+    "paper_confirms_three_EEG_O1_Oz_O2_at250Hz_right_ear_reference": true,
+    "remaining_columns_not_assigned_reference_or_marker": true,
+    "table_time_excluded_from_confirmed_EEG_total": true
+  },
+  "all_require_new_source_specific_QC_and_split_before_training": true,
+  "all_sources_new_training_hours_added": 0,
+  "same_actual_person_all_runs_sessions_conditions_same_future_fold": true,
+  "sources": [
+    "https://api.figshare.com/v2/articles/26893396/versions/2",
+    "https://zenodo.org/records/2392979",
+    "https://zenodo.org/records/1226586"
+  ]
+}

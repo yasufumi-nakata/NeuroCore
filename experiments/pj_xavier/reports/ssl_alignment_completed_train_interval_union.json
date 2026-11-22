@@ -1,0 +1,45 @@
+{
+  "schema": "xavier-completed-cross-stage-trained-input-union-v1",
+  "status": "completed_checkpoints_and_membership_verified",
+  "source_key": "original raw binary SHA256 plus intervals",
+  "SSL_unique_seconds": 50340.0,
+  "alignment_latest_second_unique_seconds": 400.0,
+  "cross_stage_overlap_seconds": 3.0,
+  "combined_unique_seconds": 50737.0,
+  "combined_unique_hours": 14.09361111111111,
+  "SSL_training_windows": 1678,
+  "alignment_training_windows": 400,
+  "SSL_selected_epoch": 8,
+  "alignment_selected_epoch": 26,
+  "SSL_whole_job_epochs": 10,
+  "alignment_whole_job_epochs": 30,
+  "SSL_job_repeated_seconds": 503400,
+  "SSL_selected_encoder_repeated_seconds": 402720,
+  "alignment_job_repeated_seconds": 12000,
+  "alignment_selected_checkpoint_repeated_seconds": 10400,
+  "evidence": {
+    "prior_fixed_cohort_union_sha256": "e237accac7f24e7093d404a8fbe626f885eb858052d1a48178d04327bdd17698",
+    "SSL_manifest_sha256": "216729840806ca20040331baf59ddeadea4e62bc48a19a57c183810e13dd9043",
+    "alignment_manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+    "SSL_best_checkpoint_sha256": "ea598a3fc91e0b260ee6a3f44e0a303a02bb3de63b8c3f009b13d47563fce55a",
+    "alignment_best_checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+    "SSL_membership_sha256": "1e3c2d0dc53e96913a6f94ccafc6c1c13d512796fe96731421ca476a71ffebeb",
+    "alignment_membership_sha256": "d0bfb2b1791b055cd9f8cf31608e697632aafb0abe544a4db7de5b67e3d07c14",
+    "SSL_encoder_seal_sha256": "b5367f60bde3a3156d3edb47565fed29c5009edbdfcd515d2dc4c698df63f171",
+    "alignment_history_sha256": "b6cdc2d32dc84ba20cb11bca3ae527b328721df0f61a1f2622a0a7134752972a",
+    "recovery_receipt_sha256": "17a0ccc353b7cfa2109dc4628b5cc5848fb5d8be785b1865897737896e44bf38"
+  },
+  "completion_basis": [
+    "Selected SSL checkpoint explicitly records all1678 seen training IDs; they equal the pinned corpus and membership.",
+    "Selected alignment checkpoint is a completed full epoch with next_batch_position400. The sealed deterministic source loop visits every fixed training ID once per complete epoch. This is cursor/source evidence, not a separately instrumented per-example input log.",
+    "All30 alignment history entries are completed full epochs with400 entries and13 updates; selected best is the first validation maximum and its checkpoint bytes match.",
+    "Recovery independently reverified166 SSL arrays and32 downstream arrays."
+  ],
+  "scope_notes": [
+    "Unique means union within each original binary source, not distinct anonymous physical people across releases.",
+    "Only gradient-training sources enter this union; reconstruction validation, model-selection validation, held-out EEG and epoch repetitions are excluded.",
+    "The3-second source overlap is counted once despite different window boundaries and resampling context. It is not processed-array byte identity.",
+    "Original upstream pretrained encoder/LLM exposure is outside this new-continuation accounting.",
+    "The prior planned-cohort union file remains unchanged."
+  ]
+}

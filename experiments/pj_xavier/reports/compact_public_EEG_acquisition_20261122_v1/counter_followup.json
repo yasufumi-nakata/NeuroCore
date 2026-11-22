@@ -1,0 +1,16 @@
+{
+  "completed_epoch": 1795323133.233783,
+  "counter_transition_counts": {
+    "-128": 2505,
+    "1": 320346
+  },
+  "counter_value_max": 128,
+  "counter_value_min": 0,
+  "interpretation": "The initial rule tests the publisher stated increment/wrap scheme. A flagged counter transition is not by itself proof of missing EEG samples; stored sample/rate duration and raw columns remain unchanged.",
+  "max_clock_step_deviation_s": 7.812500000881073e-05,
+  "model_calls": 0,
+  "original_quantity_audit_sha256": "312191592b0935b096717d8af6e005974322740f16c12bf04c263e6292ce746f",
+  "raw_files_changed": 0,
+  "record_count": 60,
+  "schema": "xavier_figshare25773342_counter_followup_v1"
+}

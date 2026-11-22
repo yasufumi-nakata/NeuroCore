@@ -1,0 +1,30 @@
+{
+  "schema": "xavier-smac-multichannel-ssl-v1",
+  "kind": "train",
+  "status": "completed",
+  "protocol_sha256": "51a5c1b15f407405da0e7d9eb58f60f23978c9008e21ff4b2bf649de42048f0b",
+  "sources": {
+    "trainer": "ad0d8c27352411db52640c077af4b4bb38c6b1652ea20f3e6e965af2c172ca8a",
+    "legacy": "47f24f9429bdc9af9495b121c4bf2cbc94ce62dbeb6b1033eeff6a4a88fe60fd",
+    "frozen": "b0c397176f8cb9e6dd759ed7169c0029c870f756c501ce317c2e6c7c41f32505",
+    "official_weights": "0792cb808c14e6b7a2bb2ce1dff379bc47bc54c49a779825bdfeb33bf8157178"
+  },
+  "batch_size": 64,
+  "global_step": 110,
+  "completed_epochs": 10,
+  "unique_training_windows": 659,
+  "unique_training_seconds": 1977.0,
+  "training_examples_presented": 6590,
+  "membership_sha256": "5c5ed18e3b7b379b27d71f911d08564e2bb3b8c76779c5f5f6c3b7850c3bd27f",
+  "best_checkpoint_sha256": "3450e90e0c2cdf8b0b7f2fa28d39ae5037f7d9b70fea95cc5d93a885d98e6d10",
+  "best_validation_mean_subject_MSE": 0.0019222948831695787,
+  "elapsed_seconds": 18.61261525005102,
+  "peak_sampled_memory_bytes": 868352000,
+  "memory_within_budget": true,
+  "all_registered_buckets_observed": true,
+  "all_gradients_finite_nonzero": true,
+  "weights_reused": null,
+  "test_windows": 0,
+  "behavior_labels_used": 0,
+  "step_seconds_p50": 0.08488043746910989
+}

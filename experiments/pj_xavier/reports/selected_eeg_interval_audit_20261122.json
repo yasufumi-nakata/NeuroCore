@@ -1,0 +1,90 @@
+{
+  "schema": "pj-xavier-selected-eeg-interval-audit-v1",
+  "scope": "Read-only independent union audit of all rows in the fixed UniBa v3 and ITU external manifests",
+  "method": "For each split and raw EEG SHA-256, sort half-open [window_end_s - duration, window_end_s) intervals, merge overlaps, then sum union lengths. Check that the cropped interval lies inside the stored full window. Durations audited: full 1.75 seconds and the last 1.0 second.",
+  "results": {
+    "ai_coding_uniba_v3_natural_casecontrol_verified": {
+      "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+      "durations": {
+        "1.75": {
+          "train": {
+            "windows": 400,
+            "source_recordings": 18,
+            "sum_window_seconds": 700,
+            "within_source_interval_union_seconds": 700,
+            "overlap_seconds": 0
+          },
+          "val": {
+            "windows": 155,
+            "source_recordings": 6,
+            "sum_window_seconds": 271.25,
+            "within_source_interval_union_seconds": 271.25,
+            "overlap_seconds": 0
+          },
+          "test": {
+            "windows": 203,
+            "source_recordings": 8,
+            "sum_window_seconds": 355.25,
+            "within_source_interval_union_seconds": 355.25,
+            "overlap_seconds": 0
+          }
+        },
+        "1.0": {
+          "train": {
+            "windows": 400,
+            "source_recordings": 18,
+            "sum_window_seconds": 400,
+            "within_source_interval_union_seconds": 400,
+            "overlap_seconds": 0
+          },
+          "val": {
+            "windows": 155,
+            "source_recordings": 6,
+            "sum_window_seconds": 155,
+            "within_source_interval_union_seconds": 155,
+            "overlap_seconds": 0
+          },
+          "test": {
+            "windows": 203,
+            "source_recordings": 8,
+            "sum_window_seconds": 203,
+            "within_source_interval_union_seconds": 203,
+            "overlap_seconds": 0
+          }
+        }
+      }
+    },
+    "ai_coding_itu_external_v3_natural_casecontrol_v1": {
+      "manifest_sha256": "cfd93863b8f8e263174e6ab59395496efbd397e821542fa3a1f0c1e5faa503b0",
+      "durations": {
+        "1.75": {
+          "external_test": {
+            "windows": 630,
+            "source_recordings": 25,
+            "sum_window_seconds": 1102.5,
+            "within_source_interval_union_seconds": 1102.5,
+            "overlap_seconds": 0
+          }
+        },
+        "1.0": {
+          "external_test": {
+            "windows": 630,
+            "source_recordings": 25,
+            "sum_window_seconds": 630,
+            "within_source_interval_union_seconds": 630,
+            "overlap_seconds": 0
+          }
+        }
+      }
+    }
+  },
+  "classification": "No source-level temporal overlap exists in either audited selection. Selected source-interval seconds are not total acquired recording hours or epoch-repeated exposure.",
+  "split_isolation": "No manifest rows or partitions were changed by this audit.",
+  "limits": [
+    "Grouping by raw EEG content SHA-256 identifies a recording representation, not globally distinct humans or semantically duplicate re-exports.",
+    "EEG-LLM v3 consumes the original 1.75-second window; the new CBraMod symbol model consumes only its last 1.0 second.",
+    "At 30 complete epochs, 400 selected training seconds are presented 30 times; this is 12000 seconds of repeated input, not 12000 new seconds.",
+    "ITU rows are external evaluation only; their duration is not training data."
+  ],
+  "report_recorded_at_utc": "2026-11-22 01:57:54 UTC"
+}

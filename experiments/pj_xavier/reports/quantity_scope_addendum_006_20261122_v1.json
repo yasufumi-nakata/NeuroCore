@@ -1,0 +1,30 @@
+{
+  "Brainstorm": {
+    "EEG_channel_role_status": "62 conservative EEG candidates plus2 auxiliary/unresolved channels;62 is not a claim all source channel identities have been independently confirmed",
+    "binary_EEG_storage_if_candidate_source_held_bytes": 44689998104,
+    "included_candidate_binary_EEG_bytes": 209564960,
+    "included_in_canonical_native_hours": 0.46945555555555557,
+    "including_this_time_does_not_assert_channel_role_or_physiological_QC_completion": true,
+    "native_record_count": 10,
+    "native_record_count_if_candidate_source_held": 2628,
+    "native_total_if_this_candidate_source_separately_held_hours": 244.33314010416666,
+    "sample_count_and1000Hz_duration_verified": true,
+    "source_summary_sha256": "b5280f2baae42bc240df0d5887f0b95176099a9edad2990a40ca4e89b071e5fd"
+  },
+  "Starlab": {
+    "EEG_specific_bytes": null,
+    "actual_column_to_three_EEG_mapping_verified": false,
+    "hours_added_to_confirmed_EEG_or_epoch_totals": 0,
+    "no_signal_column_roles_guessed": true,
+    "physical_integer_scale_verified": false,
+    "source_summary_sha256": "1545e40683313934ff355edee106e7bb3dbebdecb7aabdcdd4286b8e089c24cd",
+    "table_hours_at_publisher250Hz": 1.2954055555555555,
+    "waveform_candidate_table_exists": true
+  },
+  "all_new_acquisition_training_hours": 0,
+  "native_term_scope": "Canonical/native distribution formats are not a guarantee of amplifier-original unfiltered signals. Signal quality, physical calibration, latent intent and independent elapsed original union remain distinct from stored sample timing.",
+  "original_quantity006_unchanged": true,
+  "quantity006_sha256": "e82795c25a4c3cc6925957b3c046dd9ec196e20c625463cc4548e299a50f6aee",
+  "schema": "xavier_quantity006_certainty_scope_addendum_v1",
+  "status": "completed"
+}

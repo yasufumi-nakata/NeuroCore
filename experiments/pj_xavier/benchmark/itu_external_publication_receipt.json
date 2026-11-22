@@ -1,0 +1,36 @@
+{
+  "schema": "xavier-external-canonical-publication-v1",
+  "status": "published_after_verified_private_recovery_and_CPU_audit",
+  "protocol_sha256": "1acd857958d034125c4a69d222b7564c15531f17cdf89a509d6319beb625eb02",
+  "source_proofs": {
+    "combined_external_score.json": "c240fbedd848cca2d52c463ce768d29e48fbd16647afd248679d554ffb926201",
+    "independent_completion_audit.json": "524a00074112fd696b1ea9e8a2a405d16f4f562b26135d6126495c81831aa94d",
+    "workstation_postprocessing_completion.json": "efb7eb2eaa5ab7facab1c91c42ea539abbf2749d2f6d0413a75721ad46c1f2b8",
+    "ssl_alignment_gate_live_evidence.json": "a9aeb48884bda16bc68d69f3260e1794afcaff3793c8a24de44a0ffb06596d03"
+  },
+  "new_SSL_alignment_gate_live": true,
+  "actual_SSL_training_authorized_by_this_publication": false,
+  "model_performance_accepted": false,
+  "epoch": 1795314693.4506052,
+  "models": [
+    {
+      "model_key": "smollm17b_v3",
+      "canonical_sha256": "3372d2facf5d3e7cfeb7f16464121e49516dedd13846f2e3fb2752f5a3837fb5",
+      "checkpoint_sha256": "281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475",
+      "report_sha256": "9d0f3a9dab82192e03056ec4960243b7d127776d39a233e5f5b78391f3c0653a"
+    },
+    {
+      "model_key": "qwen8b_v3_30e",
+      "canonical_sha256": "801f66905e24abc53dc9561fa4763af5721705ebba41a6385253a8e55de5e4c8",
+      "checkpoint_sha256": "b7c8e8f37a1f9276cc58b35609a6e21191faacc138a6f37e37296976be2ed924",
+      "report_sha256": "4e53109b5d1cb9dfa5daa0b5a4daec694a83783fddbfac88424eb2aaee16c33c"
+    },
+    {
+      "model_key": "cbramod_smollm_v3",
+      "canonical_sha256": "f0ded82c4543f3f3dbe6b02d6f028ee57438aa5bf0c10ddfe746d15cfb54b985",
+      "checkpoint_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
+      "report_sha256": "55c5b6a2905f02ae2e365df9156c4c6bed9412a473756fdd21516f15f36fbd9a"
+    }
+  ],
+  "private_publication_receipt_sha256": "a24f56ebaf8de921079db31f337d1543c540763b3417bc650575c8e995107997"
+}

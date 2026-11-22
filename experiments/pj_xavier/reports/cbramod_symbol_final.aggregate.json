@@ -1,0 +1,2520 @@
+{
+  "schema": "xavier-cbramod-symbol-final-aggregate-v1",
+  "status": "training_five_conditions_strict_recovered_M1_trial_completed",
+  "model_source_sha256": "b0c397176f8cb9e6dd759ed7169c0029c870f756c501ce317c2e6c7c41f32505",
+  "protocol_sha256": "fddc652d9cf963154d1dc07ff5903b3c7e1b4cfaf7f1d3b22ba00b0085e79bcb",
+  "checkpoint_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
+  "checkpoint_bytes": 4963861,
+  "checkpoint_contents": "Learned projection, optimizer and provenance. Frozen CBraMod and1.7B LLM weights are separate pinned dependencies.",
+  "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "training": {
+    "epochs": 30,
+    "steps": 390,
+    "elapsed_seconds": 429.3332344770006,
+    "process_wall_seconds": 440.2509183883667,
+    "batch_size": 32,
+    "seed": 20261122,
+    "best_validation_epoch": 23,
+    "best_validation_balanced_accuracy": 0.4516129032258065,
+    "best_validation_confusion": [
+      [
+        13,
+        7,
+        11
+      ],
+      [
+        11,
+        27,
+        24
+      ],
+      [
+        2,
+        29,
+        31
+      ]
+    ],
+    "memory": {
+      "process_peak_rss_bytes": 4379471872,
+      "cuda_peak_allocated_bytes": 9130753024,
+      "cuda_peak_reserved_bytes": 9219080192
+    },
+    "resource_budget_gib": 21,
+    "trainable_parameters": 412048,
+    "frozen_eeg_encoder_parameters": 4883800,
+    "frozen_llm_parameters": 1711376384,
+    "validation_history": [
+      {
+        "epoch": 1,
+        "global_step": 13,
+        "mean_train_classification_loss": 1.1962732076644897,
+        "val": {
+          "n": 155,
+          "accuracy": 0.38064516129032255,
+          "balanced_accuracy": 0.3279569892473118,
+          "macro_f1": 0.3080803421957103,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              2,
+              8,
+              21
+            ],
+            [
+              5,
+              18,
+              39
+            ],
+            [
+              10,
+              13,
+              39
+            ]
+          ],
+          "categorical_nll": 1.0703184604644775,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.81045200029621,
+          "latency_ms_p95": 51.994997099973254,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.0,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_001_step_0000013.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 2,
+        "global_step": 26,
+        "mean_train_classification_loss": 1.1404589781394372,
+        "val": {
+          "n": 155,
+          "accuracy": 0.45161290322580644,
+          "balanced_accuracy": 0.42473118279569894,
+          "macro_f1": 0.4373128584358432,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              9,
+              6,
+              16
+            ],
+            [
+              3,
+              32,
+              27
+            ],
+            [
+              4,
+              29,
+              29
+            ]
+          ],
+          "categorical_nll": 1.079231858253479,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 46.094810000795405,
+          "latency_ms_p95": 49.12398610031232,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.0064516129032258064,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_002_step_0000026.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 3,
+        "global_step": 39,
+        "mean_train_classification_loss": 1.0451602293894842,
+        "val": {
+          "n": 155,
+          "accuracy": 0.4129032258064516,
+          "balanced_accuracy": 0.3655913978494623,
+          "macro_f1": 0.3371312794231571,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              4,
+              9,
+              18
+            ],
+            [
+              3,
+              13,
+              46
+            ],
+            [
+              2,
+              13,
+              47
+            ]
+          ],
+          "categorical_nll": 1.0654619932174683,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.76242100119998,
+          "latency_ms_p95": 47.92767220005771,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.0,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_003_step_0000039.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 4,
+        "global_step": 52,
+        "mean_train_classification_loss": 0.9695584865716788,
+        "val": {
+          "n": 155,
+          "accuracy": 0.3935483870967742,
+          "balanced_accuracy": 0.3279569892473118,
+          "macro_f1": 0.2921177587844255,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              0,
+              17,
+              14
+            ],
+            [
+              0,
+              28,
+              34
+            ],
+            [
+              1,
+              28,
+              33
+            ]
+          ],
+          "categorical_nll": 1.047692894935608,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.822145000784076,
+          "latency_ms_p95": 47.61491919944091,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.0,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_004_step_0000052.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 5,
+        "global_step": 65,
+        "mean_train_classification_loss": 0.9286797321759738,
+        "val": {
+          "n": 155,
+          "accuracy": 0.4064516129032258,
+          "balanced_accuracy": 0.3440860215053763,
+          "macro_f1": 0.3117937853107345,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              1,
+              12,
+              18
+            ],
+            [
+              0,
+              22,
+              40
+            ],
+            [
+              0,
+              22,
+              40
+            ]
+          ],
+          "categorical_nll": 1.0542151927947998,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.80621999957657,
+          "latency_ms_p95": 47.33049990045401,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.0064516129032258064,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_005_step_0000065.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 6,
+        "global_step": 78,
+        "mean_train_classification_loss": 0.8288329335359427,
+        "val": {
+          "n": 155,
+          "accuracy": 0.3935483870967742,
+          "balanced_accuracy": 0.3655913978494623,
+          "macro_f1": 0.37081697081697085,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              7,
+              8,
+              16
+            ],
+            [
+              6,
+              20,
+              36
+            ],
+            [
+              1,
+              27,
+              34
+            ]
+          ],
+          "categorical_nll": 1.0948216915130615,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.836563000193564,
+          "latency_ms_p95": 46.87242359996162,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.0064516129032258064,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_006_step_0000078.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 7,
+        "global_step": 91,
+        "mean_train_classification_loss": 0.7737378753148593,
+        "val": {
+          "n": 155,
+          "accuracy": 0.3741935483870968,
+          "balanced_accuracy": 0.3548387096774193,
+          "macro_f1": 0.3659307628524046,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              8,
+              14,
+              9
+            ],
+            [
+              7,
+              24,
+              31
+            ],
+            [
+              2,
+              34,
+              26
+            ]
+          ],
+          "categorical_nll": 1.1092616319656372,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.902212001237785,
+          "latency_ms_p95": 47.94126099968707,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.01935483870967742,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_007_step_0000091.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 8,
+        "global_step": 104,
+        "mean_train_classification_loss": 0.6616665560465592,
+        "val": {
+          "n": 155,
+          "accuracy": 0.38064516129032255,
+          "balanced_accuracy": 0.3440860215053763,
+          "macro_f1": 0.342962692619627,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              5,
+              12,
+              14
+            ],
+            [
+              9,
+              23,
+              30
+            ],
+            [
+              3,
+              28,
+              31
+            ]
+          ],
+          "categorical_nll": 1.1779170036315918,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.71271700115176,
+          "latency_ms_p95": 51.233550099823326,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.07096774193548387,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_008_step_0000104.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 9,
+        "global_step": 117,
+        "mean_train_classification_loss": 0.5443574075515454,
+        "val": {
+          "n": 155,
+          "accuracy": 0.36129032258064514,
+          "balanced_accuracy": 0.3172043010752688,
+          "macro_f1": 0.3112406145526955,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              3,
+              15,
+              13
+            ],
+            [
+              7,
+              25,
+              30
+            ],
+            [
+              2,
+              32,
+              28
+            ]
+          ],
+          "categorical_nll": 1.2313708066940308,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.89029099952313,
+          "latency_ms_p95": 47.25309729874425,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.11612903225806452,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_009_step_0000117.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 10,
+        "global_step": 130,
+        "mean_train_classification_loss": 0.4788604653798617,
+        "val": {
+          "n": 155,
+          "accuracy": 0.3935483870967742,
+          "balanced_accuracy": 0.3548387096774193,
+          "macro_f1": 0.3388835564087524,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              5,
+              19,
+              7
+            ],
+            [
+              10,
+              41,
+              11
+            ],
+            [
+              1,
+              46,
+              15
+            ]
+          ],
+          "categorical_nll": 1.5382750034332275,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.89202299939643,
+          "latency_ms_p95": 47.61893080049048,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.38064516129032255,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_010_step_0000130.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 11,
+        "global_step": 143,
+        "mean_train_classification_loss": 0.444774879859044,
+        "val": {
+          "n": 155,
+          "accuracy": 0.4,
+          "balanced_accuracy": 0.3494623655913978,
+          "macro_f1": 0.33154693407857966,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              3,
+              15,
+              13
+            ],
+            [
+              6,
+              40,
+              16
+            ],
+            [
+              2,
+              41,
+              19
+            ]
+          ],
+          "categorical_nll": 1.4202179908752441,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 46.264452999821515,
+          "latency_ms_p95": 48.58714489982958,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.3419354838709677,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_011_step_0000143.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 12,
+        "global_step": 156,
+        "mean_train_classification_loss": 0.32905014432393587,
+        "val": {
+          "n": 155,
+          "accuracy": 0.36129032258064514,
+          "balanced_accuracy": 0.3333333333333333,
+          "macro_f1": 0.3260261428069647,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              6,
+              10,
+              15
+            ],
+            [
+              7,
+              35,
+              20
+            ],
+            [
+              8,
+              39,
+              15
+            ]
+          ],
+          "categorical_nll": 1.4574183225631714,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.94810800153937,
+          "latency_ms_p95": 46.91330970090348,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.23870967741935484,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_012_step_0000156.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 13,
+        "global_step": 169,
+        "mean_train_classification_loss": 0.30974646371144515,
+        "val": {
+          "n": 155,
+          "accuracy": 0.4258064516129032,
+          "balanced_accuracy": 0.39247311827956993,
+          "macro_f1": 0.39414219869936956,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              7,
+              12,
+              12
+            ],
+            [
+              11,
+              31,
+              20
+            ],
+            [
+              4,
+              30,
+              28
+            ]
+          ],
+          "categorical_nll": 1.3508343696594238,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 46.943675999500556,
+          "latency_ms_p95": 49.53769550047582,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.3096774193548387,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_013_step_0000169.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 14,
+        "global_step": 182,
+        "mean_train_classification_loss": 0.2877315833018376,
+        "val": {
+          "n": 155,
+          "accuracy": 0.432258064516129,
+          "balanced_accuracy": 0.3978494623655913,
+          "macro_f1": 0.40248149443375886,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              7,
+              10,
+              14
+            ],
+            [
+              7,
+              29,
+              26
+            ],
+            [
+              3,
+              28,
+              31
+            ]
+          ],
+          "categorical_nll": 1.4302008152008057,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.874327999626985,
+          "latency_ms_p95": 47.81464120023883,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.3419354838709677,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_014_step_0000182.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 15,
+        "global_step": 195,
+        "mean_train_classification_loss": 0.2732654706789897,
+        "val": {
+          "n": 155,
+          "accuracy": 0.38064516129032255,
+          "balanced_accuracy": 0.3494623655913979,
+          "macro_f1": 0.3205426356589147,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              6,
+              15,
+              10
+            ],
+            [
+              9,
+              44,
+              9
+            ],
+            [
+              2,
+              51,
+              9
+            ]
+          ],
+          "categorical_nll": 1.869358777999878,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 46.056237999437144,
+          "latency_ms_p95": 48.93316799989406,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.5870967741935483,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_015_step_0000195.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 16,
+        "global_step": 208,
+        "mean_train_classification_loss": 0.23367205835305727,
+        "val": {
+          "n": 155,
+          "accuracy": 0.36774193548387096,
+          "balanced_accuracy": 0.3387096774193548,
+          "macro_f1": 0.33575911481951753,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              6,
+              13,
+              12
+            ],
+            [
+              10,
+              33,
+              19
+            ],
+            [
+              3,
+              41,
+              18
+            ]
+          ],
+          "categorical_nll": 1.6557191610336304,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.78310000033525,
+          "latency_ms_p95": 46.69445800045651,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.4129032258064516,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_016_step_0000208.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 17,
+        "global_step": 221,
+        "mean_train_classification_loss": 0.200027153469049,
+        "val": {
+          "n": 155,
+          "accuracy": 0.4064516129032258,
+          "balanced_accuracy": 0.39784946236559143,
+          "macro_f1": 0.3981021394064872,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              11,
+              4,
+              16
+            ],
+            [
+              10,
+              22,
+              30
+            ],
+            [
+              8,
+              24,
+              30
+            ]
+          ],
+          "categorical_nll": 1.613015055656433,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.99502099881647,
+          "latency_ms_p95": 46.93753579886106,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.4258064516129032,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_017_step_0000221.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 18,
+        "global_step": 234,
+        "mean_train_classification_loss": 0.1836991235613823,
+        "val": {
+          "n": 155,
+          "accuracy": 0.4064516129032258,
+          "balanced_accuracy": 0.37634408602150543,
+          "macro_f1": 0.3749636526995017,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              7,
+              17,
+              7
+            ],
+            [
+              9,
+              36,
+              17
+            ],
+            [
+              3,
+              39,
+              20
+            ]
+          ],
+          "categorical_nll": 1.6526024341583252,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.65474099945277,
+          "latency_ms_p95": 46.37904039918794,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.4645161290322581,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_018_step_0000234.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 19,
+        "global_step": 247,
+        "mean_train_classification_loss": 0.1384580788704065,
+        "val": {
+          "n": 155,
+          "accuracy": 0.432258064516129,
+          "balanced_accuracy": 0.39247311827956993,
+          "macro_f1": 0.3930753222341568,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              6,
+              9,
+              16
+            ],
+            [
+              9,
+              32,
+              21
+            ],
+            [
+              3,
+              30,
+              29
+            ]
+          ],
+          "categorical_nll": 1.7629787921905518,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.7079949992476,
+          "latency_ms_p95": 47.457345599286775,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.5612903225806452,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_019_step_0000247.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 20,
+        "global_step": 260,
+        "mean_train_classification_loss": 0.18801877189141053,
+        "val": {
+          "n": 155,
+          "accuracy": 0.45806451612903226,
+          "balanced_accuracy": 0.40322580645161293,
+          "macro_f1": 0.39422293461564145,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              4,
+              9,
+              18
+            ],
+            [
+              7,
+              39,
+              16
+            ],
+            [
+              4,
+              30,
+              28
+            ]
+          ],
+          "categorical_nll": 1.6166988611221313,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.93158699935884,
+          "latency_ms_p95": 52.3530551990916,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.44516129032258067,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_020_step_0000260.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 21,
+        "global_step": 273,
+        "mean_train_classification_loss": 0.2631725582938928,
+        "val": {
+          "n": 155,
+          "accuracy": 0.4258064516129032,
+          "balanced_accuracy": 0.40322580645161293,
+          "macro_f1": 0.404425073984396,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              9,
+              8,
+              14
+            ],
+            [
+              10,
+              30,
+              22
+            ],
+            [
+              9,
+              26,
+              27
+            ]
+          ],
+          "categorical_nll": 1.3950637578964233,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 46.09663500013994,
+          "latency_ms_p95": 50.75608499973896,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.34838709677419355,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_021_step_0000273.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 22,
+        "global_step": 286,
+        "mean_train_classification_loss": 0.24357567383692816,
+        "val": {
+          "n": 155,
+          "accuracy": 0.41935483870967744,
+          "balanced_accuracy": 0.3817204301075268,
+          "macro_f1": 0.3731725191598246,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              6,
+              14,
+              11
+            ],
+            [
+              8,
+              40,
+              14
+            ],
+            [
+              4,
+              39,
+              19
+            ]
+          ],
+          "categorical_nll": 1.7398980855941772,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 46.362007000425365,
+          "latency_ms_p95": 50.67733309897448,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.47096774193548385,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_022_step_0000286.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 23,
+        "global_step": 299,
+        "mean_train_classification_loss": 0.15495600207493856,
+        "val": {
+          "n": 155,
+          "accuracy": 0.45806451612903226,
+          "balanced_accuracy": 0.4516129032258065,
+          "macro_f1": 0.4575051169590643,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              13,
+              7,
+              11
+            ],
+            [
+              11,
+              27,
+              24
+            ],
+            [
+              2,
+              29,
+              31
+            ]
+          ],
+          "categorical_nll": 1.5827938318252563,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 46.004689000255894,
+          "latency_ms_p95": 46.90551610019611,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.41935483870967744,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_023_step_0000299.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 24,
+        "global_step": 312,
+        "mean_train_classification_loss": 0.12565194414212152,
+        "val": {
+          "n": 155,
+          "accuracy": 0.4129032258064516,
+          "balanced_accuracy": 0.3763440860215053,
+          "macro_f1": 0.36370291231402346,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              6,
+              17,
+              8
+            ],
+            [
+              12,
+              41,
+              9
+            ],
+            [
+              3,
+              42,
+              17
+            ]
+          ],
+          "categorical_nll": 2.0632615089416504,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.54243900020083,
+          "latency_ms_p95": 48.701269300727276,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.5483870967741935,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_024_step_0000312.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 25,
+        "global_step": 325,
+        "mean_train_classification_loss": 0.109081491541404,
+        "val": {
+          "n": 155,
+          "accuracy": 0.4,
+          "balanced_accuracy": 0.3440860215053763,
+          "macro_f1": 0.3001456512692468,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              2,
+              18,
+              11
+            ],
+            [
+              3,
+              48,
+              11
+            ],
+            [
+              0,
+              50,
+              12
+            ]
+          ],
+          "categorical_nll": 2.087632179260254,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.29898900000262,
+          "latency_ms_p95": 50.8567982000386,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.6193548387096774,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_025_step_0000325.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 26,
+        "global_step": 338,
+        "mean_train_classification_loss": 0.11989759653806686,
+        "val": {
+          "n": 155,
+          "accuracy": 0.41935483870967744,
+          "balanced_accuracy": 0.3817204301075268,
+          "macro_f1": 0.3737703596194162,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              6,
+              15,
+              10
+            ],
+            [
+              7,
+              40,
+              15
+            ],
+            [
+              4,
+              39,
+              19
+            ]
+          ],
+          "categorical_nll": 2.0604991912841797,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.539942000687006,
+          "latency_ms_p95": 46.39869129969156,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.5225806451612903,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_026_step_0000338.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 27,
+        "global_step": 351,
+        "mean_train_classification_loss": 0.08609037516781917,
+        "val": {
+          "n": 155,
+          "accuracy": 0.43870967741935485,
+          "balanced_accuracy": 0.43548387096774194,
+          "macro_f1": 0.420246858897017,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              13,
+              11,
+              7
+            ],
+            [
+              11,
+              41,
+              10
+            ],
+            [
+              4,
+              44,
+              14
+            ]
+          ],
+          "categorical_nll": 2.118823528289795,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.83647499930521,
+          "latency_ms_p95": 47.57470289914636,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.6129032258064516,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_027_step_0000351.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 28,
+        "global_step": 364,
+        "mean_train_classification_loss": 0.10743327897328597,
+        "val": {
+          "n": 155,
+          "accuracy": 0.45806451612903226,
+          "balanced_accuracy": 0.41935483870967744,
+          "macro_f1": 0.4231719529813501,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              7,
+              12,
+              12
+            ],
+            [
+              7,
+              29,
+              26
+            ],
+            [
+              2,
+              25,
+              35
+            ]
+          ],
+          "categorical_nll": 1.8879573345184326,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 46.214468999096425,
+          "latency_ms_p95": 47.6499230004265,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.5806451612903226,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_028_step_0000364.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 29,
+        "global_step": 377,
+        "mean_train_classification_loss": 0.08722868662040967,
+        "val": {
+          "n": 155,
+          "accuracy": 0.36129032258064514,
+          "balanced_accuracy": 0.3387096774193548,
+          "macro_f1": 0.3316908042778974,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              7,
+              15,
+              9
+            ],
+            [
+              9,
+              35,
+              18
+            ],
+            [
+              4,
+              44,
+              14
+            ]
+          ],
+          "categorical_nll": 1.9793496131896973,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 46.46929099908448,
+          "latency_ms_p95": 49.349570999220305,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.5548387096774193,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_029_step_0000377.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      },
+      {
+        "epoch": 30,
+        "global_step": 390,
+        "mean_train_classification_loss": 0.11450524427569829,
+        "val": {
+          "n": 155,
+          "accuracy": 0.3741935483870968,
+          "balanced_accuracy": 0.3387096774193548,
+          "macro_f1": 0.33252888045002044,
+          "all_classes_present": true,
+          "classes": [
+            "ai_prompt_submit",
+            "keyboard",
+            "mouse_click"
+          ],
+          "class_support": [
+            31,
+            62,
+            62
+          ],
+          "confusion_matrix": [
+            [
+              5,
+              16,
+              10
+            ],
+            [
+              8,
+              35,
+              19
+            ],
+            [
+              3,
+              41,
+              18
+            ]
+          ],
+          "categorical_nll": 1.9054864645004272,
+          "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+          "status": "measured",
+          "condition": "normal",
+          "latency_ms_p50": 45.97755300164863,
+          "latency_ms_p95": 48.52965119953296,
+          "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+          "abstain_threshold": 0.8,
+          "coverage": 0.5225806451612903,
+          "task_completion": null,
+          "false_actions_per_minute": null,
+          "candidate_forward_passes": 1,
+          "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation",
+          "agentic_benchmark_status": "unavailable_without_real_harness_episodes_and_idle_periods"
+        },
+        "checkpoint": "epoch_030_step_0000390.pt",
+        "epoch_completed": true,
+        "next_batch_position": 400,
+        "best_by": "validation balanced accuracy; earliest tie wins"
+      }
+    ]
+  },
+  "input_quantity": {
+    "train_records": 400,
+    "train_subjects": 18,
+    "source_window_samples": 448,
+    "source_window_seconds": 1.75,
+    "encoder_input_samples_at200Hz": 200,
+    "encoder_input_seconds_per_record": 1,
+    "sum_train_source_window_seconds": 700,
+    "sum_train_encoder_input_seconds": 400,
+    "train_encoder_input_union_seconds_within_raw_source": 400,
+    "repeated_encoder_seconds_presented_in30epochs": 12000,
+    "independent_source_interval_audit_path": "reports/selected_eeg_interval_audit_20261122.json",
+    "independent_source_interval_audit_sha256": "4cf1a36ca436ed9e3fcf34a53e0752709f36edd8ccdd59e39a20492070fa7a9a",
+    "unique_scope": "Union of sampled time intervals within each original raw source; not unique people or the total recording archive hours.",
+    "heldout_reused_exploratorily": true,
+    "ITU_used_in_training": false
+  },
+  "evaluation": {
+    "elapsed_seconds": 61.35129440499986,
+    "test_records": 203,
+    "test_subjects": 8,
+    "conditions": {
+      "fused": {
+        "status": "measured",
+        "n": 203,
+        "accuracy": 0.35467980295566504,
+        "balanced_accuracy": 0.3509485094850948,
+        "macro_f1": 0.3432068948552465,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          39,
+          82,
+          82
+        ],
+        "confusion_matrix": [
+          [
+            13,
+            8,
+            18
+          ],
+          [
+            24,
+            24,
+            34
+          ],
+          [
+            14,
+            33,
+            35
+          ]
+        ],
+        "categorical_nll": 1.8526382446289062,
+        "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+        "latency_ms_p50": 45.01796300064598,
+        "latency_ms_p95": 46.91927100047906,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+        "coverage": 0.4729064039408867,
+        "abstain_threshold": 0.8,
+        "candidate_forward_passes": 1,
+        "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation"
+      },
+      "context_only": {
+        "status": "measured",
+        "n": 203,
+        "accuracy": 0.4039408866995074,
+        "balanced_accuracy": 0.3333333333333333,
+        "macro_f1": 0.19181286549707602,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          39,
+          82,
+          82
+        ],
+        "confusion_matrix": [
+          [
+            0,
+            0,
+            39
+          ],
+          [
+            0,
+            0,
+            82
+          ],
+          [
+            0,
+            0,
+            82
+          ]
+        ],
+        "categorical_nll": 1.2096971273422241,
+        "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+        "latency_ms_p50": 45.55389599954651,
+        "latency_ms_p95": 46.98882689990569,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+        "coverage": 0.0,
+        "abstain_threshold": 0.8,
+        "candidate_forward_passes": 1,
+        "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation"
+      },
+      "eeg_only": {
+        "status": "measured",
+        "n": 203,
+        "accuracy": 0.3054187192118227,
+        "balanced_accuracy": 0.3147800708776319,
+        "macro_f1": 0.29351084812623274,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          39,
+          82,
+          82
+        ],
+        "confusion_matrix": [
+          [
+            14,
+            4,
+            21
+          ],
+          [
+            34,
+            15,
+            33
+          ],
+          [
+            25,
+            24,
+            33
+          ]
+        ],
+        "categorical_nll": 1.5575191974639893,
+        "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+        "latency_ms_p50": 46.9576949999464,
+        "latency_ms_p95": 49.046062299203186,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+        "coverage": 0.22660098522167488,
+        "abstain_threshold": 0.8,
+        "candidate_forward_passes": 1,
+        "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation"
+      },
+      "eeg_shuffled": {
+        "status": "measured",
+        "n": 203,
+        "accuracy": 0.31527093596059114,
+        "balanced_accuracy": 0.30050031269543465,
+        "macro_f1": 0.2958904109589041,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          39,
+          82,
+          82
+        ],
+        "confusion_matrix": [
+          [
+            9,
+            14,
+            16
+          ],
+          [
+            23,
+            21,
+            38
+          ],
+          [
+            19,
+            29,
+            34
+          ]
+        ],
+        "categorical_nll": 2.1986236572265625,
+        "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+        "latency_ms_p50": 45.710834998317296,
+        "latency_ms_p95": 48.73484460094914,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+        "coverage": 0.47783251231527096,
+        "abstain_threshold": 0.8,
+        "candidate_forward_passes": 1,
+        "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation"
+      },
+      "eeg_time_shifted": {
+        "status": "measured",
+        "n": 203,
+        "accuracy": 0.3891625615763547,
+        "balanced_accuracy": 0.34803001876172607,
+        "macro_f1": 0.34397982643026515,
+        "classes": [
+          "ai_prompt_submit",
+          "keyboard",
+          "mouse_click"
+        ],
+        "class_support": [
+          39,
+          82,
+          82
+        ],
+        "confusion_matrix": [
+          [
+            6,
+            17,
+            16
+          ],
+          [
+            14,
+            29,
+            39
+          ],
+          [
+            13,
+            25,
+            44
+          ]
+        ],
+        "categorical_nll": 1.8836625814437866,
+        "probability_note": "restricted A/B/C next-token softmax; natural-use calibration not established",
+        "latency_ms_p50": 45.78372900141403,
+        "latency_ms_p95": 46.90649159983877,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+        "coverage": 0.5615763546798029,
+        "abstain_threshold": 0.8,
+        "candidate_forward_passes": 1,
+        "input_ablation_note": "Same selected checkpoint; context-only passes zero EEG through the fixed encoder, a distribution-shift ablation"
+      }
+    },
+    "source_report_sha256": "11d30f5afee0ab492c2af73c8e4e1307ec8bddcdb56377bdcd61149542b03099",
+    "predictions_sha256": "dc8c4bf7316e2253bb1961329a985559b482a8c1f5d2335f8dddbc11213aba72",
+    "memory": {
+      "process_peak_rss_bytes": 4403462144,
+      "cuda_peak_allocated_bytes": 3441674752,
+      "cuda_peak_reserved_bytes": 3466592256
+    },
+    "hardware": {
+      "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+      "machine": "x86_64",
+      "processor": "x86_64",
+      "device": "cuda",
+      "python": "3.13.16",
+      "torch": "2.14.1+cu130",
+      "transformers": "5.22.1",
+      "accelerator": "NVIDIA L4",
+      "accelerator_memory_bytes": 23659151360,
+      "system_memory_bytes": 56863301632,
+      "base_parameter_count": 1711376384,
+      "resolved_revision": "31b70e2e869a7173562077fd711b654946d38674",
+      "pretrained": true,
+      "estimated_weight_bytes": 3422752768,
+      "cbramod": {
+        "source_commit": "b9e961003214326972c567eff390e75b0287e32a",
+        "source_sha256": {
+          "models/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "models/cbramod.py": "caa7c5a0e4acd488a6f625b56f7b54dc4e7190d6b68ef5b76dff2cef86874a14",
+          "models/criss_cross_transformer.py": "90e90b8c98ca7eb543c44e32afc29674d3f71cb090692ad9f82db3a43edf334c"
+        },
+        "weights_revision": "500543c7e30bda1b22bfd51a49301b238dee21fd",
+        "weights_sha256": "0792cb808c14e6b7a2bb2ce1dff379bc47bc54c49a779825bdfeb33bf8157178",
+        "encoder_device": "cpu",
+        "encoder_dtype": "float32",
+        "encoder_frozen": true
+      },
+      "core_source_sha256": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+      "candidate_scoring": "one forward; three restricted next-token logits",
+      "eeg_encoder_input_seconds": 1,
+      "source_window_seconds": 1.75
+    },
+    "allocator_limit": {
+      "kind": "cuda_allocator",
+      "fraction": 0.9530594720367856,
+      "allocator_limit_bytes": 22548578304,
+      "device_total_bytes": 23659151360,
+      "scope": "PyTorch CUDA allocator only; host RAM and external allocations are outside this quota"
+    },
+    "latency_isolated": false,
+    "latency_note": "CPU encoder, transfer, projection and LLM scoring only; excludes array/resampling/tokenization/harness. Status/acquisition work may run concurrently; no other GPU compute was admitted."
+  },
+  "strict": {
+    "status": "evaluated_goal_unproven",
+    "report_sha256": "201b29bb513427e93abdbedd8b5d5ed9a31a863eb0b6b518b3c242b81649b707",
+    "integrity_errors": [],
+    "negative_controls": {
+      "eeg_shuffled": {
+        "status": "passed",
+        "records_checked": 203,
+        "issues": [],
+        "evidence_scope": "Consistency of logged source IDs and original recording times; not an independent rerun of model inputs."
+      },
+      "eeg_time_shifted": {
+        "status": "passed",
+        "records_checked": 203,
+        "issues": [],
+        "evidence_scope": "Actual raw extraction certificates were independently decoded and compared; original inputs were matched to checkpoint-sealed bytes. This is not prospective causal preprocessing."
+      }
+    },
+    "metrics_with_abstention": {
+      "context_only": {
+        "status": "measured",
+        "n": 203,
+        "class_counts": {
+          "mouse_click": 82,
+          "keyboard": 82,
+          "ai_prompt_submit": 39
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.4039408866995074,
+        "accepted_correct_over_all": 0.0,
+        "balanced_accuracy": 0.0,
+        "macro_f1": 0.0,
+        "coverage": 0.0,
+        "selective_accuracy": null,
+        "negative_log_likelihood": 1.2096971191907815,
+        "brier_multiclass_sum": 0.7465693917306558,
+        "expected_calibration_error": 0.24416657915256287,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 39
+          },
+          "keyboard": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 82
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 0,
+            "keyboard": 0,
+            "mouse_click": 0,
+            "__abstain__": 82
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "eeg_only": {
+        "status": "measured",
+        "n": 203,
+        "class_counts": {
+          "mouse_click": 82,
+          "keyboard": 82,
+          "ai_prompt_submit": 39
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.3054187192118227,
+        "accepted_correct_over_all": 0.06896551724137931,
+        "balanced_accuracy": 0.056910569105691054,
+        "macro_f1": 0.08672408672408673,
+        "coverage": 0.22660098522167488,
+        "selective_accuracy": 0.30434782608695654,
+        "negative_log_likelihood": 1.5575190042515847,
+        "brier_multiclass_sum": 0.8793187817046398,
+        "expected_calibration_error": 0.3512404045741546,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 0,
+            "keyboard": 2,
+            "mouse_click": 8,
+            "__abstain__": 29
+          },
+          "keyboard": {
+            "ai_prompt_submit": 5,
+            "keyboard": 2,
+            "mouse_click": 9,
+            "__abstain__": 66
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 3,
+            "keyboard": 5,
+            "mouse_click": 12,
+            "__abstain__": 62
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "fused": {
+        "status": "measured",
+        "n": 203,
+        "class_counts": {
+          "mouse_click": 82,
+          "keyboard": 82,
+          "ai_prompt_submit": 39
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.35467980295566504,
+        "accepted_correct_over_all": 0.20689655172413793,
+        "balanced_accuracy": 0.2065874504898895,
+        "macro_f1": 0.27224627224627224,
+        "coverage": 0.4729064039408867,
+        "selective_accuracy": 0.4375,
+        "negative_log_likelihood": 1.8526383864510252,
+        "brier_multiclass_sum": 0.9355775106590278,
+        "expected_calibration_error": 0.3983788096846031,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 8,
+            "keyboard": 4,
+            "mouse_click": 7,
+            "__abstain__": 20
+          },
+          "keyboard": {
+            "ai_prompt_submit": 10,
+            "keyboard": 10,
+            "mouse_click": 13,
+            "__abstain__": 49
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 6,
+            "keyboard": 14,
+            "mouse_click": 24,
+            "__abstain__": 38
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "eeg_shuffled": {
+        "status": "measured",
+        "n": 203,
+        "class_counts": {
+          "mouse_click": 82,
+          "keyboard": 82,
+          "ai_prompt_submit": 39
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.31527093596059114,
+        "accepted_correct_over_all": 0.11822660098522167,
+        "balanced_accuracy": 0.10204294350635815,
+        "macro_f1": 0.137995137995138,
+        "coverage": 0.47783251231527096,
+        "selective_accuracy": 0.24742268041237114,
+        "negative_log_likelihood": 2.198623798839306,
+        "brier_multiclass_sum": 1.0472931663931482,
+        "expected_calibration_error": 0.45551821046274865,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 1,
+            "keyboard": 8,
+            "mouse_click": 9,
+            "__abstain__": 21
+          },
+          "keyboard": {
+            "ai_prompt_submit": 12,
+            "keyboard": 8,
+            "mouse_click": 20,
+            "__abstain__": 42
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 11,
+            "keyboard": 13,
+            "mouse_click": 15,
+            "__abstain__": 43
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      },
+      "eeg_time_shifted": {
+        "status": "measured",
+        "n": 203,
+        "class_counts": {
+          "mouse_click": 82,
+          "keyboard": 82,
+          "ai_prompt_submit": 39
+        },
+        "missing_classes": [],
+        "forced_accuracy": 0.3891625615763547,
+        "accepted_correct_over_all": 0.23645320197044334,
+        "balanced_accuracy": 0.2040858870127163,
+        "macro_f1": 0.2553741622086946,
+        "coverage": 0.5615763546798029,
+        "selective_accuracy": 0.42105263157894735,
+        "negative_log_likelihood": 1.8836625802783342,
+        "brier_multiclass_sum": 0.9296332235331584,
+        "expected_calibration_error": 0.4047686704273882,
+        "ece_bins": 10,
+        "confusion": {
+          "ai_prompt_submit": {
+            "ai_prompt_submit": 2,
+            "keyboard": 11,
+            "mouse_click": 10,
+            "__abstain__": 16
+          },
+          "keyboard": {
+            "ai_prompt_submit": 4,
+            "keyboard": 21,
+            "mouse_click": 22,
+            "__abstain__": 35
+          },
+          "mouse_click": {
+            "ai_prompt_submit": 3,
+            "keyboard": 16,
+            "mouse_click": 25,
+            "__abstain__": 38
+          }
+        },
+        "class_averaging": "macro_f1 includes all declared classes (zero when unsupported); balanced_accuracy averages recalls of present classes; missing classes block goal validation",
+        "abstention_policy": "Abstentions count as false negatives in balanced_accuracy and macro_f1; forced_accuracy ignores abstention."
+      }
+    },
+    "eeg_increment": {
+      "context_only": {
+        "macro_f1_difference": 0.27224627224627224,
+        "interval": {
+          "status": "measured",
+          "method": "paired participant-cluster percentile bootstrap",
+          "groups": 8,
+          "replicates": 500,
+          "seed": 1731,
+          "metric": "macro_f1",
+          "lower_95": 0.20339137986196812,
+          "upper_95": 0.32141615215385705
+        }
+      },
+      "eeg_shuffled": {
+        "macro_f1_difference": 0.13425113425113425,
+        "interval": {
+          "status": "measured",
+          "method": "paired participant-cluster percentile bootstrap",
+          "groups": 8,
+          "replicates": 500,
+          "seed": 1731,
+          "metric": "macro_f1",
+          "lower_95": 0.06954873882884419,
+          "upper_95": 0.18266076115485563
+        }
+      },
+      "eeg_time_shifted": {
+        "macro_f1_difference": 0.01687211003757766,
+        "interval": {
+          "status": "measured",
+          "method": "paired participant-cluster percentile bootstrap",
+          "groups": 8,
+          "replicates": 500,
+          "seed": 1731,
+          "metric": "macro_f1",
+          "lower_95": -0.05686802560223045,
+          "upper_95": 0.06435038839730922
+        }
+      }
+    },
+    "resource_feasibility": {
+      "status": "passed",
+      "reasons": [],
+      "measurement": {
+        "machine_id": "colab_l4_xavier",
+        "runtime": "torch 2.14.1+cu130; transformers 5.22.1",
+        "accelerator": "NVIDIA L4",
+        "measurement_mode": "actual",
+        "checkpoint_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
+        "hardware_compatible": true,
+        "inference_succeeded": true,
+        "target_environment_verified": true,
+        "target_environment_id": "colab_l4_xavier",
+        "hardware_evidence_sha256": "11d30f5afee0ab492c2af73c8e4e1307ec8bddcdb56377bdcd61149542b03099",
+        "hardware_evidence_path": "evaluations/cbramod_smollm2_uniba_v3_symbol_fiveconditions_v1/variant_evaluation_report.json",
+        "measurement_method": "actual frozen five-condition inference; PyTorch CUDA allocator peaks and CPU getrusage RSS high-water",
+        "peak_memory_bytes": 3466592256,
+        "memory_budget_bytes": 22548578304,
+        "memory_capacity_bytes": 23659151360,
+        "host_peak_rss_bytes": 4403462144,
+        "host_ram_bytes": 56863301632,
+        "p95_latency_ms": 46.91927100047906,
+        "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+        "allocator_limit": {
+          "kind": "cuda_allocator",
+          "fraction": 0.9530594720367856,
+          "allocator_limit_bytes": 22548578304,
+          "device_total_bytes": 23659151360,
+          "scope": "PyTorch CUDA allocator only; host RAM and external allocations are outside this quota"
+        },
+        "isolated_latency_measurement": false,
+        "concurrent_workload": "Read-only status/metadata and background acquisition may be active; no other GPU compute process was admitted. This is not an isolated end-to-end latency benchmark.",
+        "nominal_decision_to_event_minimum_seconds": 0.375,
+        "eeg_encoder_device": "cpu",
+        "eeg_encoder_dtype": "float32",
+        "memory_scope": "CUDA peak is accelerator allocator use; CPU EEG encoder/RSS is a distinct host scope",
+        "memory_measurement_scope": "CUDA peak is accelerator allocator use; CPU EEG encoder/RSS is a distinct host scope"
+      },
+      "target_environment_evidence": "recorded",
+      "limits_are": "project configuration; not research-established universal thresholds",
+      "scope": "Reported measured configuration only; accelerator and host memory scopes must not be conflated, and component latency is not end-to-end task latency."
+    },
+    "preprocessing_causality": {
+      "status": "blocked",
+      "records_checked": 203,
+      "blocked_record_count": 203,
+      "interpretation": "Metadata availability contract; successful retrospective classification alone does not establish prospective causal preprocessing."
+    },
+    "preprocessing_blocked_reason_counts": {
+      "online preprocessing causality is absent or explicitly unverified": 203
+    },
+    "goal_validation_blockers": [
+      "online_preprocessing_unverified: future filter support/availability has not passed",
+      "measured latency does not cover end-to-end preprocessing, inference and harness execution",
+      "held-out harness task completion has not been measured",
+      "positive EEG contribution over eeg_time_shifted not established",
+      "configured project acceptance criteria have not passed"
+    ],
+    "autonomous_agent_validated": false
+  },
+  "comparison_limits": {
+    "simultaneous_changes": [
+      "EEG encoder: trainable CNN to frozen pretrained CBraMod",
+      "labels: variable length6/2/4 to1/1/1 token restricted classifier",
+      "actual EEG input duration:1.75s to latest1s",
+      "normalization: per-window z-score to physical V times1e4",
+      "trainable connector size:166656 to412048 parameters",
+      "budget: old Smol3 epochs to30 epochs",
+      "training/evaluation device: old Smol M1 to current L4"
+    ],
+    "individual_change_effect_identified": false,
+    "EEG_increment_established": false,
+    "observed_actions_are_not_latent_intent": true,
+    "natural_population_precision_estimated": false
+  },
+  "recovery": {
+    "status": "completed",
+    "archive_bytes": 177230987,
+    "archive_sha256": "cb0fd60b4a2488abacdbc7418d71061d5bd8d51bd45a9a018ec2a804bd0d1878",
+    "verified_members": 371,
+    "receipt_sha256": "99e235414813118b0c5b50dc3aea027f04284167ee76042f4e90b039fd3b5d16"
+  },
+  "stage_recovery": {
+    "initial_evaluator_path_failure_preserved": true,
+    "same_model_protocol_and_checkpoint": true,
+    "training_repeated": false,
+    "test_inference_before_correct_path_resume": 0,
+    "resource_scope_metadata_correction": {
+      "kind": "metadata_field_name_completion",
+      "added_field": "memory_measurement_scope",
+      "same_actual_measurement": true,
+      "model_or_predictions_changed": false,
+      "additional_model_inference": 0,
+      "initial_report_sha256": "19f785d694f7bf7c5d7c58f536174abbdf50e961827560cc648cad2638f74f3d",
+      "final_report_sha256": "201b29bb513427e93abdbedd8b5d5ed9a31a863eb0b6b518b3c242b81649b707",
+      "final_resource_status": "passed",
+      "reasons": []
+    },
+    "additional_model_inference_for_metadata_correction": 0
+  },
+  "history_binary_comparison": {
+    "status": "pending_cpu_aggregation_of_existing_predictions"
+  },
+  "m1_train_example_trial": {
+    "status": "pending_wrapper_preparation",
+    "source_partition": "train",
+    "examples_planned": 3,
+    "no_test_tuning": true
+  },
+  "os_actions_executed": 0,
+  "ai_history_comparison": {
+    "status": "completed_saved_predictions_only",
+    "source_path": "experiments/pj_xavier/benchmark/v3_cbramod_recorded_comparison_aggregate.json",
+    "source_sha256": "46543d49fd751b5a6e3b026c0a7190c15bd7e09201484944efaa96ec0b9089ba",
+    "fused_AI_vs_other": {
+      "n": 203,
+      "positive_support": 39,
+      "negative_support": 164,
+      "sample_prevalence": 0.1921182266009852,
+      "threshold": 0.5,
+      "recall": 0.2564102564102564,
+      "specificity": 0.7804878048780488,
+      "balanced_accuracy": 0.5184490306441526,
+      "precision_enriched_sample_only": 0.21739130434782608,
+      "auroc": 0.6053001876172607,
+      "auprc_average_precision_enriched_sample_only": 0.2558073074347686,
+      "brier_enriched_sample_only": 0.22559288475934744,
+      "confusion": {
+        "tp": 10,
+        "fn": 29,
+        "tn": 128,
+        "fp": 36
+      }
+    },
+    "participant_bootstrap_CI": {
+      "recall": {
+        "lower_95": 0.07497685185185185,
+        "upper_95": 0.4,
+        "valid_resamples": 1000,
+        "invalid_resamples": 0
+      },
+      "specificity": {
+        "lower_95": 0.68289911308204,
+        "upper_95": 0.8851658476658476,
+        "valid_resamples": 1000,
+        "invalid_resamples": 0
+      },
+      "balanced_accuracy": {
+        "lower_95": 0.4508441558441558,
+        "upper_95": 0.559770202020202,
+        "valid_resamples": 1000,
+        "invalid_resamples": 0
+      },
+      "auroc": {
+        "lower_95": 0.5355549950243255,
+        "upper_95": 0.6677133449840504,
+        "valid_resamples": 1000,
+        "invalid_resamples": 0
+      },
+      "auprc_average_precision_enriched_sample_only": {
+        "lower_95": 0.20724069515762947,
+        "upper_95": 0.3293616697721377,
+        "valid_resamples": 1000,
+        "invalid_resamples": 0
+      }
+    },
+    "conditional_effect_note": "Paired participant bootstrap differences are in the linked 19-condition report. Fused versus context AUROC CI includes zero; differences versus shuffled/shifted EEG are positive on this exploratory reused cohort. No multiple-comparison adjustment and no independent repeated fits.",
+    "new_model_inference": 0
+  },
+  "m1_trial": {
+    "status": "completed",
+    "checkpoint_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
+    "record_selection": "one deterministic fixed training example per observed-action class",
+    "examples": 3,
+    "source_partition": "train",
+    "heldout_examples_used": 0,
+    "classification_matches_recorded_labels": 3,
+    "latency_ms_p50": 426.9235839601606,
+    "latency_ms_p95": 1663.342495833058,
+    "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+    "latency_limitations": "Three examples only, including cold first example; shared workstation with background acquisition/CPU metadata work, not isolated.",
+    "memory": {
+      "process_peak_rss_bytes": 593936384,
+      "mps_sampled_allocated_bytes": 3424401920,
+      "mps_sampled_driver_bytes": 4310302720
+    },
+    "true_MPS_peak_measured": false,
+    "allocator_limit": {
+      "kind": "mps_allocator",
+      "fraction": 0.6756750138862577,
+      "allocator_limit_bytes": 8589934592,
+      "recommended_bytes": 12713115648,
+      "scope": "PyTorch MPS allocator only; CPU allocations and other processes are outside this quota"
+    },
+    "router_blocked_examples": 3,
+    "os_actions_executed": 0,
+    "cloud_agent_calls": 0,
+    "autonomous_agent_validated": false,
+    "generalization_accuracy_estimated": false,
+    "probability_kind": "restricted_three_next_token_softmax_uncalibrated",
+    "summary_sha256": "2effd8f1be1b31d09ab42cbddeac212694576abe82848f303df9e31c0e424ccd",
+    "prediction_metadata_sha256": "d77efcf73ab4d72b10fa54f76720d7a4761416b69171cc14a10fe8b0c7a765ab"
+  }
+}

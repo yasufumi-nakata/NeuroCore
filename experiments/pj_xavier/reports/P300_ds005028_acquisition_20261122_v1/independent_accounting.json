@@ -1,0 +1,25 @@
+{
+  "DAT_header_bytes": 3226115,
+  "DAT_state_bytes": 234642160,
+  "EEG_sample_bytes": 883358720,
+  "EEG_seconds_exact_fraction": [
+    862655,
+    32
+  ],
+  "actual_participant_count_confirmed": false,
+  "all_source_byte_partition_equal": true,
+  "block_samples_distribution": {
+    "8": 105
+  },
+  "file_ledger_sha256": "ec4002ade8b62edf15ad7903dd782df8492851dc5fbf6f537009af511787f18d",
+  "independent_recomputation": "DAT native samples/rate; exact EEG payload+calibration+montage dedup, auxiliary states excluded",
+  "observed_source_ID_groups": 11,
+  "original_DAT_total_bytes": 1121226995,
+  "original_records": 105,
+  "other_metadata_bytes": 2267,
+  "pair_ledger_sha256": "954c3b00479105f87228c82973eebbe0369620400753dbb1500aa9344b066c82",
+  "paired_EDF_total_bytes_not_extra_EEG_time": 442566400,
+  "record_ledger_sha256": "f224d041be020b14a911f3b343a3cecdbf9602df8e8effd06695312a1de1ac3c",
+  "source_total_bytes": 1563795662,
+  "status": "passed"
+}

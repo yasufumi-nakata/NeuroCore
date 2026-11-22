@@ -1,0 +1,44 @@
+{
+  "schema": "xavier-cbramod-evaluator-compatibility-review-v1",
+  "review_mode": "independent read-only source review plus hash verification of recorded CPU validation; no new model performance experiment",
+  "reviewed_source_sha256": {
+    "model/cbramod_token_llm.py": "b0c397176f8cb9e6dd759ed7169c0029c870f756c501ce317c2e6c7c41f32505",
+    "model/cbramod_symbol_protocol.json": "fddc652d9cf963154d1dc07ff5903b3c7e1b4cfaf7f1d3b22ba00b0085e79bcb",
+    "model/eeg_llm.py": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+    "benchmark/evaluate_variants.py": "bd92732e088ff633d2ff299161cf47a8a5630435c4c425dbae7992f563bc0447",
+    "reports/cbramod_symbol_cpu_verification.json": "0a430934679570fed0a6601fa6e00d7e7086212f5d13f05b44915f65b7610605"
+  },
+  "status": "no_blocking_api_or_target_leakage_issue_identified_in_reviewed_scope",
+  "observed_cpu_validation": {
+    "tests_passed": 13,
+    "tests_skipped": 0,
+    "actual_official_encoder_training_windows": 3,
+    "llm_fixture": "tiny random GPT2, not pretrained SmolLM performance",
+    "performance_established": false
+  },
+  "resolved_review_points": [
+    "Parent model.to(device) retains official EEG encoder on CPU float32 through explicit _apply override.",
+    "Frozen encoder and LLM parameter gradients are disabled; connector remains trainable through the frozen LLM computation.",
+    "Runtime config seals encoder identity, class token IDs, core source and new module source before shared evaluator restore.",
+    "Registered training settings and train-only capacity selection evidence are checked against runtime configuration."
+  ],
+  "compatibility_checks": [
+    "Same 8x448 original arrays are sealed in checkpoints; EEGStore selects only the final256 samples, resamples to200 and applies V*1e4.",
+    "No target answer token is supplied; training and scoring use the same three restricted next-token logits.",
+    "Prompt uses fixed class mapping and original pre-window environment only; true label is added only to output records.",
+    "Same held-out IDs and same best checkpoint across all five conditions; within-recording derangement and separately identified raw-minus10-second sources retain existing provenance checks.",
+    "No modifications to the frozen e308 model or bd927 evaluator were made."
+  ],
+  "limitations": [
+    "The v3 test results were already seen before this exploratory design; this is not a fresh confirmatory test.",
+    "Encoder and scoring objective change together, so any later difference cannot be attributed independently to either change.",
+    "Actual used EEG is1second inside a1.75second original window; these durations must not be conflated.",
+    "Zero EEG context-only is a distribution-shift input-removal ablation of one fused checkpoint.",
+    "Released EEG was already filtered offline; online causality and actual latent intent remain unverified.",
+    "Restricted-token softmax is not proven natural-use calibration.",
+    "GPU sustained capacity, final model performance and M1 trial are separate experiments not established by this code review."
+  ],
+  "os_actions_executed": 0,
+  "autonomous_agent_validated": false,
+  "reviewed_epoch": 1795311819.001933
+}

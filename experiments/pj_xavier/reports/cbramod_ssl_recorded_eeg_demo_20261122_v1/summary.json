@@ -1,0 +1,110 @@
+{
+  "schema_version": "pj-xavier-cbramod-ssl-recorded-train-demo-result-v1",
+  "status": "completed",
+  "completed_epoch": 1795317600.1394298,
+  "selected_partition": "train",
+  "heldout_records_used_for_demo": 0,
+  "model_or_threshold_changed": false,
+  "os_actions_executed": 0,
+  "cloud_agent_calls": 0,
+  "autonomous_agent_validated": false,
+  "generalization_accuracy_estimated": false,
+  "probabilities_are_calibrated_intent_confidence": false,
+  "probability_kind": "restricted_three_next_token_softmax_uncalibrated",
+  "checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+  "source_manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "selected_ssl_weights_sha256": "0132c9372cbcff28ad36965de043f7b8190233e9faba8ce3ec02c2ae8c93f3e7",
+  "selected_ssl_encoder_seal_sha256": "b5367f60bde3a3156d3edb47565fed29c5009edbdfcd515d2dc4c698df63f171",
+  "source_experiment_test_reuse_is_exploratory": true,
+  "contract_sha256": "bde21873e6c0c2c173658eae47f4ce7f38d5be8575944dcf2ce7cf08365797cb",
+  "examples": [
+    {
+      "source_split": "train",
+      "recorded_action_label": "ai_prompt_submit",
+      "predicted_label": "ai_prompt_submit",
+      "probabilities": {
+        "ai_prompt_submit": 0.8870114088058472,
+        "keyboard": 0.025162575766444206,
+        "mouse_click": 0.08782602846622467
+      },
+      "abstain": false,
+      "abstain_threshold": 0.8,
+      "router_blocked": true,
+      "reason": "proxy_label_has_no_explicit_intent_mapping",
+      "os_action_executed": false
+    },
+    {
+      "source_split": "train",
+      "recorded_action_label": "keyboard",
+      "predicted_label": "keyboard",
+      "probabilities": {
+        "ai_prompt_submit": 0.012582048773765564,
+        "keyboard": 0.8820697665214539,
+        "mouse_click": 0.10534821450710297
+      },
+      "abstain": false,
+      "abstain_threshold": 0.8,
+      "router_blocked": true,
+      "reason": "proxy_label_has_no_explicit_intent_mapping",
+      "os_action_executed": false
+    },
+    {
+      "source_split": "train",
+      "recorded_action_label": "mouse_click",
+      "predicted_label": "mouse_click",
+      "probabilities": {
+        "ai_prompt_submit": 0.024356484413146973,
+        "keyboard": 0.16906750202178955,
+        "mouse_click": 0.8065759539604187
+      },
+      "abstain": false,
+      "abstain_threshold": 0.8,
+      "router_blocked": true,
+      "reason": "proxy_label_has_no_explicit_intent_mapping",
+      "os_action_executed": false
+    }
+  ],
+  "artifact_hashes": {
+    "predictions.jsonl": {
+      "bytes": 2389,
+      "sha256": "37c1ad3f5fa4fb57afcbd7ef6c5af14b88c665efbe50132d26f114fd95799f02"
+    },
+    "predictions.metadata.json": {
+      "bytes": 4728,
+      "sha256": "e98444383bdb2615d007b51003adb6119cc15203a429f26b2d786ffd6259e10f"
+    },
+    "dry_run_audit.jsonl": {
+      "bytes": 1287,
+      "sha256": "ac919e75d0bee97da527f82ef21c50a41ed395aaadae996540bf80b41d9e80f2"
+    },
+    "dry_run_audit.summary.json": {
+      "bytes": 521,
+      "sha256": "136303688770ce4a23acbb67fdb8e1f48013423bed0361431bd808cad1941fc3"
+    }
+  },
+  "runtime": {
+    "n_examples": 3,
+    "latency_ms_p50": 544.9888339499012,
+    "latency_ms_p95": 2948.505321412813,
+    "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+    "memory": {
+      "process_peak_rss_bytes": 384548864,
+      "mps_sampled_allocated_bytes": 3424401920,
+      "mps_sampled_driver_bytes": 4310302720
+    },
+    "allocator_limit": {
+      "kind": "mps_allocator",
+      "fraction": 0.6756750138862577,
+      "allocator_limit_bytes": 8589934592,
+      "recommended_bytes": 12713115648,
+      "scope": "PyTorch MPS allocator only; CPU allocations and other processes are outside this quota"
+    },
+    "candidate_forward_passes": 1,
+    "MPS_memory_is_sampled_not_true_peak": true
+  },
+  "source_summary_sha256": "4b6e8e16e1ce4b88edc2716cf3c505a1c44c18b347df72679725970a4786af9e",
+  "plan_sha256": "afbf4097754043cc4e45ae095842981c786141678cc4ecf0df9f6f18aafb5e3a",
+  "wrapper_sha256": "f6bafc7af5c0cec2f65aa5969f28c2cec81dc41079cbae646dac1f08b6ffa1c8",
+  "fresh_original_file_reverification_before_publication": true,
+  "inference_execution_attempts": 1
+}

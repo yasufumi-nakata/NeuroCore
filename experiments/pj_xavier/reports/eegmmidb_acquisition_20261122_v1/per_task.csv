@@ -1,0 +1,7 @@
+task,recordings,publisher_groups,signal_seconds,signal_hours,EEG_sample_bytes,label_review_required_records
+baseline_eyes_closed,109,109,6648.0,1.8466666666666667,136151040,1
+baseline_eyes_open,109,109,6645.0,1.8458333333333334,136089600,1
+motor_execution_both_fists_feet,327,109,40277.0,11.188055555555556,820314112,12
+motor_execution_left_right_fist,327,109,40423.0,11.22861111111111,823304192,12
+motor_imagery_both_fists_feet,327,109,40372.0,11.214444444444444,822259712,12
+motor_imagery_left_right_fist,327,109,40359.0,11.210833333333333,821993472,12

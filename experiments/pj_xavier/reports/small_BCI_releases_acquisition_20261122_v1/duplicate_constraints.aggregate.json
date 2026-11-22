@@ -1,0 +1,31 @@
+{
+  "all_duplicate_calibration_metadata_identical": true,
+  "all_duplicate_datetime_metadata_identical": true,
+  "all_duplicate_event_arrays_identical": true,
+  "all_future_group_split_components": 8,
+  "all_record_seconds_exact_fraction": [
+    95469,
+    8
+  ],
+  "components_are_not_claimed_actual_people": true,
+  "created_epoch": 1795328211.1899729,
+  "cross_subject_ID_duplicate_pairs": 7,
+  "duplicate_record_occurrences": 7,
+  "new_training_hours_added": 0,
+  "nominal_ID_groups_in_nontrivial_components": 7,
+  "nominal_source_ID_groups": 12,
+  "nontrivial_group_must_link_components": 3,
+  "private_constraints_sha256": "549f87071ad1a415b80181f5ea0229f43d1797c180a65674fc077729b3b184b0",
+  "record_ledger_sha256": "ff12285c7e339027d3c86e66f376b3cb43cc2b90b41d280cc82583669bcaad14",
+  "source_records": 36,
+  "source_sha256": "74e0e19af72c03daada28b6470822eb5f25dd3d2198e03b57d45d5b9c7276d34",
+  "status": "passed",
+  "unique_EEG_scalar_bytes": 74355712,
+  "unique_decoded_EEG_records": 29,
+  "unique_processed_EEG_hours": 2.521284722222222,
+  "unique_processed_EEG_seconds_exact_fraction": [
+    72613,
+    8
+  ],
+  "whole_file_identical_duplicate_pairs": 6
+}

@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "focused_CPU_tests": 12,
+  "test_source_sha256": "8066b4bb2d3e4a5d9415becc90962be51134cdbe105674e675fd832115242ca2",
+  "workstation_test_log_sha256": "1bdc2a65eb567563de7a206c45359ad3f10a3172be5d60e446f7d634c04c7aa8",
+  "CPU_prepare_only_exit_code": 0,
+  "execution_attempts": 1,
+  "MPS_prediction_and_replay_exit_code": 0,
+  "prepare_plan_sha256": "afbf4097754043cc4e45ae095842981c786141678cc4ecf0df9f6f18aafb5e3a",
+  "all_original_file_hashes_reverified": true,
+  "publication_recomputed_predictor_router_summary": true,
+  "new_inference_for_publication": 0,
+  "heldout_examples_used_for_demo": 0,
+  "model_or_threshold_changes": 0,
+  "os_actions_executed": 0,
+  "cloud_agent_calls": 0,
+  "generalization_accuracy_estimated": false,
+  "autonomous_agent_validated": false
+}

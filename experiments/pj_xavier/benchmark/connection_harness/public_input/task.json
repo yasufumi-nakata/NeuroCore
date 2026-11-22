@@ -1,0 +1,19 @@
+{
+  "schema": "xavier.synthetic_connection_task.v2",
+  "task_id": "connection_public_spec_plumbing_v2",
+  "domain": "synthetic_non_eeg_engineering_fixture",
+  "instruction": "Implement Device, DataConnection, Wifi, and MobileData in package task. Device exposes a public DataConnection connection and a void connect() method. DeviceAPI.API.getAvailableConnections() returns supported names. Wifi and MobileData implement boolean DataConnection.connect(), consulting the corresponding ConnectionAPI availability method. Device.connect() prefers wifi when both types are present, attempts the next available type after a failed attempt, assigns connection after a successful attempt, and throws RuntimeException if no available type succeeds.",
+  "connection_names": ["wifi", "mobiledata"],
+  "scope_note": "These names follow the public class names and lower-case/no-space API convention. Tests below are newly authored from the public specification; the publisher's missing tests have not been recovered.",
+  "independent_failure_contract": "For this newly authored oracle, unsuccessful connection must explicitly throw exact java.lang.RuntimeException. Accidental subclasses such as NullPointerException are not credited. This distinction is a disclosed new test rule, not a recovered publisher oracle.",
+  "eeg_input": false,
+  "model_generated_solution": false,
+  "participant_solution_input": false,
+  "source_archive_sha256": "2b91b0bee3636c7fcd791e5e614033a6e44e9bb3aedb9af23db3d8899bc2bc1d",
+  "source_members": [
+    {"path": "resources/[eng] experiment-app/otree/experiment/templates/TaskDescription1.html", "sha256": "10387fb46dc81422590ab485dbefc00b7d1ace98b35dd3de2f936404ed0b151a"},
+    {"path": "resources/tasks/Connection/[eng]/img/UML-diagrams.drawio", "sha256": "f7a1273ee9a9344c49fdd7884f12dc0e0b293db1fa8e76399d2ef420527c37ec"},
+    {"path": "resources/[eng] experiment-app/java-src/Experiment1/src/task/ConnectionAPI.java", "sha256": "c4357e0f063597061838de880501b4b4353760550a9110994cde435abeb83c63"},
+    {"path": "resources/[eng] experiment-app/java-src/Experiment1/src/task/DeviceAPI.java", "sha256": "535d11a5c9809d6798e1badb1f79cf0de555bdc1f998d4223506df203fe2bba1"}
+  ]
+}

@@ -6,6 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import tempfile
 import unittest
+import urllib.error
 from unittest.mock import patch
 
 import acquire
@@ -34,6 +35,87 @@ def job(data=b"abcdefgh"):
 
 
 class AcquisitionTests(unittest.TestCase):
+    def test_figshare_inferred_identity_requires_exact_host_or_subdomain(self):
+        cases = {
+            "https://figshare.com/files/7": "7",
+            "https://ndownloader.figshare.com/files/7": "7",
+            "https://NDOWNLOADER.FIGSHARE.COM/files/7": "7",
+            "https://figshare.com./files/7": "7",
+            "https://evilfigshare.com/files/7": None,
+            "https://figshare.com.other.example/files/7": None,
+            "https://other.example/figshare.com/files/7": None,
+            "https://other.example/files/7?provider=figshare.com": None,
+        }
+        for url, expected in cases.items():
+            with self.subTest(url=url):
+                identity = acquire.provider_identity({"provider": "figshare"}, {"url": url})
+                self.assertEqual(identity["provider_file_id"], expected)
+                if expected is None:
+                    self.assertIn(":url:", identity["identity"])
+
+    def test_physionet_detection_uses_url_hostname_not_embedded_text(self):
+        cases = {
+            "https://physionet.org/content/demo/1.0/": "physionet",
+            "https://data.physionet.org/content/demo/1.0/": "physionet",
+            "https://PHYSIONET.ORG./content/demo/1.0/": "physionet",
+            "https://evilphysionet.org/content/demo/1.0/": "unsupported",
+            "https://physionet.org.other.example/content/demo/1.0/": "unsupported",
+            "https://other.example/physionet.org/demo": "unsupported",
+            "https://other.example/?provider=physionet.org": "unsupported",
+            "https://physionet.org@other.example/demo": "unsupported",
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "catalog.csv"
+            with path.open("w", newline="") as handle:
+                writer = csv.DictWriter(handle, fieldnames=["catalog_id", "primary_url"])
+                writer.writeheader()
+                writer.writerows({"catalog_id": str(i), "primary_url": url}
+                                 for i, url in enumerate(cases, start=1))
+            rows = acquire.normalize_catalog(path)
+        for row, (url, expected) in zip(rows, cases.items()):
+            with self.subTest(url=url):
+                self.assertEqual(row["provider"], expected)
+
+    def test_explicit_dataverse_guestbook_requires_action_without_logging_url_token(self):
+        body = json.dumps({"status": "ERROR", "message": "You may not download this file without the required Guestbook response for guestbookID 217."}).encode()
+        error = urllib.error.HTTPError("https://dataverse.harvard.edu/api/access/datafile/3144692?token=DO_NOT_LOG", 400, "Bad Request", {}, io.BytesIO(body))
+        result = acquire.access_requirement_from_http_error(error)
+        self.assertEqual(result["code"], "guestbook_required")
+        self.assertEqual(result["guestbook_id"], 217)
+        self.assertNotIn("DO_NOT_LOG", json.dumps(result))
+        self.assertFalse(result["submission_performed"])
+
+    def test_other_http400_or_unbounded_body_does_not_become_access_restriction(self):
+        for body in (b'{"status":"ERROR","message":"Bad file format"}', b'x' * 9000,
+                     b'{"status":"ERROR","message":"Guestbook mentioned in unrelated debugging text"}'):
+            with self.subTest(body_length=len(body)):
+                error = urllib.error.HTTPError("https://dataverse.harvard.edu/api/access/datafile/1", 400, "Bad Request", {}, io.BytesIO(body))
+                self.assertIsNone(acquire.access_requirement_from_http_error(error))
+
+    def test_guestbook_worker_holds_partial_and_never_retries_held_file(self):
+        class GuestbookHttp:
+            calls = 0
+            def request(self, url, headers=None):
+                self.calls += 1
+                body = b'{"status":"ERROR","message":"You may not download this file without the required Guestbook response for guestbookID 217."}'
+                raise urllib.error.HTTPError(url + "?token=DO_NOT_LOG", 400, "Bad Request", {}, io.BytesIO(body))
+        with tempfile.TemporaryDirectory() as tmp:
+            db = acquire.init_db(Path(tmp) / "download.sqlite")
+            row = {"catalog_id": "000037", "provider": "dataverse", "source_id": "doi:test", "source_version": "1.1", "status": "resolved",
+                   "files": [acquire.make_file("a.eeg", "https://dataverse.harvard.edu/api/access/datafile/1", 8, evidence_url="https://dataverse.harvard.edu/api/datasets/1")]}
+            acquire.ingest(db, [row])
+            p = acquire.destination(Path(tmp) / "raw", acquire.dataset_storage_key(row), "a.eeg")
+            p.with_name("a.eeg.part").write_bytes(b"old")
+            http = GuestbookHttp()
+            acquire.worker(db, Path(tmp) / "raw", seconds=2, reserve_gib=0, http=http)
+            status = db.execute("SELECT status,bytes_present,error FROM downloads").fetchone()
+            self.assertEqual(status[0], "access_action_required")
+            self.assertEqual(status[1], 3)
+            self.assertNotIn("DO_NOT_LOG", status[2])
+            self.assertEqual(p.with_name("a.eeg.part").read_bytes(), b"old")
+            acquire.worker(db, Path(tmp) / "raw", seconds=2, reserve_gib=0, http=http)
+            self.assertEqual(http.calls, 1)
+
     def test_japanese_audit_scope_exclusions_remain_excluded(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "audit.csv"
@@ -71,6 +153,18 @@ class AcquisitionTests(unittest.TestCase):
         for value in ("../a", "a/../../b", "/tmp/a", "a\\..\\b", "a/./b", "a//b"):
             with self.subTest(path=value), self.assertRaises(ValueError):
                 acquire.safe_relative(value)
+
+    def test_zero_byte_file_requires_http_response_before_completion(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            spec = job(b"")
+            http = HttpFixture(Response(b"", 200, {"Content-Length": "0"}))
+            result = acquire.transfer(spec, tmp, http, 0)
+            path = acquire.destination(tmp, spec["dataset_key"], spec["relative_path"])
+            self.assertIsNotNone(http.headers)
+            self.assertEqual(path.read_bytes(), b"")
+            self.assertEqual(result["status"], "complete")
+            self.assertEqual(result["sha256"], hashlib.sha256(b"").hexdigest())
+            self.assertFalse(path.with_name(path.name + ".part").exists())
 
     def test_resume_206_and_checksum(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -286,6 +380,29 @@ class AcquisitionTests(unittest.TestCase):
             self.assertEqual(second["status"], "complete")
             self.assertEqual(second["transferred_bytes"], 5)
             self.assertEqual(path.read_bytes(), b"abcdefgh")
+
+    def test_priority_catalog_selects_eligible_rows_without_changing_active_lease(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db = acquire.init_db(Path(tmp) / "state.sqlite")
+            records = [{"catalog_id": f"{n:06d}", "provider": "zenodo", "source_id": str(n),
+                        "source_version": str(n), "status": "resolved",
+                        "files": [acquire.make_file("a.eeg", f"https://zenodo.org/{n}/a.eeg", 8,
+                                                    evidence_url=f"https://zenodo.org/api/records/{n}")]}
+                       for n in (1, 2, 3)]
+            acquire.ingest(db, records)
+            db.execute("UPDATE downloads SET status='running',lease_until=?,attempts=2 WHERE catalog_id='000003'",
+                       (__import__('time').time() + 3600,))
+            db.commit()
+            before = tuple(db.execute("SELECT * FROM downloads WHERE catalog_id='000003'").fetchone())
+            acquire.worker(db, Path(tmp) / "raw", reserve_gib=0, seconds=5, max_files=1,
+                           priority_catalog_ids=["000003", "000002"],
+                           http=HttpFixture(Response(b"abcdefgh", 200, {"Content-Length": "8"})))
+            statuses = {r[0]: r[1] for r in db.execute("SELECT catalog_id,status FROM downloads")}
+            self.assertEqual(statuses, {"000001": "queued", "000002": "complete", "000003": "running"})
+            self.assertEqual(before, tuple(db.execute("SELECT * FROM downloads WHERE catalog_id='000003'").fetchone()))
+            self.assertEqual(db.execute("SELECT attempts FROM downloads WHERE catalog_id='000001'").fetchone()[0], 0)
+            self.assertEqual(db.execute("SELECT dataset_key FROM downloads WHERE catalog_id='000002'").fetchone()[0],
+                             "zenodo-2-2")
 
     def test_short_eof_traffic_and_backoff_persist_in_worker(self):
         with tempfile.TemporaryDirectory() as tmp:

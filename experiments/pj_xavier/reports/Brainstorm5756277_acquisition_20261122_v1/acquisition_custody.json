@@ -1,0 +1,20 @@
+{
+  "download_completion": {
+    "complete_bytes": 280230370,
+    "complete_files": 1,
+    "files": 1,
+    "finished_epoch": 1795326588.898985,
+    "received_payload_bytes_this_run": 280230370,
+    "status": "all_files_downloaded_checksum_verified"
+  },
+  "download_completion_sha256": "a973aa43226c9ae34f30d8df2e6ebe3a6d518c669d03024ce5e332ebedad9ac0",
+  "original_reconciliation_sha256": "f1b46778f0780aa16537372da028e54a92b940c67eb106a8681b86cca81b6d08",
+  "reconciliation": {
+    "bytes": 280230370,
+    "completed_epoch": 1795326809.173506,
+    "job_count": 1,
+    "running_complete_or_leased_original_jobs_changed": 0,
+    "status": "reconciled"
+  },
+  "status": "all_source_files_acquired_audited_and_reconciled"
+}

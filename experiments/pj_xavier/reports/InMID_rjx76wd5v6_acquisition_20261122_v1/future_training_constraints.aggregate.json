@@ -1,0 +1,22 @@
+{
+  "EEG_channels": 14,
+  "MAT_derivatives_and_overlap_unresolved_no_extra_hours": true,
+  "all_sessions_of_same_actual_person_must_share_fold": true,
+  "application_marker_ontology_and_clock_alignment_unverified": true,
+  "auxiliary_channels": 44,
+  "catalog_id": "001085",
+  "existing_model_inputs_changed": false,
+  "future_signal_QC_and_split_required": true,
+  "generic_uV_in_timestamp_quality_marker_fields_not_physical_role_proof": true,
+  "license": "CC BY4.0",
+  "original_EDF_signals": 58,
+  "private_questionnaire_and_video_not_in_public_aggregate": true,
+  "records_per_ID_group": 4,
+  "source_ID_groups": 23,
+  "source_release": "Mendeley rjx76wd5v6 v2",
+  "sources": [
+    "https://data.mendeley.com/datasets/rjx76wd5v6/2",
+    "https://doi.org/10.17632/rjx76wd5v6.2"
+  ],
+  "supervised_gold_validated": false
+}

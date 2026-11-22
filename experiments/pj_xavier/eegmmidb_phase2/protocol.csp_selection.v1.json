@@ -1,0 +1,62 @@
+{
+  "schema": "xavier-phase2-CSP-selection-before-test-v1",
+  "status": "completed_train_validation_only",
+  "test_predictions": 0,
+  "validation_values_are_not_test_accuracy": true,
+  "execution_seal_sha256": "75f51ca552d8eec18bd3ceb06e3a08a795a9f2bae2aa2e330ab4a5edd9231686",
+  "selection_seal_sha256": "a038d802d618f679b57778e9d52b629bd1ffc83d22608a394d6c0cd78dea4ec0",
+  "summary_sha256": "042ec84e5dae6fef27c57823adb1396bd0a853ad91706db36e869a651596bfdd",
+  "checkpoint_sha256": "6e04bd439c765a7ac2332762ffe7305f1fb0a1cf4f3d7542e5155a186ce6915d",
+  "selections": {
+    "left_right": {
+      "candidates": [
+        {
+          "components": 4,
+          "validation_mean_subject_balanced_accuracy": 0.6212672630811218
+        },
+        {
+          "components": 8,
+          "validation_mean_subject_balanced_accuracy": 0.6248551606907585
+        },
+        {
+          "components": 16,
+          "validation_mean_subject_balanced_accuracy": 0.6373157526350461
+        }
+      ],
+      "selected_components": 16,
+      "selected_validation_mean_subject_balanced_accuracy": 0.6373157526350461,
+      "artifact_path": "left_right.npz",
+      "artifact_sha256": "139a363dcf37e0d4f0a25b135cb940ac9aac0f7c5df81918a2e8cd429016e370",
+      "training_n": 3182,
+      "validation_n": 679
+    },
+    "fists_feet": {
+      "candidates": [
+        {
+          "components": 4,
+          "validation_mean_subject_balanced_accuracy": 0.575291443158291
+        },
+        {
+          "components": 8,
+          "validation_mean_subject_balanced_accuracy": 0.5569939005740636
+        },
+        {
+          "components": 16,
+          "validation_mean_subject_balanced_accuracy": 0.5681112365894974
+        }
+      ],
+      "selected_components": 4,
+      "selected_validation_mean_subject_balanced_accuracy": 0.575291443158291,
+      "artifact_path": "fists_feet.npz",
+      "artifact_sha256": "403f6f08d184cd5b55fa2fce12ada2bcd8b4fb05c750726a8825945a2ff1ee4b",
+      "training_n": 3177,
+      "validation_n": 681
+    }
+  },
+  "elapsed_seconds": 3.695209666970186,
+  "dependencies": {
+    "numpy": "2.5.5",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1"
+  }
+}

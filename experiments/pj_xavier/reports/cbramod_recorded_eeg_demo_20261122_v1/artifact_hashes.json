@@ -1,0 +1,14 @@
+{
+  "summary.json": {
+    "sha256": "6830f9bf624b1c6473cb8bdeaf7c0f8c96ab5ad424059520c2360b328a506579",
+    "bytes": 3933
+  },
+  "README.md": {
+    "sha256": "30c0d9de61f0c300a297bcfcf437b5d8247b87ef8e712ae9e949bb5947095c3e",
+    "bytes": 4167
+  },
+  "validation.json": {
+    "sha256": "d148ead2bc80c2bc43a83aa3dbc12a09af52a38fda12cb616b2c1dcbf24e094a",
+    "bytes": 319
+  }
+}

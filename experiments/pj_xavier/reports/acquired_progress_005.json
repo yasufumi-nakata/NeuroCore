@@ -1,0 +1,127 @@
+{
+  "schema": "pj-xavier-acquired-progress-v1",
+  "locations": [
+    {
+      "location": "workstation_bulk",
+      "observed_started_utc": "2026-11-22T05:17:01.483328+00:00",
+      "observed_finished_utc": "2026-11-22T05:17:08.350757+00:00",
+      "ledger_rows": 650483,
+      "ledger_snapshot_sha256": "bcecbd1f9ea86730d87ffd0f7f989261f1f160336624a3dcf452f4ad7280ade0",
+      "ledger_status_counts": {
+        "queued": 607439,
+        "metadata_blocked": 42398,
+        "delegated_P300_v1": 216,
+        "access_action_required": 342,
+        "complete": 85,
+        "retry": 3
+      },
+      "complete_file_copies": 85,
+      "complete_file_copy_bytes": 31009945807,
+      "partial_file_copies": 2,
+      "partial_observed_bytes": 912924912,
+      "held_file_count": 0,
+      "sha256_reverified": false
+    },
+    {
+      "location": "workstation_colab_raw_archive",
+      "observed_started_utc": "2026-11-22T05:17:08.490421+00:00",
+      "observed_finished_utc": "2026-11-22T05:17:08.493990+00:00",
+      "ledger_rows": 23,
+      "ledger_snapshot_sha256": "71ffcfbb697817f5c64d1623535f3dd2594b0ed7520a4efbe467be53d58f6ddc",
+      "ledger_status_counts": {
+        "complete": 23
+      },
+      "complete_file_copies": 23,
+      "complete_file_copy_bytes": 11221153522,
+      "partial_file_copies": 0,
+      "partial_observed_bytes": 0,
+      "held_file_count": 0,
+      "sha256_reverified": false
+    },
+    {
+      "location": "workstation_eegmmidb",
+      "observed_started_utc": "2026-11-22T05:17:08.494545+00:00",
+      "observed_finished_utc": "2026-11-22T05:17:08.499998+00:00",
+      "ledger_rows": 1,
+      "ledger_snapshot_sha256": "49e24dc0d0e0eb515992a5119663618602f7e14dac7d24daf0d0dc6a7b1d910a",
+      "ledger_status_counts": {
+        "complete": 1
+      },
+      "complete_file_copies": 1,
+      "complete_file_copy_bytes": 1997435063,
+      "partial_file_copies": 0,
+      "partial_observed_bytes": 0,
+      "held_file_count": 0,
+      "sha256_reverified": false
+    },
+    {
+      "location": "workstation_P300_delegated_owner",
+      "observed_started_utc": "2026-11-22T05:17:08.352610+00:00",
+      "observed_finished_utc": "2026-11-22T05:17:08.486773+00:00",
+      "ledger_rows": 216,
+      "ledger_snapshot_sha256": "9d92199142dc1f112616b1fc616ab6cf469b7359459e6b9386e9d7a1f157c835",
+      "ledger_status_counts": {
+        "complete": 66,
+        "queued": 149,
+        "running": 1
+      },
+      "complete_file_copies": 66,
+      "complete_file_copy_bytes": 204346587,
+      "partial_file_copies": 1,
+      "partial_observed_bytes": 1048576,
+      "held_file_count": 0,
+      "sha256_reverified": true
+    }
+  ],
+  "completed_file_copies": 175,
+  "completed_file_copy_bytes": 44432880979,
+  "completed_unique_sha256_contents": 175,
+  "completed_unique_sha256_bytes": 44432880979,
+  "deduplication": "Identical complete file content SHA-256 is counted once across all supplied ledgers.",
+  "interpretation": "Acquired release payload bytes, including multimodal sidecars. This is not pure EEG bytes, unique recordings, or all catalog data.",
+  "known_deduplication_limits": [
+    "Different raw/filtered exports can have different hashes for the same recording.",
+    "Archives are not compared with their extracted members.",
+    "Replica archives outside the selected acquisition ledgers are omitted."
+  ],
+  "recording_hours": null,
+  "hours_reason": "Requires independent header and recording-identity audits; never inferred from bytes.",
+  "all_catalog_files_downloaded": false,
+  "observation_scope": "Actual complete raw release files across workstation bulk, original EEGMMIDB, retained old-Colab raw and the actively delegated P300 owner. Remote or derived copies are excluded. P300 is not yet a completed release.",
+  "closed_prior_scopes_before_P300": {
+    "unique_complete_bytes": 44228534392,
+    "unique_complete_contents": 109,
+    "independently_deduplicated_from_all_complete_SHA256_rows": true
+  },
+  "integrity_refresh": {
+    "existing_corpus_rehashed_again": false,
+    "bulk_verification_sources": {
+      "prior_004": 16,
+      "compact_audit_and_full_reconciliation": 68,
+      "BCI_all_members_and_final_archive_hash": 1,
+      "new_unclassified_fullhash": 0
+    },
+    "active_P300_completed_contents_rehashed": 66,
+    "controller_preserved_stat_identities_checked": 23
+  },
+  "private_snapshot_hashes": {
+    "workstation_005.json": "435f21fcf56bb265b3bcd758d55ed23f8a244bb49e837a31164e049c99b01f16",
+    "P300_005.json": "7fb152b19a31a6669ce8e0a30f241592835343b2a399b7989abb6c0ea3c4839a",
+    "preserved_colab_raw_005.json": "f8fcb05cf4700b909c43433194df9251c0f7593d6d758063152f422d1dcbb594",
+    "eegmmidb_005.json": "150946ed710e2ecdaea0f2d8e668f8a6d2082ca513f27c0988d6381a55e85dd8"
+  },
+  "capacity_observation": {
+    "observed_utc": "2026-11-22T05:17:08.500884+00:00",
+    "free_disk_bytes": 43630743552,
+    "minimum_reserved_bytes": 37580963840,
+    "active_P300_effective_reserve_bytes": 38654705664,
+    "partials_are_not_verified_downloads": true
+  },
+  "bulk_candidate_manifest": {
+    "file_jobs": 650483,
+    "known_whole_file_bytes": 24172262716513,
+    "unknown_size_jobs": 42398,
+    "release_storage_keys": 783,
+    "scope": "Candidate release files include non-EEG modalities, processed aliases and archives; not acquired bytes or unique EEG hours."
+  }
+}

@@ -1,0 +1,468 @@
+{
+  "declared_EEG_channels": [
+    "CP3",
+    "C3",
+    "F5",
+    "PO3",
+    "PO4",
+    "F6",
+    "C4",
+    "CP4"
+  ],
+  "extra_channels_explicitly_excluded": true,
+  "recordings": 18,
+  "sources": [
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "79208459765d9b228a1556bf2483a966385888230de895a4ce3bd07cf6c896df",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "e972b4bbeab9e6b78fdf1603b463979d0b827adea2d96c08bb4cc10508133a15"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "6add720e60cc4271f9e18b77c591b087faa87a1aec4f9ce928bf7d4a304c1286",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "9bff63df31a038e1af8a0fce9ce0be6427e09264355d1a39993c32fd4090af28"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "ba7cbb82f42577219b0bf1ab5b06ad3a402ded4157e14195b9b7587a6b92fdcc",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "0c298ac34d261d62dbcde9a749ae25c6fb3930596266b63cc0932a2f23b7dc03"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "7ec3558501053141638e8ba567964f4e1f6f24763b8016c6ec6345c049a36376",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "766e2242913dfc345e4a65f3620478d1a046a822a39f4377f463acd639874a40"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "ff06e31475b7d7f2e54b5fca40c9771372d163a42420e718482f9c59b1ea997a",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "9bebe95056fe072601a7af7337056e49b6ccf64da47f1b48b3ba39fc6482bf0f"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "2a752c7f647752272e15f73e0653690a2235afd62db4ce8141a185a96a8d2d0b",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "eb9a7ef855af55a0791f2a925747b6bbe669b454618fa56175fca6a735e0ad3b"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "01f57d49a4f4c74310ea1e00e0a9274f879376e1a15ee786b003aa001f2e8dc9",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "c9e063cadc2f103764fbe8f1f717b4d3c104513f760d66ee7c7f6e747052b513"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "c1de8f3d047de05dcbb264244f4621859be66f30137595bd43c6a1ecffc50374",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "94b29d6391f2cf126fb2ce7a72d835fcbde627eb4f82edc8870861726af02d33"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "99c3e9b572f46c6f5e6d3f05912049cc44f55d0084b737847ea135bfc981487e",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "ac815378616d0aaf4be71e68804ae2dbb266bd9d414f8d5ae132ea3724232a07"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "ec9f4623ec712ffae8bb39e60b26a576e4815a0669109effb07d849d66f32479",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "33a746e3e6a0d5be869067d7f75913b05316dfb2b9adcdd7aceb09b198cd4ab2"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "9ab866ff09fd27fdfd8727b537ec3e7cdaa7c97d0a050238185213f8901aa477",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "9f4a1264b7a225fcf3a49bbf5aa595886eb7daa27d488283385fcfe00e9c70db"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "890a0758090b1d99da411429d6112d709276d4ec50d739563acef1a1fb028fa1",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "325f919b5a5c5c260ea0929c949b3c4e579b88a366cc993a9df1ec6361d2a6c1"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "bfa85d4e892dc00e3b65c2263c86c90d2790b0f040d233974793f927471489eb",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "6fc503a242e4172038164b64b376f2c50743ce1539b4bc4c8b2964f404b592e1"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "5ec9972df300e66577741eff1c14f529ea7893840bab5f7ff6dd2658c0b2a702",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "0c9c5e38fb47657bcbcd42d75789aeed19731489d1a4209be9caa99ab4ddb207"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "4e6d9f41592943faa7f581d31916ffa8fe26c824845a20cee0ae64f983cae02c",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "c37300148824513fdf199cf346af72ad087ca79220eab56249190343935d9026"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "4f8f3d15fa707273626b6ca0d1ce461c33abdf51dd070e422ff5fbcf75e66728",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "b1244765b5796e6a5828938e948542434079764207a6f5285cb5ddb6df1346b4"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "b6aed36dcb1b0832e9658e95c0f8a1b99c3d5c6188afc04ad02edde422f0314b",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "a362398cdfe92865c2f338e8be4c9a6c0d1c233ad65ba3abc46db593ced2ba5a"
+    },
+    {
+      "EEG_names": [
+        "CP3",
+        "C3",
+        "F5",
+        "PO3",
+        "PO4",
+        "F6",
+        "C4",
+        "CP4"
+      ],
+      "bids_unit": "V",
+      "channels_sha256": "26a7254fd1b648d79d75099616de5ecb42913246825ceda4eae6b482d21e7c1c",
+      "extra_channels_bids_type": "TRIG",
+      "extra_channels_in_Xavier_inputs": false,
+      "extra_native_channels": [
+        "otree_phase",
+        "STI_artificial"
+      ],
+      "header_sha256": "db03ac08ab11e3508d5b6496d94b5fbb2f0ce3614682d77712529f2cdb6b5b5e",
+      "native_resolution": 0.1,
+      "native_unit": "\u00b5V",
+      "native_volts_gain": 1e-07,
+      "source_sha256": "4473310490f299b573ac1a3f53075baa6b752eaaf54b2b02114bf6801629cb8c"
+    }
+  ],
+  "status": "passed_declared_channel_mapping_only",
+  "upstream_XDF_channel_order_physical_wiring_verified": false
+}

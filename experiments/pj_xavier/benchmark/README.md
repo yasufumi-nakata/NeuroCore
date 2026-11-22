@@ -28,7 +28,7 @@ PJ-Xavierの最終目標は，ハーネスから事前に与えられた環境�
 
 5条件runnerの実行，追加のraw証拠契約，controller receiptは [VARIANT_EVALUATION.md](VARIANT_EVALUATION.md) を参照してください．
 
-Python 3.9以降で動作し，外部依存はありません．評価の実行場所がCPUでも，学習・推論の実機適合性は別途記録します．
+`xavier_benchmark.py` と `model_adapter.py` の純粋な JSONL／集計処理は，Python 3.9 以降の標準ライブラリだけで動作します．この条件を，表内の全 runner に適用するものではありません．`evaluate_variants.py` や `external_evaluation.py` などの neural runner には [model/requirements.txt](../model/requirements.txt) の PyTorch／Transformers／NumPy／MNE などが必要です．history／external の CPU 集計には NumPy／SciPy／scikit-learn／threadpoolctl も必要です．これらを実測した環境は workstation の Python 3.12 と Colab の Python 3.13 です．各 run の依存版・実機適合性は個別の receipt に記録し，CPU で集計できることを GPU／Mac での推論適合性へ置き換えません．
 
 ## レコードschema
 

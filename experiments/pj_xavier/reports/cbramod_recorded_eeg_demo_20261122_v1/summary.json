@@ -1,0 +1,105 @@
+{
+  "schema_version": "pj-xavier-cbramod-recorded-train-demo-result-v1",
+  "status": "completed",
+  "completed_epoch": 1795313655.30037,
+  "selected_partition": "train",
+  "heldout_records_used_for_demo": 0,
+  "model_or_threshold_changed": false,
+  "os_actions_executed": 0,
+  "cloud_agent_calls": 0,
+  "autonomous_agent_validated": false,
+  "generalization_accuracy_estimated": false,
+  "probabilities_are_calibrated_intent_confidence": false,
+  "probability_kind": "restricted_three_next_token_softmax_uncalibrated",
+  "checkpoint_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
+  "source_manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "contract_sha256": "a55521c8360bfe7b19dfc8b1b7a58b93f07e22ca790df9284e576ac013de9490",
+  "examples": [
+    {
+      "source_split": "train",
+      "recorded_action_label": "ai_prompt_submit",
+      "predicted_label": "ai_prompt_submit",
+      "probabilities": {
+        "ai_prompt_submit": 0.8795450329780579,
+        "keyboard": 0.03864450752735138,
+        "mouse_click": 0.08181042969226837
+      },
+      "abstain": false,
+      "abstain_threshold": 0.8,
+      "router_blocked": true,
+      "reason": "proxy_label_has_no_explicit_intent_mapping",
+      "os_action_executed": false
+    },
+    {
+      "source_split": "train",
+      "recorded_action_label": "keyboard",
+      "predicted_label": "keyboard",
+      "probabilities": {
+        "ai_prompt_submit": 0.0005872757756151259,
+        "keyboard": 0.9974870681762695,
+        "mouse_click": 0.0019256030209362507
+      },
+      "abstain": false,
+      "abstain_threshold": 0.8,
+      "router_blocked": true,
+      "reason": "proxy_label_has_no_explicit_intent_mapping",
+      "os_action_executed": false
+    },
+    {
+      "source_split": "train",
+      "recorded_action_label": "mouse_click",
+      "predicted_label": "mouse_click",
+      "probabilities": {
+        "ai_prompt_submit": 0.0178604107350111,
+        "keyboard": 0.006994237191975117,
+        "mouse_click": 0.9751453399658203
+      },
+      "abstain": false,
+      "abstain_threshold": 0.8,
+      "router_blocked": true,
+      "reason": "proxy_label_has_no_explicit_intent_mapping",
+      "os_action_executed": false
+    }
+  ],
+  "artifact_hashes": {
+    "predictions.jsonl": {
+      "bytes": 2379,
+      "sha256": "ee787b9eab03dd279a3613c5a33baccd5bf5c41f62897a1439fb5cfc105079e4"
+    },
+    "predictions.metadata.json": {
+      "bytes": 2790,
+      "sha256": "d77efcf73ab4d72b10fa54f76720d7a4761416b69171cc14a10fe8b0c7a765ab"
+    },
+    "dry_run_audit.jsonl": {
+      "bytes": 1288,
+      "sha256": "f37c8cbe10519101f7855775c6e45aa3e67c97b956458ec749f73461eb784fd8"
+    },
+    "dry_run_audit.summary.json": {
+      "bytes": 521,
+      "sha256": "28b25ecf6001c1232233b69702c12756076f6656217ee57d400e3b2c29b9ea52"
+    }
+  },
+  "runtime": {
+    "n_examples": 3,
+    "latency_ms_p50": 426.9235839601606,
+    "latency_ms_p95": 1663.342495833058,
+    "latency_scope": "CPU EEG encoder, transfer, projection and one LLM forward; excludes array I/O, resampling, tokenization and harness",
+    "memory": {
+      "process_peak_rss_bytes": 593936384,
+      "mps_sampled_allocated_bytes": 3424401920,
+      "mps_sampled_driver_bytes": 4310302720
+    },
+    "allocator_limit": {
+      "kind": "mps_allocator",
+      "fraction": 0.6756750138862577,
+      "allocator_limit_bytes": 8589934592,
+      "recommended_bytes": 12713115648,
+      "scope": "PyTorch MPS allocator only; CPU allocations and other processes are outside this quota"
+    },
+    "candidate_forward_passes": 1
+  },
+  "source_summary_sha256": "2effd8f1be1b31d09ab42cbddeac212694576abe82848f303df9e31c0e424ccd",
+  "plan_sha256": "1eb137cc788cbb53655db4b9d2d994c8cf7ad9d13fbe531644bd1ef37cec05ce",
+  "wrapper_sha256": "9cdf8318b2cd2b1f97ea5e8ce9fd47ec9ff829504b45d8526d8c098acf84b816",
+  "fresh_original_file_reverification_before_publication": true
+}

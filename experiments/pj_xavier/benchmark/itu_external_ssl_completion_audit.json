@@ -1,0 +1,513 @@
+{
+  "schema": "xavier-ssl-external-24-condition-independent-audit-v1",
+  "status": "passed",
+  "protocol_sha256": "528bca6179f4b96dbd45fad16c551d2013abcf5d91d954332f5ee85252acef26",
+  "manifest_sha256": "cfd93863b8f8e263174e6ab59395496efbd397e821542fa3a1f0c1e5faa503b0",
+  "score_sha256": "c3ac7a47621d8576128d209762ca0fa8eb922ef1e656008aff91fb3ce4b45cab",
+  "inputs_sha256": "139bcdd352673401e2175fd425adf63edc3007c9a9db2a66d4bb880b84be7043",
+  "new_model_conditions": 5,
+  "unchanged_recorded_comparator_conditions": 19,
+  "total_conditions": 24,
+  "records_per_condition": 630,
+  "recorded_prediction_rows": 15120,
+  "original_19_condition_audit_sha256": "524a00074112fd696b1ea9e8a2a405d16f4f562b26135d6126495c81831aa94d",
+  "preflight_before_sha256": "2897c1230e855078f9093ef8c4827f14ac2e6544298775bfe01e474431ac9c90",
+  "preflight_after_sha256": "3c9042ea47b65b8dceeb63926615c24b53a4a729c72d81d3d22750b3090c7cbf",
+  "condition_identity_and_arithmetic_checks": {
+    "smollm17b_v3::fused": {
+      "records": 630,
+      "artifact_sha256": "281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475",
+      "forced_confusion_matrix": [
+        [
+          0,
+          80,
+          46
+        ],
+        [
+          0,
+          163,
+          89
+        ],
+        [
+          0,
+          154,
+          98
+        ]
+      ],
+      "forced_balanced_accuracy": 0.3452380952380953,
+      "coverage": 0.0
+    },
+    "smollm17b_v3::context_only": {
+      "records": 630,
+      "artifact_sha256": "281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475",
+      "forced_confusion_matrix": [
+        [
+          0,
+          121,
+          5
+        ],
+        [
+          0,
+          247,
+          5
+        ],
+        [
+          0,
+          234,
+          18
+        ]
+      ],
+      "forced_balanced_accuracy": 0.3505291005291005,
+      "coverage": 0.0
+    },
+    "smollm17b_v3::eeg_only": {
+      "records": 630,
+      "artifact_sha256": "281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475",
+      "forced_confusion_matrix": [
+        [
+          0,
+          0,
+          126
+        ],
+        [
+          0,
+          0,
+          252
+        ],
+        [
+          0,
+          0,
+          252
+        ]
+      ],
+      "forced_balanced_accuracy": 0.3333333333333333,
+      "coverage": 1.0
+    },
+    "smollm17b_v3::eeg_shuffled": {
+      "records": 630,
+      "artifact_sha256": "281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475",
+      "forced_confusion_matrix": [
+        [
+          0,
+          80,
+          46
+        ],
+        [
+          0,
+          160,
+          92
+        ],
+        [
+          0,
+          161,
+          91
+        ]
+      ],
+      "forced_balanced_accuracy": 0.33201058201058203,
+      "coverage": 0.0
+    },
+    "smollm17b_v3::eeg_time_shifted": {
+      "records": 630,
+      "artifact_sha256": "281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475",
+      "forced_confusion_matrix": [
+        [
+          0,
+          66,
+          60
+        ],
+        [
+          0,
+          155,
+          97
+        ],
+        [
+          0,
+          147,
+          105
+        ]
+      ],
+      "forced_balanced_accuracy": 0.34391534391534395,
+      "coverage": 0.0
+    },
+    "qwen8b_v3_30e::fused": {
+      "records": 630,
+      "artifact_sha256": "b7c8e8f37a1f9276cc58b35609a6e21191faacc138a6f37e37296976be2ed924",
+      "forced_confusion_matrix": [
+        [
+          0,
+          91,
+          35
+        ],
+        [
+          0,
+          180,
+          72
+        ],
+        [
+          0,
+          159,
+          93
+        ]
+      ],
+      "forced_balanced_accuracy": 0.36111111111111116,
+      "coverage": 0.03333333333333333
+    },
+    "qwen8b_v3_30e::context_only": {
+      "records": 630,
+      "artifact_sha256": "b7c8e8f37a1f9276cc58b35609a6e21191faacc138a6f37e37296976be2ed924",
+      "forced_confusion_matrix": [
+        [
+          126,
+          0,
+          0
+        ],
+        [
+          252,
+          0,
+          0
+        ],
+        [
+          252,
+          0,
+          0
+        ]
+      ],
+      "forced_balanced_accuracy": 0.3333333333333333,
+      "coverage": 0.0
+    },
+    "qwen8b_v3_30e::eeg_only": {
+      "records": 630,
+      "artifact_sha256": "b7c8e8f37a1f9276cc58b35609a6e21191faacc138a6f37e37296976be2ed924",
+      "forced_confusion_matrix": [
+        [
+          0,
+          96,
+          30
+        ],
+        [
+          0,
+          188,
+          64
+        ],
+        [
+          0,
+          183,
+          69
+        ]
+      ],
+      "forced_balanced_accuracy": 0.33994708994708994,
+      "coverage": 0.011111111111111112
+    },
+    "qwen8b_v3_30e::eeg_shuffled": {
+      "records": 630,
+      "artifact_sha256": "b7c8e8f37a1f9276cc58b35609a6e21191faacc138a6f37e37296976be2ed924",
+      "forced_confusion_matrix": [
+        [
+          0,
+          85,
+          41
+        ],
+        [
+          0,
+          176,
+          76
+        ],
+        [
+          0,
+          169,
+          83
+        ]
+      ],
+      "forced_balanced_accuracy": 0.34259259259259256,
+      "coverage": 0.031746031746031744
+    },
+    "qwen8b_v3_30e::eeg_time_shifted": {
+      "records": 630,
+      "artifact_sha256": "b7c8e8f37a1f9276cc58b35609a6e21191faacc138a6f37e37296976be2ed924",
+      "forced_confusion_matrix": [
+        [
+          0,
+          90,
+          36
+        ],
+        [
+          0,
+          170,
+          82
+        ],
+        [
+          0,
+          159,
+          93
+        ]
+      ],
+      "forced_balanced_accuracy": 0.3478835978835979,
+      "coverage": 0.03333333333333333
+    },
+    "cbramod_smollm_v3::fused": {
+      "records": 630,
+      "artifact_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
+      "forced_confusion_matrix": [
+        [
+          21,
+          65,
+          40
+        ],
+        [
+          38,
+          133,
+          81
+        ],
+        [
+          42,
+          127,
+          83
+        ]
+      ],
+      "forced_balanced_accuracy": 0.3412698412698412,
+      "coverage": 0.1746031746031746
+    },
+    "cbramod_smollm_v3::context_only": {
+      "records": 630,
+      "artifact_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
+      "forced_confusion_matrix": [
+        [
+          0,
+          0,
+          126
+        ],
+        [
+          0,
+          0,
+          252
+        ],
+        [
+          0,
+          0,
+          252
+        ]
+      ],
+      "forced_balanced_accuracy": 0.3333333333333333,
+      "coverage": 0.0
+    },
+    "cbramod_smollm_v3::eeg_only": {
+      "records": 630,
+      "artifact_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
+      "forced_confusion_matrix": [
+        [
+          46,
+          44,
+          36
+        ],
+        [
+          92,
+          88,
+          72
+        ],
+        [
+          95,
+          91,
+          66
+        ]
+      ],
+      "forced_balanced_accuracy": 0.3253968253968254,
+      "coverage": 0.05714285714285714
+    },
+    "cbramod_smollm_v3::eeg_shuffled": {
+      "records": 630,
+      "artifact_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
+      "forced_confusion_matrix": [
+        [
+          20,
+          67,
+          39
+        ],
+        [
+          41,
+          132,
+          79
+        ],
+        [
+          45,
+          126,
+          81
+        ]
+      ],
+      "forced_balanced_accuracy": 0.33465608465608465,
+      "coverage": 0.1746031746031746
+    },
+    "cbramod_smollm_v3::eeg_time_shifted": {
+      "records": 630,
+      "artifact_sha256": "3019cddd288a9052fa91f9af0a7bf81b5662106178f16367525a98e6667f3a4c",
+      "forced_confusion_matrix": [
+        [
+          20,
+          69,
+          37
+        ],
+        [
+          43,
+          123,
+          86
+        ],
+        [
+          36,
+          143,
+          73
+        ]
+      ],
+      "forced_balanced_accuracy": 0.31216931216931215,
+      "coverage": 0.2111111111111111
+    },
+    "history::ai_vs_other:history_pre_eeg": {
+      "records": 630,
+      "artifact_sha256": "eefc3dbe70c123a532d792ed622cdbf63720833993baa7ee17592830afc5ec63"
+    },
+    "history::ai_vs_other:history_pre_eeg_plus_context": {
+      "records": 630,
+      "artifact_sha256": "255eecc1b295861d325101da7b1f415a001b22b8e603213510ad3ea0e4968701"
+    },
+    "history::ai_vs_other:history_pre_decision_guarded": {
+      "records": 630,
+      "artifact_sha256": "dbf67b450c1c57cabdc44896e575b960172a21ddc0174bddc379c5f14ab9e6be"
+    },
+    "history::ai_vs_other:history_pre_decision_guarded_plus_context": {
+      "records": 630,
+      "artifact_sha256": "4161c5f87730bc2a07984541e89c81a6a0c045d419dec564e9a18068a70875c0"
+    },
+    "cbramod_ssl_smollm_v3::fused": {
+      "records": 630,
+      "artifact_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+      "forced_confusion_matrix": [
+        [
+          56,
+          37,
+          33
+        ],
+        [
+          81,
+          94,
+          77
+        ],
+        [
+          59,
+          111,
+          82
+        ]
+      ],
+      "forced_balanced_accuracy": 0.38095238095238093,
+      "coverage": 0.1761904761904762,
+      "negative_control": null
+    },
+    "cbramod_ssl_smollm_v3::context_only": {
+      "records": 630,
+      "artifact_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+      "forced_confusion_matrix": [
+        [
+          126,
+          0,
+          0
+        ],
+        [
+          252,
+          0,
+          0
+        ],
+        [
+          252,
+          0,
+          0
+        ]
+      ],
+      "forced_balanced_accuracy": 0.3333333333333333,
+      "coverage": 0.0,
+      "negative_control": null
+    },
+    "cbramod_ssl_smollm_v3::eeg_only": {
+      "records": 630,
+      "artifact_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+      "forced_confusion_matrix": [
+        [
+          53,
+          28,
+          45
+        ],
+        [
+          79,
+          75,
+          98
+        ],
+        [
+          69,
+          83,
+          100
+        ]
+      ],
+      "forced_balanced_accuracy": 0.3716931216931217,
+      "coverage": 0.13174603174603175,
+      "negative_control": null
+    },
+    "cbramod_ssl_smollm_v3::eeg_shuffled": {
+      "records": 630,
+      "artifact_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+      "forced_confusion_matrix": [
+        [
+          48,
+          37,
+          41
+        ],
+        [
+          70,
+          103,
+          79
+        ],
+        [
+          75,
+          99,
+          78
+        ]
+      ],
+      "forced_balanced_accuracy": 0.36640211640211645,
+      "coverage": 0.1761904761904762,
+      "negative_control": {
+        "status": "passed",
+        "records": 630,
+        "fixed_points": 0,
+        "same_recording": true
+      }
+    },
+    "cbramod_ssl_smollm_v3::eeg_time_shifted": {
+      "records": 630,
+      "artifact_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+      "forced_confusion_matrix": [
+        [
+          45,
+          53,
+          28
+        ],
+        [
+          72,
+          104,
+          76
+        ],
+        [
+          67,
+          101,
+          84
+        ]
+      ],
+      "forced_balanced_accuracy": 0.36772486772486773,
+      "coverage": 0.17936507936507937,
+      "negative_control": {
+        "status": "passed",
+        "records": 630,
+        "actual_raw_sample_rederivation_scope": "performed by sealed external runner on Colab; workstation verifies recovered evidence and array bytes",
+        "shift_seconds": -10
+      }
+    }
+  },
+  "new_inference_calls_in_audit": 0,
+  "original_models_rerun": false,
+  "goal_validated": false,
+  "scope": "Exploratory fourth-model comparison and evidence custody, not autonomous-agent acceptance"
+}

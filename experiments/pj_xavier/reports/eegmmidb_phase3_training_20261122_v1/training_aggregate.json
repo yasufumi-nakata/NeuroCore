@@ -1,0 +1,141 @@
+{
+  "schema": "xavier-eegmmidb-phase3-training-terminal-public-v1",
+  "status": "training_terminal_snapshot",
+  "observed_epoch": 1795327541.3358634,
+  "evaluation_and_local_trial": "reported separately; no held-out prediction or new model forward performed by this summarizer",
+  "parameters": {
+    "EEG_encoder": 4768,
+    "SSL_encoder_and_reconstruction_decoder": 24352,
+    "SSL_reconstruction_decoder_only": 19584,
+    "supervised_EEG_encoder_and_two_task_heads": 4900,
+    "fused_EEG_encoder_and_projector": 72416,
+    "frozen_LLM": 1711376384
+  },
+  "parameter_count_verification": {
+    "source_instantiation_CPU_only": true,
+    "model_forward_calls": 0,
+    "optimizer_steps": 0,
+    "frozen_LLM_count_from_actual_L4_backbone": true,
+    "same_seed_encoder_tensor_equality": true
+  },
+  "models": {
+    "ssl": {
+      "run": "masked_ssl_v1",
+      "status": "completed",
+      "stop_reason": null,
+      "best_checkpoint_sha256": "d2f40f6ba1ac5b8ee3fe9b9063ead48bb74af2e375dc346ad535400c69480ed2",
+      "run_summary_sha256": "683ae9248a91707c9b832324efe2ffd1c5fa1112bc6a478b36284b55b3a3e75b",
+      "run_config_sha256": "245ab4f7a68de7ada33f5bca702139e0b9253d2659cffd5493196c51b1c70416",
+      "completed_epochs": 20,
+      "optimizer_steps": 1420,
+      "validation_batch_size": 512,
+      "elapsed_seconds": 694.855399391,
+      "training_batch_size": 512,
+      "normal_terminal_exit_code": 0
+    },
+    "scratch": {
+      "run": "eegnet_ssl_supervised_v1",
+      "status": "completed",
+      "stop_reason": null,
+      "best_checkpoint_sha256": "3981052a799072e384be0ac003d1e272821ae080c2f55369e5f1764e76aa4138",
+      "run_summary_sha256": "ec65129f5194ad8f88086efd05982c9e9a920989503da71141e460651e041d34",
+      "run_config_sha256": "cd2576811110493f76d36dd5c1ee49c1a7c85e7732a5e5b007eef238b439e477",
+      "completed_epochs": 60,
+      "optimizer_steps": 1500,
+      "validation_batch_size": 256,
+      "elapsed_seconds": 306.49272259200006,
+      "training_batch_size": 256,
+      "normal_terminal_exit_code": 0
+    },
+    "fused": {
+      "run": "eegnet_ssl_smollm_fused_v1",
+      "status": "partial",
+      "stop_reason": "stage_time_budget",
+      "best_checkpoint_sha256": "b2373bc054dbdd883236b417d3679744e179f8b067c2289c6191984a8b0de471",
+      "run_summary_sha256": "92c363c2cde77a88306689a67ad635f0c4e57df0c6d363cd164681d2552f0f68",
+      "run_config_sha256": "a8497a8eddebbf6f8f262f1847982b4d4b66fa015df68d3d842dcf606378f2fa",
+      "completed_epochs": 20,
+      "optimizer_steps": 1043,
+      "validation_batch_size": 128,
+      "elapsed_seconds": 1800.4183082629997,
+      "training_batch_size": 128,
+      "normal_terminal_exit_code": 2
+    }
+  },
+  "backbone": {
+    "id": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
+    "revision": "31b70e2e869a7173562077fd711b654946d38674",
+    "frozen": true
+  },
+  "data": {
+    "SSL_train_windows": 35865,
+    "SSL_validation_windows": 7581,
+    "SSL_train_unique_target_interval_hours": 29.8875,
+    "SSL_validation_unique_target_interval_hours": 6.3175,
+    "SSL_train_subject_groups": 75,
+    "SSL_validation_subject_groups": 16,
+    "SSL_source_recording_hours_before_windowing_and_QC": {
+      "train": 32.17194444444444,
+      "val": 7.102777777777778
+    },
+    "SSL_all_prepared_array_bytes": 6673463808,
+    "SSL_test_members_opened": 0,
+    "supervised_train_windows": 6359,
+    "supervised_train_window_seconds": 19077,
+    "downstream_manifest_sha256": "d673ffa0bc54506fc5866a7092fa5ff81deffdcfdf0754b10902cb6fda8657a9",
+    "combined_seen_ID_and_selected_model_union": "deferred to independent saved-checkpoint audit; do not add SSL and MI duration"
+  },
+  "input_contract": {
+    "EEG_channels": 64,
+    "window_seconds": 3,
+    "sample_rate_hz": 200,
+    "stored_physical_unit": "V",
+    "model_amplitude_multiplier": 10000,
+    "causal_preprocessing": true,
+    "free_form_intent_labels": false,
+    "model_text_inputs": [
+      "fixed task family",
+      "fixed A/B candidate definition"
+    ],
+    "environment_mapping": "separate same frozen LLM routing call after decoding; target X/Y and positions",
+    "OS_actions": 0,
+    "cluster_actions": 0
+  },
+  "numerical_guard": {
+    "CPU_FP32": "passed",
+    "L4_BF16": "failed",
+    "errors_L4_BF16": {
+      "logits_max_absolute_error": 0.0625,
+      "loss_absolute_error": 0.011551380157470703,
+      "encoder_gradient_relative_L2_error": 0.035805188943945486,
+      "projector_gradient_relative_L2_error": 0.04100042878783274
+    },
+    "optimized_symbol_head_admitted": false,
+    "actual_path": "original full-vocabulary output head",
+    "tolerances_relaxed": false,
+    "bitwise_identity_claimed": false
+  },
+  "comparison_limits": [
+    "Phase2 and phase3 supervised runs keep the same 6359 windows, batch256 and60epochs; encoder initialization differs by SSL.",
+    "Fused phase3 uses measured batch128, phase2 batch64; elapsed time and actual optimizer steps differ. A fused performance difference cannot isolate SSL alone.",
+    "Reconstruction quality, held-out classification and environment routing are separate outcomes.",
+    "Original phase2 held-out cohort is reused exploratorily. No phase2 test result changed the fixed phase3 scientific protocol.",
+    "Large prepared-corpus quantity is not a claim of real-world autonomous intention decoding."
+  ],
+  "evidence_sha256": {
+    "training_handover": "3dde36e91a777a5d3c7a4cb702dde08d7dcfcd1a08bafd0cc7e68af1a634dc63",
+    "corpus_summary": "b54e838b151fdb96c2d1f45aec6cc684e9e23b5bcb577d76f9020a967a0f6de4",
+    "head_guard": "35eb2e92f4cb3d57c919e970572d1a17cca45eebfa2b366235f45ee2df4b9ace",
+    "source_seal": "4c713b5112ebae88885a7c6dae7dc429722df2543d78278a38de7174cf396be7",
+    "scientific_protocol": "984b516475b06f4e7641074596790c43f76e34d33b6f047239a4ddbd2d0d4016",
+    "benchmark_execution_seal": "564017c4cba3d01fe6a9d47fe152b52aee8fc0df84b51c4276b25dc006a660cc",
+    "SSL_execution_contract": "a4dc628d6d91fbacbecf13eb098320aec5c88dfbd80f97274b55e692869799e2",
+    "SSL_selected_encoder_seal": "0ade2cc2ebddb52fe1d53cf2e88957c71fdcfa085263c5b9afed4bac29a7576b",
+    "training_completion": "bb56a96310c414bc0c54a3b9164372310dcb1337170286b1f4029c446e267d49"
+  },
+  "owned_training_processes_terminal": true,
+  "GPU_empty_at_handover": true,
+  "new_model_forward_calls": 0,
+  "new_test_forward_calls": 0,
+  "goal_validated": false
+}

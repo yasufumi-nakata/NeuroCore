@@ -1,0 +1,3134 @@
+{
+  "schema_version": "pj-xavier-queue-structure-audit-v1",
+  "status": "completed",
+  "started_epoch": 1795310712.530616,
+  "completed_epoch": 1795310730.669377,
+  "source": {
+    "database_role": "bulk downloads SQLite",
+    "query_mode": "read_only_query_only_single_transaction",
+    "hashed_columns": [
+      "id",
+      "catalog_id",
+      "dataset_key",
+      "relative_path",
+      "original_relative_path",
+      "expected_bytes"
+    ],
+    "ordered_metadata_sha256": "67f7749a4cad41ab871d90ae1b5e58d985b3549f85a02d735e5122d0a0e13688",
+    "status_columns_excluded": true,
+    "urls_read_or_published": false
+  },
+  "protocol_sha256": "8c941233ce3cb54785f4af43d8aa0099e3a2b96b52845888d5f4e4fba5a38387",
+  "source_code_sha256": "4ab96724e3b3ea48f27bc14fadbf12e32cc161fdca7875115f3fc860bb7949d3",
+  "classification_stream_sha256": "fd4d2d4d829b7e916f88a5592c7f70e97bc8762ede8ff5ebbb56b4a04820f928",
+  "totals": {
+    "files": 468040,
+    "known_bytes": 15821047310466,
+    "unknown_size_files": 38,
+    "zero_size_files": 1074,
+    "releases": 609
+  },
+  "source_sql_totals": {
+    "files": 468040,
+    "known_bytes": 15821047310466,
+    "unknown_size_files": 38,
+    "releases": 609
+  },
+  "category_counts": {
+    "ancillary_without_modality": {
+      "label": "sidecar／注釈候補，モダリティ未指定",
+      "group": "ancillary_or_documentation",
+      "files": 21219,
+      "known_bytes": 825609520,
+      "unknown_size_files": 0,
+      "zero_size_files": 1,
+      "releases": 228,
+      "known_bytes_fraction": 5.2184252015594415e-05,
+      "files_fraction": 0.04533586872916845
+    },
+    "archive_uninspected": {
+      "label": "未展開 archive／分割 archive",
+      "group": "archive_uninspected",
+      "files": 2701,
+      "known_bytes": 3404075964862,
+      "unknown_size_files": 38,
+      "zero_size_files": 0,
+      "releases": 301,
+      "known_bytes_fraction": 0.21516122782909083,
+      "files_fraction": 0.00577087428424921
+    },
+    "audio_payload": {
+      "label": "音声拡張子",
+      "group": "other_modality_payload_candidate",
+      "files": 826,
+      "known_bytes": 7016285945,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 14,
+      "known_bytes_fraction": 0.0004434779700303759,
+      "files_fraction": 0.0017648064268011281
+    },
+    "eeg_path_ancillary": {
+      "label": "EEG パス／命名のsidecar／注釈候補",
+      "group": "ancillary_or_documentation",
+      "files": 181917,
+      "known_bytes": 1104607576,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 139,
+      "known_bytes_fraction": 6.981886561133508e-05,
+      "files_fraction": 0.3886783180924707
+    },
+    "eeg_path_numeric": {
+      "label": "EEG パス／命名の数値・表容器候補",
+      "group": "explicit_eeg_numeric_candidate",
+      "files": 4642,
+      "known_bytes": 218430474219,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 43,
+      "known_bytes_fraction": 0.013806322042568132,
+      "files_fraction": 0.009917955730279463
+    },
+    "eeg_path_other": {
+      "label": "EEG パス／命名のその他の未確認ファイル",
+      "group": "ambiguous_or_unknown",
+      "files": 4521,
+      "known_bytes": 302129036751,
+      "unknown_size_files": 0,
+      "zero_size_files": 121,
+      "releases": 11,
+      "known_bytes_fraction": 0.01909665212562347,
+      "files_fraction": 0.009659430817878813
+    },
+    "eeg_path_signal": {
+      "label": "EEG パス／命名の信号形式候補",
+      "group": "explicit_eeg_signal_candidate",
+      "files": 62303,
+      "known_bytes": 7209327960212,
+      "unknown_size_files": 0,
+      "zero_size_files": 126,
+      "releases": 135,
+      "known_bytes_fraction": 0.45567956524868347,
+      "files_fraction": 0.13311469105204685
+    },
+    "generic_eeg_format_ambiguous": {
+      "label": "汎用 EEG 形式，モダリティ未確認",
+      "group": "generic_signal_format_unverified",
+      "files": 11735,
+      "known_bytes": 1863082617080,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 104,
+      "known_bytes_fraction": 0.11775975259536241,
+      "files_fraction": 0.02507264336381506
+    },
+    "generic_meeg_format_ambiguous": {
+      "label": "汎用 MEG／EEG 形式，モダリティ未確認",
+      "group": "generic_signal_format_unverified",
+      "files": 710,
+      "known_bytes": 68494071467,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 12,
+      "known_bytes_fraction": 0.004329300717133279,
+      "files_fraction": 0.0015169643620203401
+    },
+    "generic_neurophysiology_container": {
+      "label": "NWB／XDF 等の汎用神経生理容器",
+      "group": "generic_signal_format_unverified",
+      "files": 215,
+      "known_bytes": 139131699811,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 7,
+      "known_bytes_fraction": 0.008794089106791372,
+      "files_fraction": 0.00045936244765404664
+    },
+    "ieeg_path_numeric": {
+      "label": "iEEG パス／命名の数値・表容器候補",
+      "group": "ieeg_content_candidate",
+      "files": 7,
+      "known_bytes": 4564795,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 2.885267271137151e-07,
+      "files_fraction": 1.495598666780617e-05
+    },
+    "image_payload": {
+      "label": "静止画像／図の拡張子",
+      "group": "other_modality_payload_candidate",
+      "files": 83735,
+      "known_bytes": 3086227425,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 38,
+      "known_bytes_fraction": 0.00019507099400166683,
+      "files_fraction": 0.17890564908982137
+    },
+    "meg_path_ancillary": {
+      "label": "MEG パス／命名のsidecar／注釈候補",
+      "group": "ancillary_or_documentation",
+      "files": 1661,
+      "known_bytes": 14505131,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 9.168249557287216e-07,
+      "files_fraction": 0.003548841979318007
+    },
+    "meg_path_numeric": {
+      "label": "MEG パス／命名の数値・表容器候補",
+      "group": "meg_container_eeg_unverified",
+      "files": 480,
+      "known_bytes": 2977541,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.8820125757605727e-07,
+      "files_fraction": 0.0010255533715067089
+    },
+    "meg_path_signal": {
+      "label": "MEG パス／命名の信号形式候補",
+      "group": "meg_container_eeg_unverified",
+      "files": 875,
+      "known_bytes": 301728294580,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 0.01907132243896392,
+      "files_fraction": 0.0018694983334757713
+    },
+    "neuroimage_path_ancillary": {
+      "label": "MRI 等 パス／命名のsidecar／注釈候補",
+      "group": "ancillary_or_documentation",
+      "files": 1029,
+      "known_bytes": 7855242,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 8,
+      "known_bytes_fraction": 4.965058156929706e-07,
+      "files_fraction": 0.002198530040167507
+    },
+    "neuroimage_payload": {
+      "label": "MRI 等の neuroimage／DICOM 拡張子",
+      "group": "other_modality_payload_candidate",
+      "files": 1332,
+      "known_bytes": 290013422673,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 13,
+      "known_bytes_fraction": 0.018330861224411434,
+      "files_fraction": 0.002845910605931117
+    },
+    "numeric_container_without_modality": {
+      "label": "数値・表・binary 容器，モダリティ未確認",
+      "group": "ambiguous_or_unknown",
+      "files": 19721,
+      "known_bytes": 1135547708814,
+      "unknown_size_files": 0,
+      "zero_size_files": 771,
+      "releases": 264,
+      "known_bytes_fraction": 0.07177449675299359,
+      "files_fraction": 0.04213528758225793
+    },
+    "other_physio_ancillary": {
+      "label": "ECG／EOG／EMG／physio 等の付随ファイル候補",
+      "group": "ancillary_or_documentation",
+      "files": 6890,
+      "known_bytes": 4629729,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 14,
+      "known_bytes_fraction": 2.9263100660455795e-07,
+      "files_fraction": 0.014720964020169217
+    },
+    "other_physio_signal_or_array": {
+      "label": "ECG／EOG／EMG／physio 等の信号・表候補",
+      "group": "other_physio_candidate",
+      "files": 7451,
+      "known_bytes": 232486111087,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 17,
+      "known_bytes_fraction": 0.014694735849326795,
+      "files_fraction": 0.01591957952311768
+    },
+    "other_unknown": {
+      "label": "その他・判定材料不足",
+      "group": "ambiguous_or_unknown",
+      "files": 9082,
+      "known_bytes": 518840641827,
+      "unknown_size_files": 0,
+      "zero_size_files": 53,
+      "releases": 185,
+      "known_bytes_fraction": 0.032794329708108166,
+      "files_fraction": 0.01940432441671652
+    },
+    "software_or_documentation": {
+      "label": "ソフトウェア／文書",
+      "group": "ancillary_or_documentation",
+      "files": 1017,
+      "known_bytes": 236263189,
+      "unknown_size_files": 0,
+      "zero_size_files": 2,
+      "releases": 165,
+      "known_bytes_fraction": 1.4933473389192527e-05,
+      "files_fraction": 0.0021728912058798394
+    },
+    "video_payload": {
+      "label": "動画拡張子",
+      "group": "other_modality_payload_candidate",
+      "files": 43971,
+      "known_bytes": 125455780990,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 14,
+      "known_bytes_fraction": 0.007929676116132212,
+      "files_fraction": 0.09394709853858645
+    }
+  },
+  "exclusive_groups": {
+    "ambiguous_or_unknown": {
+      "files": 33324,
+      "known_bytes": 1956517387392,
+      "unknown_size_files": 0,
+      "zero_size_files": 945,
+      "releases": 345,
+      "known_bytes_fraction": 0.12366547858672523,
+      "files_fraction": 0.07119904281685326
+    },
+    "ancillary_or_documentation": {
+      "files": 213733,
+      "known_bytes": 2193470387,
+      "unknown_size_files": 0,
+      "zero_size_files": 3,
+      "releases": 299,
+      "known_bytes_fraction": 0.00013864255279414828,
+      "files_fraction": 0.45665541406717375
+    },
+    "archive_uninspected": {
+      "files": 2701,
+      "known_bytes": 3404075964862,
+      "unknown_size_files": 38,
+      "zero_size_files": 0,
+      "releases": 301,
+      "known_bytes_fraction": 0.21516122782909083,
+      "files_fraction": 0.00577087428424921
+    },
+    "explicit_eeg_numeric_candidate": {
+      "files": 4642,
+      "known_bytes": 218430474219,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 43,
+      "known_bytes_fraction": 0.013806322042568132,
+      "files_fraction": 0.009917955730279463
+    },
+    "explicit_eeg_signal_candidate": {
+      "files": 62303,
+      "known_bytes": 7209327960212,
+      "unknown_size_files": 0,
+      "zero_size_files": 126,
+      "releases": 135,
+      "known_bytes_fraction": 0.45567956524868347,
+      "files_fraction": 0.13311469105204685
+    },
+    "generic_signal_format_unverified": {
+      "files": 12660,
+      "known_bytes": 2070708388358,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 118,
+      "known_bytes_fraction": 0.13088314241928706,
+      "files_fraction": 0.027048970173489447
+    },
+    "ieeg_content_candidate": {
+      "files": 7,
+      "known_bytes": 4564795,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 2.885267271137151e-07,
+      "files_fraction": 1.495598666780617e-05
+    },
+    "meg_container_eeg_unverified": {
+      "files": 1355,
+      "known_bytes": 301731272121,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 0.019071510640221497,
+      "files_fraction": 0.00289505170498248
+    },
+    "other_modality_payload_candidate": {
+      "files": 129864,
+      "known_bytes": 425571717033,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 62,
+      "known_bytes_fraction": 0.026899086304575687,
+      "files_fraction": 0.2774634646611401
+    },
+    "other_physio_candidate": {
+      "files": 7451,
+      "known_bytes": 232486111087,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 17,
+      "known_bytes_fraction": 0.014694735849326795,
+      "files_fraction": 0.01591957952311768
+    }
+  },
+  "release_review_groups": {
+    "archive_requires_inventory": {
+      "files": 2825,
+      "known_bytes": 3078687238920,
+      "unknown_size_files": 38,
+      "zero_size_files": 0,
+      "releases": 275,
+      "known_bytes_fraction": 0.1945944019068431,
+      "files_fraction": 0.006035808905221776
+    },
+    "eeg_companion_without_explicit_signal_candidate": {
+      "files": 100,
+      "known_bytes": 20442611668,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 5,
+      "known_bytes_fraction": 0.0012921149445319416,
+      "files_fraction": 0.00021365695239723101
+    },
+    "explicit_eeg_numeric_candidate_only": {
+      "files": 4906,
+      "known_bytes": 306468461966,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 28,
+      "known_bytes_fraction": 0.019370933918089216,
+      "files_fraction": 0.010482010084608154
+    },
+    "explicit_eeg_signal_path_candidate": {
+      "files": 431365,
+      "known_bytes": 10309979501181,
+      "unknown_size_files": 0,
+      "zero_size_files": 1073,
+      "releases": 135,
+      "known_bytes_fraction": 0.6516622634938145,
+      "files_fraction": 0.9216413127083155
+    },
+    "generic_signal_container_requires_header": {
+      "files": 16998,
+      "known_bytes": 1362941992919,
+      "unknown_size_files": 0,
+      "zero_size_files": 1,
+      "releases": 87,
+      "known_bytes_fraction": 0.08614739379594556,
+      "files_fraction": 0.03631740876848133
+    },
+    "intracranial_candidate_without_explicit_scalp_eeg": {
+      "files": 59,
+      "known_bytes": 26177278,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 1.6545856596157895e-06,
+      "files_fraction": 0.0001260576019143663
+    },
+    "meg_container_requires_eeg_channel_check": {
+      "files": 579,
+      "known_bytes": 48889250625,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 7,
+      "known_bytes_fraction": 0.003090139967703566,
+      "files_fraction": 0.0012370737543799676
+    },
+    "no_explicit_eeg_signal_evidence_from_paths": {
+      "files": 11208,
+      "known_bytes": 693612075909,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 70,
+      "known_bytes_fraction": 0.043841097387412466,
+      "files_fraction": 0.02394667122468165
+    }
+  },
+  "provider_counts": {
+    "dandi": {
+      "files": 37,
+      "known_bytes": 107315450285,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 0.006783081308024929,
+      "files_fraction": 7.905307238697547e-05
+    },
+    "dataverse": {
+      "files": 18331,
+      "known_bytes": 886825272596,
+      "unknown_size_files": 0,
+      "zero_size_files": 1,
+      "releases": 56,
+      "known_bytes_fraction": 0.056053512463068354,
+      "files_fraction": 0.03916545594393642
+    },
+    "figshare": {
+      "files": 7248,
+      "known_bytes": 1287632664703,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 145,
+      "known_bytes_fraction": 0.08138732154926306,
+      "files_fraction": 0.015485855909751304
+    },
+    "figshare_collection": {
+      "files": 5,
+      "known_bytes": 682894376,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 4.316366436425793e-05,
+      "files_fraction": 1.068284761986155e-05
+    },
+    "kaggle": {
+      "files": 684,
+      "known_bytes": 48103740505,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 4,
+      "known_bytes_fraction": 0.003040490276087995,
+      "files_fraction": 0.0014614135543970601
+    },
+    "landing": {
+      "files": 4309,
+      "known_bytes": 162429195194,
+      "unknown_size_files": 38,
+      "zero_size_files": 0,
+      "releases": 56,
+      "known_bytes_fraction": 0.010266652517153477,
+      "files_fraction": 0.009206478078796683
+    },
+    "openneuro": {
+      "files": 430548,
+      "known_bytes": 10637994071977,
+      "unknown_size_files": 0,
+      "zero_size_files": 1073,
+      "releases": 125,
+      "known_bytes_fraction": 0.6723950610361751,
+      "files_fraction": 0.9198957354072301
+    },
+    "osf": {
+      "files": 3251,
+      "known_bytes": 201786679406,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 19,
+      "known_bytes_fraction": 0.012754318689920946,
+      "files_fraction": 0.00694598752243398
+    },
+    "zenodo": {
+      "files": 3627,
+      "known_bytes": 2488277341424,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 202,
+      "known_bytes_fraction": 0.15727639849594188,
+      "files_fraction": 0.007749337663447569
+    }
+  },
+  "extension_counts": {
+    ".001": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".002": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".003": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".004": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".005": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".006": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".007": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".008": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".009": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".010": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".011": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".012": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".013": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".014": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".015": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".016": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".017": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".018": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".019": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".020": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".021": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".022": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".023": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".024": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".025": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".026": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".027": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".028": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".029": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".030": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".031": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".032": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".033": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".034": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".035": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".036": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".037": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".038": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".039": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".040": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".041": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".042": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".043": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".044": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".045": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".046": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".047": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".048": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".049": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".050": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".051": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".052": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".053": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".054": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".055": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".056": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".057": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".058": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".059": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".060": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".061": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".062": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".063": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".064": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".065": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".066": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".067": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".068": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".069": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".070": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".071": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".072": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".073": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".074": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".075": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".076": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".077": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".078": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".079": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".080": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".081": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".082": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".083": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".084": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".085": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".086": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".087": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".088": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".089": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".090": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".091": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".092": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".093": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".094": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".095": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".096": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".097": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".098": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".099": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".100": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".101": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".102": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".103": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".104": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".105": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".106": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".107": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".108": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".109": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".110": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".111": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".112": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".113": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".114": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".115": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".116": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".117": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".118": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".119": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".120": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".121": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".122": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".123": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".124": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".125": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".126": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".127": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".128": {
+      "files": 4,
+      "known_bytes": 17612400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1132259233147592e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".7z": {
+      "files": 134,
+      "known_bytes": 106303885308,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 7,
+      "known_bytes_fraction": 0.006719143380456074,
+      "files_fraction": 0.00028630031621228955
+    },
+    ".ai": {
+      "files": 1,
+      "known_bytes": 4621787,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 2.9212901708109916e-07,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".asc": {
+      "files": 220,
+      "known_bytes": 12874220674,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 0.0008137401033800964,
+      "files_fraction": 0.00047004529527390823
+    },
+    ".asv": {
+      "files": 2,
+      "known_bytes": 20188,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.276021719917692e-09,
+      "files_fraction": 4.27313904794462e-06
+    },
+    ".avg": {
+      "files": 1,
+      "known_bytes": 302400,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.91137788836492e-08,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".avr": {
+      "files": 888,
+      "known_bytes": 750789792,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 4.745512590075719e-05,
+      "files_fraction": 0.0018972737372874113
+    },
+    ".awd": {
+      "files": 19,
+      "known_bytes": 528904,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 3.343040379192327e-08,
+      "files_fraction": 4.0594820955473894e-05
+    },
+    ".bat": {
+      "files": 3,
+      "known_bytes": 8620,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 5.448438292892066e-10,
+      "files_fraction": 6.40970857191693e-06
+    },
+    ".bdf": {
+      "files": 2665,
+      "known_bytes": 902599701482,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 29,
+      "known_bytes_fraction": 0.05705056585507514,
+      "files_fraction": 0.005693957781386206
+    },
+    ".bin": {
+      "files": 298,
+      "known_bytes": 141631456619,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 0.008952091087251058,
+      "files_fraction": 0.0006366977181437484
+    },
+    ".bmp": {
+      "files": 1039,
+      "known_bytes": 53721678,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 4,
+      "known_bytes_fraction": 3.3955829184874397e-06,
+      "files_fraction": 0.0022198957354072303
+    },
+    ".bvef": {
+      "files": 3,
+      "known_bytes": 28765,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 1.818147650754528e-09,
+      "files_fraction": 6.40970857191693e-06
+    },
+    ".c": {
+      "files": 2,
+      "known_bytes": 26006,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.64375970121753e-09,
+      "files_fraction": 4.27313904794462e-06
+    },
+    ".cdt": {
+      "files": 796,
+      "known_bytes": 301969584000,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 0.01908657360503814,
+      "files_fraction": 0.0017007093410819588
+    },
+    ".ced": {
+      "files": 14,
+      "known_bytes": 34698,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 13,
+      "known_bytes_fraction": 2.193154430240939e-09,
+      "files_fraction": 2.991197333561234e-05
+    },
+    ".ceo": {
+      "files": 797,
+      "known_bytes": 72529027,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 4.584337912447826e-06,
+      "files_fraction": 0.001702845910605931
+    },
+    ".cff": {
+      "files": 3,
+      "known_bytes": 10792,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 3,
+      "known_bytes_fraction": 6.821293046043061e-10,
+      "files_fraction": 6.40970857191693e-06
+    },
+    ".cms": {
+      "files": 18,
+      "known_bytes": 496710,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 3.139551954132736e-08,
+      "files_fraction": 3.845825143150158e-05
+    },
+    ".cnt": {
+      "files": 770,
+      "known_bytes": 111084290494,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 12,
+      "known_bytes_fraction": 0.007021298167821993,
+      "files_fraction": 0.0016451585334586788
+    },
+    ".csv": {
+      "files": 6598,
+      "known_bytes": 177539752027,
+      "unknown_size_files": 0,
+      "zero_size_files": 2,
+      "releases": 93,
+      "known_bytes_fraction": 0.01122174458763885,
+      "files_fraction": 0.014097085719169301
+    },
+    ".dap": {
+      "files": 37,
+      "known_bytes": 146839,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 9.281243973201604e-09,
+      "files_fraction": 7.905307238697547e-05
+    },
+    ".dat": {
+      "files": 1784,
+      "known_bytes": 13200874423,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 6,
+      "known_bytes_fraction": 0.0008343868875398221,
+      "files_fraction": 0.0038116400307666013
+    },
+    ".db": {
+      "files": 5,
+      "known_bytes": 1061888,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 6.7118691902118e-08,
+      "files_fraction": 1.068284761986155e-05
+    },
+    ".dll": {
+      "files": 2,
+      "known_bytes": 196608,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 1.2426990207528114e-08,
+      "files_fraction": 4.27313904794462e-06
+    },
+    ".doc": {
+      "files": 3,
+      "known_bytes": 342016,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 2.161778504851245e-08,
+      "files_fraction": 6.40970857191693e-06
+    },
+    ".docx": {
+      "files": 87,
+      "known_bytes": 11242234,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 29,
+      "known_bytes_fraction": 7.10587218367206e-07,
+      "files_fraction": 0.00018588154858559098
+    },
+    ".dpa": {
+      "files": 797,
+      "known_bytes": 6312817,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 3.9901385010232043e-07,
+      "files_fraction": 0.001702845910605931
+    },
+    ".ebs3": {
+      "files": 3,
+      "known_bytes": 5887018,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 3.7210039793671543e-07,
+      "files_fraction": 6.40970857191693e-06
+    },
+    ".edat3": {
+      "files": 24,
+      "known_bytes": 1671168,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.0562941676398898e-07,
+      "files_fraction": 5.127766857533544e-05
+    },
+    ".edf": {
+      "files": 21655,
+      "known_bytes": 637450429021,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 40,
+      "known_bytes_fraction": 0.040291291499982514,
+      "files_fraction": 0.046267413041620374
+    },
+    ".eeg": {
+      "files": 9235,
+      "known_bytes": 2868230901235,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 80,
+      "known_bytes_fraction": 0.1812921006397343,
+      "files_fraction": 0.019731219553884283
+    },
+    ".ehst2": {
+      "files": 357,
+      "known_bytes": 16261146537,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 3,
+      "known_bytes_fraction": 0.0010278173257368913,
+      "files_fraction": 0.0007627553200581147
+    },
+    ".ehtp": {
+      "files": 2,
+      "known_bytes": 425984,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 2.6925145449644248e-08,
+      "files_fraction": 4.27313904794462e-06
+    },
+    ".elc": {
+      "files": 1,
+      "known_bytes": 10540,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 6.662011555345985e-10,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".elp": {
+      "files": 82,
+      "known_bytes": 158563,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 6,
+      "known_bytes_fraction": 1.0022282146587526e-08,
+      "files_fraction": 0.00017519870096572942
+    },
+    ".emrg3": {
+      "files": 1,
+      "known_bytes": 6973425,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 4.407688608191515e-07,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".epf": {
+      "files": 18,
+      "known_bytes": 140932,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 8.907880574174766e-09,
+      "files_fraction": 3.845825143150158e-05
+    },
+    ".erp": {
+      "files": 114,
+      "known_bytes": 2159929147,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 3,
+      "known_bytes_fraction": 0.00013652251362469256,
+      "files_fraction": 0.00024356892573284335
+    },
+    ".es2": {
+      "files": 1,
+      "known_bytes": 220886,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.3961528315124792e-08,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".es3": {
+      "files": 27,
+      "known_bytes": 13066730,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 8.259080289429415e-07,
+      "files_fraction": 5.768737714725237e-05
+    },
+    ".evt": {
+      "files": 61,
+      "known_bytes": 3919007,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 2.477084432588406e-07,
+      "files_fraction": 0.0001303307409623109
+    },
+    ".fdt": {
+      "files": 5191,
+      "known_bytes": 1533486672576,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 43,
+      "known_bytes_fraction": 0.09692700125873221,
+      "files_fraction": 0.011090932398940262
+    },
+    ".feather": {
+      "files": 13,
+      "known_bytes": 3239130,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 2.0473549800064363e-07,
+      "files_fraction": 2.777540381164003e-05
+    },
+    ".fif": {
+      "files": 4320,
+      "known_bytes": 577057666720,
+      "unknown_size_files": 0,
+      "zero_size_files": 126,
+      "releases": 19,
+      "known_bytes_fraction": 0.03647404975132478,
+      "files_fraction": 0.00922998034356038
+    },
+    ".fif.gz": {
+      "files": 401,
+      "known_bytes": 40995814953,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 0.0025912200468473597,
+      "files_fraction": 0.0008567643791128963
+    },
+    ".fst": {
+      "files": 1,
+      "known_bytes": 21317,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.3473823560276125e-09,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".ftg": {
+      "files": 1,
+      "known_bytes": 500,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 3.1603470376404104e-11,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".gdf": {
+      "files": 528,
+      "known_bytes": 30646830478,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 5,
+      "known_bytes_fraction": 0.0019370923982843027,
+      "files_fraction": 0.0011281087086573798
+    },
+    ".generic": {
+      "files": 76,
+      "known_bytes": 11476,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 7.253628520792269e-10,
+      "files_fraction": 0.00016237928382189558
+    },
+    ".gif": {
+      "files": 10,
+      "known_bytes": 547235,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 3.458905022286299e-08,
+      "files_fraction": 2.13656952397231e-05
+    },
+    ".h": {
+      "files": 1,
+      "known_bytes": 2721,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.7198608578839112e-10,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".h5": {
+      "files": 13,
+      "known_bytes": 15607754020,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 0.000986518383626544,
+      "files_fraction": 2.777540381164003e-05
+    },
+    ".hdf5": {
+      "files": 810,
+      "known_bytes": 10384485720,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 0.0006563715736524229,
+      "files_fraction": 0.001730621314417571
+    },
+    ".hfinf2": {
+      "files": 370,
+      "known_bytes": 3064212,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 4,
+      "known_bytes_fraction": 1.9367946633804393e-07,
+      "files_fraction": 0.0007905307238697547
+    },
+    ".html": {
+      "files": 71,
+      "known_bytes": 120846840,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 4,
+      "known_bytes_fraction": 7.638359056044092e-06,
+      "files_fraction": 0.000151696436202034
+    },
+    ".ini": {
+      "files": 112,
+      "known_bytes": 78428,
+      "unknown_size_files": 0,
+      "zero_size_files": 1,
+      "releases": 2,
+      "known_bytes_fraction": 4.957193949361242e-09,
+      "files_fraction": 0.00023929578668489872
+    },
+    ".ipynb": {
+      "files": 4,
+      "known_bytes": 2926171,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 4,
+      "known_bytes_fraction": 1.8495431702958553e-07,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".iqdat": {
+      "files": 3260,
+      "known_bytes": 37061591,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 2.3425497865418097e-06,
+      "files_fraction": 0.006965216648149731
+    },
+    ".jasp": {
+      "files": 4,
+      "known_bytes": 36788470,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 3,
+      "known_bytes_fraction": 2.325286643676462e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".jpeg": {
+      "files": 80008,
+      "known_bytes": 2290077090,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 0.00014474876694699343,
+      "files_fraction": 0.17094265447397658
+    },
+    ".jpg": {
+      "files": 1354,
+      "known_bytes": 194856621,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 14,
+      "known_bytes_fraction": 1.2316290898839402e-05,
+      "files_fraction": 0.002892915135458508
+    },
+    ".json": {
+      "files": 81829,
+      "known_bytes": 54989591,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 149,
+      "known_bytes_fraction": 3.4757238203581552e-06,
+      "files_fraction": 0.17483334757713015
+    },
+    ".jsonc": {
+      "files": 1,
+      "known_bytes": 907,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 5.732869526279704e-11,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".lch": {
+      "files": 125,
+      "known_bytes": 0,
+      "unknown_size_files": 0,
+      "zero_size_files": 125,
+      "releases": 1,
+      "known_bytes_fraction": 0.0,
+      "files_fraction": 0.00026707119049653875
+    },
+    ".lnk": {
+      "files": 1,
+      "known_bytes": 1165,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 7.363608597702155e-11,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".loc": {
+      "files": 3,
+      "known_bytes": 3190,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 3,
+      "known_bytes_fraction": 2.0163014100145817e-10,
+      "files_fraction": 6.40970857191693e-06
+    },
+    ".locs": {
+      "files": 2,
+      "known_bytes": 1100,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 6.952763482808902e-11,
+      "files_fraction": 4.27313904794462e-06
+    },
+    ".log": {
+      "files": 9,
+      "known_bytes": 726354,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 4.5910614243565246e-08,
+      "files_fraction": 1.922912571575079e-05
+    },
+    ".lw6": {
+      "files": 352,
+      "known_bytes": 3484407,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 2.2023870680767017e-07,
+      "files_fraction": 0.0007520724724382531
+    },
+    ".lw_script": {
+      "files": 7,
+      "known_bytes": 11895,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 7.518465602546536e-10,
+      "files_fraction": 1.495598666780617e-05
+    },
+    ".m": {
+      "files": 391,
+      "known_bytes": 4407479,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 55,
+      "known_bytes_fraction": 2.7858326402224635e-07,
+      "files_fraction": 0.0008353986838731733
+    },
+    ".mat": {
+      "files": 7300,
+      "known_bytes": 516207804902,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 81,
+      "known_bytes_fraction": 0.03262791614057789,
+      "files_fraction": 0.015596957524997863
+    },
+    ".maxpat": {
+      "files": 1,
+      "known_bytes": 28029,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.7716273423604612e-09,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".md": {
+      "files": 41,
+      "known_bytes": 149228,
+      "unknown_size_files": 0,
+      "zero_size_files": 2,
+      "releases": 35,
+      "known_bytes_fraction": 9.432245354660062e-09,
+      "files_fraction": 8.759935048286471e-05
+    },
+    ".mexa64": {
+      "files": 1,
+      "known_bytes": 24158,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.5269532747063405e-09,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".mexmaci64": {
+      "files": 1,
+      "known_bytes": 19812,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.2522559101946362e-09,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".mexw64": {
+      "files": 1,
+      "known_bytes": 26112,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.6504596369373278e-09,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".mid": {
+      "files": 1,
+      "known_bytes": 704,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 4.4497686289976975e-11,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".mkv": {
+      "files": 2,
+      "known_bytes": 14125642,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 8.928386169893791e-07,
+      "files_fraction": 4.27313904794462e-06
+    },
+    ".mlx": {
+      "files": 4,
+      "known_bytes": 1662701,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 1.0509424359663494e-07,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".mp3": {
+      "files": 22,
+      "known_bytes": 772193956,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 4,
+      "known_bytes_fraction": 4.8808017626568585e-05,
+      "files_fraction": 4.700452952739082e-05
+    },
+    ".mp4": {
+      "files": 43969,
+      "known_bytes": 125441655348,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 13,
+      "known_bytes_fraction": 0.007928783277515223,
+      "files_fraction": 0.09394282539953851
+    },
+    ".mxf": {
+      "files": 1,
+      "known_bytes": 1895037,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.197794913833794e-07,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".nii": {
+      "files": 66,
+      "known_bytes": 3725744768,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 3,
+      "known_bytes_fraction": 0.00023549292881106114,
+      "files_fraction": 0.00014101358858217248
+    },
+    ".nii.gz": {
+      "files": 1266,
+      "known_bytes": 286287677905,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 12,
+      "known_bytes_fraction": 0.01809536829560037,
+      "files_fraction": 0.0027048970173489447
+    },
+    ".npy": {
+      "files": 1350,
+      "known_bytes": 234533286134,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 4,
+      "known_bytes_fraction": 0.014824131521233151,
+      "files_fraction": 0.0028843688573626184
+    },
+    ".npz": {
+      "files": 312,
+      "known_bytes": 3506012751,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 4,
+      "known_bytes_fraction": 0.00022160434023104709,
+      "files_fraction": 0.0006666096914793607
+    },
+    ".nwb": {
+      "files": 37,
+      "known_bytes": 107315450285,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 0.006783081308024929,
+      "files_fraction": 7.905307238697547e-05
+    },
+    ".ods": {
+      "files": 1,
+      "known_bytes": 22523,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.423609926575499e-09,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".odt": {
+      "files": 4,
+      "known_bytes": 63793,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 3,
+      "known_bytes_fraction": 4.032160371443894e-09,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".ogg": {
+      "files": 8,
+      "known_bytes": 308033,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.9469823580909768e-08,
+      "files_fraction": 1.709255619177848e-05
+    },
+    ".osexp": {
+      "files": 6,
+      "known_bytes": 168886974,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 1.067482895953906e-05,
+      "files_fraction": 1.281941714383386e-05
+    },
+    ".p": {
+      "files": 6,
+      "known_bytes": 841148769,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 5.316644040648055e-05,
+      "files_fraction": 1.281941714383386e-05
+    },
+    ".pdf": {
+      "files": 106,
+      "known_bytes": 76998509,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 54,
+      "known_bytes_fraction": 4.866840196417569e-06,
+      "files_fraction": 0.00022647636954106485
+    },
+    ".pkl": {
+      "files": 673,
+      "known_bytes": 179037743200,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 4,
+      "known_bytes_fraction": 0.01131642802695889,
+      "files_fraction": 0.0014379112896333647
+    },
+    ".plist": {
+      "files": 315,
+      "known_bytes": 6876625,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 4.346504289542797e-07,
+      "files_fraction": 0.0006730194000512777
+    },
+    ".png": {
+      "files": 1243,
+      "known_bytes": 531075087,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 23,
+      "known_bytes_fraction": 3.3567631559301464e-05,
+      "files_fraction": 0.0026557559182975813
+    },
+    ".poly5": {
+      "files": 308,
+      "known_bytes": 450309521725,
+      "unknown_size_files": 0,
+      "zero_size_files": 1,
+      "releases": 2,
+      "known_bytes_fraction": 0.028462687260097472,
+      "files_fraction": 0.0006580634133834715
+    },
+    ".pom": {
+      "files": 1,
+      "known_bytes": 13723,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 8.67388847950787e-10,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".pos": {
+      "files": 16,
+      "known_bytes": 73040,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 4.616634952585111e-09,
+      "files_fraction": 3.418511238355696e-05
+    },
+    ".pptx": {
+      "files": 4,
+      "known_bytes": 18073440,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 3,
+      "known_bytes_fraction": 1.1423668512794338e-06,
+      "files_fraction": 8.54627809588924e-06
+    },
+    ".prproj": {
+      "files": 269,
+      "known_bytes": 100051185,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 6.323929322543252e-06,
+      "files_fraction": 0.0005747372019485514
+    },
+    ".psydat": {
+      "files": 39,
+      "known_bytes": 3472397,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 2.1947959144922893e-07,
+      "files_fraction": 8.332621143492009e-05
+    },
+    ".psyexp": {
+      "files": 14,
+      "known_bytes": 882271,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 5,
+      "known_bytes_fraction": 5.5765650824920847e-08,
+      "files_fraction": 2.991197333561234e-05
+    },
+    ".pt": {
+      "files": 13,
+      "known_bytes": 2444743574,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 0.00015452476223762657,
+      "files_fraction": 2.777540381164003e-05
+    },
+    ".py": {
+      "files": 150,
+      "known_bytes": 1737592,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 29,
+      "known_bytes_fraction": 1.098278745965535e-07,
+      "files_fraction": 0.0003204854285958465
+    },
+    ".pyc": {
+      "files": 9,
+      "known_bytes": 25515,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 5,
+      "known_bytes_fraction": 1.6127250933079012e-09,
+      "files_fraction": 1.922912571575079e-05
+    },
+    ".r": {
+      "files": 25,
+      "known_bytes": 17355133,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 9,
+      "known_bytes_fraction": 1.0969648632881064e-06,
+      "files_fraction": 5.3414238099307754e-05
+    },
+    ".rar": {
+      "files": 345,
+      "known_bytes": 336493055714,
+      "unknown_size_files": 2,
+      "zero_size_files": 0,
+      "releases": 24,
+      "known_bytes_fraction": 0.021268696636246188,
+      "files_fraction": 0.000737116485770447
+    },
+    ".raw": {
+      "files": 16,
+      "known_bytes": 17604176464,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 0.0011127061387620285,
+      "files_fraction": 3.418511238355696e-05
+    },
+    ".rdata": {
+      "files": 1,
+      "known_bytes": 204983,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.2956348336332883e-08,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".readme": {
+      "files": 3,
+      "known_bytes": 1440,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 9.101799468404381e-11,
+      "files_fraction": 6.40970857191693e-06
+    },
+    ".rmd": {
+      "files": 7,
+      "known_bytes": 138959,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 3,
+      "known_bytes_fraction": 8.783173280069474e-09,
+      "files_fraction": 1.495598666780617e-05
+    },
+    ".rs3": {
+      "files": 37,
+      "known_bytes": 175121,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.1068862671572524e-08,
+      "files_fraction": 7.905307238697547e-05
+    },
+    ".rtf": {
+      "files": 133,
+      "known_bytes": 32500,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 6,
+      "known_bytes_fraction": 2.0542255744662663e-09,
+      "files_fraction": 0.0002841637466883172
+    },
+    ".sav": {
+      "files": 20,
+      "known_bytes": 38694794,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 5,
+      "known_bytes_fraction": 2.4457795518001183e-06,
+      "files_fraction": 4.27313904794462e-05
+    },
+    ".seg": {
+      "files": 204,
+      "known_bytes": 7675949382,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 3,
+      "known_bytes_fraction": 0.00048517327780962875,
+      "files_fraction": 0.00043586018289035124
+    },
+    ".sen": {
+      "files": 64,
+      "known_bytes": 1051808,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 6.648156593932969e-08,
+      "files_fraction": 0.00013674044953422784
+    },
+    ".set": {
+      "files": 36220,
+      "known_bytes": 2717860782780,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 80,
+      "known_bytes_fraction": 0.17178766547155638,
+      "files_fraction": 0.07738654815827707
+    },
+    ".sfp": {
+      "files": 19,
+      "known_bytes": 151133,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 9.552654576794161e-09,
+      "files_fraction": 4.0594820955473894e-05
+    },
+    ".sh": {
+      "files": 1,
+      "known_bytes": 152,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 9.607454994426847e-12,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".snirf": {
+      "files": 528,
+      "known_bytes": 871880256,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 5.510888368453525e-05,
+      "files_fraction": 0.0011281087086573798
+    },
+    ".sofa": {
+      "files": 3,
+      "known_bytes": 3458916,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 2.1862749868094034e-07,
+      "files_fraction": 6.40970857191693e-06
+    },
+    ".sps": {
+      "files": 6,
+      "known_bytes": 34779,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 3,
+      "known_bytes_fraction": 2.1982741924419165e-09,
+      "files_fraction": 1.281941714383386e-05
+    },
+    ".spv": {
+      "files": 1,
+      "known_bytes": 2754,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 1.740719148332338e-10,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".tab": {
+      "files": 1792,
+      "known_bytes": 81206744,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 13,
+      "known_bytes_fraction": 5.132829856736463e-06,
+      "files_fraction": 0.0038287325869583795
+    },
+    ".tar.gz": {
+      "files": 22,
+      "known_bytes": 189411525005,
+      "unknown_size_files": 10,
+      "zero_size_files": 0,
+      "releases": 14,
+      "known_bytes_fraction": 0.011972123038890083,
+      "files_fraction": 4.700452952739082e-05
+    },
+    ".tar.xz": {
+      "files": 2,
+      "known_bytes": 8089370152,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 0.000511304339924999,
+      "files_fraction": 4.27313904794462e-06
+    },
+    ".textgrid": {
+      "files": 20,
+      "known_bytes": 3526994,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 2.2293050079351e-07,
+      "files_fraction": 4.27313904794462e-05
+    },
+    ".tif": {
+      "files": 3,
+      "known_bytes": 1551886,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 9.808996645711251e-08,
+      "files_fraction": 6.40970857191693e-06
+    },
+    ".tiff": {
+      "files": 78,
+      "known_bytes": 14397828,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 9.10042661365123e-07,
+      "files_fraction": 0.00016665242286984018
+    },
+    ".trg": {
+      "files": 64,
+      "known_bytes": 914168,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 5.7781762614113165e-08,
+      "files_fraction": 0.00013674044953422784
+    },
+    ".trig": {
+      "files": 3,
+      "known_bytes": 576,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 3.640719787361752e-11,
+      "files_fraction": 6.40970857191693e-06
+    },
+    ".tsv": {
+      "files": 110027,
+      "known_bytes": 164282632531,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 141,
+      "known_bytes_fraction": 0.010383802621102278,
+      "files_fraction": 0.23508033501410136
+    },
+    ".tsv.gz": {
+      "files": 1479,
+      "known_bytes": 11747485316,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 8,
+      "known_bytes_fraction": 0.0007425226083628963,
+      "files_fraction": 0.0031599863259550464
+    },
+    ".txt": {
+      "files": 3309,
+      "known_bytes": 124287709147,
+      "unknown_size_files": 0,
+      "zero_size_files": 770,
+      "releases": 112,
+      "known_bytes_fraction": 0.007855845868356687,
+      "files_fraction": 0.007069908554824374
+    },
+    ".vhdr": {
+      "files": 10686,
+      "known_bytes": 46958897,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 83,
+      "known_bytes_fraction": 2.9681282204962227e-06,
+      "files_fraction": 0.022831381933168107
+    },
+    ".vmrk": {
+      "files": 10696,
+      "known_bytes": 369717341,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 83,
+      "known_bytes_fraction": 2.3368702067872785e-05,
+      "files_fraction": 0.02285274762840783
+    },
+    ".wav": {
+      "files": 796,
+      "known_bytes": 6243783956,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 12,
+      "known_bytes_fraction": 0.0003946504825802264,
+      "files_fraction": 0.0017007093410819588
+    },
+    ".whl": {
+      "files": 1,
+      "known_bytes": 47178,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 2.9819770508359855e-09,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".wksp2": {
+      "files": 1,
+      "known_bytes": 545,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 3.444778271028047e-11,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".wndpos": {
+      "files": 1,
+      "known_bytes": 121,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 7.648039831089792e-12,
+      "files_fraction": 2.13656952397231e-06
+    },
+    ".xdf": {
+      "files": 224,
+      "known_bytes": 33262554349,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 7,
+      "known_bytes_fraction": 0.0021024243020243056,
+      "files_fraction": 0.00047859157336979744
+    },
+    ".xls": {
+      "files": 52,
+      "known_bytes": 26533888,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 8,
+      "known_bytes_fraction": 1.6771258867576484e-06,
+      "files_fraction": 0.00011110161524656012
+    },
+    ".xlsx": {
+      "files": 472,
+      "known_bytes": 52352140,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 95,
+      "known_bytes_fraction": 3.3090186112627202e-06,
+      "files_fraction": 0.0010084608153149305
+    },
+    ".xml": {
+      "files": 1501,
+      "known_bytes": 79125057,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 1,
+      "known_bytes_fraction": 5.001252789861572e-06,
+      "files_fraction": 0.0032069908554824373
+    },
+    ".xses": {
+      "files": 116,
+      "known_bytes": 216477,
+      "unknown_size_files": 0,
+      "zero_size_files": 1,
+      "releases": 2,
+      "known_bytes_fraction": 1.3682848913345662e-08,
+      "files_fraction": 0.00024784206478078796
+    },
+    ".yml": {
+      "files": 8,
+      "known_bytes": 11770,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 8,
+      "known_bytes_fraction": 7.439456926605525e-10,
+      "files_fraction": 1.709255619177848e-05
+    },
+    ".zip": {
+      "files": 2177,
+      "known_bytes": 2707043108287,
+      "unknown_size_files": 26,
+      "zero_size_files": 0,
+      "releases": 266,
+      "known_bytes_fraction": 0.17110391336079417,
+      "files_fraction": 0.004651311853687719
+    },
+    "[no extension]": {
+      "files": 949,
+      "known_bytes": 21923110656,
+      "unknown_size_files": 0,
+      "zero_size_files": 46,
+      "releases": 142,
+      "known_bytes_fraction": 0.0013856927563510502,
+      "files_fraction": 0.002027604478249722
+    },
+    "archive-volume": {
+      "files": 21,
+      "known_bytes": 56735020396,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 4,
+      "known_bytes_fraction": 0.003586047072779337,
+      "files_fraction": 4.486796000341851e-05
+    }
+  },
+  "nonadditive_path_flags": {
+    "derivative_path": {
+      "files": 32909,
+      "known_bytes": 1805403117092,
+      "unknown_size_files": 0,
+      "zero_size_files": 127,
+      "releases": 47,
+      "known_bytes_fraction": 0.11411400785696929,
+      "files_fraction": 0.07031236646440475
+    },
+    "path_hint_eeg": {
+      "files": 254252,
+      "known_bytes": 7731549207830,
+      "unknown_size_files": 0,
+      "zero_size_files": 247,
+      "releases": 176,
+      "known_bytes_fraction": 0.48868757270673197,
+      "files_fraction": 0.5432270746090078
+    },
+    "path_hint_ieeg": {
+      "files": 7,
+      "known_bytes": 4564795,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 2.885267271137151e-07,
+      "files_fraction": 1.495598666780617e-05
+    },
+    "path_hint_meg": {
+      "files": 3016,
+      "known_bytes": 301745777252,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 2,
+      "known_bytes_fraction": 0.019072427465177226,
+      "files_fraction": 0.006443893684300487
+    },
+    "path_hint_neuroimage": {
+      "files": 2033,
+      "known_bytes": 61897087536,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 11,
+      "known_bytes_fraction": 0.003912325544659335,
+      "files_fraction": 0.004343645842235707
+    },
+    "single_compressed_payload_unread": {
+      "files": 3146,
+      "known_bytes": 339030978174,
+      "unknown_size_files": 0,
+      "zero_size_files": 0,
+      "releases": 20,
+      "known_bytes_fraction": 0.02142911095081063,
+      "files_fraction": 0.0067216477224168875
+    }
+  },
+  "integrity_checks": {
+    "all_job_counts_equal": true,
+    "all_known_bytes_equal": true,
+    "all_unknown_size_counts_equal": true,
+    "category_assignment_exclusive": true,
+    "release_review_assignment_exclusive": true
+  },
+  "header_validated_by_this_audit": 0,
+  "archives_inspected": 0,
+  "unique_eeg_bytes_estimated": false,
+  "recording_hours_estimated": false,
+  "queue_modified": false,
+  "downloads_started": 0,
+  "training_approval_changed": false,
+  "limitations": [
+    "A meg recording may contain simultaneous EEG channels; meg paths never establish absence of EEG",
+    "EDF, BDF, FIF, NWB and general numeric extensions never establish scalp EEG content without headers",
+    "Archive filenames remain uninspected even when the name contains EEG",
+    "EEG JSON, VHDR and VMRK are tracked as companion candidates, not waveform byte totals",
+    "EEGLAB SET can embed samples or refer to FDT; queue bytes are not unique recordings or hours",
+    "Known bytes sum published file sizes, including other modalities and distinct release versions",
+    "Category file and byte totals are additive; category release counts overlap and must not be added",
+    "No queue status, ordering, inclusion, download or training approval is changed"
+  ]
+}

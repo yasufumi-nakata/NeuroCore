@@ -1,0 +1,24 @@
+{
+  "InMID_generalization_evaluated": false,
+  "MAT_video_auxiliary_or_labels_independent_EEG_hours_added": 0,
+  "artifacts_sha256": "851b1b8e4a6ba120d38bb0f036ec4f1a8d2032eb628bd0b0d9491757268b2f6c",
+  "base_completion_sha256": "ca15838399186bf3ec90fc9ff420168acbf67ffe5d69dfedd4edc3aaa293daf2",
+  "certificates_sha256": "1accae1a043d07d52fbd7b83c1be4beb4575cdd13a6a5641574cb81371fb9c37",
+  "manifest_sha256": "f4c2f260127fd288adf1da383e57be7da40dc178e71b87cf5eb427526b66814c",
+  "new_gradient_exposure_hours": 0,
+  "new_source_records": 76,
+  "new_source_unique_hours": 14.029166666666667,
+  "new_source_windows": 16835,
+  "newsource_val_records_opened": 0,
+  "online_harness_allowed": false,
+  "protocol_sha256": "54fbb418a525962332ecf261efba345325fce4c0c06cee438edead66d2480005",
+  "retained_base_windows": 4371,
+  "source_admission_sha256": "7cfbf10e1bfe56ea9dc72f2a0f23990ecbcae14a4856d7350887146b153392d3",
+  "status": "prepared_verified_new_offline_SSL_corpus",
+  "test_records_not_opened": 16,
+  "validation_domain": "806023 only",
+  "windows": {
+    "train": 20879,
+    "val": 327
+  }
+}

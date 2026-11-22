@@ -1,0 +1,193 @@
+{
+  "schema": "xavier-eegmmidb-phase3-ssl-and-matched-supervision-plan-v1",
+  "status": "scientific_design_before_phase2_heldout_results",
+  "purpose": "Increase distinct training EEG using permitted continuous recordings; keep held-out people out of all fitting",
+  "seed": 20261122,
+  "phase2_frozen_source": {
+    "model_py_sha256": "5285c00e64bdcbc79b04bbfb236b85c05a035affed06a24b16e768fbcf5606ac",
+    "data_contract_py_sha256": "22510965669dd2f4180d37d0efe3d11ae5090667c5d2fdde31132756349849a5",
+    "training_manifest_sha256": "d673ffa0bc54506fc5866a7092fa5ff81deffdcfdf0754b10902cb6fda8657a9",
+    "subject_split_sha256": "e5b38cbe78f1c0c8c06384c91266db40a8801be20b72262786502f6b5ce2e9c9"
+  },
+  "corpus": {
+    "recordings": "All14 runs of original phase2 training subjects, with50 recording annotation-review exclusions retained; actual raw allowlist sealed separately",
+    "initial_train_candidates": 36600,
+    "initial_train_window_hours": 30.5,
+    "initial_ssl_val_candidates": 8064,
+    "initial_ssl_val_window_hours": 6.72,
+    "shape": [
+      64,
+      600
+    ],
+    "sampling_rate_hz": 200,
+    "window_seconds": 3,
+    "stride_seconds": 3,
+    "initial_warmup_seconds": 5,
+    "physical_unit": "V",
+    "source_to_model_multiplier": 10000,
+    "preprocessing": "Same sealed causal3–40Hz/200Hz recipe and maxabs500microvolt/minstd0.01microvolt/finite criteria; no clipping or rescaling",
+    "test_subjects_used_for_fit": 0,
+    "action_labels_read_for_ssl": false,
+    "validation": "Original phase2 validation subjects only; not trained on",
+    "final_QC_retained_counts": "Pending independent preparation; no silent weakening of fixed rules"
+  },
+  "encoder": {
+    "architecture": "Same full64-channel compact EEGNet-style EEGEncoder as pinned phase2 model source",
+    "initialization": "Fresh random initialization with seed20261122; not phase2 trained weights or external EEG-pretrained weights",
+    "same_initial_encoder_tensor_identity_required": true,
+    "external_pretrained_EEG_weights_used": false,
+    "trainable": true,
+    "dropout": 0.5
+  },
+  "masking": {
+    "space": "64 channels x3 nonoverlap1-second patches",
+    "patch_samples": 200,
+    "patches_per_window": 192,
+    "masked_patches": 96,
+    "mask_fraction": 0.5,
+    "method": "Sample96 distinct channel-time patches uniformly without replacement; set corresponding physical-V inputs to zero",
+    "training_mask_seed": "First8 bytes of SHA256('20261122|train|'+str(epoch_zero_based)+'|'+id), big-endian uint64",
+    "validation_mask_seed": "First8 bytes of SHA256('20261122|val|'+id), big-endian uint64; constant at initial and every epoch",
+    "mask_input_to_model": false,
+    "masked_target_samples_in_input": false,
+    "observed_unmasked_samples_in_input": true,
+    "metadata_used_for_network_inputs": false
+  },
+  "decoder": {
+    "input_shape": "[N,32,18] EEGEncoder temporal features",
+    "operations": [
+      {
+        "type": "Conv1d",
+        "in_channels": 32,
+        "out_channels": 64,
+        "kernel_size": 7,
+        "padding": 3,
+        "bias": true
+      },
+      {
+        "type": "GELU"
+      },
+      {
+        "type": "linear_interpolation",
+        "size": 600,
+        "align_corners": false
+      },
+      {
+        "type": "Conv1d",
+        "in_channels": 64,
+        "out_channels": 64,
+        "kernel_size": 15,
+        "padding": 7,
+        "groups": 64,
+        "bias": true
+      },
+      {
+        "type": "GELU"
+      },
+      {
+        "type": "Conv1d",
+        "in_channels": 64,
+        "out_channels": 64,
+        "kernel_size": 1,
+        "bias": true
+      }
+    ],
+    "output_shape": "[N,64,600] in fixed Vx10000 scale",
+    "used_for_MI_or_LLM_inference": false
+  },
+  "optimization": {
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "gradient_clip_norm": 1,
+    "loss": "Mean squared reconstruction error on exactly the masked samples only, in fixed Vx10000 units",
+    "unmasked_loss_weight": 0,
+    "max_epochs": 20,
+    "learning_rate_schedule": null,
+    "batch_selection": "Largest train-only sustained measured candidate within resource budget; exact candidates and seconds fixed by separate capacity/budget receipt before fitting",
+    "candidate_batches": [
+      32,
+      64,
+      128,
+      256,
+      512
+    ],
+    "initial_validation_before_optimizer_steps": true
+  },
+  "selection": {
+    "partition": "SSL val",
+    "metric": "mean_subject_masked_MSE",
+    "initial_epoch0_is_candidate": true,
+    "optimization_direction": "minimum",
+    "ties": "earliest",
+    "if_initial_selected": "Retain exact initial encoder; explicitly state that attempted adaptation did not improve the registered validation criterion",
+    "test_metrics_used": false
+  },
+  "matched_MI_supervision": {
+    "training_ids": "Exact6359 phase2 train IDs; no test or new event targets",
+    "encoder": "Selected SSL encoder, including initial if selected",
+    "task_heads": "Fresh fixed-seed same binary heads as phase2",
+    "epochs_max": 60,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "gradient_clip_norm": 1,
+    "selection": "Original phase2 left_right validation mean_subject_BA, missing-class groups omitted and counted, earliest tie",
+    "same_source_and_labels": true
+  },
+  "matched_frozen_LLM_alignment": {
+    "backbone": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
+    "revision": "31b70e2e869a7173562077fd711b654946d38674",
+    "epochs_max": 30,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "gradient_clip_norm": 1,
+    "prefix_tokens": 8,
+    "class_token_ids": [
+      330,
+      389
+    ],
+    "class_symbols": [
+      " A",
+      " B"
+    ],
+    "encoder_trainable": true,
+    "projector_trainable": true,
+    "backbone_frozen": true,
+    "prompts": "Exact phase2 static task descriptions and both candidate labels; no target cue or event metadata",
+    "candidate_train_batches": [
+      8,
+      16,
+      32,
+      64,
+      128
+    ],
+    "selection": "Original phase2 left_right validation mean_subject_BA",
+    "test_threshold": 0.8
+  },
+  "evaluation": {
+    "original_test_subjects": 17,
+    "original_test_targets_not_used_for_tuning": true,
+    "same_five_conditions": true,
+    "actual_minus10second_controls": true,
+    "same_T0_diagnostic": true,
+    "same16_prompt_frozen_Smol_harness": true,
+    "exploratory_reuse_of_registered_phase2_test_cohort": true,
+    "no_model_or_threshold_changes_from_phase2_test_results": true,
+    "goal_validated": false
+  },
+  "reporting": {
+    "distinct_source_interval_union_required": true,
+    "epoch_repeated_presentations_separate": true,
+    "initial_vs_selected_validation_loss_required": true,
+    "selected_encoder_initial_or_updated_tensor_proof_required": true,
+    "all_optimizer_RNG_and_checkpoint_recovery_required": true
+  },
+  "compute": {
+    "status": "Requires separately registered capacity and absolute-budget receipt; this scientific plan does not authorize GPU execution",
+    "workstation_and_its_Colab_CLI_only": true,
+    "cluster_used": false,
+    "old_phase2_source_and_protocol_modified": false,
+    "raw_transfer_method": "Root to select existing identical ZIP copy or official retrieval with exact whole-file SHA; do not count identical release as newly acquired unique EEG",
+    "max_memory_budget_gib": 21
+  }
+}

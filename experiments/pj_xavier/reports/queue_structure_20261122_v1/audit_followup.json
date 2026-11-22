@@ -1,0 +1,182 @@
+{
+  "unrecognized_path_extensions_by_bytes": [
+    {
+      "extension": ".poly5",
+      "files": 308,
+      "known_bytes": 450309521725,
+      "categories": [
+        "other_unknown"
+      ],
+      "release_count": 2
+    },
+    {
+      "extension": ".cdt",
+      "files": 796,
+      "known_bytes": 301969584000,
+      "categories": [
+        "eeg_path_other"
+      ],
+      "release_count": 1
+    },
+    {
+      "extension": "[no extension]",
+      "files": 699,
+      "known_bytes": 21922567116,
+      "categories": [
+        "eeg_path_other",
+        "other_unknown"
+      ],
+      "release_count": 135
+    },
+    {
+      "extension": ".ehst2",
+      "files": 357,
+      "known_bytes": 16261146537,
+      "categories": [
+        "other_unknown"
+      ],
+      "release_count": 3
+    },
+    {
+      "extension": ".asc",
+      "files": 220,
+      "known_bytes": 12874220674,
+      "categories": [
+        "other_unknown"
+      ],
+      "release_count": 1
+    },
+    {
+      "extension": ".seg",
+      "files": 204,
+      "known_bytes": 7675949382,
+      "categories": [
+        "other_unknown"
+      ],
+      "release_count": 3
+    },
+    {
+      "extension": ".pt",
+      "files": 13,
+      "known_bytes": 2444743574,
+      "categories": [
+        "other_unknown"
+      ],
+      "release_count": 2
+    },
+    {
+      "extension": ".erp",
+      "files": 114,
+      "known_bytes": 2159929147,
+      "categories": [
+        "other_unknown"
+      ],
+      "release_count": 3
+    },
+    {
+      "extension": ".snirf",
+      "files": 528,
+      "known_bytes": 871880256,
+      "categories": [
+        "other_unknown"
+      ],
+      "release_count": 2
+    },
+    {
+      "extension": ".p",
+      "files": 6,
+      "known_bytes": 841148769,
+      "categories": [
+        "other_unknown"
+      ],
+      "release_count": 2
+    },
+    {
+      "extension": ".avr",
+      "files": 888,
+      "known_bytes": 750789792,
+      "categories": [
+        "other_unknown"
+      ],
+      "release_count": 1
+    },
+    {
+      "extension": ".osexp",
+      "files": 6,
+      "known_bytes": 168886974,
+      "categories": [
+        "other_unknown"
+      ],
+      "release_count": 2
+    }
+  ],
+  "largest_releases_without_explicit_eeg_path_evidence": [
+    {
+      "catalog_ids": "000096",
+      "provider": "openneuro",
+      "known_bytes": "504027157064",
+      "files": "6841",
+      "path_review": "no_explicit_eeg_signal_evidence_from_paths",
+      "proposed_next_step": "P3_review_official_release_scope_and_unrecognized_formats"
+    },
+    {
+      "catalog_ids": "003247",
+      "provider": "figshare",
+      "known_bytes": "60572737474",
+      "files": "124",
+      "path_review": "no_explicit_eeg_signal_evidence_from_paths",
+      "proposed_next_step": "P3_review_official_release_scope_and_unrecognized_formats"
+    },
+    {
+      "catalog_ids": "002194",
+      "provider": "zenodo",
+      "known_bytes": "26851214000",
+      "files": "61",
+      "path_review": "no_explicit_eeg_signal_evidence_from_paths",
+      "proposed_next_step": "P3_review_official_release_scope_and_unrecognized_formats"
+    },
+    {
+      "catalog_ids": "004032",
+      "provider": "zenodo",
+      "known_bytes": "17604203600",
+      "files": "17",
+      "path_review": "no_explicit_eeg_signal_evidence_from_paths",
+      "proposed_next_step": "P3_review_official_release_scope_and_unrecognized_formats"
+    },
+    {
+      "catalog_ids": "000240",
+      "provider": "landing",
+      "known_bytes": "10716309335",
+      "files": "27",
+      "path_review": "no_explicit_eeg_signal_evidence_from_paths",
+      "proposed_next_step": "P3_review_official_release_scope_and_unrecognized_formats"
+    },
+    {
+      "catalog_ids": "001867",
+      "provider": "figshare",
+      "known_bytes": "10401895272",
+      "files": "54",
+      "path_review": "no_explicit_eeg_signal_evidence_from_paths",
+      "proposed_next_step": "P3_review_official_release_scope_and_unrecognized_formats"
+    },
+    {
+      "catalog_ids": "000838",
+      "provider": "zenodo",
+      "known_bytes": "6583280512",
+      "files": "27",
+      "path_review": "no_explicit_eeg_signal_evidence_from_paths",
+      "proposed_next_step": "P3_review_official_release_scope_and_unrecognized_formats"
+    },
+    {
+      "catalog_ids": "001131",
+      "provider": "figshare",
+      "known_bytes": "5551836259",
+      "files": "150",
+      "path_review": "no_explicit_eeg_signal_evidence_from_paths",
+      "proposed_next_step": "P3_review_official_release_scope_and_unrecognized_formats"
+    }
+  ],
+  "classification_stream_sha256": "fd4d2d4d829b7e916f88a5592c7f70e97bc8762ede8ff5ebbb56b4a04820f928",
+  "elapsed_s": 18.138761043548584,
+  "private_classification_gzip_bytes": 44145843
+}

@@ -1,0 +1,36 @@
+{
+  "all_GDF_EEG_sample_bytes_before_dedup": 28817482752,
+  "all_GDF_EMG_sample_bytes": 2134628352,
+  "all_GDF_EOG_sample_bytes": 3201942528,
+  "all_GDF_event_bytes": 774164,
+  "all_GDF_header_bytes": 5862912,
+  "all_GDF_hours_before_exact_EEG_dedup": 72.381875,
+  "all_GDF_records": 694,
+  "all_GDF_total_bytes": 34160690708,
+  "all_GDFs_match_full_ZIP_member_SHA": true,
+  "all_archive_member_count": 1071,
+  "all_archive_uncompressed_bytes": 34164083331,
+  "byte_partition_is_exhaustive": true,
+  "deduplicated_record_seconds_fraction": [
+    4161995,
+    16
+  ],
+  "duplicate_EEG_records": 1,
+  "no_additional_raw_decode_or_model_forward": true,
+  "other_companion_bytes": 3392623,
+  "quantity_excludes_no_source_author_QC_flags": true,
+  "removed_exact_duplicate_EEG_seconds": 450.0625,
+  "schema": "xavier_BCI_independent_quantity_accounting_v1",
+  "source_archive_sha256": "7c611b08995f10c2d313d194e3e75c88f7792403455994d77ca37e16104fcacf",
+  "source_group_count": 87,
+  "source_group_record_count_distribution": {
+    "6": 1,
+    "8": 86
+  },
+  "source_ledger_sha256": "ba13f499b92d498842b41dff906423afc77d5fdfde720c6da0da173c86413912",
+  "source_summary_sha256": "b693dee9088fbbfeed0770c17668c70acff3648ff5b48853a187fac27abbb14c",
+  "status": "passed",
+  "unique_EEG_hours": 72.25685763888889,
+  "unique_EEG_records": 693,
+  "unique_EEG_sample_bytes": 28767709440
+}

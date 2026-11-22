@@ -1,0 +1,117 @@
+{
+  "schema": "xavier_next_experiment_design_notes_v1",
+  "status": "read_only_design_notes_not_an_execution_protocol_or_admission",
+  "created_utc": "2026-11-22T05:47:28Z",
+  "purpose": "取得済みの多channel EEGを自己教師学習へ広げ，EEG＋事前環境から候補IDを直接選ぶ次実験を実装可能にするための引継ぎです．",
+  "current_phase3_unchanged": true,
+  "new_model_forward_calls": 0,
+  "new_test_signal_reads": 0,
+  "new_training_authorized_by_this_document": false,
+  "current_phase3_evaluation_has_priority": true,
+  "summary": [
+    "CBraModの公式encoderはchannel数とpatch数を実行時shapeから取得しますが，現在封印済みのSSL trainerは8/32ch専用，LLM接続部は8ch専用です．27/16/64ch対応には別module・新protocol・容量実測が必要です．",
+    "最大候補は27ch GDFの72.256857639時間です．ただし取得量は学習許可量ではなく，新しいperson/group split，重複群の結合，保存単位，品質保留を先に処理します．",
+    "現fusedは静的課題説明＋EEGからA/Bを決め，別routingが環境のX/Yへ対応付けます．次案はtrain-onlyでcounterbalanceした環境mappingも入力し，X/Yを直接学ぶjoint alignmentです．公開cue応答を自由意図のgoldとは呼びません．"
+  ],
+  "encoder_and_adapter_contract": {
+    "official_source_commit": "b9e961003214326972c567eff390e75b0287e32a",
+    "encoder_input": "float32 [B,C,P,200]，200Hzの1秒patchをP個，原波形はphysical Vから固定倍率1e4へ一度だけ変換",
+    "encoder_output": "[B,C,P,200]．reconstruction headも200点．CとPは動的ですが最後の200点はFFT101bins→Linear200の契約に固定されています．",
+    "channel_order": "19×7の位置convはchannel軸順序を利用します．同Cでもmontage/reference/channel順序をbucketの一部として保存し，勝手な並べ替えや異種channelの0埋め混合は行いません．",
+    "mask_limitation": "公式TransformerEncoderは受け取ったpadding maskを下位層へ渡さず，現attentionはNoneを使用します．paddingを無視できるモデルと見なさず，同じchannel契約のbatchを組みます．",
+    "current_SSL_restrictions": "cbramod_ssl.pyはC in {8,32}，P=30，V_x_1e4，maxabs<=1.00001を検証し，容量probeも8/32の双方を必須にします．そのままchannelリストを追加する変更は既存runの封印を壊すため禁止です．",
+    "current_LLM_adapter_restrictions": "8×448 V @256Hzから末尾1秒を200点へ変換し，8channel tokensを固定8prefixへ接続します．A/B/Cの観測coding行動分類であり，任意channel・MI・環境X/Yに共通のadapterではありません．",
+    "next_implementation": "別encoder trainerでC={16,27,32,64}の同montage batchを扱い，必要なら8learned queriesでC×Pの200次元特徴を固定8prefixへ集約する新resampler/projectorを実装します．encoder更新範囲は事前固定します．全shapeの実backprop・容量probeが通るまで技術成立とは報告しません．"
+  },
+  "source_candidates": [
+    {
+      "source": "Zenodo 8089820，catalog 000038",
+      "channels": "27 EEG＋3 EOG＋2 EMG，EEG名で選択",
+      "native_hz": 512,
+      "acquired_unique_EEG_hours": 72.2568576389,
+      "acquired_files_and_groups": "694 GDF／87記録ID群，EEG payload＋calibrationの完全重複除去後693記録",
+      "admission": "新metadata split前に完全重複のある別ID群をmust-linkで同じfoldへ結合します．著者flagの7群56記録は別reviewまで保留します．校正後Vの単位とchannel順序を再照合し，train-only QC後に量を確定します．",
+      "event_limit": "全694記録でevent sample-rate fieldが0です．MNEの512Hz fallbackは出典のイベント時基を証明しません．連続unlabeled SSLと，未解決のcue時刻を使う教師ありMIを分け，後者を保留します．"
+    },
+    {
+      "source": "Portable EEG Zenodo 15698441",
+      "channels": 32,
+      "native_hz_by_device": {"BA": 250, "EM": 128, "LA": 500},
+      "acquired_EEG_hours": 34.8970611111,
+      "admission": "既存19人の15 train／4 SSL validationを保持し，1人の3機種を同じfoldに置きます．既評価用validationをfitへ戻しません．機種・reference・physical V校正をchannel契約へ残します．"
+    },
+    {
+      "source": "Zenodo 806023，catalog 001035",
+      "channels": "16 EEG＋1 stim",
+      "native_hz": 512,
+      "acquired_EEG_hours": 1.1037196181,
+      "admission": "8群の新metadata splitを信号QC前に固定します．FIFのSI校正を照合してstimを除外します．480実stimのright_hand／bothfeet／restは原ラベルのまま保持し，左右MIのgoldへ改名しません．"
+    },
+    {
+      "source": "EEGMMIDB 1.0.0",
+      "channels": 64,
+      "native_hz": [160, 128],
+      "acquired_EEG_hours": 48.5344444444,
+      "admission": "既存76／16／17 subject splitとreview50記録のdenyを維持します．phase3で準備済みtrainは35,865窓／75群／29.8875hです．これは準備量でありselected checkpointの実seen量は独立auditの値を使用します．"
+    },
+    {
+      "source": "AI coding UniBa／ITU，EEGlass，Figshare 25773342",
+      "admission": "ITU全外部test，UniBa旧val/testとclock不合格をdenyします．UniBa trainは8chですが極端振幅の原XDF由来が未確認であり，倍率変更してQCへ通しません．EEGlassは旧temporal testと同じrawのため保守的に全recordを保留します．14ch Figshareは振幅単位未解決のためphysical-V SSLへ投入しません．"
+    },
+    {
+      "source": "P300 OpenNeuro ds005028，別task候補",
+      "channels": 32,
+      "native_hz": 256,
+      "verified_acquisition_aggregate": "11記録ID群／105原DAT／7.488324652777778h．今回の005数量snapshotには未加算です．全DATが256Hz／32chです．派生EDF105本はrate不一致とphysical-unit空欄のため新しいEEG時間へ加算しません．公開aggregateのSHAを再照合しました．",
+      "next_action": "BCI2000 state，flash onset，表示候補集合，過去入力，target／non-targetを別schemaで抽出し，決定時点で利用可能な環境だけを残します．plain-stateに31.25msのblock lag可能性があり，刺激時刻goldは未検証です．原著10名に対し，公開sourceには著者がparadigm不足で解析除外した1群を含む11記録ID群があります．実参加者への対応とgroup結合は新split前に確認します．",
+      "interpretation": "原著は6×6文字選択，62.5ms flash＋62.5ms ISI，確率オートマトン＋particle filteringです．Transformer LLMの性能や現在のMI BAと直接比較せず，選択型BCIへの別経路として検証します．"
+    }
+  ],
+  "data_and_leakage_contract_to_implement": [
+    "raw file SHA，EEG payload＋calibration SHA，canonical person／session／recording，channel names/order/types/reference，physical-unit conversion，native fs，native sample intervals，source licenseをmanifestへ保存します．同一payload／共有personのmust-linkをsplit前に解決します．近似重複や同一実人の未確認を明記します．",
+    "既存の全heldout person/source/payload denyと，新metadata固定splitを使います．自己教師学習でもheldout波形をfitへ入れません．valは選択専用，testは固定比較専用とします．既存testの再使用結果は探索的と明記します．",
+    "前処理はrecord0からの状態を持つcausal SOS＋causal FIR resamplingの新recipeを固定し，真の欠損で状態をresetします．旧prepare_ssl_corpusのfiltfilt＋resample_polyをオンライン因果処理として流用しません．native cutoff，warmup，last source sample，feature availabilityを保存します．",
+    "単位確認をQCより先に行います．sourceごとのtrain-only振幅／std分布で基準を固定し，val/testの残存率や成績を見て変更しません．100µVや500µVは過去実験の探索的基準であり，普遍的な正常EEG判定ではありません．clipや未根拠のrescaleは禁止です．",
+    "同C／montage／referenceのshape bucketを作り，dataset mixing量を事前固定します．masked-only reconstruction loss，固定ID由来val masks，epoch0を含む最小subject平均val lossとearliest tie，optimizer/RNG/cursor，seen IDsとnative interval unionを保存します．"
+  ],
+  "joint_environment_alignment_next_plan": {
+    "current_gap": "現在はEEG分類と環境routingが別段階です．環境をEEG decoderの入力として直接条件付けた学習は未実施です．",
+    "new_target": "公開cueのoriginal classと，独立に生成した環境mappingから決定可能なX/Y候補ID．original goldとsynthetic action targetの出典を分けます．",
+    "training": "train窓にのみ4種counterbalanced mappingを生成し，同じEEGに異なるmappingを与えてX/Yの単一token lossを学習します．4mappingを4倍の独立EEG量とは数えません．contextのwhitelistは候補ID／位置／割当であり，正解cue，対象target，subject，run順序，trial IDは渡しません．",
+    "evaluation": "subject分離と環境生成seedを先に固定し，context-only，gold-class上限，同じEEGでのmapping equivariance，EEG shuffle，実波形固定shift，T0診断，invalid／abstainを同じIDで比較します．自由意図や実OS操作成功の評価へ読み替えません．",
+    "interpretation": "本提案はB案のEEG＋事前環境→actionへ一段近づく設計です．自発的な意図・取り消し・自然なidleのgoldは増えないため，その先は本人のEEGとharnessの時刻付きcontext／実操作／idle／cancelを前向きに記録する必要があります．",
+    "selection_policy": "旧UniBa／ITU／phase2／phase3 test結果で新モデル選択や閾値を最適化しません．新protocolとfresh budgetを登録してからfitし，新しい独立評価群が確保できなければ探索的再使用と明示します．"
+  },
+  "unit_unknown_optional_exploratory_branch": {
+    "status": "別representationの設計候補のみ．現在のphysical-V corpus／QC／モデルへ混入しません．",
+    "candidate": "rootの追加取得監査ではSSVEP 9970619はprocessed-onlyの64EEG／200Hz／44記録／8.004722hです．原rawは0，保存単位とevent欄は空で，Statusに多数の非整数があり，丸めでevent goldを復元できません．この量は005 snapshotと別に管理します．",
+    "representation": "単位が証明できない信号を，channelごとのdimensionless標準化で扱う別探索枝は実装可能性があります．統計量は決定時点で取得済みの窓だけから求め，全recordや未来時刻を使いません．masked SSLでは隠した値から正規化統計を入力へ漏らさない定義も事前に固定します．",
+    "limits": "µVによる品質判定はできず，振幅情報は失われ，artifactも未解決です．finite／flatness／既知の飽和値など単位不要のQCは別契約にします．標準化は保存済みoffline filterの未来混入を解決しないため，元前処理の因果性は未検証のままです．",
+    "admission": "新group split・heldout deny・source hash・representation名・正規化式・新checkpointを封印してから検証します．physical-V×1e4のCBraMod学習分布と同じとは仮定せず，既存データの倍率を黙って変えません．単一7.5Hz物体認識を多周波BCIコマンドのgoldとは扱いません．"
+  },
+  "resource_and_resume_plan": {
+    "quantity_snapshot": "005時点の取得済み210.5032487847hは学習入力量ではありません．追加P300を含む最新量は親側の別取得監査を参照します．",
+    "storage_estimate_formula": "hours × 3600 × 200Hz × EEG channels × 4 bytes，header／overlap／validation／QC前の計算値",
+    "float32_storage_estimates_bytes": {"full_27ch_GDF": 5618693250, "full_32ch_portable": 3216113152, "full_16ch_FIF": 50859400, "existing_64ch_phase3_train": 5508864000},
+    "local_disk": "上記合計は約14.395GBであり，workstationの35GiB reserveを侵食せず全派生を追加保存できるとは限りません．原ZIPを保持し，27chの約34GB全展開を避け，1recordずつ最大約67MBの一時抽出とshard生成を行います．",
+    "future_budget": "現phase3の絶対期限・評価枠・停止予約は変更しません．次runはfresh budgetを登録し，全C bucketのtrain-only capacity probeでbatch／throughput／GPU peakを測って初めて使用時間を見積もります．過去8/32chの速度を27/64chへ外挿して完了を約束しません．",
+    "execution_path": "Colabはworkstation CLI経由のみ．phase3評価・全回収・停止を優先します．次runは別root，別source/protocol/hash，別receiptを用い，private raw/modelはGitHubへ入れません．",
+    "implementation_order": ["metadata must-link split＋deny／unit校正", "新causal shard builder＋train-only QC seal", "variable-C masked reconstructionと全shape capacity probe", "epoch0含む選択／seen量独立audit", "新環境joint alignment protocol＋train-only mapping", "固定独立評価と状態更新harness，private回収／公開aggregate"]
+  },
+  "evidence": [
+    {"path": "reports/verified_eeg_quantities_20261122_005.json", "sha256": "33a56a2ebff9f70d43431f844a4c01fe83685a02924ba3b97839f3805e270665"},
+    {"path": "reports/bci_8089820_acquisition_20261122_v1/summary.json", "sha256": "b693dee9088fbbfeed0770c17668c70acff3648ff5b48853a187fac27abbb14c"},
+    {"path": "reports/compact_public_EEG_acquisition_20261122_v1/summary.json", "sha256": "312191592b0935b096717d8af6e005974322740f16c12bf04c263e6292ce746f"},
+    {"path": "reports/portable_eeg_15698441_audit.json", "sha256": "2f621f7d2b7243b923e46e9553c7a5519cac89beef8f2eea9975227037a06125"},
+    {"path": "reports/uniba_amplitude_provenance_20261122_v1/README.md", "sha256": "f43d412c8a5b6adeced2a697d2baae218a06e5f15e576d5caa22b42f64fdbdd6"},
+    {"path": "reports/eegmmidb_phase3_preparation_20261122_v1/summary.json", "sha256": "b54e838b151fdb96c2d1f45aec6cc684e9e23b5bcb577d76f9020a967a0f6de4"},
+    {"path": "reports/P300_ds005028_acquisition_20261122_v1/summary.json", "sha256": "6dbf8513c457e3f1f3258457dfd915f4dc84f012a1bb693c256996342cf7bfa6"},
+    {"path": "reports/P300_ds005028_acquisition_20261122_v1/future_training_constraints.aggregate.json", "sha256": "9b9ed8329e6069439c6ac1eecb9cebc68142ba9207bac407a95f40f38880362e"},
+    {"path": "model/cbramod_ssl.py", "sha256": "47f24f9429bdc9af9495b121c4bf2cbc94ce62dbeb6b1033eeff6a4a88fe60fd"},
+    {"path": "model/cbramod_token_llm.py", "sha256": "b0c397176f8cb9e6dd759ed7169c0029c870f756c501ce317c2e6c7c41f32505"},
+    {"path": "model/cbramod_ssl_token_llm.py", "sha256": "f246128e909d3581168fbda7a5d062dc31491f27e96b6cae999579795a04fe10"},
+    {"source": "official CBraMod models/cbramod.py", "sha256": "caa7c5a0e4acd488a6f625b56f7b54dc4e7190d6b68ef5b76dff2cef86874a14"},
+    {"source": "official CBraMod models/criss_cross_transformer.py", "sha256": "90e90b8c98ca7eb543c44e32afc29674d3f71cb090692ad9f82db3a43edf334c"},
+    {"url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0303390", "section": "Methods: Subjects, Data collection, Language model, Classifier", "read_utc": "2026-11-22T05:45:00Z"}
+  ]
+}

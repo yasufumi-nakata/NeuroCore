@@ -1,0 +1,15 @@
+{
+  "EEG_candidate_bytes": 209564960,
+  "all10_MNE_calibration_probes_passed": true,
+  "all_uncompressed_role_bytes_equal": true,
+  "auxiliary_or_unresolved_bytes": 6760160,
+  "member_ledger_sha256": "72959adc4722ceecb0b9550fa34816b659fcbd5f9b4dce91e8079078dfedfcc6",
+  "native_samples_divided_by_hz_seconds_exact_fraction": [
+    42251,
+    25
+  ],
+  "record_ledger_sha256": "bad4dec20be3eb0a93be457f11bec298a30184b6f320dae0e258de8e99b1fb0c",
+  "signal_partition_equal": true,
+  "status": "passed",
+  "whole_record_exact_EEG_duplicates": 0
+}

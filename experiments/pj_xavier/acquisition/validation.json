@@ -1,14 +1,17 @@
 {
   "status": "pass",
-  "test_command": "python -m unittest discover -s xavier_implementation/acquisition -p test_*.py -v",
-  "tests": 27,
+  "tests": 42,
   "payload_downloads_by_this_subtask": 0,
   "python_version": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
   "source_files": {
-    "neurocore_resolver_bridge.py": "9d7baca9d246386fcef49835dd169f6e394dedbf88bce6540ed5026152614f9b",
-    "test_acquire.py": "9db132b90be2c08dc73b5df869b625023467909c3e4e8d1c78735ebe78c0818b",
-    "acquire.py": "0430315971c1e77cff2872b46b67dc1921ac656eea1b6ae04a81063302e144e7",
-    "build_cached_queue.py": "9e86026dbd79a4cfc4531c471159402c72872c69bb2626653bc4288dcf78304c"
+    "acquire.py": "0e265a3c8c35f70ffe3e7b3eef76045468ac2883f8a68e12d7252825beaa70c5",
+    "test_acquire.py": "341cce62b9c2e5418f8bdabeb3eca623f3b345ea8723239918fc67faf16d0e04",
+    "hold_access_requirement.py": "9f7b0168303baae00d88b4c825ff944ced85c6157f100a00c5a9a7d4889658a8",
+    "test_hold_access_requirement.py": "6527cdf959b7a1be73a214fa942218ab5f4b5c1fd4990e9cef734c7abd200cdc",
+    "append_public_queue.py": "d1dc3ed7dcbb44e14b3ce2669291be82729d53f703d1b5d095aa0090b50d76a0",
+    "test_append_public_queue.py": "cc82a04e657fd952936a28f492c408578ae5ba9c10b04163a72787006ca9efd0",
+    "build_cached_queue.py": "9e86026dbd79a4cfc4531c471159402c72872c69bb2626653bc4288dcf78304c",
+    "neurocore_resolver_bridge.py": "9d7baca9d246386fcef49835dd169f6e394dedbf88bce6540ed5026152614f9b"
   },
   "queue_summary": {
     "catalog_rows": 5165,
@@ -31,5 +34,20 @@
     "note": "Historical metadata queue only. No payload downloads performed. Includes unknown-scope candidates for acquisition, not approved training examples."
   },
   "bulk_manifest_validation": "bulk_ingest_validation_v2.json",
-  "short_eof_behavior": "Incomplete normal EOF and interrupted reads retain partial prefix, count received traffic, persist retry deadline, and resume with Range; completed checksum mismatch and oversize remain integrity_failed."
+  "short_eof_behavior": "Incomplete normal EOF and interrupted reads retain partial prefix, count received traffic, persist retry deadline, and resume with Range; completed checksum mismatch and oversize remain integrity_failed.",
+  "test_commands": [
+    "python -m unittest discover -s xavier_implementation/acquisition -p test_acquire.py -v",
+    "python -m unittest discover -s xavier_implementation/acquisition -p test_hold_access_requirement.py -v",
+    "python -m unittest discover -s xavier_implementation/acquisition -p test_append_public_queue.py -v"
+  ],
+  "test_scope": "Owned acquisition, official-access hold, append-only refreshed queue modules; separate progress reporting tests are not included in this count.",
+  "verified_at": "2026-11-22T00:50:41.251647+00:00",
+  "guestbook_behavior": "Only the explicit Dataverse required-Guestbook JSON message becomes access_action_required; other HTTP 400 responses are not reclassified. Existing release holds validate official PID/version/file IDs.",
+  "append_queue_behavior": "Immutable full-catalog snapshot and exact ID coverage; SQL authorizer rejects edits to existing downloads rows; file/version conflicts held per release; unresolved scope review is not acquisition or training approval.",
+  "subsequent_url_hostname_verification": {
+    "report": "../reports/url_identity_validation_20261122.json",
+    "current_acquire_sha256": "1c3c2099d0ded2009c098c2f3b3eabbe5148f6b0e50fdb22754f0dbaad33f597",
+    "current_test_acquire_sha256": "30f44b7fafd784432d51c87085e29f6185daad526b8a9eff9a2e693c1e45cdfb",
+    "note": "Earlier 42-test result and its source hashes above are preserved as a historical observation; 51-test combined verification includes the two new hostname boundary tests and the separate trial-wrapper tests."
+  }
 }

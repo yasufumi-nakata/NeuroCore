@@ -1,22 +1,26 @@
 {
   "status": "pass",
-  "tests": 26,
+  "tests": 36,
   "test_command": "python -m unittest discover -s xavier_implementation/controller -p test_*.py -v",
   "python_version": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
   "source_files": {
-    "controller.py": "74838b6e80b97964c6221c8df3a977747943d3f025502ae1b2d73ed050dab523",
-    "remote_core.py": "cbb4e02a73d19e5f1dcfd18edf0d6bfe8a433a46ea33ba01b836ac55d9a0fd34",
+    "controller.py": "e5e7db92eeeef3ebb293063b2e326933bd28228f16475f21fb0c0e71ac5b1a23",
+    "remote_core.py": "84b1758397a1dee106e136380018dce1f4872763926f5bf7f799eaba85106556",
     "test_controller.py": "2d02fbb708764a75fff24837abf99b5528c4b77752b8917471ff7d2925697920",
-    "config.example.json": "060ecacfd2fcdb91dc8a4c2ef40493ba6e7f8c512fecea2aaa867aacc6792be3"
+    "test_chunk_recovery.py": "0187061268131c551c23c701c7359d5f7ab79fb338753852c6e5c98230941b79",
+    "config.example.json": "8fa4aafa753e3a0660ad7f2a9664346d3d3e8c2cb593c5f7209929eaaf816b2d"
   },
-  "live_mutating_actions_by_this_subtask": 0,
   "transport": "workstation /Users/yasufumi/.local/bin/colab CLI only",
   "session": "xavier-eeg-20261122",
   "notes": [
     "Verified CLI v0.7.4 help through workstation read-only commands.",
     "All runtime mutations in tests used fixtures or a fake CLI.",
-    "Root performs deployment and live execution.",
     "All completed raw payloads require local SHA-256 verification before owned-session stop.",
-    "UniBa supervisor is included; required five-condition evaluation receipt and checkpoint/report SHA matches gate idle stop."
-  ]
+    "UniBa supervisor is included; required five-condition evaluation receipt and checkpoint/report SHA matches gate idle stop.",
+    "Raw pieces are capped at 64 MiB; stream-append receipt survives interruption before commit; original full-file SHA is mandatory.",
+    "v3 gate is present in the default config; live restart must keep original controller absolute deadline."
+  ],
+  "verified_at": "2026-11-22T01:07:21.167036+00:00",
+  "fixture_runtime_mutations": "temporary files and fake CLI only; no new paid runtime",
+  "live_operations": "Authorized controller restart and existing-session raw recovery are recorded separately in private gate update receipts."
 }

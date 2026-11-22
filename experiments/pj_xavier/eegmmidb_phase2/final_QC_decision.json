@@ -1,0 +1,37 @@
+{
+  "final_maximum_absolute_V": 0.0005,
+  "finite_required": true,
+  "initial_diagnostic_source_sha256": "0cec7cda7338b9e7aaf99865654740a315fd4a867dd3dd7f36ecf6cd835a1b3a",
+  "initial_maximum_absolute_V": 0.0001,
+  "minimum_channel_population_std_V": 1e-08,
+  "model_performance_used": false,
+  "no_future_threshold_change_from_heldout_retention_or_performance": true,
+  "not_a_physiological_normality_guarantee_or_external_standard": true,
+  "quality_flag_for_exceeding_initial_100uV_retained": true,
+  "reason": "Initial 100uV candidate came from prior CBraMod work and excludes all windows from 29 of 72 eligible train groups. This independent scratch encoder run adopts 500uV as an exploratory gross-amplitude hold from train-only distributions.",
+  "rescaling_or_clipping_changes": 0,
+  "schema": "pj-xavier-phase2-train-only-QC-decision-v1",
+  "selected_epoch": 1795320607.29156,
+  "source_code_sha256": "99ce752a91043a6e1b0b9a89d7c984d6fead9478076a8fb555747c123a758d95",
+  "test_waveform_reads_at_decision": 0,
+  "train_diagnostic_summary_sha256": "761ad9a2fdb5243959bf5df7aa253ddfd4d23038bb0f94bfab0aa8cc820a05be",
+  "train_only_counts_by_maximum_uV": {
+    "100": {
+      "participants": 43,
+      "windows": 1941
+    },
+    "200": {
+      "participants": 70,
+      "windows": 4314
+    },
+    "300": {
+      "participants": 72,
+      "windows": 5496
+    },
+    "500": {
+      "participants": 72,
+      "windows": 6359
+    }
+  },
+  "val_waveform_reads_at_decision": 0
+}

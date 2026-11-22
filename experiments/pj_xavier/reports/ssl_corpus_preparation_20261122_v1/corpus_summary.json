@@ -1,0 +1,56 @@
+{
+  "accepted_windows": 2200,
+  "action_label_columns_read_or_used": false,
+  "all_non_allowlisted_sources_forbidden": true,
+  "allowed_sources": 75,
+  "artifact_bytes": 1685013248,
+  "artifact_files": 166,
+  "artifacts_sha256": "3dc4599eef7093584e806c15c39c99be42b0fef33851a60e2f5c7ade6f883be2",
+  "candidate_windows_before_QC": 6040,
+  "denied_sources": 42,
+  "elapsed_s": 196.48368491709698,
+  "folds": {
+    "train": {
+      "accepted_unique_source_seconds": 50340,
+      "accepted_windows": 1678,
+      "one_second_patch_presentations_once": 50340,
+      "participant_groups_with_windows": 18,
+      "source_recordings_with_windows": 46
+    },
+    "val": {
+      "accepted_unique_source_seconds": 15660,
+      "accepted_windows": 522,
+      "one_second_patch_presentations_once": 15660,
+      "participant_groups_with_windows": 4,
+      "source_recordings_with_windows": 12
+    }
+  },
+  "latent_intent_validated": false,
+  "manifest_sha256": "216729840806ca20040331baf59ddeadea4e62bc48a19a57c183810e13dd9043",
+  "model_training_started": false,
+  "native_cpu_threads_max": 2,
+  "online_causal_preprocessing_claimed": false,
+  "original_sources_modified": false,
+  "portable_ssl_val_is_final_test": false,
+  "process_max_rss_platform_units": 2645557248,
+  "protocol_sha256": "642246adb9bf39a9652a2ccb9fdbead834c611fbd4f5325b8dfc08d54fba45a5",
+  "quantity_scope": "Source durations, unique accepted intervals, 1s temporal patches and repeated epochs are separate; source/archive/derived bytes are not independent new EEG.",
+  "rejected_reason_counts": {
+    "a_channel_std_below_0p01uV": 95,
+    "max_abs_exceeds_100uV": 3840
+  },
+  "rejected_windows": 3840,
+  "rss_platform": "Darwin",
+  "schema": "xavier-ssl-prepared-corpus-v1",
+  "source_allowlist_sha256": "e2c44f7135afa8a3d5a896d6ad7f8f335d418d77a34d2815497e1335ef736215",
+  "source_code_sha256": "c2cb2eba98f6814815056db75307506d797e57c9a74bd0aa3322ed4833ba3cc4",
+  "source_inventory_hashes": {
+    "exclusions.json": "88a15eb1f3ef16d805eed741fdc573b9ff33c7ff7ff05dfcf2ff35743eb13c13",
+    "portable_records.jsonl": "9ba6dd425a0ed46628618de5a1898c5077fb21d5ad4c003799a3e8ae69623090",
+    "summary.json": "1a178d95582b09a830be3f53836fa29747b915e43c976e522b27d0d27c063a10",
+    "uniba_train_records.jsonl": "7a39fdacc148c0328f02b3224749e4f33aaf8728d5383f5afa3dacd593ffb6bc"
+  },
+  "status": "completed",
+  "total_original_source_seconds": 183200.2559375,
+  "unit_check_sources_passed": 75
+}

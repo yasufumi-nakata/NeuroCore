@@ -1,0 +1,29 @@
+{
+  "status": "corrected_before_external_prediction",
+  "epoch": 1795313060.08111,
+  "reason": "Frozen cohorts explicitly mark feature availability as unverified and assume 4.125 s filter support; initial validator incorrectly required true. No input/model/threshold change.",
+  "external_predictions_created": false,
+  "external_consumed_marker_created": false,
+  "old_attempt_files": [
+    "attempt_started.json",
+    "protocol.json",
+    "uniba_parity.json"
+  ],
+  "changes": [
+    {
+      "file": "external_history_baselines.py",
+      "old_sha256": "779432ab5f7ef9dc3ba4da6b91ee6b4643d54b0900613b0f3e0bbd81bc050248",
+      "new_sha256": "9161261bdada59f83f1080d17bcf30f303445fbf8002b5cc210b90ccc4c39a31"
+    },
+    {
+      "file": "test_external_history_baselines.py",
+      "old_sha256": "cf14f06d30a599221fb84ac906388fd8609317df2703b2263b930b41f4fa4e1b",
+      "new_sha256": "8fa6f4ff7d9096364a5e0f9a07c321000ac37f6d74371e36c887fc4ace45de1c"
+    },
+    {
+      "file": "EXTERNAL_HISTORY_BASELINES.md",
+      "old_sha256": "6a184d4d053a0a84f319b9dd88a2a85116e61ca7fab32dc267dd15c396edd7ba",
+      "new_sha256": "00dc0a0f4c2fc559cb342ac05d5e1ffa3ee3517c3d4121b9214d800b00cbc157"
+    }
+  ]
+}

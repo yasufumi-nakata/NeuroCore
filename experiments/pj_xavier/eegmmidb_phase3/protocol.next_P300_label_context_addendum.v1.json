@@ -1,0 +1,37 @@
+{
+  "schema": "xavier_future_P300_label_context_addendum_v1",
+  "status": "design_only_no_training_or_evaluation_admission",
+  "created_utc": "2026-11-22T05:53:50Z",
+  "parent_design_path": "protocol.next_multichannel_handoff.v1.json",
+  "parent_design_sha256": "c9b6590285e789d8edc49e02dffb3971cb78ee4bc13646038b630caefd259d4f",
+  "existing_scientific_source_protocol_or_result_modified": false,
+  "new_forward_calls": 0,
+  "purpose": "P300の保存state，課題正解，環境入力を区別し，次実装で正解文字列や既存decoder出力がEEG解読の証拠へ混入することを防ぎます．",
+  "official_field_semantics": {
+    "SelectedTarget_SelectedRow_SelectedColumn": "公式P3SpellerTaskでは分類後に決まる選択結果です．保存されているだけでは参加者の意図や正答goldになりません．decoder出力の履歴として別欄へ保持し，新教師ラベルへ改名しません．",
+    "TextToSpell": "copy modeで入力すべき文字列です．正解側の保護領域に置き，モデルの環境context，prompt，特徴量，ファイル名由来特徴へ渡しません．画面に表示されていたという理由でcontextへ含めると，EEG抜きで次の文字を導出できます．",
+    "StimulusType": "copy modeでは指示された対象を含む刺激かどうかに対応する保存stateです．教師・oracle候補としてmodeと原paradigm定義を照合し，入力contextには渡しません．自発的な注意／意図を計測したラベルとは見なしません．",
+    "TextResult": "公式parameterはrun終了時に最終文字列へ書き戻されます．DAT headerの値をそのまま過去履歴と見なさず，決定時点より前の保存出力だけから履歴を再構成できる場合に限り使います．"
+  },
+  "future_builder_separation": {
+    "input_allowlist": ["決定時刻までに利用可能と確認したEEG", "候補文字または対象IDの集合と位置mapping", "時刻整合を確認した提示刺激の集合／onset", "別途確認した過去の実表示履歴"],
+    "oracle_only": ["TextToSpell", "current target character", "target/non-target StimulusType", "未来の出力／修正／最終TextResult"],
+    "output_history_only": ["SelectedTarget", "SelectedRow", "SelectedColumn"],
+    "required_provenance": "原DAT SHA，parameter/state名とcopy mode／paradigm，source sample index，block lagの解釈，available cutoff，oracle導出規則を保存します．31.25msのplain-state遅延可能性と外部表示遅延の未検証を，見かけ上の正確なonsetへ置き換えません．",
+    "fail_closed": "必要な表示履歴・target意味・時刻整合が復元できなければ，該当sequenceのaction評価はblockedです．既存decoder選択を正解にして穴を埋めません．"
+  },
+  "language_prior_and_mapping_controls": {
+    "risk": "固定phraseや既知の文の接頭辞から，言語モデルだけでも次文字が予測できます．EEG付モデルの文字精度だけではEEGの寄与を証明できません．",
+    "required_conditions": ["環境のみ", "過去表示履歴＋LMのみ", "EEGのみ", "同一LM／同一候補でEEGを加えた条件", "同じIDでEEG shuffle／原波形時刻shift", "正解classを与えるoracle上限"],
+    "split": "実参加者対応と全同一人groupの結合を先に確定し，subject splitに加えて未見phrase／mappingの評価範囲を事前定義します．phrase overlapの有無をmetadataで計数し，必要な未見phraseが存在しない場合はその汎化評価をblockedにします．",
+    "synthetic_mapping_limit": "合成候補mappingによる有界harnessは別のproxy課題として保存できますが，未記録の新phrase・視覚提示に対する実EEG応答を作り出したとは主張しません．",
+    "metrics": "flash target/non-targetの分類，文字または候補選択，棄権，状態遷移の成功を分けます．被験者内calibrationを許す場合は必要時間と用いたsampleを明示し，subject-independent MIのBAや原著のonline文字性能と直接順位比較しません．"
+  },
+  "next_implementation_gate": "metadata label/context schemaとリーク拒否fixtureを新protocolへ固定し，その後に時刻・単位・signal QCを検証します．元phase2／phase3や旧UniBa／ITUを追加fitせず，新予算・別checkpoint・別評価receiptを使います．このaddendumは新実装や学習の完了を意味しません．",
+  "sources": [
+    {"url": "https://www.bci2000.org/mediawiki/index.php?title=User_Reference:P3SpellerTask&oldid=11541", "sections": ["TextToSpell", "TextResult", "StimulusType", "SelectedTarget, SelectedRow, SelectedColumn"], "read_utc": "2026-11-22T05:53:50Z"},
+    {"url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0303390", "sections": ["Data collection", "Language model", "Classifier"]},
+    {"path": "../reports/P300_ds005028_acquisition_20261122_v1/summary.json", "sha256": "6dbf8513c457e3f1f3258457dfd915f4dc84f012a1bb693c256996342cf7bfa6"},
+    {"path": "../reports/P300_ds005028_acquisition_20261122_v1/future_training_constraints.aggregate.json", "sha256": "9b9ed8329e6069439c6ac1eecb9cebc68142ba9207bac407a95f40f38880362e"}
+  ]
+}

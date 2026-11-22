@@ -1,0 +1,56 @@
+{
+  "checkpoint_sha256": "13df40e53dab6087bfef2fac1a4e413a2d00178413f05f4759a0aa1ea849d4ee",
+  "contract_sha256": "dba168a89a622d83112b80725a10c08f6814a619e8ed2209397a0f73b4a1f5c2",
+  "train_records": 3,
+  "test_forward_calls": 0,
+  "actual_fresh_LLM_routing_calls": 12,
+  "routing_cache_hits": 0,
+  "synthetic_environment_episodes": 12,
+  "successful_synthetic_episodes": 0,
+  "abstained_episodes": 12,
+  "invalid_actions": 0,
+  "incorrect_target_actions": 0,
+  "resources": {
+    "hardware": {
+      "platform": "macOS-27.2.1-arm64-arm-64bit",
+      "python": "3.12.13",
+      "torch": "2.15.0",
+      "device": "mps",
+      "system_memory_bytes": 17179869184,
+      "available_host_memory_bytes_at_observation": 4004282368,
+      "mps_recommended_max_memory_bytes": 12713115648
+    },
+    "memory": {
+      "mps_sampled_allocated_bytes": 3423507712,
+      "mps_sampled_driver_bytes": 4373397504,
+      "process_peak_rss_bytes": 579158016
+    },
+    "allocator": {
+      "kind": "mps_allocator",
+      "budget_bytes": 8589934592,
+      "recommended_bytes": 12713115648,
+      "scope": "PyTorch MPS allocator; host allocations and other applications excluded"
+    },
+    "MPS_values_are_samples_not_true_peaks": true,
+    "routing_generation_calls": 12,
+    "os_actions_executed": 0
+  },
+  "elapsed_seconds": 20.532206916017458,
+  "OS_actions": 0,
+  "cloud_API_calls": 0,
+  "local_files_only": true,
+  "acceptance_threshold": 0.8,
+  "probabilities_are_calibrated_intent_confidence": false,
+  "heldout_performance": false,
+  "autonomous_goal_validated": false,
+  "source_hashes_unchanged_before_after": true,
+  "scope": "Training-three execution smoke check on M1 with12fresh frozen-base routing calls and actual bounded in-memory state transitions; no held-out or real OS task-performance claim.",
+  "schema": "xavier-phase2-M1-train-three-observed-trial-v1",
+  "status": "completed_execution_smoke_check",
+  "task_success_claim": false,
+  "summary_sha256": "faea2ee2641012602a333d069d1bf04bcec1286290a2f7973cfda8e9d78d243c",
+  "completion_sha256": "52f18e7e857f7059179d320ecb85db52962c577085f6f80de2cc8b8218a3e86b",
+  "wrapper_sha256": "cf96749bd5878998a9d9a73e400924e5e36778d82d24e44286905d4aef46881f",
+  "private_output": "private/xavier/eegmmidb_phase2_v1/recorded_trial_m1_v1",
+  "created_epoch": 1795324854.453532
+}

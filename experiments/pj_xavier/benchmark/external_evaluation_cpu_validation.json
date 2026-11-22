@@ -1,0 +1,32 @@
+{
+  "schema": "xavier-external-inference-cpu-validation-v1",
+  "status": "passed",
+  "tests_passed": 11,
+  "source_sha256": {
+    "external_evaluation.py": "b3cc8fdb13118c0c3f1a8d2cddfb4688b3cd52896483a21599752f7ef76b8f16",
+    "test_external_evaluation.py": "8c0d906209f886f8c856cf3efac14871817ebbd948abcabe51654d463b33b215",
+    "score_external_predictions.py": "98560a9d8eedbd4ae6a5fd9bb3736c721bb4ee68dd92cbe105dfb994237297c9",
+    "test_score_external_predictions.py": "eecfb17470f106c389556095984d3899ffa9b704f9c7967e176ce50eb4589076"
+  },
+  "environments": [
+    "scratch CPU",
+    "workstation CPU"
+  ],
+  "new_external_model_inference_calls": 0,
+  "model_api_fixtures": "tiny random GPT2 plus frozen test stub encoder; not pretrained model performance",
+  "coverage": [
+    "site/split/label/timing guards",
+    "original raw EEG overlap",
+    "nonoverlapping external windows",
+    "same-recording permutation correspondence",
+    "separate external seal and checkpoint ownership",
+    "BrainVision raw crop exact equality and actual minus10-second interval",
+    "forged raw source/interval/array rejection",
+    "both frozen model APIs with external_test unchanged over5conditions",
+    "no model parameter changes",
+    "strict abstention metric correctness",
+    "prediction identity/truth/checkpoint/threshold rejection"
+  ],
+  "validated_epoch": 1795312773.548759,
+  "scratch_execution_note": "9 neural/raw tests passed in model venv and2 metric tests passed in default sklearn runtime; combined collection in model venv lacks sklearn. Workstation all11 passed in one environment."
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "xavier-SSL-external-canonical-publication-v1",
+  "protocol_sha256": "528bca6179f4b96dbd45fad16c551d2013abcf5d91d954332f5ee85252acef26",
+  "checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+  "report_sha256": "18f1c46b69bee4cbe365378f7f640a8c6533bfb4c085ed2c8d3cdbca492a08d3",
+  "canonical_sha256": "cd6ee4e946de49ce6458a56bd8716f7b171b0cac321236d3d59b0451b620e7f4",
+  "aggregate_sha256": "7f18067efc08386d04d150f87b68bcdc20c83cb303d1e85594c2a15d9f953e01",
+  "independent_audit_sha256": "20834bf3c1f89b21bb146f8361f082dcdfbf317dc02fc81a8caa6d18d6d4ffc7",
+  "model_recovery_sha256": "17a0ccc353b7cfa2109dc4628b5cc5848fb5d8be785b1865897737896e44bf38",
+  "external_recovery_sha256": "3796cb568183959eb7e2f7130127bc4b2e9e835fbcc7c3899f01b1cee50a657c",
+  "strict_uniba_evaluation_sha256": "c404d1469a4207e3b7b557c056f1b3251599440c618cf69b9d38932fad1a1e28",
+  "conditions": 24,
+  "records_per_condition": 630,
+  "goal_validated": false,
+  "new_model_inference_calls": 0,
+  "absolute_session_deadline_epoch": 1795321234.65,
+  "status": "published_after_recovery_and_independent_audit",
+  "published_epoch": 1795317813.8885584,
+  "pending_bytes_preserved": true,
+  "canonical_relative_path": "external_evaluations/itu_ssl_v1/cbramod_ssl_smollm_v3/variant_evaluation_completion.json",
+  "model_accepted": false,
+  "workstation_canonical_recovered_and_hashed": true
+}

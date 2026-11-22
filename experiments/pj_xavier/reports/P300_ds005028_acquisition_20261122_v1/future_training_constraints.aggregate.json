@@ -1,0 +1,29 @@
+{
+  "actual_participant_ID_mapping_before_future_split_required": true,
+  "all_observations_of_same_confirmed_participant_must_share_fold": true,
+  "author_exclusion_is_not_automatic_raw_quantity_exclusion": true,
+  "canonical_native_source": "BCI2000 DAT, 32 EEG, 256Hz",
+  "external_stimulus_latency_and_paradigm_target_ontology_unvalidated": true,
+  "license": "CC0",
+  "no_existing_model_or_input_changed": true,
+  "observed_source_ID_groups": 11,
+  "one_source_ID_excluded_by_authors_from_analysis_for_incomplete_paradigms": true,
+  "paired_EDF_rate_and_units_unsafe_for_independent_duration_or_calibration": true,
+  "paper_Methods_participant_count": 10,
+  "paper_language_model": "Probabilistic automaton with Brown-corpus language prior and particle filtering; not a Transformer LLM connector",
+  "plain_state_delay_possible_seconds": 0.03125,
+  "publisher_ses_train_test_are_not_project_split": true,
+  "recorded_state_codes_are_not_free_form_intent": true,
+  "signal_QC_new_split_and_supervised_protocol_pending": true,
+  "source_catalog_id": "000233",
+  "source_dataset": "OpenNeuro ds005028",
+  "source_version_scope": "Every public S3 file versionId and content checksum pinned; descriptive DOI v1.0.0 is not proof current listing equals that snapshot",
+  "sources": [
+    "https://openneuro.org/datasets/ds005028",
+    "https://doi.org/10.18112/openneuro.ds005028.v1.0.0",
+    "https://doi.org/10.1371/journal.pone.0303390",
+    "https://www.bci2000.org/mediawiki/index.php/Technical_Reference:BCI2000_File_Format",
+    "https://www.bci2000.org/mediawiki/index.php/User_Reference:DataIOFilter",
+    "https://www.bci2000.org/mediawiki/index.php/Technical_Reference:State_Definition"
+  ]
+}

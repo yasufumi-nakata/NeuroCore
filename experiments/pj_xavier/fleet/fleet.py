@@ -226,7 +226,29 @@ def make_plan(records, inventory, *, at=None, max_age_hours=24):
                         "byte_scope": "download_file_bytes_all_modalities_not_EEG_only_not_unique_recording_hours"}}
 
 
-def write_bundle(plan, output, acquire_code, worker_code):
+def write_bundle(plan, output, acquire_code, worker_code, *, storage_policy=None, nodes_registry=None):
+    """Preserve the guard's repository-relative policy layout on every node."""
+    acquire_code = Path(acquire_code).resolve()
+    guard_code = acquire_code.with_name("smac_storage_guard.py")
+    defaults = Path(__file__).resolve().parents[3] / "private/xavier/storage_cleanup_20261122"
+    policy_path = Path(storage_policy) if storage_policy is not None else defaults / "storage_policy.json"
+    registry_path = Path(nodes_registry) if nodes_registry is not None else defaults / "nodes.smac_only.json"
+    for source in (acquire_code, Path(worker_code), guard_code, policy_path, registry_path):
+        if not source.is_file():
+            raise ValueError("smac bundle dependency missing: " + str(source))
+    policy = json.loads(policy_path.read_text())
+    registry = json.loads(registry_path.read_text())
+    if (policy.get("download_location") != "smac_only"
+            or policy.get("local_bulk_downloads_allowed") is not False
+            or policy.get("local_fallback_allowed") is not False):
+        raise ValueError("smac bundle requires explicit deny-local storage policy")
+    allowed = {n["node_id"] for n in registry.get("nodes", [])
+               if n.get("transport") == "ssh" and n.get("node_id", "").startswith("smac")}
+    excluded = set(policy.get("excluded_nodes", [])) | {"smac19"}
+    for node in plan["inventory"]["nodes"]:
+        ident = safe_name(node["node_id"])
+        if plan["assignments"][ident] and (node.get("transport") != "ssh" or ident not in allowed or ident in excluded):
+            raise ValueError("bundle target is not an authorized smac storage node: " + ident)
     root = Path(output).resolve()
     root.mkdir(parents=True, exist_ok=True)
     commands = []
@@ -238,7 +260,16 @@ def write_bundle(plan, output, acquire_code, worker_code):
         local = root / ident
         local.mkdir(exist_ok=True)
         (local / "assigned.jsonl").write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows))
-        shutil.copyfile(acquire_code, local / "acquire.py")
+        # smac_storage_guard derives its repository from parents[3]. Keep
+        # this layout intact rather than weakening or patching the guard.
+        code = local / "code/experiments/pj_xavier/acquisition"
+        policy_dir = local / "code/private/xavier/storage_cleanup_20261122"
+        code.mkdir(parents=True, exist_ok=True)
+        policy_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(acquire_code, code / "acquire.py")
+        shutil.copyfile(guard_code, code / "smac_storage_guard.py")
+        shutil.copyfile(policy_path, policy_dir / "storage_policy.json")
+        shutil.copyfile(registry_path, policy_dir / "nodes.smac_only.json")
         shutil.copyfile(worker_code, local / "node_worker.py")
         remote = node.get("remote_root", "~/pj-xavier") + "/" + ident
         if not re.fullmatch(r"(?:~/|/)[A-Za-z0-9._/-]+", remote) or ".." in PurePosixPath(remote).parts:
@@ -246,7 +277,7 @@ def write_bundle(plan, output, acquire_code, worker_code):
         jobs = {
             "download": {"job_id": plan["plan_sha256"][:16] + "-download", "kind": "download", "state": "ready",
                          "workdir": remote, "data_root": remote + "/raw", "reserve_bytes": node["reserve_bytes"],
-                         "command": ["python3", remote + "/acquire.py", "download", "--manifest", remote + "/assigned.jsonl",
+                         "command": ["python3", remote + "/code/experiments/pj_xavier/acquisition/acquire.py", "download", "--manifest", remote + "/assigned.jsonl",
                                      "--db", remote + "/downloads.sqlite", "--root", remote + "/raw", "--reserve-gib",
                                      str(node["reserve_bytes"] / 1024**3), "--seconds", "600"],
                          "completion_check": {"kind": "download_sqlite", "path": remote + "/downloads.sqlite"}},
@@ -262,8 +293,8 @@ def write_bundle(plan, output, acquire_code, worker_code):
         target = node["ssh_target"]
         mkdir_code = f"from pathlib import Path; Path({remote!r}).expanduser().mkdir(parents=True,exist_ok=True)"
         mkdir_argv = [*ssh_prefix(node), target, shlex.join(["python3", "-c", mkdir_code])]
-        uploads = [str(local / name) for name in ("assigned.jsonl", "acquire.py", "node_worker.py", "download.json", "label.json", "train.json")]
-        upload_argv = [*ssh_prefix(node, "scp"), *uploads, target + ":" + remote + "/"]
+        uploads = [str(local / name) for name in ("assigned.jsonl", "code", "node_worker.py", "download.json", "label.json", "train.json")]
+        upload_argv = [*ssh_prefix(node, "scp"), "-r", *uploads, target + ":" + remote + "/"]
         launch_code = ("import pathlib,subprocess,json; "
                        f"r=pathlib.Path({remote!r}).expanduser(); "
                        "log=(r/'launcher.log').open('ab'); "
@@ -297,6 +328,8 @@ def main():
     b.add_argument("--output", required=True)
     b.add_argument("--acquire-code", required=True)
     b.add_argument("--worker-code", default=str(Path(__file__).with_name("node_worker.py")))
+    b.add_argument("--storage-policy", help="Checked smac-only storage policy to copy into each bundle")
+    b.add_argument("--nodes-registry", help="Authorized smac node registry to copy into each bundle")
     args = p.parse_args()
     if args.cmd == "template":
         value = {"nodes": [{"node_id": name, "transport": "ssh", "ssh_target": "smac" if name == "smac31" else name,
@@ -314,7 +347,8 @@ def main():
         save_json(args.output, plan)
         print(json.dumps(plan["summary"], ensure_ascii=False))
     else:
-        print(json.dumps(write_bundle(json.loads(Path(args.plan).read_text()), args.output, args.acquire_code, args.worker_code), ensure_ascii=False))
+        print(json.dumps(write_bundle(json.loads(Path(args.plan).read_text()), args.output, args.acquire_code, args.worker_code,
+                                      storage_policy=args.storage_policy, nodes_registry=args.nodes_registry), ensure_ascii=False))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,32 @@
+{
+  "schema": "xavier-ssl-external-cpu-verification-v1",
+  "status": "passed",
+  "tests_passed": 17,
+  "checks": [
+    {
+      "pattern": "test_ssl_external_contract.py",
+      "tests_passed": 13,
+      "returncode": 0,
+      "log_sha256": "9324e4cd6c17a08cc9a2472ec3d19d84a645a5f0948d499d6ef258d01748048d"
+    },
+    {
+      "pattern": "test_audit_ssl_external_completion.py",
+      "tests_passed": 4,
+      "returncode": 0,
+      "log_sha256": "b082b45f19ae2e9fc74f66985d91e3e0fa5f7a9a9c9ba1428021920e25e69d2b"
+    }
+  ],
+  "sources": {
+    "ssl_external_contract.py": "9fd27960675b683880e3d255d387733ffffa61c0a137dc7a695ded9af3fdfed4",
+    "test_ssl_external_contract.py": "f89e681a6276374dd96d1b748d6ecb974500bda2779ef364a59a5cd42c8a3913",
+    "audit_ssl_external_completion.py": "df5b87a399fe85987b14dce8e208743d0ab811434f0745749d5fc51a19a6732a",
+    "test_audit_ssl_external_completion.py": "ecdf54614e939d4711e74c3e1eb4cb7436650bd8f89ec7ed6dccaeb7706c563c",
+    "external_evaluation.py": "b3cc8fdb13118c0c3f1a8d2cddfb4688b3cd52896483a21599752f7ef76b8f16",
+    "evaluate_variants.py": "bd92732e088ff633d2ff299161cf47a8a5630435c4c425dbae7992f563bc0447",
+    "xavier_benchmark.py": "3044e8e406f8fe73c9b5a7e58d23d1011d370241637e282f125175e018595956",
+    "audit_external_completion.py": "6e8fa0a20fa823b33a06abc66076abaf8901cfc9a8d3bf72a0d5b1421960c171"
+  },
+  "GPU_used": false,
+  "inference_calls": 0,
+  "epoch": 1795316669.516071
+}

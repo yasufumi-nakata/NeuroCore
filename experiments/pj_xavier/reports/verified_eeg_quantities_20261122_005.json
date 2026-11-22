@@ -1,0 +1,214 @@
+{
+  "schema": "pj-xavier-verified-quantity-summary-v3",
+  "observed_at": "2026-11-22T05:17:08.699435+00:00",
+  "datasets": [
+    {
+      "dataset": "EEGlass",
+      "site": null,
+      "recordings": 1,
+      "hours": 1.0888222222222224,
+      "physical_eeg_sample_bytes": 11759280,
+      "physical_eeg_channels": [
+        3
+      ],
+      "source_url": "https://zenodo.org/records/4453396",
+      "evidence": {
+        "header_sha256": "80b2ba85fc3732fad6ddc6e14b6bcfb786c1da35e8d1ac6ec9cc77fb49dbc07a",
+        "fdt_sha256": "ac81414ad80a3304d52aa4746dd8b36669921288da7f3b1989504e4b4d27d145"
+      },
+      "duplicate_rule": "Only original continuous FDT; filtered export is excluded"
+    },
+    {
+      "dataset": "AI-assisted coding",
+      "site": "UniBa",
+      "recordings": 34,
+      "hours": 30.61540256076389,
+      "physical_eeg_sample_bytes": 902884960,
+      "physical_eeg_channels": [
+        8
+      ],
+      "source_url": "https://zenodo.org/records/20801101",
+      "evidence": {
+        "report": "uniba_quantity_recheck.json",
+        "sha256": "abca0e051fbfc60689c48fa36c377fcc85d021131f462866835b73e7f932ed32"
+      },
+      "duplicate_rule": "Original EEG recordings; processed copies and 2 auxiliary channels excluded from EEG bytes"
+    },
+    {
+      "dataset": "AI-assisted coding",
+      "site": "ITU",
+      "recordings": 26,
+      "hours": 21.30617947048611,
+      "physical_eeg_sample_bytes": 5026758400,
+      "physical_eeg_channels": [
+        64
+      ],
+      "source_url": "https://zenodo.org/records/20801101",
+      "evidence": {
+        "report": "ai_coding_itu_audit.aggregate.json",
+        "sha256": "c47a6fdf9ecb3ca399c35be6354a975735254c9e7d8d8ebaebc12d96b8e794a8"
+      },
+      "duplicate_rule": "26 unique binary payloads; 2 auxiliary channels excluded from EEG bytes"
+    },
+    {
+      "dataset": "Portable EEG systems comparison",
+      "site": null,
+      "recordings": 57,
+      "hours": 34.897061111111114,
+      "physical_eeg_sample_bytes": 4982944384,
+      "physical_eeg_channels": [
+        32
+      ],
+      "source_url": "https://zenodo.org/records/15698441",
+      "evidence": {
+        "report": "portable_eeg_15698441_audit.json",
+        "sha256": "2f621f7d2b7243b923e46e9553c7a5519cac89beef8f2eea9975227037a06125"
+      },
+      "duplicate_rule": "Only raw data/; all processing/statistical exports excluded"
+    },
+    {
+      "dataset": "EEG Motor Movement/Imagery Dataset",
+      "site": null,
+      "catalog_id": "009861",
+      "recordings": 1526,
+      "hours": 48.534444444444446,
+      "physical_eeg_sample_bytes": 3560112128,
+      "physical_eeg_channels": [
+        64
+      ],
+      "source_url": "https://physionet.org/content/eegmmidb/1.0.0/",
+      "evidence": {
+        "report": "eegmmidb_acquisition_20261122_v1/summary.json",
+        "sha256": "015cc62aaa5f206086cd7c2ba360a18ff5745f6a7b7f4fbaf546bd8214809097"
+      },
+      "duplicate_rule": "All1526EDFpayloads unique by EEG-content SHA within this release; OpenNeuro/Kaggle aliases not acquired or added",
+      "header_rate_records": {
+        "[160.0]": 1490,
+        "[128.0]": 36
+      },
+      "label_review_required_recordings": 50,
+      "trained_in_prior_UniBa_frozen_models": false,
+      "new_phase2_and_phase3_prepared_cohorts_exist": true
+    },
+    {
+      "dataset": "Kinesthetic motor imagery during different exerted forces",
+      "site": null,
+      "catalog_id": "000413",
+      "recordings": 60,
+      "hours": 0.70076171875,
+      "physical_eeg_sample_bytes": null,
+      "binary_eeg_sample_storage_bytes": null,
+      "text_EEG_numeric_token_storage_bytes": 31065967,
+      "physical_eeg_channels": [
+        14
+      ],
+      "source_url": "https://figshare.com/articles/dataset/25773342",
+      "evidence": {
+        "report": "compact_public_EEG_acquisition_20261122_v1/summary.json",
+        "sha256": "312191592b0935b096717d8af6e005974322740f16c12bf04c263e6292ce746f"
+      },
+      "unit_scope": "Amplitude unit unresolved in text source",
+      "duplicate_rule": "Exact decoded EEG payload dedup within each source; source scalar representation retained",
+      "training_hours_added": 0
+    },
+    {
+      "dataset": "Right hand and feet motor-imagery EEG",
+      "site": null,
+      "catalog_id": "001035",
+      "recordings": 8,
+      "hours": 1.1037196180555555,
+      "physical_eeg_sample_bytes": 130200064,
+      "binary_eeg_sample_storage_bytes": 130200064,
+      "text_EEG_numeric_token_storage_bytes": 0,
+      "physical_eeg_channels": [
+        16
+      ],
+      "source_url": "https://zenodo.org/records/806023",
+      "evidence": {
+        "report": "compact_public_EEG_acquisition_20261122_v1/summary.json",
+        "sha256": "312191592b0935b096717d8af6e005974322740f16c12bf04c263e6292ce746f"
+      },
+      "unit_scope": "FIF header-calibrated V, not independent physical calibration",
+      "duplicate_rule": "Exact decoded EEG payload dedup within each source; source scalar representation retained",
+      "training_hours_added": 0
+    },
+    {
+      "dataset": "A large EEG database with users profile information for motor imagery BCI",
+      "site": null,
+      "catalog_id": "000038",
+      "recordings": 693,
+      "hours": 72.25685763888889,
+      "physical_eeg_sample_bytes": 28767709440,
+      "binary_eeg_sample_storage_bytes": 28767709440,
+      "physical_eeg_channels": [
+        27
+      ],
+      "source_url": "https://zenodo.org/records/8089820",
+      "evidence": {
+        "report": "bci_8089820_acquisition_20261122_v1/summary.json",
+        "sha256": "b693dee9088fbbfeed0770c17668c70acff3648ff5b48853a187fac27abbb14c"
+      },
+      "duplicate_rule": "One cross-participant EEG payload/calibration duplicate removed from quantity; both entire groups bound by private future must-link split constraint",
+      "source_event_timebase_unresolved_records": 694,
+      "source_author_quality_flag_groups": 7,
+      "training_hours_added": 0
+    }
+  ],
+  "verified_recording_count": 2405,
+  "verified_stored_eeg_hours": 210.50324878472222,
+  "physical_eeg_sample_bytes": 43382368656,
+  "byte_scope": "Legacy physical_eeg_sample_bytes now explicitly means binary EEG scalar storage only, not proof of physical amplitude calibration. UTF-8 EEG numeric-token bytes are separate; headers, delimiters, auxiliary channels, video, archives, derived windows and model weights are excluded. Encodings are not converted to uniform float32 for this quantity.",
+  "hours_scope": "Time per recording, not summed channel-hours. Different sites/devices are distinct source recordings; global cross-corpus participant identity is not established.",
+  "not_all_catalog_datasets_audited": true,
+  "training_window_hours": {
+    "eeglass": 0.18444666666666668,
+    "uniba_v2": 3.800902777777778,
+    "uniba_v3": 0.3684722222222222,
+    "warning": "v2/v3 share source recordings and may overlap; do not sum these as new independent EEG hours.",
+    "scope": "Legacy prepared-cohort nominal window durations, not gradient-only training exposure. In particular uniba_v3=0.3684722222222222h covers all758 prepared windows (400train,155validation,203test) at1.75s each, including validation and test. These prepared-window totals are not additional original EEG hours and are not the actual latest SSL/alignment gradient-input union."
+  },
+  "quality_and_goal_scope": "Header/binary integrity and quantities do not establish usable-signal fraction, latent intent labels, online causal preprocessing, or autonomous task performance.",
+  "supersedes_summary_sha256": "ee6abaf82d878679dc3336b039f707044ea548708e1af3bc597c004077c040e7",
+  "prior_quantity_reports_retained_unchanged": true,
+  "acquired_release_file_bytes_evidence": {
+    "report": "acquired_progress_005.json",
+    "sha256": "5cd14a77469385f69bf2357504319f05b6f878d5895384996248e0d6c6645f52",
+    "completed_unique_sha256_bytes": 44432880979,
+    "not_added_to_EEG_sample_bytes": true,
+    "P300_acquisition_in_progress_EEG_hours_not_yet_audited": true
+  },
+  "source_specific_quality_notes": {
+    "EEGMMIDB": "50 reviewed records remain held from new fixed phase2/phase3 cohorts. Full1526-record acquired quantity remains unchanged; prepared and actual training input unions must be reported separately.",
+    "AI_assisted_coding_UniBa": "Header-based unit notation has expected writer explanation; physical XDF input calibration and extreme nominal amplitudes remain unresolved. See immutable amplitude addendum.",
+    "general": "Header bytes/counts do not establish usable-signal fraction, EEG causality, intent labels, or autonomous task success.",
+    "BCI_8089820": "Missing original event timebase in694records; 87native-fallback bounds flags; seven author-QC groups; cross-participant exact duplicate must-link. No supervised eligibility claim.",
+    "compact_000413": "14ch text amplitude unit unresolved; nominal128Hz checked against clock; publisher event schedule not observed individual event markers."
+  },
+  "training_window_hours_scope": "Legacy prepared-cohort window sums across train/validation/test partitions, not gradient-only training exposure; these values do not describe the completed new SSL/alignment input union.",
+  "completed_additional_training_input": {
+    "report": "ssl_alignment_completed_train_interval_union.json",
+    "combined_unique_seconds": 50737.0,
+    "combined_unique_hours": 14.09361111111111,
+    "scope": "Selected gradient-training source interval union only; validation/test and repeated epochs excluded; separate from all acquired recording hours."
+  },
+  "completed_gradient_training_exposure": {
+    "report": "ssl_alignment_completed_train_interval_union.json",
+    "sha256": "4fdbe256908a7a3c76405db7030ef8dc24eedd9b860b12cb70aa24e98ec396d9",
+    "combined_unique_seconds": 50737.0,
+    "combined_unique_hours": 14.09361111111111,
+    "scope": "Completed new SSL plus alignment gradient-training input interval union, keyed by original raw binary SHA256. Reconstruction validation, model-selection validation, held-out EEG and repeated epochs are excluded.50340SSL seconds plus400alignment latest-second windows minus3overlapping source seconds =50737s. Original upstream pretrained model exposure is outside this accounting. This14.09361111111111h is distinct from136.44190980902778h of audited acquired original recordings.",
+    "historical_scope_note": "This14.09361111111111h receipt concerns the earlier portable/UniBa experiment family. It is retained as historical evidence, not asserted to be the latest completed EEGMMIDB phase2/phase3 exposure."
+  },
+  "binary_eeg_sample_storage_bytes": 43382368656,
+  "text_EEG_numeric_token_storage_bytes": 31065967,
+  "all_measured_EEG_numeric_payload_storage_bytes": 43413434623,
+  "prepared_new_cohort_exposure_not_completed_training": {
+    "phase2_train_windows": 6359,
+    "phase2_train_window_hours": 5.299166666666666,
+    "phase3_SSL_train_windows": 35865,
+    "phase3_SSL_train_hours": 29.8875,
+    "phase3_SSL_and_MI_source_interval_union_hours": 29.98588888888889,
+    "phase3_accounting_report": "eegmmidb_phase3_preparation_20261122_v1/independent_metadata_accounting.json",
+    "scope": "Prepared train intervals only; no assertion all were presented to gradients or retained by the selected encoder. Actual seen IDs and checkpoint epoch govern final exposure. Validation/test excluded."
+  }
+}

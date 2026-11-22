@@ -1,0 +1,22 @@
+{
+  "annotation": "T0",
+  "capacity_reason": "all-split conservative storage upper bound exceeds4GiB; test-only diagnostic fixed before signal/QC/results",
+  "diagnostic_only": true,
+  "gold_labels_not_model_input": true,
+  "label": "rest",
+  "label_source": "recorded_event",
+  "metric": "fraction of selected experimental rest windows with restricted binary confidence>=0.8",
+  "new_training_data": false,
+  "not_claimed": [
+    "natural idle",
+    "continuous false actions per minute",
+    "autonomous goal completion"
+  ],
+  "not_used_for_fitting_or_model_selection": true,
+  "parent_metadata_protocol_sha256": "37ef67e3a6432eb3416afeeab7709fd432f2c69c8341b036aabf6fee08ccbbed",
+  "same_MI_runs_window_warmup_causal_preprocessing_and_QC": true,
+  "schema": "pj-xavier-eegmmidb-phase2-idle-diagnostic-metadata-v1",
+  "split": "test",
+  "status": "frozen_before_signal_QC",
+  "subject_split_sha256": "e5b38cbe78f1c0c8c06384c91266db40a8801be20b72262786502f6b5ce2e9c9"
+}

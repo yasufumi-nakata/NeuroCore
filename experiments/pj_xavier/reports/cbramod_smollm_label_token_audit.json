@@ -1,0 +1,67 @@
+{
+  "schema": "xavier-cbramod-letter-token-audit-v1",
+  "model": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
+  "revision": "31b70e2e869a7173562077fd711b654946d38674",
+  "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "partition": "train",
+  "training_windows": 400,
+  "validation_windows_read_for_prompt_audit": 0,
+  "test_windows_read_for_prompt_audit": 0,
+  "new_mapping": {
+    "ai_prompt_submit": {
+      "output_text": " A",
+      "token_ids": [
+        330
+      ]
+    },
+    "keyboard": {
+      "output_text": " B",
+      "token_ids": [
+        389
+      ]
+    },
+    "mouse_click": {
+      "output_text": " C",
+      "token_ids": [
+        340
+      ]
+    }
+  },
+  "old_mapping": {
+    "ai_prompt_submit": {
+      "answer_ids": [
+        45375,
+        79,
+        41253,
+        79,
+        32046,
+        2
+      ],
+      "answer_tokens_including_eos": 6
+    },
+    "keyboard": {
+      "answer_ids": [
+        13473,
+        2
+      ],
+      "answer_tokens_including_eos": 2
+    },
+    "mouse_click": {
+      "answer_ids": [
+        9444,
+        79,
+        11584,
+        2
+      ],
+      "answer_tokens_including_eos": 4
+    }
+  },
+  "all_train_joint_boundaries_match": true,
+  "joint_boundary_checks": 2400,
+  "max_prompt_tokens_with_bos": 68,
+  "candidate_count": 3,
+  "new_objective": "cross_entropy over three selected next-token vocabulary logits; same logits for evaluation",
+  "new_candidate_forward_passes": 1,
+  "prior_test_results_seen_for_experiment_design": true,
+  "model_training_performed": false
+}

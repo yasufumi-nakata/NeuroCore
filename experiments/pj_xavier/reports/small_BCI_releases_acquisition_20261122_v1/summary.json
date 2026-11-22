@@ -1,0 +1,93 @@
+{
+  "all_source_files": 114,
+  "all_source_files_checksum_verified": true,
+  "completed_epoch": 1795328121.6426759,
+  "datasets": {
+    "000541": {
+      "SET_MAT_duplicates_not_double_counted": true,
+      "audited_records": 16,
+      "catalog_id": "000541",
+      "commercial_permission_notice_also_present": true,
+      "commercial_use_eligibility": "API CCBY4.0 alongside publisher description requesting permission for commercial studies; unresolved before commercial use",
+      "distribution_bytes": 75523098,
+      "distribution_files": 48,
+      "exact_repeated_epoch_payload_occurrences": 0,
+      "exact_whole_record_duplicates": 0,
+      "license_API": "CC BY4.0",
+      "new_training_hours_added": 0,
+      "one_copy_decoded_EEG_scalar_bytes": 39323648,
+      "original_label_code_counts": {
+        "1": 859,
+        "2": 829
+      },
+      "original_raw_EEG_hours_added": 0,
+      "physical_amplitude_units_verified": false,
+      "physical_recording_interval_union_unknown": true,
+      "source_record_ID_groups": 8,
+      "stored_epoch_count": 1688,
+      "stored_epoch_hours_deduplicated_whole_records": 1.6411111111111112,
+      "stored_epoch_seconds_exact_fraction": [
+        5908,
+        1
+      ]
+    },
+    "001148": {
+      "EEG_scalar_bytes_all": 97760256,
+      "EEG_scalar_bytes_deduplicated": 74355712,
+      "FIF_metadata_bytes_all": 91328,
+      "audited_records": 36,
+      "author_flag_datetime_candidate_records": 0,
+      "auxiliary_stim_bytes_all": 12220032,
+      "catalog_id": "001148",
+      "converted_event_mapping_unverified": true,
+      "distribution_bytes": 110071616,
+      "distribution_files": 36,
+      "exact_whole_record_duplicates": 7,
+      "license_API": "CC BY4.0",
+      "new_training_hours_added": 0,
+      "original_GDF_not_present": true,
+      "original_raw_EEG_hours_added": 0,
+      "original_stim_code_counts": {
+        "1": 288,
+        "2": 288,
+        "3": 288,
+        "4": 288
+      },
+      "processed_continuous_EEG_hours_deduplicated": 2.521284722222222,
+      "processed_continuous_seconds_exact_fraction": [
+        72613,
+        8
+      ],
+      "source_record_ID_groups": 12
+    },
+    "002355": {
+      "EEG_specific_bytes": null,
+      "actual_column_mapping_and_amplitude_units_unresolved": true,
+      "audited_records": 30,
+      "catalog_id": "002355",
+      "confirmed_EEG_specific_hours": 0,
+      "declared_rate_table_hours_deduplicated": 1.2954055555555555,
+      "declared_rate_table_seconds_exact_fraction": [
+        233173,
+        50
+      ],
+      "distribution_bytes": 30504982,
+      "distribution_files": 30,
+      "exact_whole_table_duplicates": 0,
+      "license_API": "CC BY4.0",
+      "new_training_hours_added": 0,
+      "original_raw_EEG_hours_added": 0,
+      "source_record_ID_groups": 5,
+      "total_numeric_UTF8_token_bytes": 23623340,
+      "whitespace_bytes": 6881642
+    }
+  },
+  "distribution_bytes": 216099696,
+  "files_sha256": "b2fd91953925bb68983674aaeb6bffbba9c513d1bce9a864d1f0eacc7ca9fd8d",
+  "new_training_hours_added": 0,
+  "original_files_unchanged": true,
+  "protocol_sha256": "3c0c5fd291caf3f0f6c98f7dad082fcd8dd21c145e99366e2188f6f844b94fe6",
+  "records_sha256": "ff12285c7e339027d3c86e66f376b3cb43cc2b90b41d280cc82583669bcaad14",
+  "schema": "xavier_three_small_release_quantity_summary_v1",
+  "status": "completed"
+}

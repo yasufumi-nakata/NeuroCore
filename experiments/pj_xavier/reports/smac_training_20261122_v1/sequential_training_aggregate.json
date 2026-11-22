@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "stages": [
+    {
+      "source": "806023",
+      "unique_new_seconds": 1977,
+      "unique_cumulative_seconds": 1977,
+      "epochs": 10,
+      "steps": 110,
+      "best_validation_mse": 0.0019222948831695787
+    },
+    {
+      "source": "2392979",
+      "status": "blocked_no_eligible_new_source_windows",
+      "unique_new_seconds": 0,
+      "epochs": 0,
+      "steps": 0
+    },
+    {
+      "source": "2061654",
+      "unique_new_seconds": 10155,
+      "unique_cumulative_seconds": 12132,
+      "epochs": 10,
+      "steps": 640,
+      "best_validation_mse": 0.001595536042884798
+    },
+    {
+      "source": "InMID",
+      "unique_new_seconds": 50505,
+      "unique_cumulative_seconds": 62637,
+      "epochs": 10,
+      "steps": 3280,
+      "best_validation_mse": 0.0016149027567592268
+    }
+  ],
+  "all_unique_training_windows": 20879,
+  "all_unique_training_seconds": 62637,
+  "all_unique_training_hours": 17.399166666666666,
+  "optimizer_steps_across_sequential_stages": 4030,
+  "all_examples_presented_including_repetition": 255820,
+  "test_windows": 0,
+  "behavior_labels_used": 0,
+  "validation_scope": "Fixed 806023 validation only; no new-source generalization evaluation",
+  "validation_change_InMID_vs_CNT_percent": 1.2138061036473413,
+  "selected_latest_best_sha256": "600f1e25e89d5229ea70e5d8a4f873b8653dfc445503850d77ff4739bc184ad5"
+}

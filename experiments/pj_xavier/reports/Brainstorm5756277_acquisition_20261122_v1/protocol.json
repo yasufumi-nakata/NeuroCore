@@ -1,0 +1,15 @@
+{
+  "CPU_threads": 2,
+  "MNE_version": "1.13.2",
+  "acquire_source_sha256": "1c3c2099d0ded2009c098c2f3b3eabbe5148f6b0e50fdb22754f0dbaad33f597",
+  "original_archive_immutable": true,
+  "paper_source": "https://doi.org/10.3389/fnins.2018.00309",
+  "resource_sha256": "35e6e8475713b4691f234db35247f2094235b4b7a442d6865f097f7ecb4ffdec",
+  "schema": "xavier_brainstorm_original_BrainVision_audit_v1",
+  "scope": "Only10 rawdata_vhdr study triplets counted; software and bundled tutorial waveform samples preserved without new study hours",
+  "source_archive_sha256": "9df4c5e3d498e99735734e8ff95592afd94e6e83d0b2ac336706351b8f9b0b61",
+  "source_event_repair_or_new_gold_labels": false,
+  "source_roles": "62numeric cap EEG candidates plus2 IO/ECG unresolved/auxiliary; publisher mapping clarification required",
+  "source_sha256": "1197b7c25f508902548229e0ba13f9a35d32a39218e76f41ecb9b1aeb8856a1a",
+  "temporary_extraction_limit_bytes": 33554432
+}

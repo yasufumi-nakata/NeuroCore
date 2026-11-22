@@ -1,0 +1,42 @@
+{
+  "schema": "xavier-phase3-immutable-phase2-evaluation-reuse-protocol-v1",
+  "registered_scientific_plan_sha256": "984b516475b06f4e7641074596790c43f76e34d33b6f047239a4ddbd2d0d4016",
+  "phase2_parent_execution_seal_sha256": "e1847ae39ef284a49cdc34dbe1695593b6d9a3c46b8d4db046842c403b26eb7f",
+  "phase3_source_seal_sha256": "4c713b5112ebae88885a7c6dae7dc429722df2543d78278a38de7174cf396be7",
+  "phase3_budget_sha256": "018cdaa6c81eba94178ce8e465b89360e425691c4d083c5e25855b6d5c6d25a5",
+  "analysis_plan_sha256": "208e9b21558bd183af52a52e49679cbb0cd1e9a2d8843d299a80cee09c0f5f55",
+  "prepared_manifest_sha256": "d673ffa0bc54506fc5866a7092fa5ff81deffdcfdf0754b10902cb6fda8657a9",
+  "analysis_change": false,
+  "test_reuse_is_exploratory": true,
+  "selection": {
+    "SSL": "Complete saved validation losses, equally weighted subject groups, epoch0 included, strict minimum and earliest tie",
+    "supervised": "Original primary left_right validation subject balanced accuracy; no test-based selection",
+    "audit_required_before_test": true,
+    "new_training_or_threshold_tuning_during_evaluation": false
+  },
+  "counts": {"full_test": 1489, "metadata_fixed_paired_test": 1254, "T0_diagnostic_only": 1357},
+  "conditions": ["fused", "context_only", "eeg_only", "eeg_shuffled", "eeg_time_shifted"],
+  "implementation": "Call byte-identical phase2 benchmark_evaluate.py, benchmark_common.py, benchmark_idle.py, benchmark_audit.py and harness_mapping.py through separately hashed admission; the new runtime owns selected SSL lineage verification",
+  "budget": {"both_new_models_total_evaluation_and_routing_seconds": 900, "GPU_memory_budget_gib": 21, "access": "workstation_CLI_only", "physical_session": "xavier-eegmmidb-20261122-p2", "absolute_deadline_epoch": 1795331083.750155},
+  "acceptance_threshold": 0.8,
+  "acceptance_probability_is_calibrated_intent_confidence": false,
+  "harness": {
+    "models": ["phase2_csp_lda", "phase2_scratch_eeg", "phase2_fused_smollm2", "phase3_ssl_eeg", "phase3_ssl_fused_smollm2"],
+    "routing": "Same pinned frozen SmolLM2 backbone, same16 greedy prompt templates, X/Y parser, max8 new tokens, no EEG prefix, no target/gold/subject/trial/time in prompt",
+    "mapping_variants_per_record": 4,
+    "seed": 20261122,
+    "actual_new_LLM_calls": 16,
+    "old_model_EEG_inference_repeated": false,
+    "saved_predictions_of_all_five_models_use_the_same_new_cache_for_matched_replay": true,
+    "previous_phase2_routing_cache_and_reports_remain_immutable": true,
+    "new_LLM_calls_during_CPU_replay": 0,
+    "gold_class_upper_bound_is_oracle_diagnostic_only": true
+  },
+  "limitations": [
+    "Repeated evaluation on the same fixed held-out people is an exploratory comparison; previous results do not select new settings or checkpoints.",
+    "Subject bootstrap describes fixed-checkpoint cohort uncertainty, not retraining uncertainty; no multiplicity-adjusted confirmatory claim.",
+    "Cued motor imagery and instructed T0 rest do not establish spontaneous intention, natural idle false actions per minute, or real OS task success.",
+    "Four synthetic mappings reuse each EEG record and are not four independent neural observations.",
+    "More optimizer presentations do not increase distinct EEG duration; exposure of the selected encoder path is separated from all completed training steps."
+  ]
+}

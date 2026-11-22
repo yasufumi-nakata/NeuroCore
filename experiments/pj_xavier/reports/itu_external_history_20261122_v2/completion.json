@@ -1,0 +1,16 @@
+{
+  "status": "completed",
+  "exit_code": 0,
+  "report_sha256": "bdb15c7ba90888347e173be95e70b9e9ca460139d556576ea96cf13a2b1aeab6",
+  "prediction_sha256": "378eedeecb519fe50a9f4b6f0ba4a94667a1b82ed37236b0b65ea57b99ce26c8",
+  "manifest_sha256": "cfd93863b8f8e263174e6ab59395496efbd397e821542fa3a1f0c1e5faa503b0",
+  "protocol_sha256": "1acd857958d034125c4a69d222b7564c15531f17cdf89a509d6319beb625eb02",
+  "source_sha256": "9161261bdada59f83f1080d17bcf30f303445fbf8002b5cc210b90ccc4c39a31",
+  "models": [
+    "ai_vs_other:history_pre_eeg",
+    "ai_vs_other:history_pre_eeg_plus_context",
+    "ai_vs_other:history_pre_decision_guarded",
+    "ai_vs_other:history_pre_decision_guarded_plus_context"
+  ],
+  "n_per_model": 630
+}

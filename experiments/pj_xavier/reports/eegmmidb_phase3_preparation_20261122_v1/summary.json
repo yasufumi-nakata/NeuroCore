@@ -1,0 +1,60 @@
+{
+  "absolute_deadline_epoch": 1795323607.162158,
+  "accepted_windows": 43446,
+  "all_allowed_members_before_after_SHA_verified": true,
+  "annotation_or_action_labels_read": false,
+  "array_bytes": 6673463808,
+  "array_count": 1236,
+  "artifacts_sha256": "56105b6abe1aa49cc3aa0569b5dacd888b9e92b5617751df72d0fdc40b2b643c",
+  "completed_epoch": 1795322667.031561,
+  "elapsed_seconds": 306.5268096923828,
+  "manifest_sha256": "154fd2becdc5bce63a856d69f5a3a48a588cdc7fb688c656d781fec3f0fcd35f",
+  "model_forward_calls": 0,
+  "new_acquired_independent_raw_bytes": 0,
+  "participant_groups_with_windows": {
+    "train": 75,
+    "val": 16
+  },
+  "prep_source_sha256": "8e68f381fc69664777606610be120dd2aecfa07872db59165576c5509d0a746a",
+  "preparation_does_not_prove_training_completed": true,
+  "protocol_sha256": "69716a6ebb740bc43e7dede5aac1309102186037f442d8a215015e26db2500c1",
+  "quality_flag_above_initial_100uV": {
+    "train": 27122,
+    "val": 4862
+  },
+  "rejected_windows": 1218,
+  "rejection_reason_counts": {
+    "absolute_amplitude_above_500uV": 1218
+  },
+  "runtime_seal_sha256": "7e1bdf3f525628fb33963d563495929f19e4bed08061f5e1cc70d77efb30ca7c",
+  "schema": "pj-xavier-phase3-continuous-SSL-corpus-v1",
+  "source_allowlist_sha256": "487247d35b7447c7315494519e8c24de13eb20025c5d81163379f3874c99354f",
+  "source_archive_before_after_SHA": "0ff5f7f38d1d14b8e485581ad4cf5b327e6494bc2ac7c7d7d4f7e9518a950cbe",
+  "source_counts": {
+    "groups": {
+      "train": 75,
+      "val": 16
+    },
+    "record_counts": {
+      "train": 1014,
+      "val": 224
+    },
+    "records": 1238
+  },
+  "source_denylist_sha256": "36b51aed3fbe9ad58755e5e6d5b8e0e501e1bd388a33981dad0171ade1961f3a",
+  "source_original_hours": {
+    "train": 32.17194444444444,
+    "val": 7.102777777777778
+  },
+  "source_raw_hours_not_equal_QC_accepted_hours": true,
+  "status": "completed",
+  "test_members_opened": 0,
+  "unique_target_interval_hours": {
+    "train": 29.8875,
+    "val": 6.3175
+  },
+  "window_counts": {
+    "train": 35865,
+    "val": 7581
+  }
+}

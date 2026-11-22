@@ -24,7 +24,7 @@ import tempfile
 import time
 import zipfile
 
-from remote_core import db_status, digest_file, json_save, safe_child
+from remote_core import db_status, digest_file, json_save, raw_chunk_key, safe_child, RAW_CHUNK_LIMIT
 
 SESSION = "xavier-eeg-20261122"
 CLI = "/Users/yasufumi/.local/bin/colab"
@@ -45,6 +45,11 @@ class ColabCLI:
             if (args.count("--session") != 1 or args.index("--session") + 1 >= len(args)
                     or args[args.index("--session") + 1] != SESSION):
                 raise ValueError("controller command must target its exact owned session")
+        absolute_deadline = self.config.get("controller_deadline_epoch")
+        if absolute_deadline is not None:
+            timeout = min(timeout, absolute_deadline - time.time())
+        if timeout <= 0:
+            raise RuntimeError("controller_absolute_deadline_reached_before_CLI_action")
         result = self.runner([CLI, *args], stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=timeout)
         if result.returncode:
             # Avoid persisting provider redirects/credentials in exception logs.
@@ -61,6 +66,9 @@ class ColabCLI:
                 "usage_units_per_hour": float(rate.group(1).replace(",", "")), "observed_epoch": time.time()}
 
     def remote(self, action, config, request=None, *, timeout=120):
+        timeout = int(timeout)
+        if timeout <= 0:
+            raise RuntimeError("controller_deadline_too_close_for_remote_action")
         script = self.remote_source + "\n" + (
             "_config=json.loads(" + repr(json.dumps(config)) + ")\n"
             "_request=json.loads(" + repr(json.dumps(request or {})) + ")\n"
@@ -80,6 +88,11 @@ class ColabCLI:
             raise ValueError("download path outside owned Xavier project")
         local_path = Path(local_path)
         local_path.parent.mkdir(parents=True, exist_ok=True)
+        absolute_deadline = self.config.get("controller_deadline_epoch")
+        if absolute_deadline is not None:
+            timeout = min(timeout, absolute_deadline - time.time())
+        if timeout <= 0:
+            raise RuntimeError("controller_absolute_deadline_reached_before_download")
         with tempfile.TemporaryFile() as log:
             child = subprocess.Popen([CLI, "download", remote_path, str(local_path), "--session", SESSION],
                                      stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
@@ -259,7 +272,158 @@ def local_fingerprint(path):
     return {"device": s.st_dev, "inode": s.st_ino, "size": s.st_size, "mtime_ns": s.st_mtime_ns}
 
 
-def recover_raw(config, state, inventory, client):
+def validate_chunk_descriptor(config, item, descriptor, offset, length, source_identity=None):
+    expected = {"schema_version": "xavier-raw-chunk-v1", "source_path": item["remote_path"],
+                "source_sha256": item["sha256"], "source_size": item["size"], "offset": offset, "size": length}
+    if any(descriptor.get(k) != value for k, value in expected.items()):
+        raise ValueError("raw_chunk_descriptor_source_offset_or_size_mismatch")
+    identity = descriptor.get("source_identity")
+    if not isinstance(identity, dict) or identity.get("size") != item["size"]:
+        raise ValueError("raw_chunk_descriptor_source_identity_missing")
+    if source_identity is not None and identity != source_identity:
+        raise ValueError("raw_chunk_descriptor_source_identity_changed")
+    sha = descriptor.get("chunk_sha256")
+    if not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{64}", sha):
+        raise ValueError("raw_chunk_descriptor_checksum_missing")
+    key = raw_chunk_key(item["remote_path"], item["sha256"], identity)
+    expected_path = str(safe_child(Path(config["remote_root"]), "controller_chunks/" + key + "/" + f"{offset:020d}-{length}.bin"))
+    if descriptor.get("remote_path") != expected_path:
+        raise ValueError("raw_chunk_descriptor_export_path_mismatch")
+
+
+def download_raw_chunks(client, config, item, partial, *, reserve_bytes, progress_callback=None):
+    """Persist bounded chunks and resume verified bytes, including interrupted appends."""
+    partial = Path(partial)
+    chunk_size = int(config.get("raw_chunk_bytes", RAW_CHUNK_LIMIT))
+    if not 0 < chunk_size <= RAW_CHUNK_LIMIT:
+        raise ValueError("raw_chunk_size_exceeds_64_MiB_limit")
+    sidecar = partial.with_name(partial.name + ".chunks.json")
+    timeout_deadline = time.time() + config.get("raw_download_timeout_seconds", 3600)
+    deadline = min(timeout_deadline, config.get("controller_deadline_epoch", timeout_deadline))
+
+    def remaining():
+        seconds = deadline - time.time()
+        if seconds <= 0:
+            raise RuntimeError("raw_chunk_deadline_reached_partial_preserved")
+        return max(.1, seconds)
+
+    def save(receipt):
+        receipt["updated_epoch"] = time.time()
+        json_save(sidecar, receipt)
+        if progress_callback:
+            progress_callback({"source_path": item["remote_path"], "source_sha256": item["sha256"],
+                               "confirmed_bytes": receipt["confirmed_bytes"], "source_size": item["size"],
+                               "resume_receipt": str(sidecar), "updated_epoch": receipt["updated_epoch"]})
+
+    partial.parent.mkdir(parents=True, exist_ok=True)
+    with partial.with_name(partial.name + ".chunk.lock").open("a+") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        if partial.is_symlink() or sidecar.is_symlink():
+            raise ValueError("raw_chunk_local_symlink_rejected")
+        if sidecar.exists():
+            receipt = json.loads(sidecar.read_text())
+            if any(receipt.get(k) != v for k, v in {"schema_version": "xavier-raw-recovery-chunks-v1",
+                    "source_path": item["remote_path"], "source_sha256": item["sha256"],
+                    "source_size": item["size"], "chunk_bytes": chunk_size}.items()):
+                raise ValueError("raw_chunk_resume_source_or_protocol_changed")
+        else:
+            if partial.exists() and partial.stat().st_size:
+                raise ValueError("untracked_raw_partial_preserved_without_overwrite")
+            receipt = {"schema_version": "xavier-raw-recovery-chunks-v1", "source_path": item["remote_path"],
+                       "source_sha256": item["sha256"], "source_size": item["size"], "chunk_bytes": chunk_size,
+                       "confirmed_bytes": 0, "chunks": [], "status": "transferring"}
+            if not partial.exists():
+                partial.touch(exist_ok=False)
+            save(receipt)
+        if not partial.is_file() or partial.stat().st_size < receipt["confirmed_bytes"]:
+            raise ValueError("raw_chunk_confirmed_prefix_missing")
+        confirmed = 0
+        # A restart rehashes the committed prefix using a bounded read buffer.
+        with partial.open("rb") as stream:
+            for descriptor in receipt["chunks"]:
+                length = min(chunk_size, item["size"] - confirmed)
+                validate_chunk_descriptor(config, item, descriptor, confirmed, length, receipt.get("source_identity"))
+                digest, left = hashlib.sha256(), length
+                while left:
+                    block = stream.read(min(1024**2, left))
+                    if not block:
+                        raise ValueError("raw_chunk_committed_prefix_short")
+                    digest.update(block)
+                    left -= len(block)
+                if digest.hexdigest() != descriptor["chunk_sha256"]:
+                    raise ValueError("raw_chunk_committed_prefix_checksum_mismatch")
+                confirmed += length
+        if confirmed != receipt["confirmed_bytes"]:
+            raise ValueError("raw_chunk_receipt_offset_inconsistent")
+        if partial.stat().st_size > confirmed and not receipt.get("pending_chunk"):
+            raise ValueError("unrecorded_raw_append_preserved_for_review")
+        while confirmed < item["size"]:
+            remaining()
+            if receipt.get("pending_ack"):
+                client.remote("ack_raw_chunk", config, receipt["pending_ack"], timeout=min(120, remaining()))
+                receipt.pop("pending_ack")
+                save(receipt)
+            length = min(chunk_size, item["size"] - confirmed)
+            if shutil.disk_usage(partial.parent).free < reserve_bytes + 2 * length + 1024**2:
+                raise RuntimeError("raw_chunk_local_disk_reserve")
+            request = {"source_path": item["remote_path"], "source_sha256": item["sha256"], "source_size": item["size"],
+                       "offset": confirmed, "length": length, "source_identity": receipt.get("source_identity")}
+            descriptor = client.remote("raw_chunk", config, request, timeout=min(120, remaining()))
+            validate_chunk_descriptor(config, item, descriptor, confirmed, length, receipt.get("source_identity"))
+            if receipt.get("pending_chunk") and receipt["pending_chunk"] != descriptor:
+                raise ValueError("raw_chunk_pending_descriptor_changed")
+            receipt["source_identity"] = descriptor["source_identity"]
+            receipt["pending_chunk"] = descriptor
+            save(receipt)
+            staged = partial.with_name(partial.name + f".chunk-{confirmed:020d}.part")
+            if staged.is_symlink():
+                raise ValueError("raw_chunk_staging_symlink_rejected")
+            if not staged.exists() or staged.stat().st_size != length or digest_file(staged) != descriptor["chunk_sha256"]:
+                client.download(descriptor["remote_path"], staged, reserve_bytes=reserve_bytes,
+                                timeout=min(300, remaining()))
+            if staged.stat().st_size != length or digest_file(staged) != descriptor["chunk_sha256"]:
+                raise ValueError("raw_chunk_download_checksum_mismatch")
+            tail = partial.stat().st_size - confirmed
+            if not 0 <= tail <= length:
+                raise ValueError("raw_chunk_pending_append_size_inconsistent")
+            # A process interruption can occur between append and receipt commit.
+            # Verify any such tail against the staged piece and append only its remainder.
+            with partial.open("r+b") as output, staged.open("rb") as source:
+                output.seek(confirmed)
+                left = tail
+                while left:
+                    count = min(1024**2, left)
+                    if output.read(count) != source.read(count):
+                        raise ValueError("raw_chunk_pending_append_bytes_mismatch")
+                    left -= count
+                output.seek(0, os.SEEK_END)
+                while body := source.read(1024**2):
+                    remaining()
+                    if shutil.disk_usage(partial.parent).free <= reserve_bytes + len(body):
+                        raise RuntimeError("raw_chunk_append_paused_at_disk_reserve")
+                    output.write(body)
+                output.flush()
+                os.fsync(output.fileno())
+            if partial.stat().st_size != confirmed + length:
+                raise ValueError("raw_chunk_append_length_mismatch")
+            receipt["chunks"].append(descriptor)
+            confirmed += length
+            receipt["confirmed_bytes"] = confirmed
+            receipt.pop("pending_chunk")
+            receipt["pending_ack"] = descriptor
+            save(receipt)
+            staged.unlink()
+        if receipt.get("pending_ack"):
+            client.remote("ack_raw_chunk", config, receipt["pending_ack"], timeout=min(120, remaining()))
+            receipt.pop("pending_ack")
+        if partial.stat().st_size != item["size"] or digest_file(partial) != item["sha256"]:
+            raise ValueError("raw_chunk_final_source_checksum_mismatch")
+        receipt["status"] = "complete_sha256_verified"
+        save(receipt)
+        return receipt
+
+
+def recover_raw(config, state, inventory, client, *, progress_callback=None):
     """Recover all completed raw payloads with SHA verification, never overwrite gold files."""
     archive_root = Path(config["raw_archive_root"]).expanduser()
     archive_root.mkdir(parents=True, exist_ok=True)
@@ -315,8 +479,13 @@ def recover_raw(config, state, inventory, client):
             if not partial.exists() or partial.stat().st_size != item["size"]:
                 transferred_files += 1
                 transferred_bytes += item["size"]
-                client.download(item["remote_path"], partial, reserve_bytes=config["local_reserve_bytes"],
-                                timeout=config.get("raw_download_timeout_seconds", 3600))
+                if item["size"] > int(config.get("raw_chunk_bytes", RAW_CHUNK_LIMIT)):
+                    chunk_config = dict(config, expected_boot_id=state.get("boot_id"))
+                    download_raw_chunks(client, chunk_config, item, partial, reserve_bytes=config["local_reserve_bytes"],
+                                        progress_callback=progress_callback)
+                else:
+                    client.download(item["remote_path"], partial, reserve_bytes=config["local_reserve_bytes"],
+                                    timeout=config.get("raw_download_timeout_seconds", 3600))
             before = local_fingerprint(partial)
             if partial.is_symlink() or before["size"] != item["size"] or digest_file(partial) != item["sha256"]:
                 raise ValueError("raw_recovery_download_size_or_sha256_mismatch")
@@ -481,7 +650,10 @@ def tick(config, state_path, *, apply=False, client=None):
                         else:
                             events.append({"snapshot_blocked": exported})
                 inventory = cli.remote("raw_inventory", remote_config)
-                events.append({"raw_recovery": recover_raw(config, state, inventory, cli)})
+                def recovery_progress(progress):
+                    state["raw_recovery_progress"] = progress
+                    json_save(state_path, state)
+                events.append({"raw_recovery": recover_raw(config, state, inventory, cli, progress_callback=recovery_progress)})
                 json_save(state_path, state)
                 for job in config["remote_jobs"]:
                     receipt = state["remote_jobs"][job["job_id"]]
@@ -533,6 +705,7 @@ def default_config():
             "remote_reserve_bytes": 30 * 1024**3, "local_reserve_bytes": 35 * 1024**3,
             "compute_unit_reserve": 2, "max_session_work_seconds": 18000, "snapshot_interval_seconds": 900,
             "allow_idle_stop": False, "allow_stop_with_unpreserved_partials": False, "idle_grace_seconds": 120,
+            "raw_chunk_bytes": RAW_CHUNK_LIMIT,
             "raw_recovery_max_files_per_cycle": 2, "raw_recovery_max_bytes_per_cycle": 32 * 1024**3,
             "raw_download_timeout_seconds": 3600,
             "remote_jobs": [
@@ -551,7 +724,10 @@ def default_config():
                  "run_id": "qwen3_8b_aicoding_uniba_fused_v1", "expected_tokens": ["/content/xavier/run_uniba_training.py"]}],
             "completion_gates": [{"gate_id": "uniba_five_variant_evaluation",
                                   "receipt_path": "runs/qwen3_8b_aicoding_uniba_fused_v1/variant_evaluation_completion.json",
-                                  "checkpoint_path": "runs/qwen3_8b_aicoding_uniba_fused_v1/best.pt"}],
+                                  "checkpoint_path": "runs/qwen3_8b_aicoding_uniba_fused_v1/best.pt"},
+                                 {"gate_id": "uniba_natural_v3_five_variant_evaluation",
+                                  "receipt_path": "runs/qwen3_8b_aicoding_uniba_natural_v3_fused_30e_v1/variant_evaluation_completion.json",
+                                  "checkpoint_path": "runs/qwen3_8b_aicoding_uniba_natural_v3_fused_30e_v1/best.pt"}],
             "local_jobs": [
                 {"job_id": "bulk", "kind": "download", "launch_receipts": [private + "/bulk_launch_v3.json", private + "/bulk_launch_v2.json"],
                  "db": private + "/bulk_downloads.sqlite"},
@@ -588,7 +764,10 @@ def main():
             print(json.dumps({"state": "controller_daemon_already_running"}))
             return
         state_path.with_suffix(".pid").write_text(str(os.getpid()))
-        end = time.monotonic() + min(18000, max(0, args.max_seconds))
+        remaining = min(18000, max(0, args.max_seconds))
+        if config.get("controller_deadline_epoch") is not None:
+            remaining = min(remaining, max(0, config["controller_deadline_epoch"] - time.time()))
+        end = time.monotonic() + remaining
         while time.monotonic() < end:
             result = tick(config, args.state, apply=args.apply)
             print(json.dumps(result, ensure_ascii=False), flush=True)

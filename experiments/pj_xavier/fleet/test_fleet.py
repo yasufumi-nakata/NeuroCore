@@ -1,5 +1,7 @@
 import datetime as dt
 import json
+import importlib.util
+import subprocess
 from pathlib import Path
 import sqlite3
 import sys
@@ -103,6 +105,86 @@ class PlanningTests(unittest.TestCase):
         plan = fleet.make_plan([rec], {"nodes": [node("a")]}, at=NOW)
         self.assertEqual(plan["summary"]["assigned_files"], 0)
         self.assertEqual(plan["blocked"][0]["reason"], "conflicting_files_for_same_provider_path")
+
+
+class BundlingTests(unittest.TestCase):
+    def policy_files(self, root):
+        policy = root / "storage_policy.json"
+        registry = root / "nodes.smac_only.json"
+        policy.write_text(json.dumps({"download_location": "smac_only",
+                                      "local_bulk_downloads_allowed": False,
+                                      "local_fallback_allowed": False,
+                                      "excluded_nodes": ["smac19"]}))
+        registry.write_text(json.dumps({"nodes": [node("smac31"), node("smac19")]}))
+        return policy, registry
+
+    def build(self, root, target="smac31"):
+        policy, registry = self.policy_files(root)
+        plan = fleet.make_plan([row()], {"nodes": [node(target)]}, at=NOW)
+        source = Path(__file__).resolve().parent.parent / "acquisition/acquire.py"
+        commands = fleet.write_bundle(plan, root / "bundle", source,
+                                     Path(node_worker.__file__), storage_policy=policy,
+                                     nodes_registry=registry)
+        return root / "bundle" / target, commands, source
+
+    def test_bundle_preserves_guard_code_and_repository_relative_policy(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bundle, commands, source = self.build(root)
+            code = bundle / "code/experiments/pj_xavier/acquisition"
+            self.assertEqual((code / "acquire.py").read_bytes(), source.read_bytes())
+            guard_path = code / "smac_storage_guard.py"
+            self.assertEqual(guard_path.read_bytes(), source.with_name("smac_storage_guard.py").read_bytes())
+            spec = importlib.util.spec_from_file_location("bundle_storage_guard", guard_path)
+            guard = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(guard)
+            self.assertEqual(guard.DEFAULT_POLICY_PATH.read_bytes(), (root / "storage_policy.json").read_bytes())
+            self.assertEqual(guard.DEFAULT_NODES_PATH.read_bytes(), (root / "nodes.smac_only.json").read_bytes())
+            home = root / "remote-home"
+            valid = guard.require_smac_raw_root(home / "pj-xavier/smac31/raw", hostname="smac31", home=home)
+            self.assertEqual(valid["node_id"], "smac31")
+            with self.assertRaises(ValueError):
+                guard.require_smac_raw_root(home / "pj-xavier/smac31/raw", hostname="workstation", home=home)
+            job = json.loads((bundle / "download.json").read_text())
+            self.assertEqual(job["command"][1], "~/pj-xavier/smac31/code/experiments/pj_xavier/acquisition/acquire.py")
+            upload = commands[0]["steps"][1]["argv"]
+            self.assertIn("-r", upload)
+            self.assertIn(str((bundle / "code").resolve()), upload)
+            self.assertEqual(json.loads((bundle / "train.json").read_text())["state"], "blocked")
+
+    def test_bundled_cli_blocks_wrong_local_root_before_ledger_creation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bundle, _, _ = self.build(root)
+            db, raw = root / "forbidden.sqlite", root / "forbidden-raw"
+            result = subprocess.run([sys.executable,
+                                     str(bundle / "code/experiments/pj_xavier/acquisition/acquire.py"),
+                                     "download", "--manifest", str(bundle / "assigned.jsonl"),
+                                     "--db", str(db), "--root", str(raw)],
+                                    capture_output=True, text=True, timeout=10)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertNotIn("ModuleNotFoundError", result.stderr)
+            self.assertIn("ValueError", result.stderr)
+            self.assertFalse(db.exists())
+            self.assertFalse(raw.exists())
+
+    def test_missing_policy_blocks_bundle_before_writing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _, registry = self.policy_files(root)
+            plan = fleet.make_plan([row()], {"nodes": [node("smac31")]}, at=NOW)
+            source = Path(__file__).resolve().parent.parent / "acquisition/acquire.py"
+            with self.assertRaisesRegex(ValueError, "dependency missing"):
+                fleet.write_bundle(plan, root / "bundle", source, Path(node_worker.__file__),
+                                   storage_policy=root / "absent.json", nodes_registry=registry)
+            self.assertFalse((root / "bundle").exists())
+
+    def test_smac19_is_not_deployed_even_if_registry_mentions_it(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with self.assertRaisesRegex(ValueError, "not an authorized smac"):
+                self.build(root, target="smac19")
+            self.assertFalse((root / "bundle").exists())
 
 
 class WorkerTests(unittest.TestCase):

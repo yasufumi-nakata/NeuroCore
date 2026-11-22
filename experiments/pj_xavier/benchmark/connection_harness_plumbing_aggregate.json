@@ -1,0 +1,361 @@
+{
+  "schema": "xavier.synthetic_connection_plumbing_aggregate.v2",
+  "created_utc": "2026-11-22T02:58:02.899973+00:00",
+  "domain": "synthetic_non_eeg_engineering_fixture",
+  "claim": "Independent plumbing and test-sensitivity check only",
+  "original_publisher_oracle_recovered": false,
+  "independent_failure_contract": "Expected unsuccessful connection must deliberately throw exact RuntimeException; accidental subclasses are not credited",
+  "v1_correction": "Earlier v1 credited any RuntimeException subclass; v1 source/receipt preserved and this v2 uses a new execution output",
+  "empirical_eeg_task_completion": {
+    "status": "not_evaluated",
+    "passed": false
+  },
+  "autonomous_agent_goal": {
+    "status": "unproven",
+    "passed": false
+  },
+  "participant_solutions_loaded": 0,
+  "eeg_records_used": 0,
+  "model_inference_calls": 0,
+  "network_calls": 0,
+  "desktop_actions": 0,
+  "execution_scope": "Only bundled hand-authored fixtures; no untrusted-code sandbox claim",
+  "platform": {
+    "system": "Darwin",
+    "machine": "arm64"
+  },
+  "source_sha256": {
+    "fixtures/accidental_npe.java": "b15e5823f898bf3871d7466261c2bb569dcaf87c9acf9163ea0a68572a2e5540",
+    "fixtures/always_success.java": "e861f77a23a1353683d0e2396a041093605d2ac95909551bf83dc355d298242b",
+    "fixtures/correct.java": "de95ab0be0fb743ade8f4aa6a44dfaf2a6e2b871977b5c387c0dc861388ee168",
+    "fixtures/syntax_error.java": "e1062f03d0037af781ab85dede20a2c8dcdd3f1cd359bae5c285abb824353aa8",
+    "fixtures/wrong_priority.java": "bcf205906640aae58e3b61736873d6beb72d5bf32bde14a8b90dee31d71784bc",
+    "oracle/ConnectionCases.java": "d0eb84625f9e7d82cc5611b262188cc5c05926af4d55301bbeee996bd3d83e73",
+    "public_input/ConnectionAPI.java": "a60370c21cf0774ad7978a69abd020d1d39e32af521f222a209f9d1c1848fb68",
+    "public_input/DeviceAPI.java": "911d024ba53e16c1f7aeb31534cf66408b35b35d73c33de837fa087ec93f2055",
+    "public_input/task.json": "6686057be8682be3bd3adfd6cb16265e9513c926f6aa9e15950b8bfd6bf1ec95",
+    "run_plumbing.py": "7d0878319f1cc3fac8664593ddcbdc1d92eb06822f5991e8576e2b124053dbd3",
+    "test_run_plumbing.py": "37dca7dc9abb8b732c75d10689bcda7a59d0725b76270b1851c95c5e133a49cf"
+  },
+  "status": "completed",
+  "private_result_sha256": "d30264d4f890952ef86a16fbce0be00c970039aeb75ee6996f933e80a11b6f46",
+  "source_audit_sha256": "89e704974b80b0a1940a0a51fd36dc1efde00472768fa548baa5b77e97159517",
+  "previous_v1_aggregate_sha256": "e714de435fb1f904c1b444ff9e2c010d8c4c764fb0bf12bd9105d4de5eb1afcb",
+  "previous_v1_result_sha256": "11ce634a4b0192997826d24ed41b453fc31b4fe88cad62e0dbfebaaeed038a92",
+  "v1_source_snapshot_receipt_sha256": "c5fb6111ab12874116f8f8429a5a21f3d26602ed534f68b4816359a6d5080974",
+  "exploratory_after_external_eeg_results": true,
+  "model_settings_modified": false,
+  "heldout_solutions_read": false,
+  "python_guard_tests": {
+    "passed": 6,
+    "failed": 0,
+    "log_sha256": "6b65c1eeca3ec8d1ba51dcaac40c5720271b49d7498bc302a7c1ebdefed68876"
+  },
+  "java_version": "openjdk version \"11.0.25\" 2024-10-15 LTS\nOpenJDK Runtime Environment Corretto-11.0.25.9.1 (build 11.0.25+9-LTS)\nOpenJDK 64-Bit Server VM Corretto-11.0.25.9.1 (build 11.0.25+9-LTS, mixed mode)",
+  "javac_version": "javac 11.0.25",
+  "fixtures": [
+    {
+      "fixture": "correct",
+      "expected_status": "all_passed",
+      "source_sha256": "de95ab0be0fb743ade8f4aa6a44dfaf2a6e2b871977b5c387c0dc861388ee168",
+      "source_origin": "hand_authored_synthetic_fixture",
+      "cases": [
+        {
+          "case": "wifi_priority_despite_list_order",
+          "passed": true,
+          "expected": "Wifi",
+          "actual": "Wifi"
+        },
+        {
+          "case": "wifi_only_success",
+          "passed": true,
+          "expected": "Wifi",
+          "actual": "Wifi"
+        },
+        {
+          "case": "mobile_only_success",
+          "passed": true,
+          "expected": "MobileData",
+          "actual": "MobileData"
+        },
+        {
+          "case": "failed_wifi_falls_back_to_mobile",
+          "passed": true,
+          "expected": "MobileData",
+          "actual": "MobileData"
+        },
+        {
+          "case": "no_available_types_throws",
+          "passed": true,
+          "expected": "RuntimeException",
+          "actual": "RuntimeException"
+        },
+        {
+          "case": "all_available_attempts_fail",
+          "passed": true,
+          "expected": "RuntimeException",
+          "actual": "RuntimeException"
+        },
+        {
+          "case": "unavailable_mobile_is_not_fallback",
+          "passed": true,
+          "expected": "RuntimeException",
+          "actual": "RuntimeException"
+        },
+        {
+          "case": "unavailable_wifi_is_not_fallback",
+          "passed": true,
+          "expected": "RuntimeException",
+          "actual": "RuntimeException"
+        }
+      ],
+      "status": "all_passed",
+      "matches_expected_outcome": true,
+      "passed_cases": 8,
+      "evaluated_cases": 8,
+      "temporary_workspace_removed": true,
+      "expected_failed_case_ids": [],
+      "actual_failed_case_ids": []
+    },
+    {
+      "fixture": "wrong_priority",
+      "expected_status": "test_failure",
+      "source_sha256": "bcf205906640aae58e3b61736873d6beb72d5bf32bde14a8b90dee31d71784bc",
+      "source_origin": "hand_authored_synthetic_fixture",
+      "cases": [
+        {
+          "case": "wifi_priority_despite_list_order",
+          "passed": false,
+          "expected": "Wifi",
+          "actual": "MobileData"
+        },
+        {
+          "case": "wifi_only_success",
+          "passed": true,
+          "expected": "Wifi",
+          "actual": "Wifi"
+        },
+        {
+          "case": "mobile_only_success",
+          "passed": true,
+          "expected": "MobileData",
+          "actual": "MobileData"
+        },
+        {
+          "case": "failed_wifi_falls_back_to_mobile",
+          "passed": true,
+          "expected": "MobileData",
+          "actual": "MobileData"
+        },
+        {
+          "case": "no_available_types_throws",
+          "passed": true,
+          "expected": "RuntimeException",
+          "actual": "RuntimeException"
+        },
+        {
+          "case": "all_available_attempts_fail",
+          "passed": true,
+          "expected": "RuntimeException",
+          "actual": "RuntimeException"
+        },
+        {
+          "case": "unavailable_mobile_is_not_fallback",
+          "passed": true,
+          "expected": "RuntimeException",
+          "actual": "RuntimeException"
+        },
+        {
+          "case": "unavailable_wifi_is_not_fallback",
+          "passed": true,
+          "expected": "RuntimeException",
+          "actual": "RuntimeException"
+        }
+      ],
+      "status": "test_failure",
+      "matches_expected_outcome": true,
+      "passed_cases": 7,
+      "evaluated_cases": 8,
+      "temporary_workspace_removed": true,
+      "expected_failed_case_ids": [
+        "wifi_priority_despite_list_order"
+      ],
+      "actual_failed_case_ids": [
+        "wifi_priority_despite_list_order"
+      ]
+    },
+    {
+      "fixture": "always_success",
+      "expected_status": "test_failure",
+      "source_sha256": "e861f77a23a1353683d0e2396a041093605d2ac95909551bf83dc355d298242b",
+      "source_origin": "hand_authored_synthetic_fixture",
+      "cases": [
+        {
+          "case": "wifi_priority_despite_list_order",
+          "passed": true,
+          "expected": "Wifi",
+          "actual": "Wifi"
+        },
+        {
+          "case": "wifi_only_success",
+          "passed": true,
+          "expected": "Wifi",
+          "actual": "Wifi"
+        },
+        {
+          "case": "mobile_only_success",
+          "passed": false,
+          "expected": "MobileData",
+          "actual": "Wifi"
+        },
+        {
+          "case": "failed_wifi_falls_back_to_mobile",
+          "passed": false,
+          "expected": "MobileData",
+          "actual": "Wifi"
+        },
+        {
+          "case": "no_available_types_throws",
+          "passed": false,
+          "expected": "RuntimeException",
+          "actual": "Wifi"
+        },
+        {
+          "case": "all_available_attempts_fail",
+          "passed": false,
+          "expected": "RuntimeException",
+          "actual": "Wifi"
+        },
+        {
+          "case": "unavailable_mobile_is_not_fallback",
+          "passed": false,
+          "expected": "RuntimeException",
+          "actual": "Wifi"
+        },
+        {
+          "case": "unavailable_wifi_is_not_fallback",
+          "passed": false,
+          "expected": "RuntimeException",
+          "actual": "Wifi"
+        }
+      ],
+      "status": "test_failure",
+      "matches_expected_outcome": true,
+      "passed_cases": 2,
+      "evaluated_cases": 8,
+      "temporary_workspace_removed": true,
+      "expected_failed_case_ids": [
+        "all_available_attempts_fail",
+        "failed_wifi_falls_back_to_mobile",
+        "mobile_only_success",
+        "no_available_types_throws",
+        "unavailable_mobile_is_not_fallback",
+        "unavailable_wifi_is_not_fallback"
+      ],
+      "actual_failed_case_ids": [
+        "all_available_attempts_fail",
+        "failed_wifi_falls_back_to_mobile",
+        "mobile_only_success",
+        "no_available_types_throws",
+        "unavailable_mobile_is_not_fallback",
+        "unavailable_wifi_is_not_fallback"
+      ]
+    },
+    {
+      "fixture": "accidental_npe",
+      "expected_status": "test_failure",
+      "source_sha256": "b15e5823f898bf3871d7466261c2bb569dcaf87c9acf9163ea0a68572a2e5540",
+      "source_origin": "hand_authored_synthetic_fixture",
+      "cases": [
+        {
+          "case": "wifi_priority_despite_list_order",
+          "passed": false,
+          "expected": "Wifi",
+          "actual": "NullPointerException"
+        },
+        {
+          "case": "wifi_only_success",
+          "passed": false,
+          "expected": "Wifi",
+          "actual": "NullPointerException"
+        },
+        {
+          "case": "mobile_only_success",
+          "passed": false,
+          "expected": "MobileData",
+          "actual": "NullPointerException"
+        },
+        {
+          "case": "failed_wifi_falls_back_to_mobile",
+          "passed": false,
+          "expected": "MobileData",
+          "actual": "NullPointerException"
+        },
+        {
+          "case": "no_available_types_throws",
+          "passed": false,
+          "expected": "RuntimeException",
+          "actual": "NullPointerException"
+        },
+        {
+          "case": "all_available_attempts_fail",
+          "passed": false,
+          "expected": "RuntimeException",
+          "actual": "NullPointerException"
+        },
+        {
+          "case": "unavailable_mobile_is_not_fallback",
+          "passed": false,
+          "expected": "RuntimeException",
+          "actual": "NullPointerException"
+        },
+        {
+          "case": "unavailable_wifi_is_not_fallback",
+          "passed": false,
+          "expected": "RuntimeException",
+          "actual": "NullPointerException"
+        }
+      ],
+      "status": "test_failure",
+      "matches_expected_outcome": true,
+      "passed_cases": 0,
+      "evaluated_cases": 8,
+      "temporary_workspace_removed": true,
+      "expected_failed_case_ids": [
+        "all_available_attempts_fail",
+        "failed_wifi_falls_back_to_mobile",
+        "mobile_only_success",
+        "no_available_types_throws",
+        "unavailable_mobile_is_not_fallback",
+        "unavailable_wifi_is_not_fallback",
+        "wifi_only_success",
+        "wifi_priority_despite_list_order"
+      ],
+      "actual_failed_case_ids": [
+        "all_available_attempts_fail",
+        "failed_wifi_falls_back_to_mobile",
+        "mobile_only_success",
+        "no_available_types_throws",
+        "unavailable_mobile_is_not_fallback",
+        "unavailable_wifi_is_not_fallback",
+        "wifi_only_success",
+        "wifi_priority_despite_list_order"
+      ]
+    },
+    {
+      "fixture": "syntax_error",
+      "expected_status": "compile_failure",
+      "source_sha256": "e1062f03d0037af781ab85dede20a2c8dcdd3f1cd359bae5c285abb824353aa8",
+      "source_origin": "hand_authored_synthetic_fixture",
+      "cases": [],
+      "status": "compile_failure",
+      "matches_expected_outcome": true,
+      "passed_cases": 0,
+      "evaluated_cases": 0,
+      "temporary_workspace_removed": true,
+      "expected_failed_case_ids": [],
+      "actual_failed_case_ids": []
+    }
+  ],
+  "total_compile_and_execution_seconds": 3.708367289742455
+}

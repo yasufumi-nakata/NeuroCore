@@ -1,0 +1,23 @@
+{
+  "cpu_threads": 2,
+  "created_epoch": 1795322876.265728,
+  "deduplication": "Within each source: decoded EEG payload SHA and sample/rate/channel count. Cross-release identity is not inferred from participant names.",
+  "duration": "Stored samples / declared native fs per record; no channel or condition multiplier",
+  "expected_files": 68,
+  "fif_labels": "Actual embedded stim transitions; mapping1 trial start/2 right hand/3 feet/4 rest from official806023 metadata",
+  "fif_quantity": "Actual MNE FIF header and every data buffer; declared calibrated volts",
+  "float32_equivalent_not_actual_bytes": true,
+  "known_source_bytes": 186109962,
+  "manifest_sha256": "422031db5fb716a812dcabae2dfdd91bfed17981b19a361227e9b4cb8ab266a3",
+  "raw_mutation": false,
+  "resource_sha256": "1bff2c0eea82c4ff960cfa227740fbcc5d0b5335657d02c5c919afdffb77cbd0",
+  "schema": "pj-xavier-compact-public-EEG-audit-v1",
+  "source_metadata_hashes": {
+    "figshare25773342.body": "ab9ce88ea9cd2dfb9db6ff5a082e7fba0213478ad62a576bf6c120fc99795adb",
+    "zenodo806023.body": "a924489f4e6d149dcbb216e32d7bb7b690a3bab8649228f67b4646c02e6d4075"
+  },
+  "source_sha256": "af8da23f8144f7974939a949f21ba7d0723efc7f8142381edd5a67e3a83a82e4",
+  "text_amplitude_unit": "Unresolved; no conversion or model eligibility assumed",
+  "text_rate_and_column_map": "Official Figshare25773342 release metadata; actual per-record row count and token bytes",
+  "training_or_model_inference": false
+}

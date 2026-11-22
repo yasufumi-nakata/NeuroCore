@@ -1,0 +1,58 @@
+{
+  "schema": "xavier-eegmmidb-MNE-representative-protocol-v1",
+  "registered_utc": "2026-11-22T03:31:43.737471+00:00",
+  "implementation_sha256": "dd3ca76bfb975b14e9e1c23754a9eb75749a46b53b6d977d887602a4ba949308",
+  "source_sha256": {
+    "archive": "0ff5f7f38d1d14b8e485581ad4cf5b327e6494bc2ac7c7d7d4f7e9518a950cbe",
+    "recordings": "51b801d07876ae185bd6f6d0bc465769b68d6265cf5ab9356e9ab4ff896ebea2",
+    "members": "c291d869f76749f0e8882e940aafaa5caf7b18358497728d4323f60ebba7d76c",
+    "summary": "015cc62aaa5f206086cd7c2ba360a18ff5745f6a7b7f4fbaf546bd8214809097",
+    "review": "bc6105f2781d1967d9ad0843aea8569c74f4d1ae52c4933cba898da0dafb7d4d"
+  },
+  "MNE_version": "1.13.2",
+  "python_version": "3.12.13",
+  "MNE_reader_source_sha256": "d19e1ee0efa219c4d38ac5822a1bb1e377de2a8e34df16f09dcc5101b87cb314",
+  "MNE_annotations_source_sha256": "e9112ce2518e73ba8afd53f198699db9ec4dbc4fecf9c7b88b1973546d4e478a",
+  "selected_records_and_reasons": {
+    "S001/S001R01.edf": [
+      "lexicographically first clean 160 Hz eyes-open baseline"
+    ],
+    "S001/S001R04.edf": [
+      "lexicographically first clean 160 Hz motor-imagery record"
+    ],
+    "S088/S088R03.edf": [
+      "first 128 Hz record in prior affected group S088"
+    ],
+    "S089/S089R01.edf": [
+      "all baseline records with non-T0 code"
+    ],
+    "S089/S089R02.edf": [
+      "all baseline records with non-T0 code"
+    ],
+    "S089/S089R03.edf": [
+      "first 160 Hz overlapping annotation in group S089"
+    ],
+    "S092/S092R03.edf": [
+      "first 128 Hz record in prior affected group S092"
+    ],
+    "S100/S100R03.edf": [
+      "first 128 Hz record in prior affected group S100",
+      "first out-of-range annotation in group S100"
+    ],
+    "S109/S109R14.edf": [
+      "lexicographically last clean 160 Hz record"
+    ]
+  },
+  "selection_input": "Prior pinned native header/TAL ledger only; no MNE EDF read or waveform inspection before registration",
+  "maximum_records": 12,
+  "seconds_absolute_tolerance": 1e-09,
+  "methods": [
+    "mne.read_annotations with UTF-8, retaining standalone TAL durations",
+    "mne.io.read_raw_edf with preload=False and UTF-8; compare n_times, sfreq, channel order and attached annotations",
+    "Capture Python warnings and distinguish observed recording-end duration clipping from standalone parsing",
+    "Extract only each selected SHA/CRC-verified member into an owned temporary directory, then close and remove it"
+  ],
+  "scope": "Independent representative parser check, not exhaustive waveform quality, annotation semantics or training eligibility",
+  "label_corrections": 0,
+  "model_forward_calls": 0
+}

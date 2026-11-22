@@ -1,0 +1,63 @@
+{
+  "schema": "xavier-independent-SSL-input-validation-v1",
+  "status": "passed",
+  "manifest_sha256": "216729840806ca20040331baf59ddeadea4e62bc48a19a57c183810e13dd9043",
+  "artifact_manifest_sha256": "3dc4599eef7093584e806c15c39c99be42b0fef33851a60e2f5c7ade6f883be2",
+  "source_allowlist_sha256": "e2c44f7135afa8a3d5a896d6ad7f8f335d418d77a34d2815497e1335ef736215",
+  "trainer_sha256": "47f24f9429bdc9af9495b121c4bf2cbc94ce62dbeb6b1033eeff6a4a88fe60fd",
+  "validator_sha256": "dad1c83d4d459e7513c5542b0222e8ec7fe931e6d288cd806b132e573c795a71",
+  "arrays": 166,
+  "all_array_bytes_rehashed": true,
+  "array_file_bytes": 1685013248,
+  "windows": 2200,
+  "float32_samples_individually_checked": 421248000,
+  "partitions": {
+    "val": 522,
+    "train": 1678
+  },
+  "time_union_seconds_by_partition": {
+    "train": 50340,
+    "val": 15660
+  },
+  "subject_counts": {
+    "train": 18,
+    "val": 4
+  },
+  "actual_source_counts": {
+    "train": 46,
+    "val": 12
+  },
+  "raw_interval_nonoverlap": true,
+  "array_slot_unique_integer_complete": true,
+  "subject_and_raw_SHA_exclusions_passed": true,
+  "all_windows_finite": true,
+  "observed_minimum_channel_std_microvolt": 0.3906519270821901,
+  "observed_maximum_absolute_sample_microvolt": 99.95542764663696,
+  "std_float32_rounding_relative_tolerance": 1e-06,
+  "real_train_CPU_gradients": [
+    {
+      "partition": "train",
+      "channels": 8,
+      "seconds": 30,
+      "masked_mse": 0.03264090046286583,
+      "preclip_gradient_norm": 2.1996898651123047,
+      "wall_seconds": 0.24554333300329745,
+      "CPU_only": true,
+      "probe_weights_discarded": true
+    },
+    {
+      "partition": "train",
+      "channels": 32,
+      "seconds": 30,
+      "masked_mse": 0.018830569460988045,
+      "preclip_gradient_norm": 0.6133235692977905,
+      "wall_seconds": 0.5258899590699002,
+      "CPU_only": true,
+      "probe_weights_discarded": true
+    }
+  ],
+  "GPU_used": false,
+  "downstream_behavior_labels_used": 0,
+  "probe_weights_reused": false,
+  "wall_seconds": 5.093621624982916
+}

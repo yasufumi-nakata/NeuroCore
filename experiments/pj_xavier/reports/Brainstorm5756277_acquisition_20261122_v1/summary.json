@@ -1,0 +1,55 @@
+{
+  "EEG_candidate_scalar_bytes_deduplicated": 209564960,
+  "MNE_independent_header_calibration_probe_records": 10,
+  "all_member_CRC_SHA256_verified": true,
+  "auxiliary_or_unresolved_channels": 2,
+  "auxiliary_or_unresolved_scalar_bytes_all": 6760160,
+  "bundled_tutorial_EEG_additional_study_hours": 0,
+  "catalog_id": "002070",
+  "channel19_20_mapping_needs_publisher_clarification": true,
+  "completed_epoch": 1795326780.114281,
+  "conservative_EEG_candidate_channels": 62,
+  "exact_EEG_duplicates": 0,
+  "existing_inputs_or_models_changed": false,
+  "independent_physical_QC_or_stimulus_latency_verified": false,
+  "license": "CC BY4.0",
+  "marker_outside_or_invalid_without_clip": 0,
+  "members_sha256": "72959adc4722ceecb0b9550fa34816b659fcbd5f9b4dce91e8079078dfedfcc6",
+  "native_rate_hz_distribution": {
+    "1000": 10
+  },
+  "new_training_hours_added": 0,
+  "original_archive_checksum_before_after_verified": true,
+  "original_marker_count": 1820,
+  "original_recording_hours_deduplicated": 0.46945555555555557,
+  "original_recording_seconds_exact_fraction": [
+    42251,
+    25
+  ],
+  "protocol_sha256": "a1d2dd115f926daa95705d05da7d36a333d98fc4974a66409aa77ab700c931ae",
+  "records_sha256": "bad4dec20be3eb0a93be457f11bec298a30184b6f320dae0e258de8e99b1fb0c",
+  "schema": "xavier_brainstorm_raw_quantity_summary_v1",
+  "source_ID_groups": 10,
+  "source_archive_bytes": 280230370,
+  "source_archive_sha256": "9df4c5e3d498e99735734e8ff95592afd94e6e83d0b2ac336706351b8f9b0b61",
+  "source_header_resolution": "0.1 microV per int16 AD",
+  "source_marker_type_description_counts": {
+    "New Segment|": 10,
+    "Stimulus|S  3": 10,
+    "Stimulus|S 10": 600,
+    "Stimulus|S 88": 600,
+    "Stimulus|S 99": 600
+  },
+  "source_non_directory_members": 3002,
+  "source_role_bytes": {
+    "software_or_companion": 158922412,
+    "study_header_or_marker": 177833,
+    "study_signal": 216325120
+  },
+  "source_uncompressed_bytes": 375425365,
+  "source_version": "Figshare5756277v2",
+  "status": "completed",
+  "study_records": 10,
+  "supervised_gold_labels_validated": false,
+  "unique_study_EEG_records": 10
+}

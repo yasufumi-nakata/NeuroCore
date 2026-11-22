@@ -358,6 +358,110 @@ def raw_inventory(config, *, root_override=None):
             "inventory_sha256": identity, "held": held, "observed_epoch": time.time()}
 
 
+RAW_CHUNK_LIMIT = 64 * 1024**2
+
+
+def source_file_identity(path):
+    s = path.stat()
+    return {"device": s.st_dev, "inode": s.st_ino, "size": s.st_size,
+            "mtime_ns": s.st_mtime_ns, "ctime_ns": s.st_ctime_ns}
+
+
+def raw_chunk_key(source_path, source_sha256, source_identity):
+    payload = {"source_path": source_path, "source_sha256": source_sha256, "source_identity": source_identity}
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def raw_chunk(config, request, *, root_override=None):
+    """Export one bounded piece of a completed raw file; leave its source unchanged."""
+    root = Path(root_override or config["remote_root"])
+    source_path = request["source_path"]
+    relative = str(Path(source_path).relative_to(root / "raw"))
+    source = safe_child(root / "raw", relative)
+    if source.is_symlink() or not source.is_file():
+        raise ValueError("raw_chunk_source_missing_or_symlink")
+    inventory = raw_inventory(config, root_override=root)
+    entry = next((f for f in inventory["files"] if f["remote_path"] == str(source)), None)
+    if not entry or entry["size"] != request["source_size"] or entry["sha256"] != request["source_sha256"]:
+        raise ValueError("raw_chunk_source_not_in_verified_completed_ledger")
+    offset, length = request["offset"], request["length"]
+    if (type(offset) is not int or type(length) is not int or not 0 <= offset < entry["size"]
+            or not 0 < length <= RAW_CHUNK_LIMIT or offset + length > entry["size"]):
+        raise ValueError("raw_chunk_offset_or_size_out_of_range")
+    identity = source_file_identity(source)
+    if request.get("source_identity") and request["source_identity"] != identity:
+        raise ValueError("raw_chunk_source_identity_changed")
+    key = raw_chunk_key(str(source), entry["sha256"], identity)
+    directory = safe_child(root, "controller_chunks/" + key)
+    directory.mkdir(parents=True, exist_ok=True)
+    target = directory / (f"{offset:020d}-{length}.bin")
+    sidecar = target.with_suffix(".json")
+    descriptor = {"schema_version": "xavier-raw-chunk-v1", "source_path": str(source),
+                  "source_sha256": entry["sha256"], "source_size": entry["size"], "source_identity": identity,
+                  "offset": offset, "size": length, "remote_path": str(target)}
+    if target.exists() and sidecar.exists():
+        saved = json.loads(sidecar.read_text())
+        if (any(saved.get(k) != v for k, v in descriptor.items()) or target.is_symlink()
+                or target.stat().st_size != length or digest_file(target) != saved.get("chunk_sha256")):
+            raise ValueError("existing_raw_chunk_export_conflicts")
+        return saved
+    if target.exists() or sidecar.exists():
+        raise ValueError("incomplete_raw_chunk_export_metadata")
+    if shutil.disk_usage(root).free < int(config["remote_reserve_bytes"]) + length + 1024**2:
+        raise ValueError("raw_chunk_remote_disk_reserve")
+    temporary = target.with_name(target.name + f".{os.getpid()}.tmp")
+    sha, remaining = hashlib.sha256(), length
+    try:
+        with source.open("rb") as src, temporary.open("xb") as out:
+            src.seek(offset)
+            while remaining:
+                body = src.read(min(1024**2, remaining))
+                if not body:
+                    raise ValueError("raw_chunk_source_short_read")
+                sha.update(body)
+                out.write(body)
+                remaining -= len(body)
+            out.flush()
+            os.fsync(out.fileno())
+        if source_file_identity(source) != identity:
+            raise ValueError("raw_chunk_source_changed_during_read")
+        descriptor["chunk_sha256"] = sha.hexdigest()
+        os.link(temporary, target)
+        json_save(sidecar, descriptor)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return descriptor
+
+
+def acknowledge_raw_chunk(config, request, *, root_override=None):
+    """Remove only an identified, verified controller chunk after local commit."""
+    root = Path(root_override or config["remote_root"])
+    key = raw_chunk_key(request["source_path"], request["source_sha256"], request["source_identity"])
+    target = safe_child(root, "controller_chunks/" + key + "/" + f"{request['offset']:020d}-{request['size']}.bin")
+    if str(target) != request["remote_path"]:
+        raise ValueError("raw_chunk_ack_path_identity_mismatch")
+    sidecar = target.with_suffix(".json")
+    if target.is_symlink() or sidecar.is_symlink():
+        raise ValueError("raw_chunk_ack_missing_or_symlink")
+    if not target.exists() and not sidecar.exists():
+        return {"acknowledged": True, "already_absent": True}
+    # A crash after deleting the binary but before deleting its sidecar is an
+    # acknowledged, locally committed chunk. Only its exact retained descriptor
+    # authorizes finishing this cleanup; unrelated files remain untouched.
+    if not target.exists() and sidecar.is_file():
+        if json.loads(sidecar.read_text()) != request:
+            raise ValueError("raw_chunk_ack_content_mismatch")
+        sidecar.unlink()
+        return {"acknowledged": True, "recovered_interrupted_ack": True}
+    if not target.is_file() or not sidecar.is_file():
+        raise ValueError("raw_chunk_ack_missing_or_symlink")
+    if json.loads(sidecar.read_text()) != request or target.stat().st_size != request["size"] or digest_file(target) != request["chunk_sha256"]:
+        raise ValueError("raw_chunk_ack_content_mismatch")
+    target.unlink()
+    sidecar.unlink()
+    return {"acknowledged": True}
+
+
 def snapshot(config, request, *, root_override=None):
     root = Path(root_override or config["remote_root"])
     current = probe(config, root_override=root)
@@ -502,6 +606,10 @@ def dispatch(action, config, request=None):
         return reconcile_priority(Path(config["remote_root"]))
     if action == "raw_inventory":
         return raw_inventory(config)
+    if action == "raw_chunk":
+        return raw_chunk(config, request or {})
+    if action == "ack_raw_chunk":
+        return acknowledge_raw_chunk(config, request or {})
     if action == "snapshot":
         return snapshot(config, request or {})
     if action == "launch_download":

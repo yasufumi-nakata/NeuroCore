@@ -1,0 +1,206 @@
+{
+  "schema": "xavier-cbramod-symbol-experiment-v1",
+  "run_name": "cbramod_smollm2_uniba_v3_symbol_v1",
+  "registered_at_utc": "2026-11-22T01:40:02.310936+00:00",
+  "model_source_sha256": "b0c397176f8cb9e6dd759ed7169c0029c870f756c501ce317c2e6c7c41f32505",
+  "core_source_sha256": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+  "cpu_test_source_sha256": "11e19aa961f9fd2252e972cb23e40f7138e11d07520315714baaadce1d6bb08f",
+  "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "cohort_protocol_sha256": "d4e6c5f685dce53e73b3aa88d12ed07c88a8ac08a27fb78392dbd99aed0a6396",
+  "question": "Can a fixed pretrained EEG encoder and a fixed single-token classifier mapping yield a useful observed-action decoder on the existing enriched cohort?",
+  "interpretation": {
+    "exploratory": true,
+    "prior_v3_test_results_seen_for_design": true,
+    "fresh_confirmatory_test": false,
+    "within_run_selection_partition": "validation",
+    "test_used_for_within_run_hyperparameter_selection": false,
+    "simultaneous_changes": [
+      "pretrained frozen EEG encoder replaces trainable CNN",
+      "single-token restricted next-token CE replaces variable-length candidate-sequence likelihood"
+    ],
+    "causal_effect_of_either_change_identified": false,
+    "natural_use_probability_calibrated": false,
+    "agentic_goal_validated": false,
+    "ITU_used": false
+  },
+  "backbone": {
+    "model": "HuggingFaceTB/SmolLM2-1.7B-Instruct",
+    "revision": "31b70e2e869a7173562077fd711b654946d38674",
+    "frozen": true
+  },
+  "eeg_encoder": {
+    "source": "https://github.com/wjq-learning/CBraMod",
+    "commit": "b9e961003214326972c567eff390e75b0287e32a",
+    "weights_repo": "weighting666/CBraMod",
+    "weights_revision": "500543c7e30bda1b22bfd51a49301b238dee21fd",
+    "weights_sha256": "0792cb808c14e6b7a2bb2ce1dff379bc47bc54c49a779825bdfeb33bf8157178",
+    "device": "cpu",
+    "dtype": "float32",
+    "frozen": true,
+    "parameters": 4883800
+  },
+  "input": {
+    "source_channels": [
+      "CP3",
+      "C3",
+      "F5",
+      "PO3",
+      "PO4",
+      "F6",
+      "C4",
+      "CP4"
+    ],
+    "source_sample_rate_hz": 256,
+    "source_samples": 448,
+    "source_window_seconds": 1.75,
+    "used_samples": 256,
+    "used_seconds": 1,
+    "position": "final second inside fixed pre-action window",
+    "unit": "V",
+    "scale": 10000,
+    "resample": "scipy.signal.resample_poly up25/down32 on extracted last256 samples, default zero padding",
+    "encoder_input_shape": [
+      "batch",
+      8,
+      1,
+      200
+    ],
+    "prefix_tokens": 8,
+    "feature_per_channel": 200,
+    "connector": "LayerNorm(200) then Linear(200, Smol hidden_size)",
+    "normalization": "no per-window z-score",
+    "online_causality_verified": false
+  },
+  "labels": {
+    "classes": [
+      "ai_prompt_submit",
+      "keyboard",
+      "mouse_click"
+    ],
+    "tokens": [
+      " A",
+      " B",
+      " C"
+    ],
+    "token_ids": [
+      330,
+      389,
+      340
+    ],
+    "old_answer_token_counts_including_eos": [
+      6,
+      2,
+      4
+    ],
+    "token_audit_partition": "train",
+    "token_audit_windows": 400,
+    "joint_boundary_checks": 2400,
+    "token_audit_report_sha256": "1f7c5265786e072badebd3fe89bed7e4df1dafa68d30ef3367c5cff3901428ab",
+    "training_objective": "unweighted cross entropy of exactly the three next-token vocabulary logits",
+    "inference": "softmax over those same three logits, one forward pass, no candidate answer or EOS tokens supplied",
+    "mapping_counterbalanced": false
+  },
+  "fixed_partitions": {
+    "train": {
+      "subjects": 18,
+      "windows": 400,
+      "ai_requests": 80
+    },
+    "val": {
+      "subjects": 6,
+      "windows": 155,
+      "ai_requests": 31
+    },
+    "test": {
+      "subjects": 8,
+      "windows": 203,
+      "ai_requests": 39
+    }
+  },
+  "capacity_selection": {
+    "candidate_batches": [
+      8,
+      16,
+      32
+    ],
+    "minimum_steps": 50,
+    "minimum_training_examples": 400,
+    "maximum_probe_seconds": 120,
+    "fresh_process_per_candidate": true,
+    "fixed_seed_per_candidate": 20261122,
+    "partitions_used": [
+      "train"
+    ],
+    "last_ten_reserved_range_max_bytes": 268435456,
+    "rule": "largest completed within-budget candidate with at least50 steps, at least one train epoch equivalent, and stable last10 allocator readings",
+    "weights_reused_for_main_training": false,
+    "selection_receipt_required": true,
+    "failed_probes_preserved": true,
+    "short_probe_does_not_prove_sustained_training_fit": true
+  },
+  "training": {
+    "epochs": 30,
+    "max_seconds": 900,
+    "memory_budget_gib": 21,
+    "lr": 0.001,
+    "weight_decay": 0.01,
+    "gradient_clip_norm": 1.0,
+    "seed": 20261122,
+    "dtype": "bfloat16",
+    "max_prompt_tokens": 128,
+    "abstain_threshold": 0.8,
+    "cpu_threads": 2,
+    "optimizer": "AdamW",
+    "batch_size": "from sealed train-only capacity-selection receipt",
+    "init": "fresh fixed seed; no capacity-probe projector reuse",
+    "lora_rank": 0,
+    "best_checkpoint": "validation balanced accuracy, earliest checkpoint wins ties",
+    "time_scope": "loop and validation elapsed; an in-flight step/final validation can finish after stop is observed; actual time recorded",
+    "resume_time_budget": "cumulative saved elapsed, not a fresh900 seconds"
+  },
+  "evaluation": {
+    "runner_sha256": "bd92732e088ff633d2ff299161cf47a8a5630435c4c425dbae7992f563bc0447",
+    "gate_id": "cbramod_smollm2_uniba_v3_symbol_evaluation",
+    "receipt": "runs/cbramod_smollm2_uniba_v3_symbol_v1/variant_evaluation_completion.json",
+    "checkpoint": "runs/cbramod_smollm2_uniba_v3_symbol_v1/best.pt",
+    "test_windows": 203,
+    "conditions": [
+      "fused",
+      "context_only",
+      "eeg_only",
+      "eeg_shuffled",
+      "eeg_time_shifted"
+    ],
+    "same_checkpoint_all_conditions": true,
+    "context_only": "zero EEG input through fixed encoder; distribution-shift input-removal ablation",
+    "eeg_only": "remove environment text, preserve fixed mapping instruction",
+    "shuffle": "within-recording nonzero cyclic permutation",
+    "time_shift": "actual raw EEG10 seconds earlier, independently verify source and original prepared array",
+    "threshold": 0.8,
+    "primary_classification": "forced three-class balanced accuracy plus complete confusion matrix",
+    "reported_with_abstention": [
+      "coverage",
+      "selective accuracy",
+      "macroF1 including abstention false negatives"
+    ],
+    "observed_request_binary": "A probability threshold0.5, AUROC, AP, participant bootstrap; existing history score-predictions, no new model inference",
+    "idle_false_actions_or_goal_completion": "unavailable; no synthetic traces added"
+  },
+  "m1_trial": {
+    "partition": "train",
+    "examples": 3,
+    "selection": "first sorted ID per recorded class",
+    "same_encoder_device": "cpu",
+    "llm_device": "mps",
+    "budget_gib": 8,
+    "checkpoint": "same L4 validation-selected best, after five-condition evaluation receipt",
+    "model_or_threshold_changed": false,
+    "actions": "dry-run router only, OS0, cloud agent0"
+  },
+  "execution_preconditions": [
+    "new controller gate has a live tick",
+    "previous Qwen workflow evaluation is complete and GPU is idle",
+    "source, protocol, official EEG weights, immutable Smol revision and prepared arrays match",
+    "public files and prior run/checkpoints remain unchanged"
+  ]
+}

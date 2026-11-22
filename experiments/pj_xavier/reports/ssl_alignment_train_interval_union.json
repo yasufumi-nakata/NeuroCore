@@ -1,0 +1,11 @@
+{
+  "schema": "xavier-cross-stage-train-EEG-interval-union-v1",
+  "source_key": "original binary SHA256",
+  "SSL_unique_seconds": 50340,
+  "alignment_latest_second_unique_seconds": 400.0,
+  "combined_unique_seconds": 50737.0,
+  "cross_stage_overlap_seconds": 3.0,
+  "SSL_manifest_sha256": "216729840806ca20040331baf59ddeadea4e62bc48a19a57c183810e13dd9043",
+  "alignment_manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "scope": "Full registered training cohorts only; no validation/test EEG or epoch repeats added. Alignment is still executing; this is the fixed input union, not proof of completion."
+}

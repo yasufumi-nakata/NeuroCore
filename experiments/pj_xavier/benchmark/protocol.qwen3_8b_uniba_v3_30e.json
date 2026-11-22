@@ -1,0 +1,103 @@
+{
+  "schema": "pj-xavier-v3-qwen-30epoch-frozen-training-protocol-v1",
+  "registered_at_utc": "2026-11-22T00:56:12Z",
+  "run_name": "qwen3_8b_aicoding_uniba_natural_v3_fused_30e_v1",
+  "status_at_registration": "not_started; this run has no validation/test predictions",
+  "authorization_basis": "Root delegated the user's maximum-within-environment training objective and explicitly requested 30 epochs for a validation learning curve before any v3 Qwen test.",
+  "prior_information_disclosure": "v2 model scores and v3 CPU history-baseline scores were already visible. The 30-epoch budget was explicitly specified by the root task, not selected by maximizing those test scores. All Qwen hyperparameters below are fixed before this run; an independent future confirmation cohort is still required.",
+  "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "cohort_protocol_sha256": "d4e6c5f685dce53e73b3aa88d12ed07c88a8ac08a27fb78392dbd99aed0a6396",
+  "subject_split_sha256": "bdf214b16c92b33c889b5bcb8b4ec7b888877c40d7992be8a796cdbc8ae23dae",
+  "model_source_sha256": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+  "reference_eeg_artifacts_sha256": "0a2989891e46e2aacab785df162a84376f18acde444deb49e341a3b96969192f",
+  "reference_training_membership_sha256": "5d8636f427f705d7c914797f3b505cc158225684ef278f730c92b1ef45b647f0",
+  "cohort": {
+    "train": 400,
+    "validation": 155,
+    "test": 203,
+    "subjects": {
+      "train": 18,
+      "validation": 6,
+      "test": 8
+    },
+    "ai_prompt_submit": {
+      "train": 80,
+      "validation": 31,
+      "test": 39
+    },
+    "sampling_design": "case_control_enriched",
+    "source_hours_reused_from_v2": true
+  },
+  "model": {
+    "id": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "mode": "fused",
+    "trainable_scope": "EEG encoder and prefix connector; pretrained base frozen, lora_rank=0",
+    "max_base_params": 9000000000
+  },
+  "training": {
+    "epochs": 30,
+    "batch_size": 4,
+    "candidate_batch_size": 4,
+    "lr": 0.001,
+    "seed": 20261122,
+    "prefix_tokens": 8,
+    "encoder_width": 64,
+    "samples": 448,
+    "max_prompt_tokens": 256,
+    "lora_rank": 0,
+    "abstain_threshold": 0.8,
+    "split_policy": "subject",
+    "device": "cuda",
+    "dtype": "bfloat16",
+    "memory_budget_gib": 21,
+    "max_seconds": 3600,
+    "finalize_test": false
+  },
+  "environment": {
+    "PYTORCH_ALLOC_CONF": "expandable_segments:True",
+    "HF_HUB_OFFLINE": "1",
+    "TOKENIZERS_PARALLELISM": "false"
+  },
+  "selection": {
+    "partition": "validation",
+    "metric": "balanced_accuracy",
+    "tie_policy": "earliest checkpoint",
+    "test_used_for_selection": false,
+    "save_every_epoch": true,
+    "complete_epoch_steps": 100,
+    "maximum_complete_training_steps": 3000
+  },
+  "stop_handling": {
+    "completed_epochs": "Freeze best checksum then one five-condition final test after GPU process exit.",
+    "stopped_time_budget": "Normal predeclared budget exhaustion may proceed to one frozen final evaluation only after at least one validated epoch, an existing validation-selected best, and passed resource/integrity checks. Report actual epochs/steps/status; never relabel as completed_epochs or claim 30 epochs completed.",
+    "stopped_memory_budget": "Preserve checkpoint and block final evaluation pending resolution.",
+    "process_failure": "Preserve logs/receipts; no success or final-test claim."
+  },
+  "evaluation": {
+    "conditions": [
+      "fused",
+      "context_only",
+      "eeg_only",
+      "eeg_shuffled",
+      "eeg_time_shifted"
+    ],
+    "raw_time_shift_seconds": -10,
+    "test_ids_frozen": true,
+    "checkpoint_shared_all_conditions": true,
+    "condition_specific_retraining": false,
+    "interpretation": "Input ablations on the same fused checkpoint, not independently trained baselines."
+  },
+  "comparison_limits": [
+    "Smol1.7B v3 uses 3 epochs whereas this run allows 30; differences cannot be attributed to parameter count alone.",
+    "Natural-population precision and false-actions/minute are unavailable for the enriched case-control cohort.",
+    "Public EEG offline preprocessing and original-XDF equivalence remain unverified.",
+    "Observed request transmissions and other action events do not establish latent intent or harness task completion."
+  ],
+  "autonomous_agent_validated": false,
+  "amendment_before_training": {
+    "at_utc": "2026-11-22T00:57:53Z",
+    "previous_registration_sha256": "e65acead259f0fe3cb06ff7db85bc5ad087f9440a7a8578468a130fdfff03ad0",
+    "basis": "Root explicitly authorized single final evaluation after the predeclared 3600-second budget if at least one epoch has validation, a best checkpoint exists, and resource/integrity gates pass; no hyperparameter changes."
+  }
+}

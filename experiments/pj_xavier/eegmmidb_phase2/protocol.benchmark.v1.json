@@ -1,0 +1,195 @@
+{
+  "schema": "pj-xavier-eegmmidb-phase2-benchmark-plan-v1",
+  "status": "planned_configuration_requires_hash_pinned_execution_seal_before_fit_and_test",
+  "created_utc": "2026-11-22T04:00:46Z",
+  "seed": 20261122,
+  "primary_task": "left_right",
+  "tasks": {
+    "left_right": [
+      "left_fist",
+      "right_fist"
+    ],
+    "fists_feet": [
+      "both_fists",
+      "both_feet"
+    ]
+  },
+  "input": {
+    "shape": [
+      64,
+      600
+    ],
+    "sample_rate_hz": 200.0,
+    "unit": "V",
+    "target": "recorded_cue_condition",
+    "independent_subject_splits_required": true,
+    "review_flagged_records_allowed": false
+  },
+  "csp": {
+    "components": [
+      4,
+      8,
+      16
+    ],
+    "covariance": "per_trial_demeaned_trace_normalized_mean_by_class",
+    "class_covariance_shrinkage": 0.1,
+    "eigenvalue_order": "alternate_largest_smallest",
+    "features": "log_mean_square_projected_demeaned_input",
+    "lda_solver": "lsqr",
+    "lda_shrinkage": "auto",
+    "lda_priors": [
+      0.5,
+      0.5
+    ],
+    "selection_metric": "mean_subject_balanced_accuracy",
+    "tie_break": "fewer_components",
+    "refit_on_validation": false
+  },
+  "model_selection": {
+    "partition": "val",
+    "test_used_for_tuning": false,
+    "checkpoint_selection": "validation_only_before_test",
+    "primary_metric": "left_right_mean_subject_balanced_accuracy",
+    "missing_subject_class_policy": "exclude_from_macro_mean_and_report_count; zero_eligible_subjects_blocks_selection",
+    "CSP_independent_task_heads": "each_task_uses_its_own_validation_subject_macro_balanced_accuracy"
+  },
+  "conditions": [
+    "fused",
+    "context_only",
+    "eeg_only",
+    "eeg_shuffled",
+    "eeg_time_shifted"
+  ],
+  "controls": {
+    "shuffle": "within_dataset_subject_session_recording_task_derangement",
+    "time_shift_seconds": -10.0,
+    "raw_shift_required": true,
+    "unavailable_policy": "explicit_blocked_without_fill",
+    "paired_comparison": "same_metadata_frozen_shift_available_IDs_for_fused_shuffle_shift; main_full_test_reported_separately"
+  },
+  "idle_diagnostic": {
+    "source": "public_T0_rest_in_MI_runs",
+    "partition": "test_only",
+    "separate_manifest_and_arrays": true,
+    "used_for_fit_or_selection": false,
+    "threshold": 0.8,
+    "report": "fraction_accepted_as_binary_action",
+    "natural_idle_ground_truth": false,
+    "false_actions_per_minute": null,
+    "execution_seals": [
+      "idle_manifest_sha256",
+      "idle_artifacts_sha256",
+      "idle_metadata_protocol_sha256"
+    ]
+  },
+  "metrics": {
+    "primary": "mean_subject_balanced_accuracy",
+    "secondary": [
+      "pooled_balanced_accuracy",
+      "macro_f1",
+      "auroc",
+      "negative_log_likelihood",
+      "brier",
+      "ece",
+      "abstention_coverage",
+      "latency",
+      "memory"
+    ],
+    "probability_threshold": 0.5,
+    "acceptance_threshold": 0.8,
+    "ece_bins": 10,
+    "bootstrap_repetitions": 1000,
+    "bootstrap_unit": "participant",
+    "bootstrap_paired": true,
+    "multiplicity_adjusted": false,
+    "uncertainty": [
+      "each_condition_subject_cluster_intervals",
+      "fused_minus_control_paired_subject_cluster_intervals_on_fixed_control_subset"
+    ]
+  },
+  "harness": {
+    "schema": "synthetic_mapping_task_v1",
+    "candidate_ids": [
+      "X",
+      "Y"
+    ],
+    "candidate_single_token_probe_required": true,
+    "positions": [
+      "left",
+      "right"
+    ],
+    "mapping_variants_per_record": 4,
+    "mapping_generation": "all_control_ID_and_ID_position_permutations_with_seeded_presentation_order",
+    "target_independent_context_generation": true,
+    "router": "same_frozen_Smol_backbone_without_EEG_prefix",
+    "routing_generation": {
+      "do_sample": false,
+      "max_new_tokens": 8
+    },
+    "parse": "strip_whitespace_then_full_match_exact_X_or_Y",
+    "invalid_policy": "no_state_change",
+    "abstention_policy": "max_decoder_probability_below_0.8_no_action",
+    "controls": [
+      "context_only",
+      "eeg_shuffled",
+      "eeg_time_shifted",
+      "gold_class_upper_bound",
+      "deterministic_reference_route"
+    ],
+    "identical_prompt_cache": true,
+    "unique_LLM_prompt_count_expected": 16,
+    "real_OS_actions": false,
+    "freeform_intent_claim": false
+  },
+  "resource_contract": {
+    "cpu_threads": 2,
+    "disk_reserve_gib": 35,
+    "maximum_gpu_budget_gib": 21,
+    "new_absolute_deadline_and_CU_budget_required": true,
+    "Colab_access": "workstation_CLI_only"
+  },
+  "acceptance_scope": {
+    "scientific_success_threshold_established": false,
+    "decoder_criteria_are_exploratory": true,
+    "online_causal_input_proof_required": true,
+    "context_and_negative_control_comparisons_required": true,
+    "held_out_real_world_task_completion": false,
+    "autonomous_agent_validated": false
+  },
+  "immutable_prior_runs": [
+    "EEGlass",
+    "UniBa",
+    "ITU",
+    "CBraMod_SSL_phase1"
+  ],
+  "execution_seal_required": [
+    "prepared_manifest_sha256",
+    "artifacts_sha256",
+    "control_artifacts_sha256",
+    "paired_control_subset_sha256",
+    "subject_split_sha256",
+    "metadata_protocol_sha256",
+    "preprocessing_protocol_sha256",
+    "analysis_plan_sha256",
+    "source_sha256",
+    "actual_budget_receipt_sha256"
+  ],
+  "scope": "Two separately scored public cue-response motor-imagery tasks. Synthetic target mapping is a bounded in-memory environment; it is not freeform thought decoding, spontaneous intent, or real OS task completion.",
+  "condition_interpretations": {
+    "CSP_and_scratch": "fused and eeg_only share the same task-specific head and may be identical; they are separate recorded conditions, not separately trained baselines",
+    "fused_Smol_eeg_only": "task explanation removed and generic A/B classification prompt used; family-specific label mapping remains external",
+    "context_only": "same trained checkpoint with zero EEG; CSP uses fixed equal priors; no separate context-only fit",
+    "probability": "restricted two-logit softmax; threshold0.8 is fixed experimental abstention, not a validated intent-confidence calibration"
+  },
+  "preprocessing_QC_decision": {
+    "selected_on": "training-only waveform diagnostics before validation/test signal processing",
+    "max_absolute_voltage_V": 0.0005,
+    "minimum_channel_population_std_V": 1e-08,
+    "finite_required": true,
+    "rescale_or_clip": false,
+    "above_100uV_flag_preserved": true,
+    "scope": "Exploratory gross-amplitude exclusion; not a physiological normality or standard artifact-removal guarantee",
+    "historical_train_only_100uV_diagnostic_retained": true,
+    "threshold_selection_uses_heldout_performance": false
+  }
+}

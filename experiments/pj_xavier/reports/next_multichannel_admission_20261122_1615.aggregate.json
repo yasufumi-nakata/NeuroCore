@@ -1,0 +1,89 @@
+{
+  "all_records_held_for_signal_QC_and_gates": true,
+  "blocked_supervised_timing": [
+    "bci27",
+    "p30032",
+    "cnt14",
+    "ssvep64_processed"
+  ],
+  "known_old_split_count_preserved": {
+    "test": 17,
+    "train": 76,
+    "val": 16
+  },
+  "missing_source_group_by_source": {},
+  "must_link_component_count": 184,
+  "new_gold_labels_from_AI": 0,
+  "new_gradient_input_hours": 0,
+  "online_causal_samples_admitted": 0,
+  "private_manifest_sha256": "555b3247b6a9eadcf48bed22f29ef381b06a601e87909241aedcc60900c70e1d",
+  "proposed_metadata_split_counts": {
+    "bci27": {
+      "test": 144,
+      "train": 382,
+      "val": 168
+    },
+    "brainstorm": {
+      "test": 1,
+      "train": 8,
+      "val": 1
+    },
+    "cnt14": {
+      "test": 6,
+      "train": 14,
+      "val": 6
+    },
+    "compact14_16": {
+      "test": 14,
+      "train": 40,
+      "val": 14
+    },
+    "inmid14": {
+      "test": 16,
+      "train": 76,
+      "val": 0
+    },
+    "p30032": {
+      "test": 19,
+      "train": 77,
+      "val": 9
+    },
+    "small_bci_mixed": {
+      "test": 26,
+      "train": 40,
+      "val": 16
+    },
+    "ssvep64_processed": {
+      "test": 4,
+      "train": 40,
+      "val": 0
+    }
+  },
+  "records_checked": 1121,
+  "schema": "pj_xavier_next_multichannel_cpu_admission_v1",
+  "source_counts": {
+    "bci27": 694,
+    "brainstorm": 10,
+    "cnt14": 26,
+    "compact14_16": 68,
+    "inmid14": 92,
+    "p30032": 105,
+    "small_bci_mixed": 82,
+    "ssvep64_processed": 44
+  },
+  "source_input_sha256": {
+    "private/xavier/eegmmidb_phase2_v1/metadata/subject_split.json": "e5b38cbe78f1c0c8c06384c91266db40a8801be20b72262786502f6b5ce2e9c9",
+    "private/xavier/expansion_candidates_v1/Brainstorm_header_audit_v1/records.jsonl": "bad4dec20be3eb0a93be457f11bec298a30184b6f320dae0e258de8e99b1fb0c",
+    "private/xavier/expansion_candidates_v1/InMID_header_audit_v1/records.jsonl": "e25206409c48ffd854cf3a3f45f3624d5471426a933f82885b1396b8d9af6669",
+    "private/xavier/expansion_candidates_v1/MI_threeclass_header_audit_v1/records.jsonl": "c8b8ad27c34c072cc26bf371a61282c646ddf39977677de503fc41646bbcfa22",
+    "private/xavier/expansion_candidates_v1/P300_header_audit_v1/records.jsonl": "f224d041be020b14a911f3b343a3cecdbf9602df8e8effd06695312a1de1ac3c",
+    "private/xavier/expansion_candidates_v1/SSVEP2392979_duplicate_constraints_v1/future_split_constraints.private.json": "549f87071ad1a415b80181f5ea0229f43d1797c180a65674fc077729b3b184b0",
+    "private/xavier/expansion_candidates_v1/SSVEP_header_audit_v2/records.jsonl": "ee34f2d097df6eedd631fbd358864e200133efb698a5e746cda43fab608d634b",
+    "private/xavier/expansion_candidates_v1/bci_header_audit_v2/future_training_constraints_v1.json": "3adca0c48cc582846eb3f0a0dfa7b52a6f3723f840932acaa430576a12f2ee65",
+    "private/xavier/expansion_candidates_v1/bci_header_audit_v2/recordings.jsonl": "ba13f499b92d498842b41dff906423afc77d5fdfde720c6da0da173c86413912",
+    "private/xavier/expansion_candidates_v1/header_audit_v1/records.jsonl": "e2e77605ad7494717a1b7d796a6db72eeca795903d5305693b79f323ca743578",
+    "private/xavier/expansion_candidates_v1/small_BCI_batch_header_audit_v1/records.jsonl": "ff12285c7e339027d3c86e66f376b3cb43cc2b90b41d280cc82583669bcaad14"
+  },
+  "status": "metadata_only_all_new_source_gradient_exposure_zero",
+  "warning": "Proposed metadata splits are not approved subject identities or independent heldout claims. Reconcile cross-source waveform hashes and group identity before fit. Never use old val/test in SSL."
+}
