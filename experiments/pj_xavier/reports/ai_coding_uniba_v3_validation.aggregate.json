@@ -1,0 +1,45 @@
+{
+  "status": "verified",
+  "preparation_device": "cpu",
+  "gpu_visible": false,
+  "model_loaded": false,
+  "source_code_sha256": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+  "frozen_loader_sha256": "38e3cca302b456f5c918c03d93d5f71d77ffe636efbc3f90840cf89ac2d8badc",
+  "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "registered_protocol_sha256": "d4e6c5f685dce53e73b3aa88d12ed07c88a8ac08a27fb78392dbd99aed0a6396",
+  "subject_split_unchanged": true,
+  "learner_data_validation": {
+    "split_policy": "subject",
+    "counts": {
+      "train": {
+        "mouse_click": 160,
+        "keyboard": 160,
+        "ai_prompt_submit": 80
+      },
+      "val": {
+        "mouse_click": 62,
+        "keyboard": 62,
+        "ai_prompt_submit": 31
+      },
+      "test": {
+        "mouse_click": 82,
+        "keyboard": 82,
+        "ai_prompt_submit": 39
+      }
+    },
+    "synthetic_diagnostic": false,
+    "subjects": 32,
+    "physical_source_hashes_checked": 32,
+    "scope": "subject",
+    "checks": "metadata-based; semantic intent correctness and source clock correctness are not proven"
+  },
+  "prepared_arrays_verified": 32,
+  "all_waveforms_finite": true,
+  "all_history_cutoffs_checked": true,
+  "nonoverlapping_input_windows": true,
+  "frozen_parent_phase_hash_enforced": true,
+  "manifest_unchanged_after_extra_phase_hash_guard": true,
+  "request_windows_with_key_or_mouse_activity_in_eeg_window": 140,
+  "request_windows_total": 150,
+  "training_started": false
+}

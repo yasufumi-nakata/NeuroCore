@@ -1,0 +1,9 @@
+{
+  "catalog_rows": 5165,
+  "bulk_candidate_releases": 403,
+  "bulk_manifest_files": 29206,
+  "bulk_whole_release_bytes": 4662735278723,
+  "meaning": "candidate release bytes, all included modalities, overlaps unresolved; not unique EEG or downloaded bytes",
+  "created_at": "2026-11-21T23:28:01.043352+00:00",
+  "full_manifest_sha256": "ddcd72f85eb0e37d3cc36de945498c256ba94387f5e5060ed217e0b00086297d"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "pj-xavier-proposed-replay-targets-v1",
+  "basis": "Proposed engineering targets for the first meaningful replay milestone. These values are not empirical predictions, published norms, or a claim of user approval. Version before starting model selection; modify only before a fresh evaluation freeze.",
+  "limits": {
+    "min_test_participants": 5,
+    "min_replay_episodes": 100,
+    "min_macro_f1": 0.6,
+    "min_coverage": 0.5,
+    "min_selective_accuracy": 0.8,
+    "min_task_completion_rate": 0.8,
+    "min_idle_minutes": 60,
+    "max_false_actions_per_minute": 0.1,
+    "max_p95_latency_ms": 2000
+  }
+}

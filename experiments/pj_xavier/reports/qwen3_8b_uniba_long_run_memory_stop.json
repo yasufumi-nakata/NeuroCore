@@ -1,0 +1,19 @@
+{
+  "observed_at_utc": "2026-11-22T00:23:06.192616+00:00",
+  "source": "/content/xavier/runs/qwen3_8b_aicoding_uniba_fused_v1/run_summary.json",
+  "status": "stopped_memory_budget",
+  "global_step": 24,
+  "next_batch_position": 192,
+  "last_checkpoint": "epoch_001_step_0000024.pt",
+  "memory_budget_bytes": 22548578304,
+  "process_peak_rss_bytes": 5123588096,
+  "cuda_peak_allocated_bytes": 20423472128,
+  "cuda_peak_reserved_bytes": 23290970112,
+  "allocator_reservation_exceeded_budget": true,
+  "allocated_tensor_bytes_within_budget": true,
+  "exit_code_reported_by_parent": 2,
+  "interpretation": "The three-step fixed-shape probe did not establish sustained memory capacity. Longer variable-shape execution increased allocator reservation beyond the guard; fragmentation/caching is a hypothesis, not a proven cause.",
+  "parent_followup": "Resume same checkpoint/batch/seed/code with PYTORCH_ALLOC_CONF=expandable_segments:True; if it fails again, use a separately identified batch4 fresh run. Completion of the retry has not been observed by this report.",
+  "code_sha256": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+  "manifest_sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac"
+}

@@ -1,0 +1,18 @@
+{
+  "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "processor": "x86_64",
+  "device": "cuda",
+  "python": "3.13.16",
+  "torch": "2.14.1+cu130",
+  "transformers": "5.22.1",
+  "accelerator": "NVIDIA L4",
+  "accelerator_memory_bytes": 23659151360,
+  "system_memory_bytes": 56863301632,
+  "base_parameter_count": 8190735360,
+  "resolved_revision": "b968826d9c46dd6066d109eabc6255188de91218",
+  "pretrained": true,
+  "estimated_weight_bytes": 16381470720,
+  "trainable_parameters": 296896,
+  "frozen_parameters": 8190735360
+}

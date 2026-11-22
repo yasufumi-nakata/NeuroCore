@@ -1,0 +1,99 @@
+{
+  "date_jst": "2026-11-22",
+  "scope": "EEG prefix into frozen/optionally LoRA causal LLM; no standalone-agent capability claim",
+  "files": {
+    "eeg_llm.py": {
+      "sha256": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+      "bytes": 49958
+    },
+    "prepare_eeglass.py": {
+      "sha256": "eba3392c07f1ea7d5a5625ab95f8853eb765d7c17bce48000303c73bdc8068ab",
+      "bytes": 7433
+    },
+    "prepare_ai_coding.py": {
+      "sha256": "38e3cca302b456f5c918c03d93d5f71d77ffe636efbc3f90840cf89ac2d8badc",
+      "bytes": 23961
+    },
+    "profile_training.py": {
+      "sha256": "f83496a47811c3b9757000fd66387104d768ff79fc63068ad9e428f9167f3c25",
+      "bytes": 5723
+    },
+    "test_eeg_llm.py": {
+      "sha256": "4eda2b90d54eabd13a0a56b80d4d11624b75405db146b82bb330f3462c060dbc",
+      "bytes": 16454
+    },
+    "test_ai_coding.py": {
+      "sha256": "39a193b2ad3ed4cb11daccee6fb587580544471762534c8842772ee65128e40c",
+      "bytes": 6317
+    },
+    "fixtures/ai_coding_v2_minimal_recorded_schema.json": {
+      "sha256": "d1bb40abd115e6f3e6be7d37e570f3743d33633833f9a48eef4a8d210bed5720",
+      "bytes": 1956
+    },
+    "audit_filter_support.py": {
+      "sha256": "db5cbb97cbdb5f3a865bc6e4b3a0fa8cf692b5e88d5039b505fc59a1b48da5b2",
+      "bytes": 2382
+    },
+    "filter_support_evidence.json": {
+      "sha256": "bde08c5222bb2f08bd65645146b60799c6aaa01df003e59d21039d49a8f10d97",
+      "bytes": 1063
+    },
+    "requirements.txt": {
+      "sha256": "405f27133f2b58a853c042afa6d74c97d9c54d487668019ecc738944452d9ad8",
+      "bytes": 304
+    },
+    "README.md": {
+      "sha256": "d34b47f550caddf58cfefcbed02c0694602b5c14de2b1b9345ffc8a63d597932",
+      "bytes": 22020
+    },
+    "ai_coding_training_plan.json": {
+      "sha256": "6881df1519798abe0618719baca10be2eeb8bde083a52d0d57f81c1da03955a8",
+      "bytes": 3692
+    }
+  },
+  "verified": {
+    "unit_tests_total": 36,
+    "model_tests": 24,
+    "alignment_tests": 12,
+    "offline_random_backbone_full_pipeline": true,
+    "checkpoint_predict_roundtrip": true,
+    "mid_epoch_resume_bitwise_match": true,
+    "real_eeg_training_by_this_agent": false,
+    "last_full_suite_count": 35,
+    "last_full_suite_seconds": 5.885,
+    "last_full_suite_environment": {
+      "python": "3.13.16",
+      "torch": "2.14.1+cu130",
+      "transformers": "5.22.1",
+      "accelerator": "NVIDIA L4"
+    },
+    "additional_targeted_cuda_index_regression_passed": true,
+    "real_ai_coding_archive_and_clock_audit": true,
+    "real_ai_coding_train_only_capacity_grid": true,
+    "initial_cpu_environment": {
+      "python": "3.12.14",
+      "torch": "2.15.0+cpu",
+      "transformers": "4.57.6",
+      "platform": "Linux x86_64"
+    },
+    "test_timing_note": "35-test combined suite passed on Colab in 5.885s; the added CUDA-index regression then passed separately on CPU in 0.001s, and all four real CUDA capacity probes passed with the corrected allocator."
+  },
+  "pending": {
+    "main_ai_coding_training": "Parent reported launch of supervisor PID15167; model agent did not launch or observe completion. Receipt /content/xavier/train_uniba_launch.json.",
+    "final_checkpoint_variants": "benchmark agent prepares evaluation; parent launches"
+  },
+  "known_limits": [
+    "EEGlass: one-participant observed-action pilot, no actual environment context",
+    "AIcoding: source exporter offline zero-phase filter has conditional future support of 4.125s at 256Hz",
+    "AIcoding: original XDF unavailable; current loader leaves online_causality_verified=false",
+    "MPS memory statistics sampled; allocator limit does not cover CPU allocations or other processes",
+    "Old checkpoints without EEG array hashes are inference-compatible but strict resume is rejected",
+    "AIcoding strict pre-action preparation leaves only 5 agent-request windows; insufficient to establish delegation accuracy"
+  ],
+  "do_not_publish": [
+    ".venv/",
+    "offline_diagnostic/",
+    "research_sources/",
+    "__pycache__/"
+  ]
+}

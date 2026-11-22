@@ -1,0 +1,75 @@
+{
+  "schema_version": "pj-xavier-variant-runner-validation-v1",
+  "validated_at": "2026-11-22T00:22:35.091Z",
+  "status": "implementation_ready_gpu_evaluation_not_executed",
+  "code_sha256": {
+    "evaluate_variants": "bd92732e088ff633d2ff299161cf47a8a5630435c4c425dbae7992f563bc0447",
+    "xavier_benchmark": "3044e8e406f8fe73c9b5a7e58d23d1011d370241637e282f125175e018595956",
+    "model_adapter": "899ed6ff5b030eda88cd81fc7b6b88b55de2141b14f314c86866979b50c8dae6",
+    "eeg_llm": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f"
+  },
+  "tests": {
+    "command": "xavier_implementation/model/.venv/bin/python -m unittest discover -s xavier_implementation/benchmark -p 'test_*.py'",
+    "passed": 40,
+    "failed": 0,
+    "new_runner_tests": 13,
+    "cpu_only": true,
+    "real_llm_loaded": false,
+    "real_test_evaluation_performed": false,
+    "scope": "Synthetic BrainVision fixtures physically decoded by MNE; fake inference interface for orchestration/receipt; actual torch checkpoint serialization on CPU."
+  },
+  "verified_manifest": {
+    "source": "workstation copy of frozen Colab AIcoding v2 manifest",
+    "sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac",
+    "records": 7819,
+    "test_records": 1956,
+    "channels": [
+      "CP3",
+      "C3",
+      "F5",
+      "PO3",
+      "PO4",
+      "F6",
+      "C4",
+      "CP4"
+    ],
+    "sample_rate_hz": 256,
+    "samples_per_window": 448,
+    "test_minimum_start_s": 104.21875,
+    "negative_start_windows_after_minus_10_second_shift": 0,
+    "rare_observed_ai_submit_counts": {
+      "train": 2,
+      "validation": 2,
+      "test": 1
+    }
+  },
+  "implemented": [
+    "Single selected checkpoint and backbone load; no optimizer or model selection change",
+    "Five complete identical-ID condition outputs; missing/ineligible conditions blocked with reasons",
+    "Real distributed BrainVision source extraction exactly 10 seconds earlier",
+    "Checkpoint-sealed original prepared EEG reconstructed from raw before accepting derived source",
+    "Independent strict raw/header/marker/manifest/checkpoint/array hash and value verification",
+    "Subject/session/recording, sample interval, time amount, source ID and artifact-root rejection checks",
+    "No retained mmap per derived window",
+    "Controller completion receipt with same checkpoint, five terminal conditions and actual report hash"
+  ],
+  "not_claimed": [
+    "Unfiltered XDF access",
+    "Prospective causal preprocessing",
+    "Condition-specific independently trained baseline performance",
+    "General latent intent or agent request capability from one held-out submit event",
+    "End-to-end agent latency or task completion"
+  ],
+  "controller": {
+    "receipt_file": "runs/qwen3_8b_aicoding_uniba_fused_v1/variant_evaluation_completion.json",
+    "report_conditions_path": "conditions",
+    "variant_names": [
+      "fused",
+      "context_only",
+      "eeg_only",
+      "eeg_shuffled",
+      "eeg_time_shifted"
+    ],
+    "completion_semantics": "All five execution outcomes measured or explicitly blocked; autonomous_agent_validated and held_out_replay_validated remain false"
+  }
+}

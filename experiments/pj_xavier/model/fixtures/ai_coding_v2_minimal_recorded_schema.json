@@ -1,0 +1,89 @@
+{
+  "source": "https://zenodo.org/records/20801101",
+  "source_behavior_archive_sha256": "fcdeeb7a2ee46b7f8b0a31459c919fc5b4050133ff699c76b7e722da87d6e848",
+  "source_eeg_archive_sha256": "801e3e29ce6c58151c7a3a7aa1be17a6a0ee64d3cd355d43dd09418368a8e195",
+  "scope": "published timestamps and action spellings only; key content removed; participant alias replaced",
+  "participant": "anonymous-fixture-A",
+  "keypress_rows": [
+    {
+      "onset": "103.0788",
+      "duration": "0.1193",
+      "key": "REDACTED",
+      "action": "down"
+    },
+    {
+      "onset": "103.1982",
+      "duration": "10.5209",
+      "key": "REDACTED",
+      "action": "up"
+    },
+    {
+      "onset": "113.7191",
+      "duration": "0.0794",
+      "key": "REDACTED",
+      "action": "down"
+    },
+    {
+      "onset": "113.7985",
+      "duration": "300.0466",
+      "key": "REDACTED",
+      "action": "up"
+    },
+    {
+      "onset": "413.8451",
+      "duration": "0.1199",
+      "key": "REDACTED",
+      "action": "down"
+    },
+    {
+      "onset": "413.965",
+      "duration": "13.5117",
+      "key": "REDACTED",
+      "action": "up"
+    },
+    {
+      "onset": "427.4767",
+      "duration": "0.5087",
+      "key": "REDACTED",
+      "action": "down"
+    },
+    {
+      "onset": "427.9855",
+      "duration": "0.0316",
+      "key": "REDACTED",
+      "action": "down"
+    }
+  ],
+  "phase_anchors": [
+    {
+      "phase_code": 30,
+      "behavior_s": 144.1791,
+      "eeg_s": 381.1015625
+    },
+    {
+      "phase_code": 40,
+      "behavior_s": 265.2634,
+      "eeg_s": 502.18359375
+    },
+    {
+      "phase_code": 50,
+      "behavior_s": 1465.7239,
+      "eeg_s": 1702.62109375
+    },
+    {
+      "phase_code": 70,
+      "behavior_s": 1602.8247,
+      "eeg_s": 1839.71875
+    },
+    {
+      "phase_code": 80,
+      "behavior_s": 1723.3486,
+      "eeg_s": 1960.23828125
+    },
+    {
+      "phase_code": 90,
+      "behavior_s": 2924.3094,
+      "eeg_s": 3161.17578125
+    }
+  ]
+}

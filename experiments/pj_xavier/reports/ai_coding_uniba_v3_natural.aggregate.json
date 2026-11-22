@@ -1,0 +1,61 @@
+{
+  "schema": "xavier-natural-cohort-v3",
+  "status": "prepared",
+  "source": "https://zenodo.org/records/20801101",
+  "protocol_sha256": "d4e6c5f685dce53e73b3aa88d12ed07c88a8ac08a27fb78392dbd99aed0a6396",
+  "preparer_sha256": "e856267e8478f7c65bbc5a1ca5da90f72e38029245f55d7cb9816b15a757430c",
+  "frozen_inputs": {
+    "parent_manifest_sha256": "af878638c2fff6d6c7f619cd22005a057e797f1152553517bf05ce795aec2eac",
+    "parent_subject_split_sha256": "bdf214b16c92b33c889b5bcb8b4ec7b888877c40d7992be8a796cdbc8ae23dae",
+    "parent_alignment_audit_sha256": "b445c7229f1f4f9e2fab4a169c9882e474319c33809c5ce5e18dbfba827cd140",
+    "source_eeg_archive_sha256": "801e3e29ce6c58151c7a3a7aa1be17a6a0ee64d3cd355d43dd09418368a8e195",
+    "source_behavior_archive_sha256": "fcdeeb7a2ee46b7f8b0a31459c919fc5b4050133ff699c76b7e722da87d6e848",
+    "frozen_loader_sha256": "38e3cca302b456f5c918c03d93d5f71d77ffe636efbc3f90840cf89ac2d8badc"
+  },
+  "subject_split_sha256": "bdf214b16c92b33c889b5bcb8b4ec7b888877c40d7992be8a796cdbc8ae23dae",
+  "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "history_features_sha256": "26d01ba8b8b289ea040f6340fd65ad146cea23569fa6d679766e5711c6ae68d9",
+  "sampling_design": "case_control_enriched",
+  "counts": {
+    "train": {
+      "mouse_click": 160,
+      "keyboard": 160,
+      "ai_prompt_submit": 80
+    },
+    "val": {
+      "mouse_click": 62,
+      "keyboard": 62,
+      "ai_prompt_submit": 31
+    },
+    "test": {
+      "mouse_click": 82,
+      "keyboard": 82,
+      "ai_prompt_submit": 39
+    }
+  },
+  "selected_windows": 758,
+  "subjects_per_split": {
+    "train": 18,
+    "val": 6,
+    "test": 8
+  },
+  "raw_request_events_in_clock_passed_records": 150,
+  "selected_request_windows": 150,
+  "parent_selected_request_windows": 5,
+  "source_recording_hours_all": 30.61540256076389,
+  "clock_passed_recording_hours": 28.589534505208334,
+  "retained_recording_hours": 28.589534505208334,
+  "selected_input_hours": 0.3684722222222222,
+  "prepared_eeg_bytes": 10870784,
+  "status_counts": {
+    "prepared": 32,
+    "blocked": 2
+  },
+  "online_causality_verified": false,
+  "latent_intent_labels_available": false,
+  "natural_population_precision_estimated": false,
+  "independent_of_v2_source_hours": false,
+  "goal_benchmark_status": "blocked_pending_causal_preprocessing_real_harness_goals_and_intent_ground_truth",
+  "training_started": false,
+  "preparation_device": "cpu"
+}

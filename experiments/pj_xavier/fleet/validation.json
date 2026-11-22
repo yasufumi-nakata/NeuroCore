@@ -1,0 +1,21 @@
+{
+  "tests": 12,
+  "status": "pass",
+  "actual_SSH_connections_made_by_this_subtask": 0,
+  "actual_dispatches": 0,
+  "secret_handling": false,
+  "dry_plan_summary": {
+    "catalog_rows": 5165,
+    "scope_review_records": 2924,
+    "excluded_or_duplicate_records": 671,
+    "blocked_records_or_file_groups": 23955,
+    "assigned_files": 0,
+    "assigned_file_bytes": 0,
+    "byte_scope": "download_file_bytes_all_modalities_not_EEG_only_not_unique_recording_hours"
+  },
+  "source_sha256": {
+    "fleet.py": "22ef08243ca01d174ee08d2020ee7f4d9a3e2a1eb7f6e119ac0b35d9f7d57aeb",
+    "node_worker.py": "fd2f828dcd7bfa6bec6e515d1d4bd4b7b15ddc28e6143fb4cc7656836e81a6e9",
+    "test_fleet.py": "54665aec6a3591604f7a494595e25d60079d68fe575b1d0c5e2dc64fe1b59744"
+  }
+}
