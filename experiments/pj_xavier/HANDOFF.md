@@ -10,6 +10,16 @@
 
 raw取得・保存・展開・prepared・重み・学習はS Macのみ．smac19を除外，smac31は管理，37台が取得workerです．smac40はDNS未解決で割当なし．workstationはコード・接続・小さな台帳，Colab学習は再開しません．
 
+## 論文査読と文献取得
+
+ユーザーから論文としてのレビューとworkstation経由のScopus文献取得を依頼されました．既存草稿v1（31745 bytes，SHA256 `159164d4bbce4c2df83fd7d9653559ff22127d53c744efd1b177fa25ab01975a`）を本文・実コード・既存結果・一次文献に照合し，主要改稿と新しい対応付き下流実験が必要との査読を完了しました．[統合査読](literature_review_20261123/REVIEW_REPORT_JA.md)，[独立監査](literature_review_20261123/INDEPENDENT_METHODS_REVIEW.md)，同directoryの文献比較・BibTeX・取得台帳を参照します．原稿・モデルの不実な完成報告はせず，B案の主題を維持します．
+
+文献15件のPDFをS Mac31へ保存し，タイトル・版・ページ・テキスト抽出・SHA256・サイズと転送後の再hashを15／15で確認しました．総108,187,805 bytes／344ページ，既存の正規コピー3件と新規公開取得12件です．重点4件は方法本文まで照合し，全15件の精読完了とはしていません．ScopusはDocuments13件，Preprintsのみ2件で照合しました．一括書誌exportは追加のアカウント認証が必要なため未実施で，EIDを推測生成していません．詳しくは[文献取得・検索記録](literature_review_20261123/README.md)を参照します．
+
+最新encoderの対応付き下流評価，強い画面／履歴対照，予測前の同期入力・意図label，未使用評価群が最優先です．文章で直す事項はMSE式の1/200と入力尺度V×1e4，group macroの定義，checkpoint選択手順，過去13.983h系列のMSE悪化，4条件の履歴baseline，近接研究の追加です．既存testを再分割して未知と呼ばず，観測済み結果に合わせて閾値やQCを変更しません．
+
+既存PR71は既にmainへsquash merge済みでした．28新規ファイルのtreeを保持してmain基点のbranch `feat/pj-xavier-paper-review-20261123` に整理し，新しい[Draft PR73](https://github.com/yasufumi-nakata/NeuroCore/pull/73)を作成しました．旧draft PR72は履歴衝突を記録してcloseし，mainへのmerge／force pushは実行していません．中間commit `d801634182b970ffee748fbf59960d3a1c6c7cc5` は9／9 checks，4 workflowsが成功済みです．その後のreview追加commitのCIは必ず別のexact SHAで確認します．
+
 ## 最新の確定モデル
 
 | 項目 | 確定値 |
@@ -68,13 +78,13 @@ source判定の独立照合は42／42 PASS，receipt SHAは `bc3291fc135390dabc5
 
 ## 所有権・接続・科学的条件
 
-正worktreeは `/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training`，branchは `feat/pj-xavier-validation-20261122`，[PR71](https://github.com/yasufumi-nakata/NeuroCore/pull/71)です．
+正worktreeは `/Users/yasufumi/Documents/GitHub/NeuroCore-xavier-training`，branchは `feat/pj-xavier-paper-review-20261123`，[PR73](https://github.com/yasufumi-nakata/NeuroCore/pull/73)です．
 
 最初に `private/xavier/eegmmidb_phase2_v1/coordinator.json` のowner/leaseと実jobを確認します．有効owner中は観測だけにし，lease取得はlock＋atomic writeで行います．古いPIDや既に完了したrunを再起動の根拠にしません．
 
 接続はworkstation通常python3から `private/xavier/smac_execution_20261122/smac_transport.py` の `connect()`／`run_node()`．既存Keychainとsmac31既存cluster credential loader・既知host keyを使い，秘密値を出力・保存・コピーしません．ControlMasterは使いません．smac31のAGENTSとsmac-cluster skillに従います．
 
-MacBookのIPSec VPNは再接続直後に短時間でremote DELETEを受ける事象がありました．既存profileで再接続し，06:04以降に認証済みSSHの定期通信を維持して観測中です．約20分の認証済み通信を確認した後，rootの有効lease中だけ最大30分の接続維持へ移りました．GlobalProtectは既存サービス停止・起動にOS管理者認証が必要な状態を確認しました．恒久的原因は未確定です．VPN状態表示だけで正常と判断せず数値IPへの正規SSHで確認します．最新診断は `private/xavier/smac_execution_20261123/vpn_keepalive_attempt3_v1/state.json` と `vpn_owner_session_keepalive_v1.json`．再接続の無制限ループは作りません．
+MacBookのIPSec VPNは再接続直後に短時間でremote DELETEを受ける事象がありました．既存profileで再接続し，06:04以降の約20分で79／79回の認証済みSSH通信を確認しました．その後はrootの有効lease中だけ最大30分の接続維持を使い，恒久的な再接続ループは設けていません．GlobalProtectは既存サービス停止・起動にOS管理者認証が必要な状態を確認しました．恒久的原因は未確定です．VPN状態表示だけで正常と判断せず数値IPへの正規SSHで確認します．最新診断は `private/xavier/smac_execution_20261123/vpn_keepalive_attempt3_v1/state.json` と `vpn_owner_session_keepalive_v1.json`／`vpn_paper_review_session_v1.json`．再接続の無制限ループは作りません．
 
 prep/fit/transfer/取得controllerはS Mac側detachedで進め，VPN切断で止めません．venv Pythonをresolveしてbase interpreterへ変えません．既存portable GitのPATHとGIT_EXEC_PATHを使用し，source検証を省略しません．sealed trainer SHAは `ad0d8c27352411db52640c077af4b4bb38c6b1652ea20f3e6e965af2c172ca8a`，upstream commitは `b9e961003214326972c567eff390e75b0287e32a` です．
 

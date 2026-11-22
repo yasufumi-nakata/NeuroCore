@@ -18,6 +18,7 @@ PJ-XavierはNeuroCoreのAIを開発する研究です．既定のB案，すな�
 | ICLR | 表現学習，転移学習，異種モダリティの統合 | EEGをLLM/VLM内部へ接続する学習法の新規性と，既存adapter・late fusion等に対する再現可能な改善 |
 | ICML | 方法論・評価法・応用から生じた汎用MLの貢献 | 問題設定と手法の寄与が明確で，十分な対照実験を投稿期限までに完成できる |
 | CVPR | 視覚条件付きの理解，マルチモーダル表現，visual agents | 視覚的な曖昧さの解消や未知画面への汎化が論文の中心的成果になる |
+| CHI | 脳波・視線・画面を通じた人とAIのinteraction | 利用者の意図・注意の曖昧さを解き，誤作動や操作負担を改善する実証が中心になる |
 | Nature Communications | 専門分野に重要な進展をもたらす学際研究 | 複数データ・被験者で再現する科学的知見や，十分な実験を伴う神経・AI融合の進展が得られる |
 
 Nature／Scienceは広い科学的意義を裏付ける成果が得られた場合に再検討します．現在の研究主題に対して，NEJM／The Lancet／Advanced Materials／Cellを通常の第一候補には置きません．投稿先名に合わせて，未取得の臨床・材料・細胞の成果を主張しません．
@@ -27,6 +28,10 @@ h5指標は出版物単位の被引用実績です．研究との適合，方法
 ## 先行研究との差
 
 [UniMind v2](https://arxiv.org/abs/2506.18962v2)は，既にNeuro-Language Connectorとtask-aware queryでEEGをLLMへ接続し，10 datasetsで評価しています．EEGを内部接続することだけを新規性にしません．B案では，判定前の視覚環境・履歴と統合することで何の曖昧さが解消し，EEGがどの条件で独自の情報を加えるかを，既存UniMind型接続も含む対照で検証します．
+
+[NeuroLM（ICLR 2025）](https://proceedings.iclr.cc/paper_files/paper/2025/hash/8b4add8b0aa8749d80a34ca5d941c355-Abstract-Conference.html)もEEG tokenとLLMの内部統合を扱います．さらに[Shiinoki・Iwama・UshibaのbioRxiv v2](https://doi.org/10.1101/2025.06.01.657282)は，神経・眼球信号と画面文脈をLLMへ渡す意図推定・操作の先行例です．[Chiossiら（CHI 2026）](https://doi.org/10.1145/3772318.3790523)はgazeとEEGによるSelect／Observeを検討しています．「画面context＋EEG＋LLM」だけを新規性とせず，学習可能な内部融合の必要性と，同じ観測条件の強い非EEG対照に対する未知条件での追加価値を検証します．
+
+[草稿v1の査読報告](literature_review_20261123/REVIEW_REPORT_JA.md)と[独立方法監査](literature_review_20261123/INDEPENDENT_METHODS_REVIEW.md)を研究作業の優先順位へ反映します．現草稿は主要改稿・新規下流実験が必要であり，最新66.244h encoderのMSEと過去の別系統proxy結果だけからB案が成立したとは扱いません．CHIは[公式の貢献説明](https://chi2027.acm.org/contributions-to-chi/)に照らし，人のinteractionへの実証が中心になった場合の候補として加えます．
 
 [NeurIPS 2026審査基準](https://neurips.cc/Conferences/2026/ReviewerGuidelines)のUse-Inspired区分は，実用途の課題設定と，既存手法を組み合わせた場合も含む独自知見を対象にしています．現B案との適合は高いという判断ですが，次回の区分・要件は募集時に再確認します．新architectureやSOTAの有無だけで判断せず，主張の新規性と実証を確認します．
 
