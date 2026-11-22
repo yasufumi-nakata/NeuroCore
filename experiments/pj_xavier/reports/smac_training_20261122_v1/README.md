@@ -1,3 +1,11 @@
+# 現在の到達点（2026-11-23）
+
+**BCI追加まで累積66.2441666667h，10epoch／12,460step，独立69／69 PASS**です．固定BCI validation12群でMSE70.8242％低下，旧806023は同seedで0.4586％増加しました．全量取得・最終union学習は継続中です．最新状態は[HANDOFF](../../HANDOFF.md)，[BCI結果](BCI8089820.md)，[全体進捗](../SMAC_ALL_DATA_PROGRESS_20261123.md)，[投稿方針](../../PUBLICATION_PLAN.md)を参照してください．
+
+以下は初期3stageの歴史的reportです．記載時点の17.399h／175GB等を現在値として使いません．
+
+---
+
 # S Macでの取得・追加学習（2026-11-22）
 
 ## 最新追加：BCI8089820のZIP全量取得・元グループ分離とtrain1記録QC（2026-11-23 04:26 JST）
@@ -10,7 +18,7 @@
 
 ## 最新追加：EEG＋判定前環境→X/Yの漏洩防止スコアラーをS Macで検証（2026-11-23 02:19 JST）
 
-新しい `next_multichannel/score_joint_alignment.py` に固定registry SHAとsource A/B cue goldの独立照合，4配置×同一trialのcounterbalance，6条件のpaired負対照とmust-link単位bootstrapを実装しました．15新規テストがsmac35のtask PythonでもPASS，旧関連23テストもPASS．コードとfixtureのみS Macへ配置し，EEG rawをworkstationへ戻していません．**今回の実gradientは0時間／0stepsであり，EEG→X/Yの実性能やOS成功は未測定です．** [検証内容](reports/smac_training_20261122_v1/JOINT_PROXY_SCORER_CPU_SMOKE_20261123.md)．
+新しい `next_multichannel/score_joint_alignment.py` に固定registry SHAとsource A/B cue goldの独立照合，4配置×同一trialのcounterbalance，6条件のpaired負対照とmust-link単位bootstrapを実装しました．15新規テストがsmac35のtask PythonでもPASS，旧関連23テストもPASS．コードとfixtureのみS Macへ配置し，EEG rawをworkstationへ戻していません．**今回の実gradientは0時間／0stepsであり，EEG→X/Yの実性能やOS成功は未測定です．** [検証内容](JOINT_PROXY_SCORER_CPU_SMOKE_20261123.md)．
 
 S Mac 37台の新snapshot（2026-11-23 02:14 JST頃）は完了**179,003files／1,677,468,786,313B**，partial**483,485,762,153B**，全supervisor生存，完了ファイル欠損・サイズ不一致0．CBraModの累積固有学習量は以前の**22.581667h／27,098窓**を維持．smac19は除外し，取得候補23.07TBを学習済みとして報告しません．
 

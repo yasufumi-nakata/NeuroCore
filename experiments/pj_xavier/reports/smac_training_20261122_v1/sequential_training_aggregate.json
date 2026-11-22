@@ -1,5 +1,7 @@
 {
-  "version": 1,
+  "version": 2,
+  "updated_at_JST": "2026-11-23T06:08:05.302879+09:00",
+  "scope": "Single cumulative CBraMod lineage on S Mac; each unique 3-second train window counted once in the latest completed model input union",
   "stages": [
     {
       "source": "806023",
@@ -7,14 +9,16 @@
       "unique_cumulative_seconds": 1977,
       "epochs": 10,
       "steps": 110,
-      "best_validation_mse": 0.0019222948831695787
+      "best_validation_mse": 0.0019222948831695787,
+      "training_examples_presented": 6590
     },
     {
       "source": "2392979",
       "status": "blocked_no_eligible_new_source_windows",
       "unique_new_seconds": 0,
       "epochs": 0,
-      "steps": 0
+      "steps": 0,
+      "training_examples_presented": 0
     },
     {
       "source": "2061654",
@@ -22,7 +26,8 @@
       "unique_cumulative_seconds": 12132,
       "epochs": 10,
       "steps": 640,
-      "best_validation_mse": 0.001595536042884798
+      "best_validation_mse": 0.001595536042884798,
+      "training_examples_presented": 40440
     },
     {
       "source": "InMID",
@@ -30,17 +35,127 @@
       "unique_cumulative_seconds": 62637,
       "epochs": 10,
       "steps": 3280,
-      "best_validation_mse": 0.0016149027567592268
+      "best_validation_mse": 0.0016149027567592268,
+      "training_examples_presented": 208790
+    },
+    {
+      "source": "OpenNeuro ds005028 original DAT P300",
+      "status": "completed",
+      "node": "smac35",
+      "unique_new_seconds": 14991,
+      "unique_cumulative_seconds": 77628,
+      "unique_cumulative_windows": 25876,
+      "epochs": 10,
+      "steps": 4070,
+      "training_examples_presented": 258760,
+      "best_validation_mse": 0.0015065842255285976,
+      "best_checkpoint_sha256": "9448e34ea1549d406a14b1a3e3eae5603a2ff7882008156d0937e4edb482cc8c",
+      "report": "P300_ORIGINAL_DAT_RESULTS.md"
+    },
+    {
+      "source": "Figshare29606906 BDF",
+      "status": "completed",
+      "node": "smac35",
+      "unique_new_seconds": 3666,
+      "unique_cumulative_seconds": 81294,
+      "unique_cumulative_windows": 27098,
+      "epochs": 10,
+      "steps": 4270,
+      "training_examples_presented": 270980,
+      "best_validation_mse": 0.001426294969742873,
+      "validation_seed": 20261123,
+      "best_checkpoint_sha256": "f2864fc4dba584f6ccda232a43b000f51d15c5124d7cb22a6ca9f95a0b6e8503",
+      "report": "BDF29606906_ADDITIONAL_SSL_RESULTS.md"
+    },
+    {
+      "source": "BCI8089820",
+      "status": "completed_independently_verified",
+      "node": "smac05",
+      "candidate_train_records": 446,
+      "accepted_train_records": 432,
+      "accepted_train_groups": 55,
+      "unique_new_seconds": 157185.0,
+      "unique_cumulative_seconds": 238479.0,
+      "unique_cumulative_windows": 79493,
+      "epochs": 10,
+      "steps": 12460,
+      "training_examples_presented": 794930,
+      "best_validation_mse": 0.0014364248753904745,
+      "validation_seed": 20261122,
+      "best_checkpoint_sha256": "f66903e1dc9120da71c6275e70f121662671aadac13f44efaf92d18e4563954f",
+      "parent_checkpoint_sha256": "f2864fc4dba584f6ccda232a43b000f51d15c5124d7cb22a6ca9f95a0b6e8503",
+      "independent_checks_passed": 69,
+      "independent_checks_total": 69,
+      "report": "BCI8089820.md"
     }
   ],
-  "all_unique_training_windows": 20879,
-  "all_unique_training_seconds": 62637,
-  "all_unique_training_hours": 17.399166666666666,
-  "optimizer_steps_across_sequential_stages": 4030,
-  "all_examples_presented_including_repetition": 255820,
+  "all_unique_training_windows": 79493,
+  "all_unique_training_seconds": 238479.0,
+  "all_unique_training_hours": 66.24416666666667,
+  "optimizer_steps_across_sequential_stages": 24830,
+  "all_examples_presented_including_repetition": 1580490,
   "test_windows": 0,
   "behavior_labels_used": 0,
-  "validation_scope": "Fixed 806023 validation only; no new-source generalization evaluation",
-  "validation_change_InMID_vs_CNT_percent": 1.2138061036473413,
-  "selected_latest_best_sha256": "600f1e25e89d5229ea70e5d8a4f873b8653dfc445503850d77ff4739bc184ad5"
+  "selected_latest_best_sha256": "f66903e1dc9120da71c6275e70f121662671aadac13f44efaf92d18e4563954f",
+  "latest_model_is_not_claimed_best_on_all_validations": true,
+  "fixed_validation_comparison_rule": "Historical best_validation_mse values use their sealed per-stage protocols. Do not rank different mask seeds directly; use matched parent/child replay below. New-source frozen validation diagnostics remain separate and are not used for model selection.",
+  "BCI_vs_BDF_matched_fixed_806023_validation": {
+    "seed": 20261122,
+    "batch_size": 64,
+    "windows": 327,
+    "groups": 2,
+    "parent_mse": 0.0014298673209638358,
+    "child_mse": 0.0014364248753904745,
+    "mse_increase_percent": 0.4586127908859653,
+    "parent_original_seed": 20261123,
+    "parent_original_score_reproduced": 0.001426294969742873,
+    "verification_receipt_sha256": "adcc130286e6fb97c739a27c1dc0e6f25b4b32b1bc520a3bd29e596e55886a8d"
+  },
+  "new_source_validation_diagnostics": {
+    "P300": {
+      "groups": 1,
+      "windows": 609,
+      "before_mse": 0.00177100793977,
+      "after_mse": 0.00131386129969,
+      "report": "P300_HELDOUT_VALIDATION_RESULTS.md"
+    },
+    "BDF29606906": {
+      "groups": 5,
+      "windows": 327,
+      "before_mse": 0.0012622528629746984,
+      "after_mse": 0.0009759836634570468,
+      "report": "BDF29606906_HELDOUT_VALIDATION_RESULTS.md"
+    },
+    "BCI8089820": {
+      "groups": 12,
+      "candidate_records": 96,
+      "accepted_records": 95,
+      "windows": 11709,
+      "before_mse": 0.0027535698545106207,
+      "after_mse": 0.0008033758285906217,
+      "mse_change_percent": -70.82420744566868,
+      "groups_with_lower_loss": 12,
+      "seed": 20261123,
+      "batch_size": 32,
+      "fit_steps": 0,
+      "checkpoint_selection": false,
+      "test_records_opened": 0,
+      "review_records_opened": 0,
+      "scientific_protocol_sha256": "65e33394e56f05ce03fb5f79c41486d0e781af81d555ff18780178ec6458f9ab",
+      "result_receipt_sha256": "e591b84153c6db37d4676f840b22b04aa2fce2aca158016dbb8289bf97ecd118",
+      "report": "BCI8089820.md"
+    }
+  },
+  "all_data_goal": {
+    "status": "in_progress",
+    "all_23TB_downloads_or_final_maximum_eligible_union_training_completed": false,
+    "next_source": "Design Emotion31578517 pipeline on smac10; current state in HANDOFF.md"
+  },
+  "claims_excluded": [
+    "Acquisition byte counts as EEG hours",
+    "Sum of cumulative hours across stages",
+    "Unrelated phase3 model-lineage hours added to this union",
+    "Independent test or population-level generalization",
+    "Intent/behavior decoding, EEG-to-LLM control, or real OS success"
+  ]
 }

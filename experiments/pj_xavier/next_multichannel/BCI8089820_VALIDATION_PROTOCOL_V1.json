@@ -1,0 +1,171 @@
+{
+  "schema": "xavier-bci8089820-independent-validation-preregistration-v1",
+  "frozen_at_utc": "2026-11-22 20:08:44 UTC",
+  "frozen_before_new_BCI_checkpoint_scores_observed": true,
+  "scientific_spec": {
+    "source": "zenodo:8089820",
+    "raw_archive_sha256": "7c611b08995f10c2d313d194e3e75c88f7792403455994d77ca37e16104fcacf",
+    "raw_archive_bytes": 27475466178,
+    "frozen_metadata_sha256": "91d9c764dcf27ac7d85be5cfd90c1484d5c7d41e4d5e0c789c49049b04b461bb",
+    "recording_ledger_sha256": "ba13f499b92d498842b41dff906423afc77d5fdfde720c6da0da173c86413912",
+    "duplicate_constraints_sha256": "3adca0c48cc582846eb3f0a0dfa7b52a6f3723f840932acaa430576a12f2ee65",
+    "selection": {
+      "fold": "val",
+      "candidate_records": 96,
+      "candidate_groups": 12,
+      "train_records_not_extracted": 446,
+      "test_records_not_extracted": 96,
+      "review_records_not_extracted": 56,
+      "source_order": "lexicographic source_member",
+      "all_selected_candidates_checked": true,
+      "substitution_allowed": false
+    },
+    "calibration": {
+      "native_scalar_dtype": "<f8",
+      "native_sample_rate_hz": 512,
+      "eeg_channels": 27,
+      "excluded_EOG_channels": 3,
+      "excluded_EMG_channels": 2,
+      "units_from_header": 0.000001,
+      "formula": "(raw_scalar * ((pmax-pmin)/(float64(dmax)-float64(dmin))) + (pmin-float64(dmin)*gain)) * units",
+      "subtract_raw_minus_digital_min_first": false,
+      "original_source_scalar_calibration_hashes_required": true,
+      "independent_MNE_probes": "first, middle, final 256 native samples; all ordered 27 EEG channels",
+      "MNE_probe_tolerance": "1e-11 + 1e-7 * maximum_absolute_expected_probe_V",
+      "unit_or_gain_guessing_allowed": false,
+      "unverified_calibration": "quarantine record before model scoring"
+    },
+    "preprocessing": {
+      "butterworth_prototype_order": 4,
+      "bandpass_order": 8,
+      "bandpass_hz": [
+        3,
+        40
+      ],
+      "native_sample_rate_hz": 512,
+      "output_sample_rate_hz": 200,
+      "sos_coefficients": [
+        [
+          0.001564023754618111,
+          0.003128047509236222,
+          0.001564023754618111,
+          1,
+          -1.3231879896849739,
+          0.45635903169605335
+        ],
+        [
+          1,
+          2,
+          1,
+          1,
+          -1.532695030182782,
+          0.7306513993362355
+        ],
+        [
+          1,
+          -2,
+          1,
+          1,
+          -1.9257525201289802,
+          0.9274627645921343
+        ],
+        [
+          1,
+          -2,
+          1,
+          1,
+          -1.9738371590025618,
+          0.975221547498532
+        ]
+      ],
+      "filter": "forward-only sosfilt, zero initial state per original recording",
+      "additional_LP80_used": false,
+      "warmup_seconds": 2,
+      "interpolation": "n=floor(j*512/200); a=(j*512 mod 200)/200; y[n-1]*(1-a)+y[n]*a",
+      "native_sample_delay_seconds": 0.001953125,
+      "nonoverlap_window_seconds": 3,
+      "output_shape_per_window": [
+        27,
+        3,
+        200
+      ],
+      "output_dtype": "float32",
+      "output_unit": "V_x_1e4"
+    },
+    "QC": {
+      "native_max_abs_V": 0.1,
+      "postprocess_max_abs_V": 0.0001,
+      "minimum_channel_std_V": 1e-8,
+      "channel_std_ddof": 0,
+      "threshold_tuning_allowed": false,
+      "clipping_allowed": false
+    },
+    "identity": {
+      "old_and_new_training_group_source_scalar_physical_overlap": "fail evaluation before scoring",
+      "within_group_exact_alias": "verify then count once",
+      "unexpected_cross_group_physical_duplicate": "fail for independent review; never infer participant identity",
+      "known_test_review_source_scalar_deny_preserved": true,
+      "unknown_cross_release_or_transformed_equivalence_verified": false
+    },
+    "models": {
+      "before": "completed preceding BDF stage best.pt",
+      "after": "completed new BCI8089820 stage best.pt",
+      "selection_domain": "existing zenodo:806023 validation only",
+      "this_validation_checkpoint_selection": false,
+      "independent_prep_and_model_verification_must_precede_evaluation": true,
+      "checkpoint_hashes_bound_once_after_fit_before_validation_signal_access": true
+    },
+    "scoring": {
+      "device": "mps",
+      "batch_size": 32,
+      "memory_budget_gib": 40,
+      "seed": 20261123,
+      "mask": "legacy.fixed_mask(row_id,27,3,seed), SHA256-derived CPU Generator",
+      "masked_patches": 40,
+      "total_patches": 81,
+      "same_row_ID_mask_for_both_models": true,
+      "row_ID": "original_source_SHA256:accepted_window_index",
+      "loss": "mean squared error over masked patches only, in stored V_x_1e4 units",
+      "within_group": "mean over every accepted unique window in the group",
+      "primary": "unweighted mean of eligible group means",
+      "comparison": "after_minus_before and percent change relative to before; negative is lower loss",
+      "eligible_groups_with_no_windows": "report missing with reasons; no zero imputation or replacement",
+      "all_12_groups_claim_allowed_only_if": 12,
+      "no_eligible_windows": "blocked receipt without model scoring",
+      "fit_steps": 0
+    },
+    "execution": {
+      "node": "smac05",
+      "raw_transfer_to_workstation": false,
+      "archive_reused": true,
+      "single_temporary_GDF_member": true,
+      "exclusive_lock": "train_gpu.lock, flock LOCK_EX|LOCK_NB",
+      "reserve_gib": 100,
+      "maximum_seconds": 1800,
+      "no_concurrent_training": true
+    },
+    "reporting": {
+      "include_candidate_and_achieved_record_group_counts": true,
+      "include_all_QC_and_calibration_holds": true,
+      "test_signal_opened": 0,
+      "review_signal_opened": 0,
+      "behavior_labels_used": false,
+      "online_causality_claim": false,
+      "scope": "offline masked waveform reconstruction in eligible frozen BCI validation groups; no test, action, intent, or population-level generalization claim"
+    }
+  },
+  "metadata_only_capacity_estimate": {
+    "val_records": 96,
+    "val_groups": 12,
+    "original_source_bytes_sum": 4741784294,
+    "largest_one_source_bytes": 59156166,
+    "original_scalar_EEG_bytes_sum": 4000105728,
+    "source_seconds_sum": 36169.9375,
+    "source_hours_sum": 10.047204861111112,
+    "three_second_candidate_windows_upper_bound_with_2s_warmup": 11952,
+    "float32_array_bytes_upper_bound": 774489600,
+    "duplicate_aliases": 0
+  },
+  "binding_policy": "This scientific protocol is frozen before new model results are inspected. A separate immutable run config will bind the final verified prep/trainer source hashes, base/corpus seals and preselected checkpoint bytes, without changing science or using BCI validation for selection.",
+  "revision": 1
+}
