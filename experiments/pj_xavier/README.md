@@ -121,7 +121,13 @@ encoderの自己教師学習に使う連続EEGを，ITU全量とUniBa validation
 
 166配列，1,685,013,248Bを生成し，全421,248,000値の独立検査が通過しました．学習用とモデル選択用は参加者groupを分けています．品質基準はresampling後の最大絶対振幅100µV以下，各channelの標準偏差0.01µV以上，finiteです．元の50.889時間との差には端の除外・不完全窓も含みます．
 
-**UniBaは1,902候補から8窓・240秒しか残らず，採用データの大半はportable EEGです．** このdomainの偏りを保持した実験として評価し，歩留まりを上げるために品質基準や単位を後から変えていません．[固定前処理](model/SSL_PREPROCESSING.md)，[全75原記録の品質検査と集計](reports/ssl_corpus_preparation_20261122_v1/README.md)に根拠を保存しています．2026-11-22の入力検証終了時点では，最終protocolの封印まで完了しました．この表は準備済みの量であり，実学習の完了時間・成績ではありません．学習後にはモデルが実際に見たIDと原記録区間から実量を報告します．
+**UniBaは1,902候補から8窓・240秒しか残らず，採用データの大半はportable EEGです．** このdomainの偏りを保持した実験として評価し，歩留まりを上げるために品質基準や単位を後から変えていません．[固定前処理](model/SSL_PREPROCESSING.md)，[全75原記録の品質検査と集計](reports/ssl_corpus_preparation_20261122_v1/README.md)に根拠を保存しています．2026-11-22 12:05 JST時点で，このうち学習用1,678窓の全てを使う追加事前学習が完了しました．10 epochs・280 steps，学習ループと検証169.79秒，CUDA予約の実測最大7,841,251,328Bです．学習用float32値は1周あたり1,284,096,000Bで，反復提示を新しいEEG量には加えません．採用重みは固定validationのMSEが学習後候補で最小だったepoch 8で，固有の入力13.983333時間，採用時までの反復提示111.866667時間です．ただし，採用時MSE0.001495は更新前の0.001183より高く，復元誤差が改善したとは言えません．[実測集計](reports/cbramod_ssl_pretraining.aggregate.json)に全epochと選択根拠があります．LLMとの同条件alignmentも30epochs・390steps・432.709秒で完走し，UniBaの5条件評価を終えました．fusedの3-class balanced accuracyは34.20%で，更新前35.09%を上回りませんでした．別施設ITUの評価と全成果物の回収・M1試用は別に進めています．
+
+UniBaのBIDS V表記とBrainVision headerの0.1µV表記は，公開されたMNE-BIDS／pybvの通常の保存処理でも生じる組み合わせです．表記差だけで尺度の誤りとは判断できません．元のXDFと機器の校正情報がないため，入力段階の単位と極端な公称振幅の由来は未確認です．[出力コードまで追跡した追加監査](reports/uniba_amplitude_provenance_20261122_v1/README.md)に，確認できた変換と残る不足を記載しています．
+
+### 公開課題に基づく独立ハーネス
+
+公開されたConnection課題の説明・UML・APIの形から，新しい8ケースの実行テストを構成しました．既存JDKで正解fixture8/8，優先順位の誤り7/8，常時成功2/8，偶発的なNPE0/8，構文エラーはcompile failureを確認し，失敗case集合も照合しています．[ハーネスと実行方法](benchmark/connection_harness/README.md)，[元資料の不足と将来の実課題評価の条件](benchmark/CODING_HARNESS_SOURCE_AUDIT.md)を保存しています．これは手製fixtureによる工学検証であり，EEGモデルの課題達成率ではありません．元データには判断前の正確な編集状態と実行可能な元oracleが揃わないため，遡及的な自律操作成功は採点できません．
 
 ## ラベリングと拡張可能性
 
@@ -147,7 +153,7 @@ UniBa は 34 記録中 32 記録，28.58953451 時間が時刻同期検査に通
 
 AI-assisted coding の公開 EEG は offline filter 済みです．公開 export recipe を再構成すると未来側の support は条件付きで 4.125 秒です．窓終端からイベントまで 4.5 秒＋時計誤差を確保しても，feature の可用時点からイベントまでは最低 0.375 秒です．配布 binary と recipe の同一性，元 XDF，online causality は未確認です．M1 の validation candidate scoring は約 1 秒であり，この名目 lead を満たすオンライン動作は実証できていません．
 
-Colab は workstation の既存 CLI を経由しています．SFC VPN は接続でき，smac19 は DNS／SSH 到達まで確認しましたが，smac19／smac31 の SSH 認証は未成立です．今回 Mac cluster への計算投入はできていません．学習・推論が実証できた実機は workstation M1 と Colab L4 です．
+Colab は workstation の既存 CLI を経由しています．SFC VPN は接続でき，smac19 は DNS／SSH 到達まで確認しましたが，smac19／smac31 の SSH 認証は未成立です．11:45〜11:48 JSTのユーザー再承認後には実際のパスワード入力まで進めましたが，既存設定・過去の接続履歴のログイン指定とも認証は成立しませんでした．現在の障害は承認ではなく，SSHの認証情報またはサーバー側のアクセス設定です．今回 Mac cluster への計算投入はできていません．学習・推論が実証できた実機は workstation M1 と Colab L4 です．
 
 workstation の取得は空き容量 35 GiB を残して進めます．Colab からの大きな保全コピーは，CLI の一括メモリ使用を避けるため，64 MiB ごとの SHA 検証・再開可能な転送にしました．保全コピーは新しい取得データ量へ加算しません．Dataverse の必須 Guestbook 応答がある 342 files は `access_action_required` として保持しています．
 

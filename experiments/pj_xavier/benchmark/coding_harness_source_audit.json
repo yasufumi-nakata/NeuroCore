@@ -1,0 +1,374 @@
+{
+  "schema": "xavier.coding_harness_source_audit.v1",
+  "created_utc": "2026-11-22T02:41:00.999582+00:00",
+  "source_release": "Zenodo 20801101",
+  "source_url": "https://zenodo.org/records/20801101",
+  "archives": {
+    "resources.tar.gz": {
+      "sha256": "2b91b0bee3636c7fcd791e5e614033a6e44e9bb3aedb9af23db3d8899bc2bc1d",
+      "bytes": 4393617,
+      "raw_preservation_receipt_match": true
+    },
+    "scripts.tar.gz": {
+      "sha256": "2b213f7aeab7d78f7bf5552b9d67781f7b6a946c942d44ec9f1a26a6a166d89b",
+      "bytes": 71383,
+      "raw_preservation_receipt_match": true
+    },
+    "bids_code-evaluations_uniba.tar.gz": {
+      "sha256": "1a13819e0e12c0225668a09268ca9fc13b19ae357ff17320506472e1f7d4442b",
+      "bytes": 554887,
+      "raw_preservation_receipt_match": true
+    },
+    "bids_code-submissions_itu.tar.gz": {
+      "sha256": "13b79cd222f6e03f3feee27e038786b7cb5168fd37b249f14b4884fe8ba04fd6",
+      "bytes": 345526,
+      "raw_preservation_receipt_match": true
+    },
+    "bids_behavioral_uniba.tar.gz": {
+      "sha256": "fcdeeb7a2ee46b7f8b0a31459c919fc5b4050133ff699c76b7e722da87d6e848",
+      "bytes": 22128692,
+      "raw_preservation_receipt_match": true
+    },
+    "bids_behavioral_itu.tar.gz": {
+      "sha256": "fb501e02f74120f665ce860e004bf214bd17381068e497e4986c2a56923167c9",
+      "bytes": 14991088,
+      "raw_preservation_receipt_match": true
+    },
+    "bids_metadata_uniba.tar.gz": {
+      "sha256": "26dc99e988661b902d5f2a73d1b314ee00c976fd5a21579e434678f7524cf9d9",
+      "bytes": 4059,
+      "raw_preservation_receipt_match": true
+    },
+    "bids_metadata_itu.tar.gz": {
+      "sha256": "490f7f2fdbb5d4e57b7243fdbc42bbad3175bbde73b5625f5b991f772ba349fa",
+      "bytes": 3774,
+      "raw_preservation_receipt_match": true
+    },
+    "README.md": {
+      "sha256": "5f9a76bc6fe4866e7280f142a1a6d4226a7e1dd65e26ab83ebd2d41a26446e07",
+      "bytes": 10501,
+      "raw_preservation_receipt_match": true
+    }
+  },
+  "selected_public_members": {
+    "resources/[eng] experiment-app/exp-server/run-tests.sh": {
+      "sha256": "1c05a352ed3f95e1a53d7bb7ecf59513051923e61e03ea8966d0dc56780451ed",
+      "bytes": 245
+    },
+    "resources/[eng] experiment-app/exp-server/setup-exp.sh": {
+      "sha256": "206374b0ee8836b07060e4a584b1d145a701f22e29c12947c4ec136f405f7b5d",
+      "bytes": 313
+    },
+    "resources/[eng] experiment-app/exp-server/server.py": {
+      "sha256": "93f4e02d2a07cfcfe9c186e03df20a38713e85a550437cc1b9dd4b5230f5e7f7",
+      "bytes": 4553
+    },
+    "resources/[eng] experiment-app/docker-compose.yml": {
+      "sha256": "de027025d4b56fb504a8faba1c030dddc3f14ce352b1beac42a4d96b42f8e6ec",
+      "bytes": 1412
+    },
+    "resources/[eng] experiment-app/otree/experiment/templates/TaskDescription1.html": {
+      "sha256": "10387fb46dc81422590ab485dbefc00b7d1ace98b35dd3de2f936404ed0b151a",
+      "bytes": 451
+    },
+    "resources/[eng] experiment-app/otree/experiment/templates/TaskDescription2.html": {
+      "sha256": "dba1a389bfc398d6bdbf71c1ac5d012bdd8ccf246affb3f30f2ad629a8ce2336",
+      "bytes": 404
+    },
+    "resources/[eng] experiment-app/otree/experiment/templates/Task.html": {
+      "sha256": "d16a73a4892cee4bf11c0b67b85e0cffa7ca271c7229c328944a2f222388f938",
+      "bytes": 4757
+    },
+    "resources/[eng] experiment-app/java-src/Experiment1/src/task/ConnectionAPI.java": {
+      "sha256": "c4357e0f063597061838de880501b4b4353760550a9110994cde435abeb83c63",
+      "bytes": 692
+    },
+    "resources/[eng] experiment-app/java-src/Experiment1/src/task/DeviceAPI.java": {
+      "sha256": "535d11a5c9809d6798e1badb1f79cf0de555bdc1f998d4223506df203fe2bba1",
+      "bytes": 468
+    },
+    "resources/tasks/Connection/[eng]/img/UML-diagrams.drawio": {
+      "sha256": "f7a1273ee9a9344c49fdd7884f12dc0e0b293db1fa8e76399d2ef420527c37ec",
+      "bytes": 24555
+    },
+    "resources/rubric/code_evaluation_template.xlsx": {
+      "sha256": "b19966a48fc0c7272ab3bb600cd15784e6047466eca75a103ae2c749e68ecc86",
+      "bytes": 18757
+    }
+  },
+  "nested_apps": {
+    "resources/[eng] experiment-app.tar.gz": {
+      "sha256": "5f8e16c2602d9ff156251e25db6e52eaebff8a555011046285a3228cc970da4c",
+      "regular_file_count": 52,
+      "java_test_source_count": 0,
+      "java_build_manifest_count": 0,
+      "extensions": {
+        "": 6,
+        ".conf": 1,
+        ".css": 1,
+        ".customization": 1,
+        ".deb": 1,
+        ".drawio": 2,
+        ".html": 15,
+        ".java": 3,
+        ".md": 1,
+        ".png": 6,
+        ".py": 7,
+        ".sh": 4,
+        ".txt": 3,
+        ".yml": 1
+      }
+    },
+    "resources/[ita] experiment-app.tar.gz": {
+      "sha256": "33b081f5db82947a41bedc2a2e47e21e99ad489b38867ec5c5a6c279271c02d0",
+      "regular_file_count": 52,
+      "java_test_source_count": 0,
+      "java_build_manifest_count": 0,
+      "extensions": {
+        "": 6,
+        ".conf": 1,
+        ".css": 1,
+        ".customization": 1,
+        ".deb": 1,
+        ".drawio": 2,
+        ".html": 15,
+        ".java": 3,
+        ".md": 1,
+        ".png": 6,
+        ".py": 7,
+        ".sh": 4,
+        ".txt": 3,
+        ".yml": 1
+      }
+    }
+  },
+  "participant_solution_contents_read": 0,
+  "prompt_or_key_contents_read": 0,
+  "archive_members_extracted": 0,
+  "publisher_scripts_executed": 0,
+  "resources_inventory": {
+    "regular_file_count": 129,
+    "java_test_source_count": 0,
+    "java_build_manifest_count": 0,
+    "extensions": {
+      "": 12,
+      ".conf": 2,
+      ".css": 2,
+      ".customization": 2,
+      ".deb": 2,
+      ".drawio": 8,
+      ".gz": 2,
+      ".html": 30,
+      ".java": 12,
+      ".md": 6,
+      ".png": 20,
+      ".py": 14,
+      ".sh": 8,
+      ".txt": 6,
+      ".xlsx": 1,
+      ".yml": 2
+    }
+  },
+  "connection_public_diagram_pages": [
+    "class",
+    "activity"
+  ],
+  "code_archive_inventory": {
+    "bids_code-evaluations_uniba.tar.gz": {
+      "regular_file_count": 370,
+      "java_test_source_count": 0,
+      "java_build_manifest_count": 0,
+      "extensions": {
+        ".java": 336,
+        ".xlsx": 34
+      }
+    },
+    "bids_code-submissions_itu.tar.gz": {
+      "regular_file_count": 275,
+      "java_test_source_count": 1,
+      "java_build_manifest_count": 0,
+      "extensions": {
+        ".Java": 2,
+        ".java": 251,
+        ".txt": 1,
+        ".xlsx": 21
+      }
+    }
+  },
+  "behavioral_schemas": {
+    "bids_behavioral_uniba.tar.gz": {
+      "gpt": {
+        "tsv_files": 34,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "trial_type"
+          ]
+        ]
+      },
+      "gptprompts": {
+        "tsv_files": 33,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "trial_type",
+            "task_type",
+            "prompt_text"
+          ]
+        ]
+      },
+      "keypress": {
+        "tsv_files": 34,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "key",
+            "action"
+          ]
+        ]
+      },
+      "keysequence": {
+        "tsv_files": 34,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "key"
+          ]
+        ]
+      },
+      "mouseclick": {
+        "tsv_files": 34,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "x",
+            "y"
+          ]
+        ]
+      },
+      "mousemove": {
+        "tsv_files": 34,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "x",
+            "y"
+          ]
+        ]
+      },
+      "otree": {
+        "tsv_files": 34,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "trial_type",
+            "ai"
+          ]
+        ]
+      }
+    },
+    "bids_behavioral_itu.tar.gz": {
+      "gpt": {
+        "tsv_files": 26,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "trial_type"
+          ]
+        ]
+      },
+      "keypress": {
+        "tsv_files": 26,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "key",
+            "action"
+          ]
+        ]
+      },
+      "keysequence": {
+        "tsv_files": 26,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "key"
+          ]
+        ]
+      },
+      "mouseclick": {
+        "tsv_files": 26,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "x",
+            "y"
+          ]
+        ]
+      },
+      "mousemove": {
+        "tsv_files": 26,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "x",
+            "y"
+          ]
+        ]
+      },
+      "otree": {
+        "tsv_files": 26,
+        "header_variants": [
+          [
+            "onset",
+            "duration",
+            "trial_type",
+            "ai"
+          ]
+        ]
+      }
+    }
+  },
+  "script_members": [
+    "scripts/01-a_extract_empatica.ipynb",
+    "scripts/01-b_load.ipynb",
+    "scripts/01-c_process-empatica/__init__.py",
+    "scripts/01-c_process-empatica/__main__.py",
+    "scripts/01-c_process-empatica/config.py",
+    "scripts/01-c_process-empatica/features.py",
+    "scripts/01-c_process-empatica/normalization.py",
+    "scripts/01-c_process-empatica/pipeline.py",
+    "scripts/01-c_process-empatica/preprocessing.py",
+    "scripts/02_create-datasets.ipynb",
+    "scripts/config.py",
+    "scripts/eeg.py",
+    "scripts/event_ids.py",
+    "scripts/gaze.py",
+    "scripts/nasatlx.py",
+    "scripts/RQs_analysis.ipynb"
+  ],
+  "findings": {
+    "public_task_instructions_and_api_stubs": "present",
+    "publisher_automatic_test_implementation": "missing_from_inspected_release_archives",
+    "publisher_test_shell_hooks": "present_but_referenced_tests_Main_and_tests_java_absent",
+    "recorded_code_quality_scores": "manual_rubric_not_an_executable_oracle",
+    "structured_predecision_editor_state": "not_present_in_inspected_behavioral_schemas",
+    "final_code_as_predecision_input": "forbidden_future_information",
+    "historical_agent_counterfactual_outcomes": "unavailable",
+    "new_independent_specification_tests": "feasible_for_engineering_plumbing_only",
+    "empirical_eeg_linked_task_completion": "blocked",
+    "latent_intent_ground_truth": "unavailable_observed_events_are_not_intent"
+  }
+}

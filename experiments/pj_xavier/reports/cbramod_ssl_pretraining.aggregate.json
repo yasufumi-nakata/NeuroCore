@@ -1,0 +1,352 @@
+{
+  "schema": "xavier-SSL-pretraining-measured-aggregate-v1",
+  "status": "SSL_completed_alignment_in_progress_full_weight_recovery_pending",
+  "source_report_sha256": "364bd472e178685b22099fd04bfbefbeb31d0412e48eac7b2cb7b9c4328a3b2e",
+  "model_source_sha256": "47f24f9429bdc9af9495b121c4bf2cbc94ce62dbeb6b1033eeff6a4a88fe60fd",
+  "training_protocol_sha256": "9f264097ae6699fa4320e89afc26a5eac999bee0113788325c6001f6d249a8b0",
+  "prepared_manifest_sha256": "216729840806ca20040331baf59ddeadea4e62bc48a19a57c183810e13dd9043",
+  "training": {
+    "global_step": 280,
+    "epochs_completed": 10,
+    "batch_size": 64,
+    "elapsed_seconds": 169.79214912099997,
+    "step_seconds_p50": 0.4771932635003395,
+    "step_seconds_p95": 0.47950247945036606,
+    "memory": {
+      "process_peak_rss_bytes": 4078186496,
+      "cuda_peak_allocated_bytes": 7602749440,
+      "cuda_peak_reserved_bytes": 7841251328
+    },
+    "training_examples_presented": 16780,
+    "unique_training_windows_seen": 1678,
+    "unique_training_seconds_seen": 50340,
+    "repeated_training_seconds_presented": 503400,
+    "best_validation_masked_mse": 0.001494813073512124
+  },
+  "selected_encoder": {
+    "schema": "xavier-selected-ssl-encoder-seal-v1",
+    "run_name": "cbramod_ssl_portable_uniba_v1",
+    "weights_sha256": "0132c9372cbcff28ad36965de043f7b8190233e9faba8ce3ec02c2ae8c93f3e7",
+    "weights_bytes": 19763138,
+    "ssl_best_checkpoint_sha256": "ea598a3fc91e0b260ee6a3f44e0a303a02bb3de63b8c3f009b13d47563fce55a",
+    "ssl_protocol_sha256": "9f264097ae6699fa4320e89afc26a5eac999bee0113788325c6001f6d249a8b0",
+    "ssl_source_sha256": "47f24f9429bdc9af9495b121c4bf2cbc94ce62dbeb6b1033eeff6a4a88fe60fd",
+    "ssl_manifest_sha256": "216729840806ca20040331baf59ddeadea4e62bc48a19a57c183810e13dd9043",
+    "ssl_source_allowlist_sha256": "e2c44f7135afa8a3d5a896d6ad7f8f335d418d77a34d2815497e1335ef736215",
+    "ssl_training_membership_sha256": "1e3c2d0dc53e96913a6f94ccafc6c1c13d512796fe96731421ca476a71ffebeb",
+    "ssl_run_summary_sha256": "364bd472e178685b22099fd04bfbefbeb31d0412e48eac7b2cb7b9c4328a3b2e",
+    "initial_weights_sha256": "0792cb808c14e6b7a2bb2ce1dff379bc47bc54c49a779825bdfeb33bf8157178",
+    "selection_partition": "portable_SSL_validation",
+    "updated_tensor_count": 210,
+    "selection_metric": "fixed-mask raw-sample MSE; earliest minimum",
+    "selected_epoch": 8,
+    "selected_global_step": 224,
+    "training_examples_presented_before_selection": 13424,
+    "unique_training_windows_before_selection": 1678,
+    "unique_training_seconds_before_selection": 50340,
+    "validation_mask_identity": "ID and seed fixed before training",
+    "downstream_test_source_used": false,
+    "itu_sources_used": 0,
+    "behavior_labels_used": 0,
+    "exclusion_scope": "This new continuation only; original upstream pretraining membership was not independently re-audited"
+  },
+  "initial_validation": {
+    "masked_mse": 0.0011833986433372758,
+    "examples": 522,
+    "fixed_mask": "sha256(seed|ssl-validation-mask|record_id), exact 50% per example",
+    "selection_partition": "portable_SSL_validation",
+    "behavior_labels_used": 0
+  },
+  "epoch_history": [
+    {
+      "epoch": 1,
+      "global_step": 28,
+      "train_masked_mse": 0.008170842781942671,
+      "val": {
+        "masked_mse": 0.0026586016245771526,
+        "examples": 522,
+        "fixed_mask": "sha256(seed|ssl-validation-mask|record_id), exact 50% per example",
+        "selection_partition": "portable_SSL_validation",
+        "behavior_labels_used": 0
+      },
+      "epoch_completed": true,
+      "next_batch": 28,
+      "checkpoint": "epoch_001_step_0000028.pt",
+      "elapsed_seconds": 19.204258896999818
+    },
+    {
+      "epoch": 2,
+      "global_step": 56,
+      "train_masked_mse": 0.004561460213413788,
+      "val": {
+        "masked_mse": 0.00229920152043103,
+        "examples": 522,
+        "fixed_mask": "sha256(seed|ssl-validation-mask|record_id), exact 50% per example",
+        "selection_partition": "portable_SSL_validation",
+        "behavior_labels_used": 0
+      },
+      "epoch_completed": true,
+      "next_batch": 28,
+      "checkpoint": "epoch_002_step_0000056.pt",
+      "elapsed_seconds": 35.96066293900003
+    },
+    {
+      "epoch": 3,
+      "global_step": 84,
+      "train_masked_mse": 0.0038081343916796496,
+      "val": {
+        "masked_mse": 0.002040812971384418,
+        "examples": 522,
+        "fixed_mask": "sha256(seed|ssl-validation-mask|record_id), exact 50% per example",
+        "selection_partition": "portable_SSL_validation",
+        "behavior_labels_used": 0
+      },
+      "epoch_completed": true,
+      "next_batch": 28,
+      "checkpoint": "epoch_003_step_0000084.pt",
+      "elapsed_seconds": 52.55619682299948
+    },
+    {
+      "epoch": 4,
+      "global_step": 112,
+      "train_masked_mse": 0.003405540039889399,
+      "val": {
+        "masked_mse": 0.0018107849704030315,
+        "examples": 522,
+        "fixed_mask": "sha256(seed|ssl-validation-mask|record_id), exact 50% per example",
+        "selection_partition": "portable_SSL_validation",
+        "behavior_labels_used": 0
+      },
+      "epoch_completed": true,
+      "next_batch": 28,
+      "checkpoint": "epoch_004_step_0000112.pt",
+      "elapsed_seconds": 69.33871376999923
+    },
+    {
+      "epoch": 5,
+      "global_step": 140,
+      "train_masked_mse": 0.0030763507853967,
+      "val": {
+        "masked_mse": 0.001660593110939552,
+        "examples": 522,
+        "fixed_mask": "sha256(seed|ssl-validation-mask|record_id), exact 50% per example",
+        "selection_partition": "portable_SSL_validation",
+        "behavior_labels_used": 0
+      },
+      "epoch_completed": true,
+      "next_batch": 28,
+      "checkpoint": "epoch_005_step_0000140.pt",
+      "elapsed_seconds": 86.02719302500009
+    },
+    {
+      "epoch": 6,
+      "global_step": 168,
+      "train_masked_mse": 0.002861084133726284,
+      "val": {
+        "masked_mse": 0.0016090517829732533,
+        "examples": 522,
+        "fixed_mask": "sha256(seed|ssl-validation-mask|record_id), exact 50% per example",
+        "selection_partition": "portable_SSL_validation",
+        "behavior_labels_used": 0
+      },
+      "epoch_completed": true,
+      "next_batch": 28,
+      "checkpoint": "epoch_006_step_0000168.pt",
+      "elapsed_seconds": 102.9005769739997
+    },
+    {
+      "epoch": 7,
+      "global_step": 196,
+      "train_masked_mse": 0.0026598554457003903,
+      "val": {
+        "masked_mse": 0.0015848044852879598,
+        "examples": 522,
+        "fixed_mask": "sha256(seed|ssl-validation-mask|record_id), exact 50% per example",
+        "selection_partition": "portable_SSL_validation",
+        "behavior_labels_used": 0
+      },
+      "epoch_completed": true,
+      "next_batch": 28,
+      "checkpoint": "epoch_007_step_0000196.pt",
+      "elapsed_seconds": 119.63404378199994
+    },
+    {
+      "epoch": 8,
+      "global_step": 224,
+      "train_masked_mse": 0.0025289264791761665,
+      "val": {
+        "masked_mse": 0.001494813073512124,
+        "examples": 522,
+        "fixed_mask": "sha256(seed|ssl-validation-mask|record_id), exact 50% per example",
+        "selection_partition": "portable_SSL_validation",
+        "behavior_labels_used": 0
+      },
+      "epoch_completed": true,
+      "next_batch": 28,
+      "checkpoint": "epoch_008_step_0000224.pt",
+      "elapsed_seconds": 136.48413790799896
+    },
+    {
+      "epoch": 9,
+      "global_step": 252,
+      "train_masked_mse": 0.0024119922080930853,
+      "val": {
+        "masked_mse": 0.0014989784614529132,
+        "examples": 522,
+        "fixed_mask": "sha256(seed|ssl-validation-mask|record_id), exact 50% per example",
+        "selection_partition": "portable_SSL_validation",
+        "behavior_labels_used": 0
+      },
+      "epoch_completed": true,
+      "next_batch": 28,
+      "checkpoint": "epoch_009_step_0000252.pt",
+      "elapsed_seconds": 153.22471357199902
+    },
+    {
+      "epoch": 10,
+      "global_step": 280,
+      "train_masked_mse": 0.002321092174327416,
+      "val": {
+        "masked_mse": 0.001509380252082686,
+        "examples": 522,
+        "fixed_mask": "sha256(seed|ssl-validation-mask|record_id), exact 50% per example",
+        "selection_partition": "portable_SSL_validation",
+        "behavior_labels_used": 0
+      },
+      "epoch_completed": true,
+      "next_batch": 28,
+      "checkpoint": "epoch_010_step_0000280.pt",
+      "elapsed_seconds": 169.7914686589993
+    }
+  ],
+  "capacity": [
+    {
+      "batch_size": 16,
+      "status": "completed_train_only_probe",
+      "step_seconds_p50": 0.08411001500007842,
+      "step_seconds_p95": 0.08582968785076446,
+      "memory": {
+        "process_peak_rss_bytes": 2617458688,
+        "cuda_peak_allocated_bytes": 1981213696,
+        "cuda_peak_reserved_bytes": 2199912448
+      },
+      "probe": {
+        "steps": 50,
+        "completed_steps": true,
+        "both_channel_shapes_observed": true,
+        "validation_examples": 0,
+        "test_examples": 0,
+        "weights_reused": false,
+        "last_ten_reserved_range_bytes": 0,
+        "allocator_stable_last_ten": true
+      }
+    },
+    {
+      "batch_size": 32,
+      "status": "completed_train_only_probe",
+      "step_seconds_p50": 0.13737012300043716,
+      "step_seconds_p95": 0.19593261699983486,
+      "memory": {
+        "process_peak_rss_bytes": 2951237632,
+        "cuda_peak_allocated_bytes": 3862432768,
+        "cuda_peak_reserved_bytes": 3980394496
+      },
+      "probe": {
+        "steps": 50,
+        "completed_steps": true,
+        "both_channel_shapes_observed": true,
+        "validation_examples": 0,
+        "test_examples": 0,
+        "weights_reused": false,
+        "last_ten_reserved_range_bytes": 0,
+        "allocator_stable_last_ten": true
+      }
+    },
+    {
+      "batch_size": 64,
+      "status": "completed_train_only_probe",
+      "step_seconds_p50": 0.2935021070006769,
+      "step_seconds_p95": 0.47323713350024266,
+      "memory": {
+        "process_peak_rss_bytes": 3596636160,
+        "cuda_peak_allocated_bytes": 7602749440,
+        "cuda_peak_reserved_bytes": 7763656704
+      },
+      "probe": {
+        "steps": 50,
+        "completed_steps": true,
+        "both_channel_shapes_observed": true,
+        "validation_examples": 0,
+        "test_examples": 0,
+        "weights_reused": false,
+        "last_ten_reserved_range_bytes": 0,
+        "allocator_stable_last_ten": true
+      }
+    },
+    {
+      "batch_size": 8,
+      "status": "completed_train_only_probe",
+      "step_seconds_p50": 0.06971279599929403,
+      "step_seconds_p95": 0.08148220465072882,
+      "memory": {
+        "process_peak_rss_bytes": 2517397504,
+        "cuda_peak_allocated_bytes": 1033847296,
+        "cuda_peak_reserved_bytes": 1172307968
+      },
+      "probe": {
+        "steps": 50,
+        "completed_steps": true,
+        "both_channel_shapes_observed": true,
+        "validation_examples": 0,
+        "test_examples": 0,
+        "weights_reused": false,
+        "last_ten_reserved_range_bytes": 0,
+        "allocator_stable_last_ten": true
+      }
+    }
+  ],
+  "input_domain_composition": {
+    "UniBa_train_windows": 8,
+    "UniBa_train_unique_seconds": 240,
+    "portable_train_windows": 1670,
+    "portable_train_unique_seconds": 50100,
+    "portable_validation_windows": 522,
+    "portable_validation_seconds": 15660,
+    "QC_changed": false
+  },
+  "limitations": [
+    "Predominantly portable-task EEG; only eight UniBa windows survived fixed100microvolt absolute amplitude QC.",
+    "Reconstruction loss is not action or intent accuracy.",
+    "50-step probe sequence alternates the two true channel shapes; the eight UniBa windows are repeated in resource probes and probe weights are discarded.",
+    "The selected encoder is epoch8 although the bounded job completed10epochs; unique source time and repeated input time are separate.",
+    "Original upstream pretraining source membership and cross-release anonymous human identity were not independently linked.",
+    "Best trained validation reconstruction MSE is 26.315% higher than the official unmodified initial checkpoint; successful training execution is not baseline improvement."
+  ],
+  "metadata_recovery": {
+    "members": 51,
+    "all_member_hashes_verified": true,
+    "archive_sha256": "e4b412b948f5c343bdb508fd26ed376d0f28a924f5d47d0c79ee30bd121bc1c2"
+  },
+  "autonomous_agent_validated": false,
+  "per_epoch_prepared_float32_input": {
+    "train": {
+      "values": 321024000,
+      "payload_bytes": 1284096000,
+      "scope": "Prepared signal values once per cohort; excludes file headers, model/optimizer weights, transient tensor copies, and epoch repetition."
+    },
+    "val": {
+      "values": 100224000,
+      "payload_bytes": 400896000,
+      "scope": "Prepared signal values once per cohort; excludes file headers, model/optimizer weights, transient tensor copies, and epoch repetition."
+    }
+  },
+  "reconstruction_comparison_to_official_initial": {
+    "metric": "same fixed-mask portable validation raw-sample MSE; lower is better",
+    "official_initial_checkpoint": 0.0011833986433372758,
+    "best_registered_trained_checkpoint": 0.001494813073512124,
+    "relative_increase_percent": 26.315260029083287,
+    "improved_over_official_initial": false,
+    "selection_policy": "The registered comparison selects among trained checkpoints; the unmodified original remains a separate baseline and was not silently substituted.",
+    "interpretation": "The additional SSL training completed, but validation reconstruction worsened relative to the official starting checkpoint. Downstream action/intent improvement must be assessed separately with the matched comparison."
+  }
+}

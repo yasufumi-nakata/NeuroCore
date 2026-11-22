@@ -1,0 +1,18 @@
+{
+  "README.md": {
+    "bytes": 6509,
+    "sha256": "f43d412c8a5b6adeced2a697d2baae218a06e5f15e576d5caa22b42f64fdbdd6"
+  },
+  "header_channel_mapping_audit.json": {
+    "bytes": 13533,
+    "sha256": "ddfc4b9abcd20f70a44aa45a993e02f67652b60cf8ad1f9ae0a69cad8f9413f1"
+  },
+  "provenance.json": {
+    "bytes": 5292,
+    "sha256": "15a0af19977b8f43e0f763cfe9e224432ca22e7fafbca27fa13f3caa2fc7b2e9"
+  },
+  "train400_amplitude_summary.json": {
+    "bytes": 31299,
+    "sha256": "f4f143dd004d1b6853acb7869c22f126a55539d42890ecfda2bbaeae75ac7061"
+  }
+}

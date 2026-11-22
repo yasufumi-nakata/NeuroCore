@@ -1,0 +1,35 @@
+{
+  "protocol_sha256": "528bca6179f4b96dbd45fad16c551d2013abcf5d91d954332f5ee85252acef26",
+  "preflight": {
+    "schema": "xavier-ssl-external-preflight-v1",
+    "status": "passed",
+    "created_utc": "2026-11-22T03:09:59.956108+00:00",
+    "guard_sha256": "9fd27960675b683880e3d255d387733ffffa61c0a137dc7a695ded9af3fdfed4",
+    "membership": {
+      "status": "passed",
+      "train_windows": 1678,
+      "SSL_val_windows": 522,
+      "training_unique_seconds": 50340,
+      "all_ITU_raw_sources_explicitly_excluded": 26,
+      "original_UniBa_val_test_raw_sources_explicitly_excluded": 14,
+      "actual_SSL_raw_source_overlap_with_heldout": 0,
+      "scope": "This new SSL continuation only",
+      "original_upstream_pretraining_membership_reaudited": false,
+      "real_person_identity_disjointness_verified": false
+    },
+    "selected_encoder": {
+      "status": "passed",
+      "selected_global_step": 224,
+      "selected_unique_training_windows": 1678,
+      "selected_unique_training_seconds": 50340,
+      "weights_equal_validation_selected_checkpoint": true
+    },
+    "sealed_SSL_arrays_verified": 166,
+    "aligned_checkpoint_sha256": "d2ef4ba0fa7e2d01aa30b73faf977ab0edca0baa9ee12470ce6065cf5bdcfa16",
+    "registered_before_this_model_external_inference": true,
+    "upstream_original_pretraining_overlap_excluded": false,
+    "new_model_is_exploratory_after_prior_results": true,
+    "new_training_or_inference_in_this_guard": false
+  },
+  "created_utc": "2026-11-22T03:09:59.981425+00:00"
+}

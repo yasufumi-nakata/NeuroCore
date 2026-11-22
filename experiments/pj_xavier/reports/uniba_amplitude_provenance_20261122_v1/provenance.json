@@ -1,0 +1,137 @@
+{
+  "conclusions": {
+    "V_sidecar_and_microvolt_native_header_can_follow_normal_pinned_writer_path": true,
+    "Xavier_arrays_include_declared_otree_or_artificial_stim_channels": false,
+    "additional_validation_or_test_arrays_opened": false,
+    "demonstrated_AUX_mixing": false,
+    "demonstrated_double_scaling": false,
+    "demonstrated_normalization_reversal": false,
+    "extreme_amplitude_origin_identified": false,
+    "header_based_voltage_decoder_consistency_proves_physical_calibration": false,
+    "input_XDF_was_available_for_audit": false,
+    "negative_model_performance_causally_explained": false,
+    "new_training_or_model_selection_performed": false,
+    "notation_difference_alone_proves_misscaled_EEG": false,
+    "publisher_export_has_explicit_microvolt_input_assumption": true,
+    "raw_protocol_model_QC_threshold_or_cohort_modified": false,
+    "upstream_XDF_channel_order_and_real_wiring_verified": false
+  },
+  "corrects_interpretation_of_literal_unit_disagreement": true,
+  "pinned_writer_sources": [
+    {
+      "functions": [
+        "_channels_tsv",
+        "_write_raw_brainvision"
+      ],
+      "relevant_lines": [
+        [
+          153,
+          157
+        ],
+        [
+          1163,
+          1171
+        ],
+        [
+          1184,
+          1201
+        ]
+      ],
+      "sha256": "c89f071ae9ec0561b28771e5bc60d94522f5a581b41950002936e0d1958578a2",
+      "url": "https://raw.githubusercontent.com/mne-tools/mne-bids/v0.16.0/mne_bids/write.py"
+    },
+    {
+      "functions": [
+        "_scale_data_to_unit",
+        "_write_bveeg_file"
+      ],
+      "relevant_lines": [
+        [
+          647,
+          683
+        ],
+        [
+          773,
+          811
+        ]
+      ],
+      "sha256": "ad2d7bbf9855fb424b0da3da3b4a5461ea7ec8f41aad488a7df142e44722c9f0",
+      "url": "https://raw.githubusercontent.com/bids-standard/pybv/v0.7.6/pybv/io.py"
+    }
+  ],
+  "prior_immutable_QC_report": "../ssl_corpus_preparation_20261122_v1/",
+  "publisher_sources": {
+    "README_sha256": "5f9a76bc6fe4866e7280f142a1a6d4226a7e1dd65e26ab83ebd2d41a26446e07",
+    "load_notebook_cells": {
+      "1": {
+        "cell_index_zero_based": 1,
+        "sha256": "2962e17ec3c01407236d090e2160019975fb0b4896a82b089122b795f55bd13e"
+      },
+      "15": {
+        "cell_index_zero_based": 15,
+        "sha256": "63f3f0e8ce7eb61ac3273d592ba046ad08952d273f3b20971042a089b1db7e75"
+      },
+      "3": {
+        "cell_index_zero_based": 3,
+        "sha256": "a1ec8426ea04e6ba648d9cd9e1c8e42d2cbf3d6dc34b38e36dc1114eb52d3142"
+      },
+      "40": {
+        "cell_index_zero_based": 40,
+        "sha256": "325056b9cccbce965df3bc9750704d91fb1ecc8cbadbecf2e37852fa605c60a9"
+      }
+    },
+    "members": {
+      "scripts/01-b_load.ipynb": {
+        "bytes": 106617,
+        "sha256": "10dbe9aca2110525925af1602edd2ee1387c05a467a8c5f2f0b7c466840e65cd"
+      },
+      "scripts/02_create-datasets.ipynb": {
+        "bytes": 25008,
+        "sha256": "8d32521b026dfc5cef42253003d1b980ee44f2e69fa2a06245ac533388ec99f0"
+      },
+      "scripts/config.py": {
+        "bytes": 4797,
+        "sha256": "f70755b8b2d2ee04ec6866e2be58804dfffd58cba7dfd6751e2feb0bef0c13b4"
+      },
+      "scripts/eeg.py": {
+        "bytes": 1814,
+        "sha256": "3536f1aff905a35205289ce0e6adcc518bc541430823c18b45227769fd2cd795"
+      }
+    },
+    "native_header_declares_pybv_version": "0.7.6",
+    "original_export_execution_with_every_declared_version_proven": false,
+    "release": "https://zenodo.org/records/20801101",
+    "requirements_declared_versions": {
+      "mne": "1.10.2",
+      "mne-bids": "0.16.0",
+      "pybv": "0.7.6",
+      "pyxdf": "1.17.3"
+    },
+    "requirements_sha256": "c6e723340012faa0898298b8cc4e4461174a8dba6d446d5468e6e65979e10e9a",
+    "resources_archive_sha256": "2b91b0bee3636c7fcd791e5e614033a6e44e9bb3aedb9af23db3d8899bc2bc1d",
+    "scripts_archive_sha256": "2b213f7aeab7d78f7bf5552b9d67781f7b6a946c942d44ec9f1a26a6a166d89b"
+  },
+  "read_only_scope": {
+    "fresh_train_array_hashes": 18,
+    "label_conditioned_amplitude_comparisons": false,
+    "new_whole_raw_archive_extractions": 0,
+    "original_train_windows_described": 400,
+    "publisher_small_archives_read": true,
+    "upstream_writer_source_executed": false
+  },
+  "remaining_unknowns": [
+    "Original XDF values and per-channel unit metadata",
+    "Device/LSL EEG bridge version, calibration and original channel order",
+    "Whether the exact published notebook and pinned dependencies generated every distributed binary",
+    "Origin of extreme nominal amplitudes and flat channels; artifact, upstream scale and other hypotheses remain unresolved"
+  ],
+  "schema": "xavier-uniba-amplitude-provenance-addendum-v1",
+  "status": "bounded_read_only_audit_completed",
+  "voltage_chain": {
+    "native_decode": "stored_number *0.1*1e-6 returns filtered nominal volts, subject to float32 precision",
+    "native_storage": "pybv converts volts to microvolts, then divides by resolution0.1; float32 multiplexed little endian",
+    "publisher_input": "XDF time_series values assumed microvolts; divide1e6 before MNE RawArray",
+    "tsv_unit": "RawArray has no original-file unit; MNE-BIDS uses info voltage unit V",
+    "working_data": "MNE SI volts; fixed publisher 3–40Hz plus notch before export"
+  }
+}

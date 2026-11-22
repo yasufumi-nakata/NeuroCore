@@ -1,0 +1,74 @@
+{
+  "schema": "xavier-fixed-cbramod-training-input-amplitude-v1",
+  "scope": "Descriptive audit only of the original fixed 400 UniBa training inputs, using the actual frozen last-second EEGStore; no model forward or recipe change",
+  "model_source_sha256": "f246128e909d3581168fbda7a5d062dc31491f27e96b6cae999579795a04fe10",
+  "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "training_arrays_verified": 18,
+  "training_windows": 400,
+  "source_window_shape": [
+    8,
+    448
+  ],
+  "source_rate_hz": 256,
+  "actual_input_shape": [
+    8,
+    200
+  ],
+  "actual_input_duration_seconds": 1,
+  "input_scaling": "stored nominal volts, final256samples, float32 V*1e4, resample_poly25/32, then multiply100 to report nominal microvolts",
+  "diagnostic_values_inspected": 640000,
+  "quantiles": {
+    "max_abs_nominal_microvolt": {
+      "min": 29.995650053024292,
+      "p05": 81.86485290527345,
+      "median": 303.74276638031006,
+      "p95": 2139.973926544189,
+      "max": 30993.4326171875
+    },
+    "max_channel_p2p_nominal_microvolt": {
+      "min": 39.53058645129204,
+      "p05": 134.98777151107788,
+      "median": 531.9657206535339,
+      "p95": 3721.0855197906453,
+      "max": 58773.71826171875
+    },
+    "min_channel_std_nominal_microvolt": {
+      "min": 1.3841533894024437e-11,
+      "p05": 2.944501142064625e-11,
+      "median": 6.795705541302395,
+      "p95": 16.040256670681085,
+      "max": 51.3091879296068
+    },
+    "max_channel_std_nominal_microvolt": {
+      "min": 5.96886726795755,
+      "p05": 20.293997524412603,
+      "median": 92.78043053242254,
+      "p95": 747.8146011018574,
+      "max": 11100.663622167709
+    },
+    "max_abs_channel_mean_nominal_microvolt": {
+      "min": 0.036382742237037746,
+      "p05": 0.46957746830885305,
+      "median": 4.015619747166056,
+      "p95": 62.44450976578518,
+      "max": 458.3198286294937
+    }
+  },
+  "descriptive_counts": {
+    "max_abs_at_most_100_microvolt": 36,
+    "every_channel_std_at_least_point01_microvolt": 375,
+    "both": 24
+  },
+  "window_statistics_sha256": "c512e0482d447f4ab6c58a442345289da6ef0ca31d9d317403c36f946934f93a",
+  "validation_or_test_arrays_opened": 0,
+  "labels_used_for_grouping_or_selection": false,
+  "model_forward_calls": 0,
+  "threshold_or_cohort_changes": false,
+  "limitations": [
+    "The observed scale is nominal header-calibrated voltage; original XDF and device calibration are unavailable.",
+    "No physical cause, mislabeled-unit diagnosis or explanation of model performance follows from amplitude alone.",
+    "The 30-second SSL QC cohort and these 1-second alignment inputs have different durations, selections and resampling order. This is not a revised eligible cohort.",
+    "The same fixed input preprocessing is shared by the previous and SSL-adapted CBraMod alignment models."
+  ],
+  "provenance_addendum": "uniba_amplitude_provenance_20261122_v1/README.md"
+}
