@@ -1,5 +1,12 @@
 # PJ-Xavier 実行・引継ぎ
 
+## 最新：BDF29606906追加学習をS Macで完了（2026-11-23 01:21 JST）
+
+**累積train 27,098窓／22.581667時間**．BDF14記録から1,222窓／1.018333時間を追加し，smac35で10epochs／4,270stepsを完了しました．固定806023 validation最良MSEは **0.001426294970**（直前P300モデル0.001506584226）．BDFの独立val/testとEEG→LLM行動・実OS成功は未評価です．37台の取得は完了168,898files／1,484,540,481,925B，partial407,571,866,481B，supervisor37，欠損/サイズ不一致0（2026-11-23 01:18 JST）．smac19とworkstation/Colabのraw取得・学習は引き続き除外します．
+
+詳細：[BDF追加の実学習結果](reports/smac_training_20261122_v1/BDF29606906_ADDITIONAL_SSL_RESULTS.md)．
+
+
 ## 最新観測：S Mac 37台・SSVEP9970619元構造の独立監査（2026-11-22 22:25 JST）
 
 **37台の新live snapshotは完了99,527files／839,585,508,076B，partial203,790,046,364B（complete欠損・サイズ不一致0，全37supervisor alive）です．** smac02のSSVEP9970619は88files／1,708,501,504B取得済み，smac35で44個の`.set`と代表`.fdt`をcluster内SHA一致転送・別実装で監査しました．先頭64 EEG＋末尾8 EXG/Status，配布200Hz，44連続記録の名目28,817秒，イベント欄0，物理単位明記0です．元論文は512Hz収録→offline 200Hz resamplingを記載しています．unit/split/QC未確定なので新gradient0h，現累積固有学習量**21.563333hのまま**です．BCI8089820は5,241,833,568B／27,475,466,178Bの部分取得中でcompleteにしていません．
