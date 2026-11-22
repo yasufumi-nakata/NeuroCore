@@ -700,6 +700,52 @@ def destination(root, dataset, name):
     return path
 
 
+def openneuro_sha256e_fallback(job):
+    """One audited release's CRN 404 route, with immutable content identity.
+
+    The current public S3 object is usable only when its complete bytes satisfy
+    the original v2.0.3 SHA256E key. No manifest/DB URL or expected size changes.
+    Other releases, providers and transport failures do not use this fallback.
+    """
+    dataset = "openneuro-ds005127-current-public-S3-cd8192ec5aab"
+    if job.get("catalog_id") != "000836" or job.get("dataset_key") != dataset:
+        return None
+    source_url = validate_url(job["url"])
+    parsed = urllib.parse.urlsplit(source_url)
+    prefix = "/crn/datasets/ds005127/objects/"
+    if parsed.netloc != "openneuro.org" or not parsed.path.startswith(prefix):
+        return None
+    key = parsed.path[len(prefix):]
+    match = re.fullmatch(r"SHA256E-s(0|[1-9][0-9]*)--([0-9a-f]{64})((?:\.[A-Za-z0-9_-]+)*)", key)
+    if not match or parsed.fragment:
+        raise ValueError("OpenNeuro fallback requires an exact original SHA256E key")
+    expected = job["expected_bytes"]
+    if not isinstance(expected, int) or isinstance(expected, bool) or expected != int(match[1]):
+        raise ValueError("OpenNeuro SHA256E size differs from original manifest")
+    declared = json.loads(job["checksum_json"])
+    if declared != {"algorithm": "unidentified", "value": key}:
+        raise ValueError("OpenNeuro SHA256E checksum provenance differs")
+    original = safe_relative(job.get("original_relative_path") or "")
+    namespace = "source_" + hashlib.sha256(
+        b"https://openneuro.org/datasets/ds005127/versions/2.0.3").hexdigest()[:12]
+    if job["relative_path"] != original or not original.startswith(namespace + "/"):
+        raise ValueError("OpenNeuro original source namespace differs")
+    provider_path = safe_relative(original[len(namespace) + 1:])
+    if "%" in provider_path or urllib.parse.parse_qsl(parsed.query, keep_blank_values=True) != [
+            ("filename", PurePosixPath(provider_path).name)]:
+        raise ValueError("OpenNeuro original filename or provider path differs")
+    identity = "openneuro:url:" + source_url
+    if job.get("provider_file_identity") != identity:
+        raise ValueError("OpenNeuro original provider identity differs")
+    if job.get("id") != hashlib.sha256((dataset + "/" + original).encode()).hexdigest():
+        raise ValueError("OpenNeuro original database identity differs")
+    return {"url": "https://s3.amazonaws.com/openneuro.org/ds005127/" + urllib.parse.quote(provider_path, safe="/"),
+            "checksum": {"algorithm": "sha256", "value": match[2]},
+            "original_sha256e_key": key, "expected_bytes": expected,
+            "original_relative_path": original, "source_namespace": namespace,
+            "reason": "original_CRN_HTTP_404_pinned_SHA256E_public_S3"}
+
+
 def transfer(job, root, http, reserve_bytes, deadline=None, transfer_limit=None):
     path = destination(root, job["dataset_key"], job["relative_path"])
     part = path.with_name(path.name + ".part")
@@ -708,6 +754,26 @@ def transfer(job, root, http, reserve_bytes, deadline=None, transfer_limit=None)
         raise ValueError("partial file must not be a symlink")
     checksum = json.loads(job["checksum_json"])
     expected = job["expected_bytes"]
+    fallback = openneuro_sha256e_fallback(job)
+    if fallback:
+        checksum = fallback["checksum"]
+    transport_url = job["url"]
+    origin_sha = hashlib.sha256(job["url"].encode()).hexdigest()
+    fallback_used = False
+    transport_receipt = path.with_name(path.name + ".transport.json")
+    if fallback and transport_receipt.is_symlink():
+        raise ValueError("transport receipt must not be a symlink")
+
+    def record_verified_fallback(digest):
+        if fallback_used:
+            atomic_json(transport_receipt, {"schema": "xavier-openneuro-pinned-transport-receipt-v1",
+                        "job_id": job["id"], "dataset_key": job["dataset_key"],
+                        "original_relative_path": job["original_relative_path"],
+                        "original_url_sha256": origin_sha, "transport_url": transport_url,
+                        "original_sha256e_key": fallback["original_sha256e_key"],
+                        "source_namespace": fallback["source_namespace"], "reason": fallback["reason"],
+                        "expected_bytes": job["expected_bytes"], "verified_sha256": digest,
+                        "original_manifest_and_database_identity_unchanged": True, "completed_at": now()})
     if path.exists():
         return {"status": "complete", "bytes_present": path.stat().st_size,
                 "sha256": verify_file(path, expected, checksum), "transferred_bytes": 0}
@@ -715,10 +781,24 @@ def transfer(job, root, http, reserve_bytes, deadline=None, transfer_limit=None)
     validator = None
     validator_field = None
     meta = {}
+    if offset and fallback and not partial_metadata.exists():
+        raise ValueError("OpenNeuro partial lacks original and transport URL binding")
     if offset and partial_metadata.exists():
         meta = json.loads(partial_metadata.read_text())
-        if meta.get("url_sha256") != hashlib.sha256(job["url"].encode()).hexdigest():
+        if meta.get("url_sha256") != origin_sha:
             raise ValueError("partial file belongs to a different URL")
+        request_sha = meta.get("request_url_sha256", origin_sha)
+        if fallback and request_sha != origin_sha:
+            if (request_sha != hashlib.sha256(fallback["url"].encode()).hexdigest()
+                    or meta.get("fallback_reason") != fallback["reason"]
+                    or meta.get("source_sha256") != checksum["value"]
+                    or meta.get("original_sha256e_key") != fallback["original_sha256e_key"]
+                    or meta.get("expected_bytes") != expected):
+                raise ValueError("OpenNeuro partial transport binding changed")
+            transport_url = fallback["url"]
+            fallback_used = True
+        elif request_sha != origin_sha:
+            raise ValueError("partial file belongs to an unverified transport URL")
         validator = meta.get("etag")
         validator_field = "ETag"
         if not validator or validator.startswith("W/"):
@@ -727,6 +807,7 @@ def transfer(job, root, http, reserve_bytes, deadline=None, transfer_limit=None)
     if part.exists() and expected is not None and offset == expected:
         sha = verify_file(part, expected, checksum)
         os.replace(part, path)
+        record_verified_fallback(sha)
         partial_metadata.unlink(missing_ok=True)
         return {"status": "complete", "bytes_present": expected, "sha256": sha, "transferred_bytes": 0}
     if expected is not None and offset > expected:
@@ -743,7 +824,20 @@ def transfer(job, root, http, reserve_bytes, deadline=None, transfer_limit=None)
         if validator:
             headers["If-Range"] = validator
     transferred = 0
-    with http.request(job["url"], headers) as response:
+    try:
+        response = http.request(transport_url, headers)
+    except urllib.error.HTTPError as error:
+        if error.code != 404 or not fallback or fallback_used or error.url != job["url"]:
+            raise
+        if offset:
+            raise ValueError("Cannot switch OpenNeuro transport with a nonempty original partial") from error
+        error.close()
+        transport_url = fallback["url"]
+        fallback_used = True
+        response = http.request(transport_url, headers)
+    with response:
+        if fallback_used and response.geturl() != fallback["url"]:
+            raise ValueError("OpenNeuro fallback redirected outside its exact public S3 object")
         status = response.status
         if status == 206:
             content_range = response.headers.get("Content-Range", "")
@@ -781,9 +875,14 @@ def transfer(job, root, http, reserve_bytes, deadline=None, transfer_limit=None)
         ctype = response.headers.get("Content-Type", "").lower()
         if "text/html" in ctype and path.suffix.lower() not in {".html", ".htm"}:
             raise ValueError("HTML response where data file expected")
-        atomic_json(partial_metadata, {"url_sha256": hashlib.sha256(job["url"].encode()).hexdigest(),
-                    "etag": response.headers.get("ETag"), "last_modified": response.headers.get("Last-Modified"),
-                    "expected_bytes": expected, "started_at": now()})
+        partial_binding = {"url_sha256": origin_sha,
+                           "request_url_sha256": hashlib.sha256(transport_url.encode()).hexdigest(),
+                           "etag": response.headers.get("ETag"), "last_modified": response.headers.get("Last-Modified"),
+                           "expected_bytes": expected, "started_at": now()}
+        if fallback_used:
+            partial_binding.update(fallback_reason=fallback["reason"], source_sha256=checksum["value"],
+                                   original_sha256e_key=fallback["original_sha256e_key"])
+        atomic_json(partial_metadata, partial_binding)
         with part.open(mode) as f:
             while True:
                 if deadline and time.monotonic() >= deadline:
@@ -824,6 +923,7 @@ def transfer(job, root, http, reserve_bytes, deadline=None, transfer_limit=None)
         return {"status": "integrity_failed", "bytes_present": size, "transferred_bytes": transferred,
                 "error": str(e)}
     os.replace(part, path)
+    record_verified_fallback(sha)
     partial_metadata.unlink(missing_ok=True)
     return {"status": "complete", "bytes_present": size, "sha256": sha, "transferred_bytes": transferred}
 
@@ -865,6 +965,22 @@ def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=N
     priority_catalog_ids = tuple(dict.fromkeys(str(value) for value in priority_catalog_ids))
     priority_order = ("CASE WHEN catalog_id IN (" + ",".join("?" for _ in priority_catalog_ids)
                       + ") THEN 0 ELSE 1 END, ") if priority_catalog_ids else ""
+    # Retry legacy zero-byte missing-part failures after the fix without changing
+    # retry eligibility, attempts, identities, or source expectations.
+    known_fixed_retry_order = ("CASE WHEN status='retry' AND expected_bytes=0 "
+                               "AND error LIKE 'FileNotFoundError:%' THEN 0 ELSE 1 END, ")
+    # This audited 404 repair stays subject to the existing lease/backoff gate.
+    openneuro_fixed_retry_order = ("CASE WHEN status='retry' AND catalog_id='000836' "
+                                  "AND dataset_key='openneuro-ds005127-current-public-S3-cd8192ec5aab' "
+                                  "AND error='HTTPError:status=404' THEN 0 ELSE 1 END, ")
+    # Only the audited ZIP transport corrections receive this retry priority.
+    kaggle_correction_prefix = "metadata_corrected:kaggle_single_file_zip_transport:"
+    kaggle_fixed_retry_order = (
+        "CASE WHEN status='retry' AND catalog_id IN ('000420','000381') "
+        "AND substr(error,1," + str(len(kaggle_correction_prefix)) + ")='" + kaggle_correction_prefix + "' "
+        "AND length(error)=" + str(len(kaggle_correction_prefix) + 64) + " "
+        "AND substr(error," + str(len(kaggle_correction_prefix) + 1) + ") NOT GLOB '*[^0-9a-f]*' "
+        "THEN 0 ELSE 1 END, ")
     Path(root).mkdir(parents=True, exist_ok=True)
     while time.monotonic() < deadline and (max_files is None or processed < max_files):
         if max_bytes is not None and transferred >= max_bytes:
@@ -874,7 +990,7 @@ def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=N
         row = db.execute("""SELECT * FROM downloads WHERE
             (status IN ('queued','paused','retry','capacity_blocked') OR
             (status='running' AND lease_until < ?)) AND retry_at <= ?
-            ORDER BY """ + priority_order + "attempts, catalog_id, expected_bytes IS NULL, expected_bytes, relative_path LIMIT 1",
+            ORDER BY """ + known_fixed_retry_order + openneuro_fixed_retry_order + kaggle_fixed_retry_order + priority_order + "attempts, catalog_id, expected_bytes IS NULL, expected_bytes, relative_path LIMIT 1",
             (timestamp, timestamp, *priority_catalog_ids)).fetchone()
         if not row:
             db.commit()
