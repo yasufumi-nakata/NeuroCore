@@ -1,0 +1,38 @@
+{
+  "schema": "xavier-phase2-limited-primary-source-review-v1",
+  "checked_utc": "2026-11-22T04:00:46Z",
+  "sources": [
+    {
+      "url": "https://physionet.org/content/eegmmidb/1.0.0/",
+      "section": "Methods; Data Description; Usage Notes",
+      "finding": "T1/T2 map to the instructed unilateral or bilateral motor condition according to the run. Baselines are separate. These annotations describe public cue conditions, not independent measurements of private freeform intent.",
+      "local_reconciliation": "Whole-release header audit found160Hz1490records and128Hz36records despite nominal160Hz source description. The actual header and byte-derived rates govern preparation."
+    },
+    {
+      "url": "https://mne.tools/stable/generated/mne.datasets.eegbci.load_data.html",
+      "section": "Notes run table",
+      "finding": "Runs4/8/12 are left-versus-right motor imagery;6/10/14 are hands-versus-feet motor imagery. Runs3/7/11 and5/9/13 are executed movement. Runs1/2 are baselines."
+    },
+    {
+      "url": "https://mne.tools/stable/auto_examples/decoding/decoding_csp_eeg.html",
+      "section": "Motor imagery CSP classification example",
+      "finding": "The official example uses common spatial patterns followed by linear discriminant analysis and excludes the immediate cue-onset segment from training. It uses a different within-subject cross-validation setup. Its performance is not a matched baseline for our held-out-subject protocol.",
+      "our_difference": "Our independently implemented trace-normalized class covariance with fixed0.1 shrinkage, component candidates4/8/16 and shrinkage LDA are selected on validation subjects only. All methods use the independently sealed causal preprocessing; the tutorial's offline processing is not copied as an online guarantee."
+    },
+    {
+      "url": "https://arxiv.org/html/2412.07236v6",
+      "title": "CBraMod: A Criss-Cross Brain Foundation Model for EEG Decoding",
+      "section": "3.1 Pre-training; Motor Imagery Classification",
+      "finding": "The authors report TUEG as their pretraining corpus and PhysioNet-MI as a downstream evaluation dataset. This supports a distinction between reported pretraining and downstream use.",
+      "limitation": "This limited primary-source review does not independently enumerate the training records of the downloaded checkpoint, prove cross-corpus person disjointness, or rule out later downstream-finetuned checkpoints. No claim of hash-proven EEGMMIDB exclusion is made.",
+      "phase2_decision": "The principal EEG decoder is initialized from scratch; the new fused model starts from that phase2 encoder. No phase1 CBraMod checkpoint is used for the principal comparison."
+    },
+    {
+      "url": "https://github.com/wjq-learning/CBraMod",
+      "section": "Pretrain and Finetune",
+      "finding": "The authors expose distinct pretraining and downstream finetuning entry points. README links the paper and a pretrained checkpoint. Repository documentation alone is not a record-level no-overlap certificate."
+    }
+  ],
+  "new_model_training_in_this_review": false,
+  "claims_limited_to_examined_primary_material": true
+}

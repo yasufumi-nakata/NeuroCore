@@ -1,0 +1,150 @@
+{
+  "CPU_absolute_deadline_epoch": 1795321866.2646809,
+  "CPU_max_seconds": 1800,
+  "capacity_upper_bounds": {
+    "bytes_per_window": 153600,
+    "main_and_control_plus_all_split_idle_bytes": 4533350400,
+    "main_and_control_plus_test_idle_bytes": 3257241600,
+    "metadata_and_staging_allowance_bytes": 268435456
+  },
+  "cluster_connection_attempts": 0,
+  "controls": {
+    "main_kept_when_control_blocked": true,
+    "matched_fused_shuffle_shift_evaluation_uses_identical_subset_IDs": true,
+    "paired_control_subset_fixed_after_metadata_and_same_QC": true,
+    "same_recording_causal_stream": true,
+    "same_warmup_and_QC": true,
+    "time_shift_seconds": -10.0
+  },
+  "cpu_threads": 2,
+  "dataset": "physionet:eegmmidb:1.0.0",
+  "diagnostic_idle_contract": "separate test-only T0 contract; not binary fitting/model selection",
+  "disk_reserve_bytes": 37580963840,
+  "event_capacity_counts": {
+    "idle_all_before_hold": 9838,
+    "idle_test_metadata_after_record_hold": 1530,
+    "main_all_before_hold": 9838,
+    "main_metadata_after_record_hold": 9448
+  },
+  "feature_window": {
+    "all_64_EEG_channels": true,
+    "duration_s": 3.0,
+    "maximum_grid_shift_exclusive_s": 0.005,
+    "minimum_record_history_s": 5.0,
+    "one_window_per_recorded_T1_or_T2_annotation": true,
+    "output_dtype": "float32",
+    "require_actual_window_inside_annotation_and_record": true,
+    "samples": 600,
+    "start_after_annotation_onset_s": 1.0,
+    "target_clock": "recording0 anchored; ceil start to200Hz grid; no output advance",
+    "target_fs_hz": 200,
+    "unit": "V"
+  },
+  "format": {
+    "array": "recording-specific float32[N,64,600], no partition mixing",
+    "control_artifacts": "separate flat ledger",
+    "main_artifacts": "flat relative_path -> sha256/bytes/shape/dtype",
+    "manifest": "JSONL",
+    "raw_source_keys": [
+      "source_eeg_sha256",
+      "eeg_payload_sha256"
+    ],
+    "source_history": "recording0 through latest causally used native sample; explicit source/target indices"
+  },
+  "held_recordings": {
+    "automatic_annotation_repairs": 0,
+    "count": 50,
+    "hold_applies_to_main_control_idle": true,
+    "reason": "prior independent run-specific annotation metadata review"
+  },
+  "incremental_output_budget_bytes": 4294967296,
+  "initial_free_bytes": 52937732096,
+  "input_leakage_exclusions": [
+    "cue",
+    "annotation",
+    "trial_order",
+    "run_number",
+    "subject_ID",
+    "gold_label"
+  ],
+  "metadata_record_counts": {
+    "MI_source_candidate": 630,
+    "held_annotation_review": 50,
+    "non_MI_run": 846
+  },
+  "model_visible_context": [
+    "static_task_family_only"
+  ],
+  "preprocessing_candidate": {
+    "bandpass_hz": [
+      3.0,
+      40.0
+    ],
+    "candidate_QC_maximum_absolute_V": 0.0001,
+    "candidate_QC_minimum_channel_population_std_V": 1e-08,
+    "filter": "causal scipy.signal.sosfilt, zero initial state at recording0",
+    "final_QC_decision_scope": "train-only diagnostics before final preprocessing seal; never val/test retention or performance",
+    "native_unit_conversion": "official EDF calibration, uV to V exactly once",
+    "normalization": "none; no full-record mean/std/scale",
+    "resampling": "causal upfirdn; rational native->200Hz; firwin(20*max(up,down)+1,1/max(up,down),Kaiser beta5) *up; no delay compensation; trim only outputs at/after source-duration",
+    "scipy_butter_order": 4
+  },
+  "primary": {
+    "gold_T1": "left_fist",
+    "gold_T2": "right_fist",
+    "runs": [
+      4,
+      8,
+      12
+    ],
+    "task_family": "left_right"
+  },
+  "raw_or_old_experiment_changes": 0,
+  "recording_metadata_sha256": "3edfe0014b52ff7d110732e43fa47f0f028b491d33d546b78fbba024ecbf0fa8",
+  "registered_epoch": 1795320066.2646809,
+  "reserved_future_bulk_growth_bytes": 7000000000,
+  "schema": "pj-xavier-eegmmidb-phase2-metadata-contract-v1",
+  "secondary": {
+    "gold_T1": "both_fists",
+    "gold_T2": "both_feet",
+    "runs": [
+      6,
+      10,
+      14
+    ],
+    "task_family": "fists_feet"
+  },
+  "source_archive_bytes": 1997435063,
+  "source_archive_sha256": "0ff5f7f38d1d14b8e485581ad4cf5b327e6494bc2ac7c7d7d4f7e9518a950cbe",
+  "source_header_ledger_sha256": "51b801d07876ae185bd6f6d0bc465769b68d6265cf5ab9356e9ab4ff896ebea2",
+  "source_review_ledger_sha256": "2ee3590257afd78b8d9e05760c256aa7c614d834d6dc69adefbb796c6c5c4add",
+  "split": {
+    "all_runs_same_partition": true,
+    "counts": {
+      "test": 17,
+      "train": 76,
+      "val": 16
+    },
+    "method": "ascending SHA256 of UTF8(20261122|physionet:eegmmidb:1.0.0:Sxxx)",
+    "reassignment_after_exclusions": false,
+    "seed": 20261122
+  },
+  "status": "frozen_metadata_before_signal_diagnostics",
+  "subject_split_sha256": "e5b38cbe78f1c0c8c06384c91266db40a8801be20b72262786502f6b5ce2e9c9",
+  "test_model_inference": 0,
+  "train_feasibility": {
+    "annotation_duration_max_s": 4.1,
+    "annotation_duration_min_s": 2.975,
+    "candidate_MI_events": 6478,
+    "maximum_grid_shift_s": 0.0,
+    "reason_counts": {
+      "window_exceeds_annotation": 1,
+      "window_exceeds_record": 1
+    },
+    "records": 432,
+    "signal_values_examined": false,
+    "test_performance_examined": false,
+    "window_feasible_events": 6477
+  },
+  "train_metadata_feasibility_sha256": "1c4410dbb6fd1be0e90b1d495bc38f2f73746742b3857bf3584ae5cd6bdc3384"
+}

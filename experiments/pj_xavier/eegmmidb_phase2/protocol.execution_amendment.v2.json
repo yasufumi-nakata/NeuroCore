@@ -1,0 +1,53 @@
+{
+  "schema": "xavier-phase2-execution-v2-compatibility-amendment",
+  "created_epoch": 1795322110.60605,
+  "old_execution_seal_sha256": "75f51ca552d8eec18bd3ceb06e3a08a795a9f2bae2aa2e330ab4a5edd9231686",
+  "new_execution_seal_sha256": "e1847ae39ef284a49cdc34dbe1695593b6d9a3c46b8d4db046842c403b26eb7f",
+  "existing_source_changes": {
+    "runtime.py": {
+      "old": "bff6a7c503f9a63f447ed7cb0fa30e5e6a16b044560c3cbf176841f6eb177dc6",
+      "new": "fea63a48172d65f136a1dc169ee9ffd027d90b9162efa527699c982bcae01ee5"
+    },
+    "test_models.py": {
+      "old": "734731571f84dc1f4efa964b696a7b1a6263afbe80c266ccab3eba09134c97d6",
+      "new": "83d2cfd3fcd4a6b8a0274cc1f1a1bd38bc91b0ceeb68c67c0e60cd9027a18545"
+    }
+  },
+  "additional_source_inventory": {
+    "run_training_workflow.py": "cdfa6637cc42fcbdedca8da0c2230795d0e017d454ac8e801ee72d9c36aa6260"
+  },
+  "unchanged_data_analysis_budget_hashes": {
+    "analysis_plan_sha256": "208e9b21558bd183af52a52e49679cbb0cd1e9a2d8843d299a80cee09c0f5f55",
+    "actual_budget_receipt_sha256": "49c5c108685fab74befc17085e99a98940674444cd792ceed323a1940c2bbc84",
+    "prepared_manifest_sha256": "d673ffa0bc54506fc5866a7092fa5ff81deffdcfdf0754b10902cb6fda8657a9",
+    "artifacts_sha256": "c503d6d1336ee1042714f6a02769dbb6b061cd9a225387ab2081d87eb788be94",
+    "control_artifacts_sha256": "b62f5e139bcc6da77f1a743e03f002f2c58a40b82904a9ac7853d601f2bc3736",
+    "paired_control_subset_sha256": "9148905ad394b998e912abc64d00fdf012c56c7821678fbd51c7002b6cc369b7",
+    "subject_split_sha256": "e5b38cbe78f1c0c8c06384c91266db40a8801be20b72262786502f6b5ce2e9c9",
+    "metadata_protocol_sha256": "37ef67e3a6432eb3416afeeab7709fd432f2c69c8341b036aabf6fee08ccbbed",
+    "preprocessing_protocol_sha256": "b8fc0c0def124e28e312b43818aecad68f7da2e5728c1833c7b18d25961cc1f4",
+    "idle_manifest_sha256": "e166bf85fa12ec5f6e4596eb63c23c699ccff8af08e1cc78d0ecdf1b4cd23d09",
+    "idle_artifacts_sha256": "c87a6617cb3faf05ecb5ad25ee5d522739d0ed94967ef49972c832e4a532fdeb",
+    "idle_metadata_protocol_sha256": "4a3db54d4d6975c38de1cb49901f7b8db473fd68180e60f448fbe4b8f8311d1b",
+    "corpus_summary_sha256": "0ff7ae2a74eed31341602b9506594fe75e917cb364d69a223fdce7fe55e01706",
+    "preparation_completion_sha256": "5041351f4fd80a80e4956034a7a479983cd921c6701062906a5dd68c5f30936c",
+    "final_QC_decision_sha256": "94f3ab3337601cb85a6caac35d236e77d61f19b4e6213c3ee7a22ece7536a353",
+    "preprocessing_tests_sha256": "febd6802d672a8e614675a099f24ba3664b13413bd4b68b6379581aab97d335a"
+  },
+  "reason": "Torch2.14 allocator API requires explicit CUDA index. Only allocator argument normalization changed; model/loss/data/selection/threshold/prompt unchanged.",
+  "runtime_diff": "--- preserved_runtime_v1\n+++ runtime_v2\n@@ -81,7 +81,10 @@\n     if device.type == \"cuda\":\n         capacity = torch.cuda.get_device_properties(device).total_memory\n         require(amount <= capacity, \"Budget exceeds physical CUDA memory\")\n-        torch.cuda.set_per_process_memory_fraction(amount / capacity, device)\n+        # Torch 2.14 requires an explicit index for this allocator API, while\n+        # other CUDA memory queries accept an index-free torch.device(\"cuda\").\n+        index = device.index if device.index is not None else torch.cuda.current_device()\n+        torch.cuda.set_per_process_memory_fraction(amount / capacity, index)\n         torch.cuda.reset_peak_memory_stats(device)\n         return {\"kind\": \"cuda_allocator\", \"budget_bytes\": amount, \"capacity_bytes\": capacity}\n     if device.type == \"mps\":\n",
+  "failure_phase": "first capacity probes failed at allocator configuration before model construction/optimizer/test. Original source and remote attempt logs are preserved; remote log hashes will be added to final recovery ledger.",
+  "failed_preflight_optimizer_updates": 0,
+  "failed_preflight_test_predictions": 0,
+  "training_contract_v1_sha256": "7ef96c8335b28877bbf9134c174686836b176235279ade4f1f3efb8e5c6f56c3",
+  "training_contract_v2_sha256": "0defab92134e3a69c4cdb03f0fb3cb122b7f2bdbf27df7ddab76d0bb998019d7",
+  "CPU_regression_receipt_sha256": "2258a35ccd75a61ff642a67fda6a077df04f754ab5709e78e0cef666322ccd1f",
+  "CPU_regression_tests": 17,
+  "CSP_fit_repeated": false,
+  "CSP_original_selection_seal_sha256": "a038d802d618f679b57778e9d52b629bd1ffc83d22608a394d6c0cd78dea4ec0",
+  "CSP_checkpoint_sha256": "6e04bd439c765a7ac2332762ffe7305f1fb0a1cf4f3d7542e5155a186ce6915d",
+  "CSP_training_execution_seal_sha256": "75f51ca552d8eec18bd3ceb06e3a08a795a9f2bae2aa2e330ab4a5edd9231686",
+  "CSP_evaluation_execution_seal_sha256": "e1847ae39ef284a49cdc34dbe1695593b6d9a3c46b8d4db046842c403b26eb7f",
+  "CSP_scientific_source_unchanged": true,
+  "test_results_used_to_modify_experiment": false
+}

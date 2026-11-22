@@ -1,0 +1,33 @@
+{
+  "schema": "xavier-phase2-benchmark-implementation-verification-v1",
+  "local_tests": {
+    "status": "passed",
+    "tests_run": 25
+  },
+  "workstation_tests": {
+    "status": "passed",
+    "tests_run": 25,
+    "observed_suite_seconds": 0.199
+  },
+  "source_sha256": {
+    "benchmark_evaluate.py": "fb7f74d8a17ccb26077299eeb37b64cd67af766316da32d78a4a4c6d0fa176ff",
+    "benchmark_csp.py": "322cc2d8272ed7fc3303886adc9294c9e8b3324d7dfbdf56aec155d10cee608f",
+    "harness_evaluate.py": "db034a4d003a4311e0369a49721598b7a1b364b151bbb9565099f5ec01e4a7c6",
+    "benchmark_common.py": "b849bed5677c6f3ea8089667b8e587e67d3b827b5704b0c289108fe0056d6e48",
+    "benchmark_audit.py": "66b19e15ba6dcb43ebb5d18d48ea539fc7e80df2d781be68ea16767f4f6e36d2",
+    "benchmark_idle.py": "6f26e981d724a9f76a56330bb3132a7cf884746164bba6df565c5cda3b5826f3",
+    "benchmark_tests.py": "2d21a1f3c5c331a3f36846952f7b2bd2df5b6145305fd93190ee4233aab45e83",
+    "harness_mapping.py": "548a9a024137bde98adbab5d23dbd22e1170c157ae32ee6a828cd0c05252df57",
+    "benchmark_seal.py": "6bdb7d3e3d35696aede7e74b26e52788307521123759b7f073c65a16e91561ed"
+  },
+  "analysis_plan_sha256": "208e9b21558bd183af52a52e49679cbb0cd1e9a2d8843d299a80cee09c0f5f55",
+  "fixture_scope": "Synthetic arrays/fake runtime validate guards and metric/state logic; no fixture metric is an empirical EEG result. Real preflight separately validated9,208main+1,357idle with no model predictions.",
+  "real_input_preflight_sha256": "8c0adb2232758e3a1b9b725918d42083b80488b06d8160be1b7f435f69e86bde",
+  "workstation_dependencies": {
+    "numpy": "2.5.5",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1",
+    "threadpoolctl": "3.8.0"
+  },
+  "created_epoch": 1795321075.587432
+}
