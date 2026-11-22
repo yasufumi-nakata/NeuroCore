@@ -32,7 +32,7 @@ EEG 終端を request の少なくとも 4.5 秒前で止め，公開 filter rec
 
 1・5・15・60 秒区間の key-down，key-up，mouse-click，mouse-move の件数と，最後の操作からの時間を保存します．cutoff と同時刻のイベントも除外します．キーの文字，座標，GPT イベント，対象ラベル，未来のイベントを特徴へ入れません．公開 `duration` が次のイベントまでの間隔を含む可能性があるため，duration も使いません．
 
-既存の LLM prompt は従来の過去 oTree context を使います．履歴特徴の sidecar は，そのまま LLM prompt に自動挿入されるものではありません．履歴だけの classifier は今回の CPU 準備では学習しておらず，解析 plan を handoff に明記しています．
+既存の LLM prompt は従来の過去 oTree context を使います．履歴特徴の sidecar は，そのまま LLM prompt に自動挿入されるものではありません．履歴だけの classifier は cohort 準備後，別の固定 protocol で benchmark 担当が学習・評価しました．実行条件は `../benchmark/protocol.history_uniba_v3.json`，集計は `../benchmark/history_baseline_v3_aggregate.json` を参照してください．EEG 模型の比較では同じ test 標本上の履歴寄与を基準にします．
 
 ## 検証と保存
 
@@ -51,10 +51,22 @@ prepared archive:
 
 完全な prepared cohort を workstation の `private/xavier/prepared/ai_coding_uniba_v3_natural_casecontrol_verified` に回収し，archive／manifest／全 32 配列の hash を再照合しました．公開集計は `../reports/ai_coding_uniba_v3_natural.aggregate.json` と `../reports/ai_coding_uniba_v3_validation.aggregate.json` です．
 
-## 次の予約枠で実行するもの
+## 固定した実行と最終評価
 
-具体的な環境変数，学習 argv，5 条件評価 argv，解析 plan は `natural_cohort_v3_handoff.json` に固定しました．**今回 v3 の LLM 学習・GPU 評価は実行していません．**
+M1 の SmolLM2-1.7B v3 は3 epochsを完了し，validationのみで選んだbestを固定しました．203 test窓を同じbestで5条件評価する処理を実行中です．元波形から10秒前の区間を取り出す対照は，全203窓でsourceとの一致を検証済みです．評価完了・性能達成を先取りして主張しません．
 
-進行中の v2 学習と test 評価を先に完了・保存し，別の v3 run を固定 seed から開始します．v2 checkpoint の manifest を変更して resume することはしません．batch は 4 を事前指定します．batch 8 は短い capacity probe に合格しましたが，長い v2 実行の 24 steps 時点で reserved memory が予算を超えて停止したためです．この変更は v3 test の成績を見て選んだものではありません．
+ColabのQwen8Bは，別に事前保存した `../benchmark/protocol.qwen3_8b_uniba_v3_30e.json` に従い，30 epochs／最大3600秒のrunを開始しました．当初の3-epoch提案はsupersededとしてhandoffへ保全し，重複起動しません．M1とColabでは学習予算が異なるため，差をモデルサイズだけの効果と解釈できません．
 
-Validation のみで best を選び，test の 203 窓は固定済みモデル群と対照条件で評価します．履歴 classifier の前処理も train で fitting し，test は使用しません．test 被験者が 8 人であることを明示し，被験者単位の不確実性を報告します．
+各モデルのvalidation選択とtestを分け，履歴classifierの前処理もtrainだけでfittingします．test被験者は8人であり，被験者単位の不確実性を併記します．ITUの追加25人は外部siteの候補として監査した段階で，v3の学習・モデル選択には使っていません．
+
+## Workstation M1 の実学習
+
+固定 SmolLM2-1.7B-Instruct と実 train 窓で，batch 1・2 の各 3 optimizer steps が MPS 上で完了しました．batch 2 の sampled driver memory は 4,420,599,808 bytes，warm throughput は約 1.212 examples/s でした．8 GiB allocator 上限を設定し，CPU fallback を無効にしています．
+
+この結果を受け，別 run `smollm2_1_7b_uniba_natural_v3_fused_v1` を batch 2，candidate batch 2，3 epochs，seed 20261122，1800 秒のループ上限で実行し，600 stepsを完走しました．短い probe の重みは再利用せず，v2 の source と manifest を変更していません．学習中は validation だけを評価します．正確な command，PID，allocator 設定，終了 receipt は workstation の `private/xavier/runs/smollm2_1_7b_uniba_natural_v3_fused_v1/` に保存します．短い probe の成功から長時間の完走を断定せず，終了 receipt と保存 checkpoint を別に確認します．
+
+学習＋各epochのvalidationは1541.72秒（25.70分），全processは1550.64秒でした．観測したMPS driver memoryの最大値は4,437,557,248 bytes，allocatedは3,425,448,960 bytesです．これはsampled値であり，瞬間的な真のpeakとは呼びません．8 GiB allocator上限を維持しています．学習対象は166,656 parameters，1,711,376,384 parametersのLLM本体は凍結したままです．
+
+Validationのbalanced accuracyは1〜3 epochで33.33%，37.63%，33.87%となり，2 epoch目をbestに選びました．この時点でAI送信のrecallは0であり，目的達成を主張できません．best checkpointは2,022,605 bytes，SHA-256は `281716da86293d2b700ec003c967ca2c141515cc565b136a12137c34b73a3475` です．学習集計は `../reports/smollm2_1_7b_m1_natural_v3_training.aggregate.json` にあります．
+
+M1のvalidation scoringは約1秒／例で，仮定上のdecision→event余裕0.375秒より長くなっています．この同じdeadlineでのオンライン操作達成を示すものではありません．5条件の最終評価と履歴対照の比較は別のreceiptで確認します．

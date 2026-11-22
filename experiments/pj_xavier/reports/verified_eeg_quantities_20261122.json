@@ -1,0 +1,83 @@
+{
+  "schema": "pj-xavier-verified-quantity-summary-v1",
+  "observed_at": "2026-11-22T10:02:48.601335+09:00",
+  "datasets": [
+    {
+      "dataset": "EEGlass",
+      "site": null,
+      "recordings": 1,
+      "hours": 1.0888222222222224,
+      "physical_eeg_sample_bytes": 11759280,
+      "physical_eeg_channels": [
+        3
+      ],
+      "source_url": "https://zenodo.org/records/4453396",
+      "evidence": {
+        "header_sha256": "80b2ba85fc3732fad6ddc6e14b6bcfb786c1da35e8d1ac6ec9cc77fb49dbc07a",
+        "fdt_sha256": "ac81414ad80a3304d52aa4746dd8b36669921288da7f3b1989504e4b4d27d145"
+      },
+      "duplicate_rule": "Only original continuous FDT; filtered export is excluded"
+    },
+    {
+      "dataset": "AI-assisted coding",
+      "site": "UniBa",
+      "recordings": 34,
+      "hours": 30.61540256076389,
+      "physical_eeg_sample_bytes": 902884960,
+      "physical_eeg_channels": [
+        8
+      ],
+      "source_url": "https://zenodo.org/records/20801101",
+      "evidence": {
+        "report": "uniba_quantity_recheck.json",
+        "sha256": "abca0e051fbfc60689c48fa36c377fcc85d021131f462866835b73e7f932ed32"
+      },
+      "duplicate_rule": "Original EEG recordings; processed copies and 2 auxiliary channels excluded from EEG bytes"
+    },
+    {
+      "dataset": "AI-assisted coding",
+      "site": "ITU",
+      "recordings": 26,
+      "hours": 21.30617947048611,
+      "physical_eeg_sample_bytes": 5026758400,
+      "physical_eeg_channels": [
+        64
+      ],
+      "source_url": "https://zenodo.org/records/20801101",
+      "evidence": {
+        "report": "ai_coding_itu_audit.aggregate.json",
+        "sha256": "c47a6fdf9ecb3ca399c35be6354a975735254c9e7d8d8ebaebc12d96b8e794a8"
+      },
+      "duplicate_rule": "26 unique binary payloads; 2 auxiliary channels excluded from EEG bytes"
+    },
+    {
+      "dataset": "Portable EEG systems comparison",
+      "site": null,
+      "recordings": 57,
+      "hours": 34.897061111111114,
+      "physical_eeg_sample_bytes": 4982944384,
+      "physical_eeg_channels": [
+        32
+      ],
+      "source_url": "https://zenodo.org/records/15698441",
+      "evidence": {
+        "report": "portable_eeg_15698441_audit.json",
+        "sha256": "2f621f7d2b7243b923e46e9553c7a5519cac89beef8f2eea9975227037a06125"
+      },
+      "duplicate_rule": "Only raw data/; all processing/statistical exports excluded"
+    }
+  ],
+  "verified_recording_count": 118,
+  "verified_stored_eeg_hours": 87.90746536458333,
+  "physical_eeg_sample_bytes": 10924347024,
+  "byte_scope": "Uncompressed stored physical EEG scalar values only; excludes auxiliary channels, headers, events, video, model weights, copies and array windows. Uses each source encoding; not a uniform float32 normalization.",
+  "hours_scope": "Time per recording, not summed channel-hours. Different sites/devices are distinct source recordings; global cross-corpus participant identity is not established.",
+  "not_all_catalog_datasets_audited": true,
+  "training_window_hours": {
+    "eeglass": 0.18444666666666668,
+    "uniba_v2": 3.800902777777778,
+    "uniba_v3": 0.3684722222222222,
+    "warning": "v2/v3 share source recordings and may overlap; do not sum these as new independent EEG hours."
+  },
+  "quality_and_goal_scope": "Header/binary integrity and quantities do not establish usable-signal fraction, latent intent labels, online causal preprocessing, or autonomous task performance."
+}

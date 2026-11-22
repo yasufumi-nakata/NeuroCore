@@ -826,6 +826,30 @@ def transfer(job, root, http, reserve_bytes, deadline=None, transfer_limit=None)
     return {"status": "complete", "bytes_present": size, "sha256": sha, "transferred_bytes": transferred}
 
 
+def access_requirement_from_http_error(error):
+    """Recognize an explicit access workflow; never store request tokens/body text."""
+    if not isinstance(error, urllib.error.HTTPError) or error.code != 400:
+        return None
+    try:
+        path = urllib.parse.urlsplit(error.url).path
+        if not path.startswith(("/api/access/datafile/", "/api/access/datafiles/", "/api/access/dataset/")):
+            return None
+        body = error.read(8193)
+        if len(body) > 8192:
+            return None
+        payload = json.loads(body.decode("utf-8"))
+        if not isinstance(payload, dict) or payload.get("status") != "ERROR":
+            return None
+        match = re.fullmatch(r"You may not download (?:this file|these files) without the required Guestbook response for guestbookID (\d{1,12})\.?",
+                             str(payload.get("message", "")).strip(), re.IGNORECASE)
+        if not match:
+            return None
+        return {"code": "guestbook_required", "guestbook_id": int(match.group(1)), "http_status": 400,
+                "response_body_sha256": hashlib.sha256(body).hexdigest(), "submission_performed": False}
+    except (OSError, ValueError, UnicodeDecodeError, TypeError):
+        return None
+
+
 def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=None, http=None):
     """One worker process per node; fixed 1 active transfer keeps host fanout bounded.
 
@@ -868,15 +892,18 @@ def worker(db, root, *, reserve_gib=20, seconds=300, max_bytes=None, max_files=N
                 break
         except (urllib.error.HTTPError, urllib.error.URLError, OSError, ValueError, socket.timeout) as e:
             code = getattr(e, "code", None)
-            status = "restricted" if code in {401, 403} else ("integrity_failed" if isinstance(e, ValueError) else "retry")
+            requirement = access_requirement_from_http_error(e)
+            status = "access_action_required" if requirement else ("restricted" if code in {401, 403} else ("integrity_failed" if isinstance(e, ValueError) else "retry"))
             pause = min(86400, 60 * 2 ** min(job["attempts"], 10))
             if code == 429 and e.headers.get("Retry-After", "").isdigit():
                 pause = max(pause, int(e.headers["Retry-After"]))
             partial = destination(root, job["dataset_key"], job["relative_path"])
             partial = partial.with_name(partial.name + ".part")
             actual_bytes = partial.stat().st_size if partial.exists() else 0
+            error_text = json.dumps(requirement, sort_keys=True) if requirement else (
+                "HTTPError:status=" + str(code) if isinstance(e, urllib.error.HTTPError) else f"{type(e).__name__}:{str(e)[:400]}")
             db.execute("UPDATE downloads SET status=?,error=?,retry_at=?,lease_until=0,bytes_present=?,updated_at=? WHERE id=?",
-                       (status, f"{type(e).__name__}:{str(e)[:400]}", time.time() + pause, actual_bytes, now(), job["id"]))
+                       (status, error_text, 0 if requirement else time.time() + pause, actual_bytes, now(), job["id"]))
             db.commit()
             processed += 1
             if code == 429:

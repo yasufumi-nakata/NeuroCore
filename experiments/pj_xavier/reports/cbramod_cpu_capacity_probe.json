@@ -1,0 +1,61 @@
+{
+  "schema": "pj-xavier-cbramod-capacity-probe-v1",
+  "status": "completed",
+  "source_repo": "https://github.com/wjq-learning/CBraMod",
+  "source_commit": "b9e961003214326972c567eff390e75b0287e32a",
+  "source_sha256": {
+    "models/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "models/cbramod.py": "caa7c5a0e4acd488a6f625b56f7b54dc4e7190d6b68ef5b76dff2cef86874a14",
+    "models/criss_cross_transformer.py": "90e90b8c98ca7eb543c44e32afc29674d3f71cb090692ad9f82db3a43edf334c"
+  },
+  "weights_repo": "weighting666/CBraMod",
+  "weights_revision": "500543c7e30bda1b22bfd51a49301b238dee21fd",
+  "weights_sha256": "0792cb808c14e6b7a2bb2ce1dff379bc47bc54c49a779825bdfeb33bf8157178",
+  "weights_bytes": 19775842,
+  "encoder_parameters": 4883800,
+  "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "prepared_array_sha256": {
+    "waveforms/uniba_sub-P001_ses-S001_4cd8764d54.npy": "80ec0f950af08a4413a127e256ed29047b60610781a02a48f9755279350a3127"
+  },
+  "train_windows": 3,
+  "validation_windows": 0,
+  "test_windows": 0,
+  "input_shape": [
+    3,
+    8,
+    1,
+    200
+  ],
+  "output_shape": [
+    3,
+    8,
+    1,
+    200
+  ],
+  "input_preparation": {
+    "original_unit": "V",
+    "latest_seconds_only": 1,
+    "input_sample_rate_hz": 256,
+    "encoder_sample_rate_hz": 200,
+    "scale_factor": 10000,
+    "right_padding_samples": 0,
+    "resample": "scipy.signal.resample_poly up=25 down=32 within existing past window"
+  },
+  "device": "cpu",
+  "torch_threads": 2,
+  "gpu_calls": 0,
+  "inference_batch_seconds": 0.03315050003584474,
+  "elapsed_seconds": 0.3154095830395818,
+  "peak_process_rss_bytes": 333447168,
+  "torch_version": "2.15.0",
+  "all_output_finite": true,
+  "training_steps": 0,
+  "decoder_performance_measured": false,
+  "agentic_goal_validated": false,
+  "next_use": "Frozen pretrained EEG encoder candidate for a separate declared training experiment; no replacement of active model or checkpoint.",
+  "limitations": [
+    "Three real training examples only; no performance comparison or backbone fusion was run.",
+    "Only the final one second of 1.75-second windows was used; a downstream protocol must fix this policy before comparison.",
+    "Official pretraining data provenance must be considered for each future benchmark."
+  ]
+}

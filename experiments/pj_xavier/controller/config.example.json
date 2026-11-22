@@ -12,6 +12,7 @@
   "allow_idle_stop": false,
   "allow_stop_with_unpreserved_partials": false,
   "idle_grace_seconds": 120,
+  "raw_chunk_bytes": 67108864,
   "raw_recovery_max_files_per_cycle": 2,
   "raw_recovery_max_bytes_per_cycle": 34359738368,
   "raw_download_timeout_seconds": 3600,
@@ -93,6 +94,11 @@
       "gate_id": "uniba_five_variant_evaluation",
       "receipt_path": "runs/qwen3_8b_aicoding_uniba_fused_v1/variant_evaluation_completion.json",
       "checkpoint_path": "runs/qwen3_8b_aicoding_uniba_fused_v1/best.pt"
+    },
+    {
+      "gate_id": "uniba_natural_v3_five_variant_evaluation",
+      "receipt_path": "runs/qwen3_8b_aicoding_uniba_natural_v3_fused_30e_v1/variant_evaluation_completion.json",
+      "checkpoint_path": "runs/qwen3_8b_aicoding_uniba_natural_v3_fused_30e_v1/best.pt"
     }
   ],
   "local_jobs": [

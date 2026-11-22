@@ -1,0 +1,117 @@
+{
+  "schema_version": "pj-xavier-fresh-queue-append-verification-v1",
+  "verified_at": "2026-11-22T00:55:02.267919+00:00",
+  "status": "verified",
+  "source_snapshot_sha256": "ef5aa95b592bc88c45588c9fe6ea9d39bf776bc724ceaa91150fc9e55d547a84",
+  "source_snapshot_bytes": 512659525,
+  "catalog_sha256": "142a7e8da1ca3c8439082cf3af768cab9ffcdb0f967c003f86dd5ee71f1ee5f8",
+  "catalog_rows": 5165,
+  "coverage_missing": 0,
+  "coverage_extra": 0,
+  "source_status_counts": {
+    "resolved": 1515,
+    "unknown": 1599,
+    "metadata_only": 1263,
+    "excluded": 668,
+    "restricted": 117,
+    "duplicate": 3
+  },
+  "resolved_scope_counts": {
+    "unresolved": 903,
+    "include_provisional": 422,
+    "component_only_provisional": 190
+  },
+  "plan_sha256": "8c75d6814fb24e57a9fa5f8a21c69771bd1fa38a6a95e22852b3788d5b2a46df",
+  "plan_counts": {
+    "scope_review_pending": 2823,
+    "resolved_EEG_provisional_catalog_rows": 610,
+    "unchanged_existing_release": 403,
+    "proposed_additions": 206,
+    "not_resolved_public": 942,
+    "excluded": 668,
+    "metadata_conflict_held": 1,
+    "restricted": 117,
+    "duplicate": 3,
+    "seed_managed_separately": 2
+  },
+  "scope_review_counts": {
+    "official_description_EEG_data_candidate": 231,
+    "unresolved_metadata_review": 778,
+    "title_signal_needs_official_metadata_review": 1902,
+    "conflicting_scope_metadata_review": 14
+  },
+  "inserted_file_jobs": 438834,
+  "inserted_release_count": 206,
+  "inserted_known_release_file_bytes": 11158312031743,
+  "inserted_unknown_size_files": 38,
+  "old_file_jobs_metadata_verified": 29206,
+  "old_known_release_file_bytes": 4662735278723,
+  "live_ledger_file_jobs": 468040,
+  "live_ledger_status_counts_at_verification": {
+    "access_action_required": 342,
+    "complete": 16,
+    "metadata_blocked": 38,
+    "queued": 467640,
+    "retry": 3,
+    "running": 1
+  },
+  "new_files_by_provider": {
+    "landing": {
+      "new_releases": 56,
+      "new_files": 4309,
+      "known_file_bytes": 162429195194,
+      "unknown_size_files": 38
+    },
+    "osf": {
+      "new_releases": 19,
+      "new_files": 3251,
+      "known_file_bytes": 201786679406,
+      "unknown_size_files": 0
+    },
+    "openneuro": {
+      "new_releases": 125,
+      "new_files": 430548,
+      "known_file_bytes": 10637994071977,
+      "unknown_size_files": 0
+    },
+    "figshare_collection": {
+      "new_releases": 1,
+      "new_files": 5,
+      "known_file_bytes": 682894376,
+      "unknown_size_files": 0
+    },
+    "dandi": {
+      "new_releases": 1,
+      "new_files": 37,
+      "known_file_bytes": 107315450285,
+      "unknown_size_files": 0
+    },
+    "kaggle": {
+      "new_releases": 4,
+      "new_files": 684,
+      "known_file_bytes": 48103740505,
+      "unknown_size_files": 0
+    }
+  },
+  "existing_pinned_metadata_mismatches": 0,
+  "existing_download_rows_changed_by_importer": 0,
+  "guestbook_held_file_jobs": 342,
+  "bulk_worker_identity_preserved": true,
+  "bulk_launch_sha256": "9aeae21b51f040d048bd3d9849b274dc573174ccf737db6173e0c2d4be75e771",
+  "original_deadline_epoch": 1795322496.632661,
+  "original_max_bytes": 64062645375,
+  "worker_start_stop_operations": 0,
+  "raw_file_operations_by_importer": 0,
+  "free_bytes_at_verification": 81993601024,
+  "reserve_bytes": 37580963840,
+  "training_approved": false,
+  "unique_EEG_hours": null,
+  "byte_scope": "Candidate whole-release files including modalities and versions, not downloaded bytes or independent EEG bytes. Provider pagination completeness and waveform identity are unverified.",
+  "private_plan_files_sha256": {
+    "releases.jsonl": "47c09cb44a1731b020ff8487f3b92ddfc6c0597641c38d26b1d92118334a180b",
+    "catalog_audit.jsonl": "1f3439919402ef891c7541623c564b8ff145d36cb8f043800328dd7f9572557d",
+    "scope_review.jsonl": "d24f3c9f7af8a8775b1c73232f7889e5505e31206cd8610bb6877a11d97a6186"
+  },
+  "apply_receipt_sha256": "3393da1c68a09a4ce1e3af27200970dd839fef47b1da444cebacc83102454754",
+  "code_sha256": "d1dc3ed7dcbb44e14b3ce2669291be82729d53f703d1b5d095aa0090b50d76a0"
+}

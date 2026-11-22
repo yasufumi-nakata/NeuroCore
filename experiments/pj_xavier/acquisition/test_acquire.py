@@ -6,6 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import tempfile
 import unittest
+import urllib.error
 from unittest.mock import patch
 
 import acquire
@@ -34,6 +35,46 @@ def job(data=b"abcdefgh"):
 
 
 class AcquisitionTests(unittest.TestCase):
+    def test_explicit_dataverse_guestbook_requires_action_without_logging_url_token(self):
+        body = json.dumps({"status": "ERROR", "message": "You may not download this file without the required Guestbook response for guestbookID 217."}).encode()
+        error = urllib.error.HTTPError("https://dataverse.harvard.edu/api/access/datafile/3144692?token=DO_NOT_LOG", 400, "Bad Request", {}, io.BytesIO(body))
+        result = acquire.access_requirement_from_http_error(error)
+        self.assertEqual(result["code"], "guestbook_required")
+        self.assertEqual(result["guestbook_id"], 217)
+        self.assertNotIn("DO_NOT_LOG", json.dumps(result))
+        self.assertFalse(result["submission_performed"])
+
+    def test_other_http400_or_unbounded_body_does_not_become_access_restriction(self):
+        for body in (b'{"status":"ERROR","message":"Bad file format"}', b'x' * 9000,
+                     b'{"status":"ERROR","message":"Guestbook mentioned in unrelated debugging text"}'):
+            with self.subTest(body_length=len(body)):
+                error = urllib.error.HTTPError("https://dataverse.harvard.edu/api/access/datafile/1", 400, "Bad Request", {}, io.BytesIO(body))
+                self.assertIsNone(acquire.access_requirement_from_http_error(error))
+
+    def test_guestbook_worker_holds_partial_and_never_retries_held_file(self):
+        class GuestbookHttp:
+            calls = 0
+            def request(self, url, headers=None):
+                self.calls += 1
+                body = b'{"status":"ERROR","message":"You may not download this file without the required Guestbook response for guestbookID 217."}'
+                raise urllib.error.HTTPError(url + "?token=DO_NOT_LOG", 400, "Bad Request", {}, io.BytesIO(body))
+        with tempfile.TemporaryDirectory() as tmp:
+            db = acquire.init_db(Path(tmp) / "download.sqlite")
+            row = {"catalog_id": "000037", "provider": "dataverse", "source_id": "doi:test", "source_version": "1.1", "status": "resolved",
+                   "files": [acquire.make_file("a.eeg", "https://dataverse.harvard.edu/api/access/datafile/1", 8, evidence_url="https://dataverse.harvard.edu/api/datasets/1")]}
+            acquire.ingest(db, [row])
+            p = acquire.destination(Path(tmp) / "raw", acquire.dataset_storage_key(row), "a.eeg")
+            p.with_name("a.eeg.part").write_bytes(b"old")
+            http = GuestbookHttp()
+            acquire.worker(db, Path(tmp) / "raw", seconds=2, reserve_gib=0, http=http)
+            status = db.execute("SELECT status,bytes_present,error FROM downloads").fetchone()
+            self.assertEqual(status[0], "access_action_required")
+            self.assertEqual(status[1], 3)
+            self.assertNotIn("DO_NOT_LOG", status[2])
+            self.assertEqual(p.with_name("a.eeg.part").read_bytes(), b"old")
+            acquire.worker(db, Path(tmp) / "raw", seconds=2, reserve_gib=0, http=http)
+            self.assertEqual(http.calls, 1)
+
     def test_japanese_audit_scope_exclusions_remain_excluded(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "audit.csv"

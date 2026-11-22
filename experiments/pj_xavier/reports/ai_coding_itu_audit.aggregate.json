@@ -1,0 +1,45 @@
+{
+  "schema": "xavier-verified-brainvision-quantity-audit-v1",
+  "status": "complete",
+  "source": "https://zenodo.org/records/20801101",
+  "source_archive": "bids_eeg_itu.tar.gz",
+  "recording_member_prefix": "data/01_raw/itu/",
+  "headers_outside_prefix_excluded": 0,
+  "archive_verification": {
+    "bytes": 4650970671,
+    "md5": "af98ad619d3e6f5576c164e601f0c598",
+    "sha256": "1e192b5e65931b9a44858acd987d540d3436de3fddf99454170b93434c2c99b5",
+    "mtime_ns": 1795308316910862963
+  },
+  "source_ledger_status": "complete",
+  "headers_total": 26,
+  "headers_parsed": 26,
+  "headers_blocked": 0,
+  "blocked_reasons": {},
+  "unique_binary_payloads": 26,
+  "duplicate_binary_references": 0,
+  "summed_header_recording_hours": 21.30617947048611,
+  "unique_binary_recording_hours": 21.30617947048611,
+  "full_dataset_unique_recording_hours": 21.30617947048611,
+  "unique_binary_bytes": 5183844600,
+  "total_archive_member_bytes": 5184889512,
+  "binary_channel_counts": {
+    "66": 26
+  },
+  "physical_eeg_channel_counts": {
+    "64": 26
+  },
+  "sample_rates_hz": {
+    "256.0": 26
+  },
+  "warnings": {},
+  "method": "samples = binary bytes / (header channels * bytes per scalar); duration = samples / header sampling frequency",
+  "format_reference": "https://www.brainproducts.com/download/specification-of-brainvision-core-data-format-1-0/",
+  "samples_decoded_or_quality_checked": false,
+  "behavior_clock_alignment_checked": false,
+  "online_causality_verified": false,
+  "training_eligibility_established": false,
+  "quantity_only": true,
+  "elapsed_seconds": 71.5254600570006,
+  "private_record_audit_sha256": "328aa2edc840a6acfe8c4e0f5a336e0266e62d562a1db51bd7afce9acff58d45"
+}

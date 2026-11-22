@@ -1,0 +1,31 @@
+{
+  "protocol_id": "pj-xavier-uniba-v3-history-logistic-20261122-v1",
+  "predeclared_before_test_prediction": true,
+  "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "cohort_protocol_sha256": "d4e6c5f685dce53e73b3aa88d12ed07c88a8ac08a27fb78392dbd99aed0a6396",
+  "common_module_sha256": "1b74445e9a85c34c86eaa435805b427ba8dbee4d675f6d3e0a4b301b1c10ff08",
+  "reference_file_sha256": {
+    "training_membership.json": "5d8636f427f705d7c914797f3b505cc158225684ef278f730c92b1ef45b647f0",
+    "eeg_artifacts.json": "0a2989891e46e2aacab785df162a84376f18acde444deb49e341a3b96969192f"
+  },
+  "split_counts": {"train": 400, "val": 155, "test": 203},
+  "C_grid": [0.001, 0.01, 0.1, 1.0, 10.0, 100.0],
+  "class_weight": "balanced",
+  "selection": "Fit train only, choose highest validation balanced accuracy; break ties by macro F1 then smaller C. Do not refit train plus val. Fit separate binary AI-versus-other and secondary three-class logistic models.",
+  "models": [
+    "history_pre_eeg", "history_pre_eeg_plus_context",
+    "history_pre_decision_guarded", "history_pre_decision_guarded_plus_context"
+  ],
+  "primary_endpoint": "Observed ai_prompt_submit versus other observed actions, threshold 0.5; recall, specificity, balanced accuracy, AUROC and average precision.",
+  "secondary_endpoint": "Three-class observed-action balanced accuracy, macro F1 and confusion.",
+  "history_fields": "Allowlisted past-event counts at 1/5/15/60 seconds, source availability and capped time-since-last with missing indicator only. Cutoff, absolute time, participant, evidence row, action target, GPT events and content are excluded from estimator inputs.",
+  "missing_lag": "Fixed cap 60 seconds plus explicit missing indicator; train-only scaling. No data-fitted or test-derived imputation.",
+  "context": "Only predeclared previous page, AI availability and joint category through train-only DictVectorizer.",
+  "bootstrap_repetitions": 1000,
+  "seed": 20261122,
+  "uncertainty": "Paired participant-cluster percentile bootstrap on the same held-out subjects, conditional on the frozen selected fits. Report valid draws. Not multiplicity-adjusted confirmatory superiority evidence.",
+  "precision_scope": "The enriched case-control sample only; no natural-population precision or false-actions/minute estimate.",
+  "cpu_native_thread_limit": 2,
+  "handoff_proposed_estimator_note": "Preparation handoff's C=1/unweighted estimator was explicitly a not-yet-implemented proposal. This separate analysis protocol freezes the requested validation-selected grid before the held-out baseline prediction pass.",
+  "goal_validated": false
+}

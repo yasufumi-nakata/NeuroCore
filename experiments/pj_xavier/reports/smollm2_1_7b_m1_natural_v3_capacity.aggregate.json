@@ -1,0 +1,41 @@
+{
+  "status": "completed_capacity_probes",
+  "results": [
+    {
+      "batch_size": 1,
+      "exit_code": 0,
+      "status": "measured",
+      "memory": {
+        "process_peak_rss_bytes": 559644672,
+        "mps_sampled_allocated_bytes": 3425434624,
+        "mps_sampled_driver_bytes": 4419502080
+      },
+      "warm_examples_per_second": 1.016740419543425,
+      "warm_median_step_seconds": 0.9835352079826407,
+      "error_type": null,
+      "error": null
+    },
+    {
+      "batch_size": 2,
+      "exit_code": 0,
+      "status": "measured",
+      "memory": {
+        "process_peak_rss_bytes": 400916480,
+        "mps_sampled_allocated_bytes": 3425448960,
+        "mps_sampled_driver_bytes": 4420599808
+      },
+      "warm_examples_per_second": 1.2119920093174605,
+      "warm_median_step_seconds": 1.6501758960657753,
+      "error_type": null,
+      "error": null
+    }
+  ],
+  "selected_largest_tested_batch": 2,
+  "max_memory_budget_gib": 8,
+  "heldout_scored": false,
+  "probe_weights_discarded": true,
+  "source_sha256": "e30811b027414426cdfbed14a822c27695af2ab1be00106d89fe32a5fb740d2f",
+  "manifest_sha256": "030e8550bd6f4c79005722eb617e9b64f5f80e87b77866b7f17bec4e7e2a1093",
+  "main_training_started": false,
+  "memory_measurement_scope": "MPS sampled driver/allocated bytes and process peak RSS; not a guaranteed instantaneous GPU peak."
+}
