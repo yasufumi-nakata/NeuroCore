@@ -1,6 +1,16 @@
 # PJ-Xavier 実行・引継ぎ
 
-更新：2026-11-23 JST．この文書を現在状態の入口とし，実PID/lock・immutable run・receiptを正とします．古い「最新」が積み重なった記録は[保存版](reports/handoff_snapshots/HANDOFF_20261123_before_full_BCI.md)へ分離しました．
+更新：2026-11-24 JST．この文書を現在状態の入口とし，実PID/lock・immutable run・receiptを正とします．古い「最新」が積み重なった記録は[保存版](reports/handoff_snapshots/HANDOFF_20261123_before_full_BCI.md)へ分離しました．
+
+## 2026-11-24 EVLM 構築：新しい現在状態
+
+ユーザーは推奨方式でのEVLM構築と，取得済み関連データの順次全利用を指定しました．EEGを別の学習型encoderへ戻すことなく，Qwen3.8-27B-4bitの内部LoRAで適応します．[構築報告](reports/EVLM_BUILD_20261124.md)，[モデルカード](model/EVLM_MODEL_CARD.md)，[数値データ変換](reports/EVLM_NUMERIC_DATA_20261124.md)が今回の正本です．下の2026-11-23 v4 running等は履歴です．
+
+smac35 `evlm_build_20261124_v1/candidate_v5_r2` を保存し，画像＋EEGの合成2画面はbase／adapter各2/2でした．新全64層の8ch/1024試験は1更新後58.762GBで54GB guard停止，checkpointなし．6ch/801版は05:56:07 JSTに2更新・peak44.016GB・基本指示6/6・保存再読込を完了し，新adapterの画像gateも05:57:48に両2/2でした．新bundleは `engineering_vlm_probe_6ch_v2/bundles/all64_probe_6ch_v2` です．同じ最長train例の2反復なので学習有効性の証拠ではありません．EEG有効性・実computer useは未実証，実OS操作0，最終test未使用です．
+
+6source・元79,493 train窓は全channelを保持して358,260例へ変換済みです．smac35 `prepared/evlm_numeric_6ch_20261124_v1/source_queue.json` SHAは8218c7d821e4afbd4a6e841129df47236db3d759711ff8eec66991a7a0e94510です．prepared元66.244hとcycle0 crop3.487hを学習済み時間へ加算しません．固定devは806023のみ2group／327窓981例で，通常学習の比較は同じ36例です．元split，単位，QC，deniesを維持し，EEGだけから架空の操作labelを作りません．
+
+現在のcoordinationはprivate `eegmmidb_phase2_v1/coordinator.json` と実PID／GPU lockを正とします．root owner active中は重複起動・コード変更を行いません．通常学習は06:12:39 JSTに `evlm_build_20261124_v1/curriculum_initial400_v1` で開始しました．初期controller34003／supervisor34015／worker34017です．plan SHAは8f66bbb6910f0d54ffbd024e40ac401a67bbf84114cb2d00c9608f2a34bc5478．数値gateを明示し，20→80→300の追加更新，初回400更新または24時間で区切ります．400到達のpaused_update_budgetは全量完了ではありません．詳細・起動receipt・後続判断は構築報告を参照します．stage間はadapter warm-start＋fresh Adamでexact resumeではありません．取得workerは継続します．
 
 ## 17:55 JST 追加：現行runはv4，54GB運用予算
 
