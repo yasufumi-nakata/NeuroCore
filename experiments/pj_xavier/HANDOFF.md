@@ -2,6 +2,16 @@
 
 更新：2026-11-23 JST．この文書を現在状態の入口とし，実PID/lock・immutable run・receiptを正とします．古い「最新」が積み重なった記録は[保存版](reports/handoff_snapshots/HANDOFF_20261123_before_full_BCI.md)へ分離しました．
 
+## 17:30 JST 追加：直接EEG・修正版Qwenの段階的LoRA比較
+
+最新のユーザー方針は，別学習のEEG encoderを置かずQwen内部で適応し，評価しながら学習を進めることです．推奨は広範囲LoRA/QLoRAで，FullFTや37台分散新設を最初の必須段階にしません．旧80stepのthinking/padding mask不整合を確認したため，修正版4層rank8のEEG/noEEG対応比較を開始しました．[方法・初動・制約](reports/QWEN38_PROGRESSIVE_DIRECT_EEG_20261123.md)を参照します．
+
+smac35の `~/pj-xavier/smac35/qwen38_progressive_20261123_v2/sequence_state.json` が新sequence正本です．初期controller PID72772，EEG worker PID72774，既存GPU lockを保持しています．EEG→noEEGを直列実行し，20/40stepは固定val最大36件，80stepで全155件とshuffleを評価します．80stepはtrain400の0.2epochであり，全量完了ではありません．各arm上限4hはETAではありません．active sequence中に重複jobを作りません．
+
+no-thinking prefixとcompletion-only loss maskは全train/valでCPU preflight済み，13 CPU testsと独立レビュー済みです．step/評価の完了は実stateで再確認してください．Adamはrun内保持，crash resume未実装です．品質不合格・過大loss・memory上限等で停止し，all64への自動拡大はしません．比較結果の実SHAと進行根拠を読んで次の小規模比較を判断します．最終testは保留，個別予測はprivateです．
+
+既存の文脈多数決45.81%も対照に含めます．current runnerは言語backbone経路のみで画像/Computer Use未検証，trainのEEG因果性も未検証です．本実験を高次意図や実OS操作の成功と報告しません．旧run・配布重み・取得workerは保持します．外部EEG encoderへ主経路を戻す旧引継ぎより，本節と最新ユーザー指定を優先します．
+
 ## 07:27 JST 追加：AoyamaLab catalogue bridge，OpenNeuro公式manifest
 
 [ソース照合・実機導入報告](reports/SMAC_CATALOG_BRIDGE_20261123.md)．既存高信頼5,165件は新規ダウンロード候補ではなく，canonical catalogue 5,165件へ全件対応（source-key 5,162件＋title/URL alias 3件）．広域発見22,327件の未対応13,792件は単なるmetadata差分であり，EEG実体・公開取得許可は未確認です．`ds005841`の公式OpenNeuro公開S3 manifest 872 objects／BDF 288／7,889,279,183B／CC0／v1.0.0を独立取得しました．元カタログ003254のfiles0解消の候補ですが，このrunでraw取得もfitもしていません．
