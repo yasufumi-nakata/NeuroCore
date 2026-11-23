@@ -29,7 +29,7 @@ import time
 LABELS = ("mouse_click", "keyboard", "ai_prompt_submit")
 EEG_MARKER = "Fixed-discretized EEG measurement (not a learned encoder):\n"
 EEG_TAIL = "\nOutput exactly one label."
-SCHEMA = "direct-qwen-mlx-progressive-v2"
+SCHEMA = "direct-qwen-mlx-progressive-v3"
 
 
 def utc_now():
@@ -69,6 +69,41 @@ def atomic_json(path, value):
 def require(condition, message):
     if not condition:
         raise ValueError(message)
+
+
+def memory_snapshot(mx):
+    """Lifetime active peak is never reset to hide a preceding overshoot."""
+    return {"active_gb": mx.get_active_memory() / 1e9,
+            "cache_gb": mx.get_cache_memory() / 1e9,
+            "peak_gb": mx.get_peak_memory() / 1e9}
+
+
+def check_memory_snapshot(snapshot, limit_gb, step):
+    if snapshot["peak_gb"] > limit_gb:
+        raise ValueError("peak_memory_limit_exceeded: " + json.dumps({
+            "completed_optimizer_steps": step, "limit_gb": limit_gb, **snapshot}, sort_keys=True))
+
+
+def completion_head_loss(mx, nn, current_model, batch, lengths, max_completion_tokens):
+    """Qwen3.5/3.8 untied-head path, same masked CE, without prompt logits.
+
+    The audited language_model forward is lm_head(model(inputs)).  Selecting
+    hidden positions before the token-wise frozen head leaves exactly the same
+    supervised logits and gradients, while avoiding the large prompt T x V
+    logits/CE/backward buffers.  Hidden index is target position minus one.
+    Surplus fixed-shape slots repeat a safe position and receive zero loss.
+    """
+    language_model = current_model.language_model
+    hidden = language_model.model(batch[:, :-1])
+    target_positions = lengths[:, 0:1] + mx.arange(max_completion_tokens)[None, :]
+    valid = target_positions < lengths[:, 1:]
+    safe_targets = mx.minimum(target_positions, lengths[:, 1:] - 1)
+    selected_hidden = mx.take_along_axis(hidden, (safe_targets - 1)[..., None], axis=1)
+    logits = language_model.lm_head(selected_hidden)
+    targets = mx.take_along_axis(batch, safe_targets, axis=1)
+    ntokens = valid.sum()
+    ce = (nn.losses.cross_entropy(logits, targets) * valid).astype(mx.float32).sum() / ntokens
+    return ce, ntokens
 
 
 def read_config(path):
@@ -248,6 +283,7 @@ def preflight(cfg, tokenizer=None):
                 "count": len(items), "min_tokens": min(len(t) for t, _ in items),
                 "max_tokens": max(len(t) for t, _ in items),
                 "min_completion_tokens": min(len(t) - o for t, o in items),
+                "max_completion_tokens": max(len(t) - o for t, o in items),
                 "subjects": len({r["canonical_subject_id"] for r in records}),
                 "all_prefixes_equal": True, "all_completion_masks_exact": True,
             }
@@ -258,6 +294,14 @@ def preflight(cfg, tokenizer=None):
     report["val_pairing_sha256"] = canonical_digest([
         [r["id"], r["canonical_subject_id"], r["messages"][1]["content"]] for r in rows["val"]])
     report["train_order_sha256"] = canonical_digest(training_order(len(rows["train"]), cfg["seed"], cfg["iters"]))
+    order = training_order(len(rows["train"]), cfg["seed"], cfg["iters"])
+    report["training_padded_shapes"] = {}
+    for condition in ("eeg", "noeeg"):
+        shapes = [min(cfg["max_seq_length"], 1 + 32 * ((len(processed[("train", condition)][i][0]) + 31) // 32))
+                  for i in order]
+        report["training_padded_shapes"][condition] = {"first_two": shapes[:2],
+            "distinct_count": len(set(shapes)), "histogram": dict(collections.Counter(shapes)),
+            "ordered_shapes": shapes}
     return report, rows, processed
 
 
@@ -465,7 +509,8 @@ def train_worker(cfg, lock_fd):
         from mlx_lm.tuner.utils import linear_to_lora_layers
         require(mx.distributed.init().size() == 1, "this_runner_is_single_gpu_only")
         mx.set_memory_limit(int(cfg["memory_limit_gb"] * 1e9))
-        mx.set_cache_limit(min(2_000_000_000, int(cfg["memory_limit_gb"] * 1e8)))
+        mx.set_cache_limit(0)
+        mx.clear_cache()
         mx.random.seed(cfg["seed"])
         np.random.seed(cfg["seed"])
         update(status="loading_model")
@@ -474,6 +519,11 @@ def train_worker(cfg, lock_fd):
         actual_receipt, rows, processed = preflight(cfg, tokenizer)
         require(actual_receipt["splits"] == receipt["splits"], "loaded_tokenizer_preflight_changed")
         require(len(model.layers) == 64, "unexpected_qwen_decoder_layer_count")
+        require(type(model).__module__ == "mlx_lm.models.qwen3_5" and hasattr(model, "language_model")
+                and hasattr(model.language_model, "lm_head")
+                and not model.language_model.args.tie_word_embeddings
+                and model.language_model.sharding_group is None,
+                "completion_head_path_requires_audited_qwen3_5_unsharded_untied_model")
         model.freeze()
         n_layers = 4 if cfg["scope"] == "corrected4" else 64
         selected_layers = list(enumerate(model.layers))[-n_layers:]
@@ -509,6 +559,10 @@ def train_worker(cfg, lock_fd):
         audit["training_budget"] = {"examples": len(rows["train"]), "optimizer_steps": cfg["iters"],
                                      "batch_size": 1, "nominal_epochs": cfg["iters"] / len(rows["train"]),
                                      "interpretation": "bounded adaptation probe; not full-dataset training completion"}
+        audit["memory_policy"] = {"allocator_cache_limit_bytes": 0, "clear_cache_threshold_bytes": 0,
+            "peak_reset": False, "active_peak_limit_gb": cfg["memory_limit_gb"],
+            "loss_head": "completion hidden positions only; same frozen lm_head and token-normalized CE",
+            "compile": "existing trainer compile retained; variable shapes recorded in preflight"}
         current_targets = {(x["layer"], x["name"]) for x in modules}
         audit["legacy_default_rule"] = "Linear/QuantizedLinear/SwitchLinear/Embedding or module.to_lora"
         audit["legacy_default_target_count"] = len(legacy_targets)
@@ -541,20 +595,17 @@ def train_worker(cfg, lock_fd):
 
         def guard(loss=None):
             require(time.monotonic() - started < cfg["max_wall_seconds"], "wall_budget_exceeded")
-            peak = mx.get_peak_memory() / 1e9
-            require(peak <= cfg["memory_limit_gb"], "peak_memory_limit_exceeded")
+            measured = memory_snapshot(mx)
+            state["memory_observation"] = {"phase": state["status"], "step": state["step"], **measured}
+            state["peak_memory_gb"] = measured["peak_gb"]
+            check_memory_snapshot(measured, cfg["memory_limit_gb"], state["step"])
             if loss is not None:
                 require(math.isfinite(loss) and 0 <= loss <= cfg["max_loss"], "nonfinite_or_excessive_loss")
-            return peak
+            return measured["peak_gb"]
 
+        completion_width = max(len(tokens) - offset for items in processed.values() for tokens, offset in items)
         def exact_loss(current_model, batch, lengths):
-            logits = current_model(batch[:, :-1])
-            targets = batch[:, 1:]
-            positions = mx.arange(1, targets.shape[1] + 1)
-            mask = (positions >= lengths[:, 0:1]) & (positions < lengths[:, 1:])
-            ntokens = mask.sum()
-            loss = (nn.losses.cross_entropy(logits, targets) * mask).astype(mx.float32).sum() / ntokens
-            return loss, ntokens
+            return completion_head_loss(mx, nn, current_model, batch, lengths, completion_width)
 
         def paired_batches(dataset, batch_size, max_seq_length, loop=False, seed=None, comm_group=None):
             require(batch_size == 1 and (comm_group is None or comm_group.size() == 1),
@@ -597,6 +648,8 @@ def train_worker(cfg, lock_fd):
         baseline_sentry = capability_sentry()
         atomic_json(run_dir / "baseline_sentry.json", baseline_sentry)
         model.train()
+        mx.clear_cache()
+        update(memory_observation={"phase": "after_baseline_sentry", "step": 0, **memory_snapshot(mx)})
 
         def evaluate_checkpoint(step):
             guard()
@@ -680,13 +733,24 @@ def train_worker(cfg, lock_fd):
 
         class Callback:
             def on_val_loss_report(self, info):
+                mx.clear_cache()
                 guard(float(info["val_loss"]))
                 update(val_loss=float(info["val_loss"]), val_loss_step=info["iteration"])
 
             def on_train_loss_report(self, info):
                 step = int(info["iteration"])
-                peak = guard(float(info["train_loss"]))
                 seen_order = training_order(len(rows["train"]), cfg["seed"], step)
+                # The update has already happened when this callback runs. Keep
+                # that fact even if a guard now fails, rather than reporting the
+                # previous step as the number of completed optimizer updates.
+                state.update(step=step, completed_optimizer_steps=step,
+                    train_presentations=step, unique_train_examples=len(set(seen_order)),
+                    epoch_equivalent=step / len(rows["train"]),
+                    ordered_training_indices_sha256=canonical_digest(seen_order))
+                loss_value = float(info["train_loss"])
+                state["train_loss"] = loss_value if math.isfinite(loss_value) else str(loss_value)
+                mx.clear_cache()
+                peak = guard(loss_value)
                 update(status="training", step=step, train_loss=float(info["train_loss"]), peak_memory_gb=peak,
                        train_presentations=step, unique_train_examples=len(set(seen_order)),
                        epoch_equivalent=step / len(rows["train"]),
@@ -699,7 +763,7 @@ def train_worker(cfg, lock_fd):
                             steps_per_save=cfg["iters"] + 1,
                             max_seq_length=1024, adapter_file=str(adapter_dir / "adapters.safetensors"),
                             grad_checkpoint=True, grad_accumulation_steps=1,
-                            clear_cache_threshold=1_000_000_000)
+                            clear_cache_threshold=0)
         update(status="training", module_audit="module_audit.json", optimizer="Adam", optimizer_restarts=0)
         train(model=model, optimizer=optimizer, train_dataset=processed[("train", cfg["condition"])],
               val_dataset=processed[("val", cfg["condition"])], args=args, loss=exact_loss,

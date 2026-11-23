@@ -223,6 +223,96 @@ class DirectQwenTests(unittest.TestCase):
         changed_weights_receipt = {**cfg, "base_receipt": {"sha256": "c" * 64}}
         self.assertNotEqual(before, m.experiment_identity(changed_weights_receipt))
 
+    def test_memory_failure_records_real_peak_and_completed_step(self):
+        allocator = mock.Mock()
+        allocator.get_active_memory.return_value = 17_000_000_000
+        allocator.get_cache_memory.return_value = 0
+        allocator.get_peak_memory.return_value = 50_123_456_789
+        snapshot = m.memory_snapshot(allocator)
+        self.assertAlmostEqual(snapshot["peak_gb"], 50.123456789)
+        with self.assertRaisesRegex(ValueError, "completed_optimizer_steps.*2.*peak_gb.*50.123456789"):
+            m.check_memory_snapshot(snapshot, 50, step=2)
+        allocator.reset_peak_memory.assert_not_called()
+
+    def test_completion_head_loss_and_gradients_equal_full_logits_on_mlx_cpu(self):
+        if importlib.util.find_spec("mlx") is None:
+            self.skipTest("MLX is unavailable; run this CPU test on the target Mac before GPU launch")
+        import mlx.core as mx
+        import mlx.nn as nn
+        from mlx.utils import tree_flatten
+
+        previous_device = mx.default_device()
+        mx.set_default_device(mx.cpu)
+        try:
+            mx.random.seed(41)
+
+            class Backbone(nn.Module):
+                def __init__(self):
+                    super().__init__()
+                    self.hidden = mx.random.normal((1, 16, 6)) * .1
+                    self.lora_a = mx.random.normal((6, 2)) * .1
+                    self.lora_b = mx.random.normal((2, 6)) * .1
+
+                def __call__(self, ids):
+                    hidden = self.hidden[:, :ids.shape[1], :]
+                    return hidden + (hidden @ self.lora_a) @ self.lora_b
+
+            class LanguageModel(nn.Module):
+                def __init__(self):
+                    super().__init__()
+                    self.model = Backbone()
+                    self.lm_head = nn.Linear(6, 17, bias=False)
+                    self.lm_head.freeze()
+
+                def __call__(self, ids):
+                    return self.lm_head(self.model(ids))
+
+            class Model(nn.Module):
+                def __init__(self):
+                    super().__init__()
+                    self.language_model = LanguageModel()
+
+                def __call__(self, ids):
+                    return self.language_model(ids)
+
+            model = Model()
+
+            def full_loss(current, batch, lengths):
+                logits = current(batch[:, :-1])
+                positions = mx.arange(1, batch.shape[1])
+                mask = (positions >= lengths[:, :1]) & (positions < lengths[:, 1:])
+                return (nn.losses.cross_entropy(logits, batch[:, 1:]) * mask).astype(mx.float32).sum() / mask.sum()
+
+            def selected_loss(current, batch, lengths):
+                return m.completion_head_loss(mx, nn, current, batch, lengths, 5)[0]
+
+            full_grad = nn.value_and_grad(model, full_loss)
+            selected_grad = nn.value_and_grad(model, selected_loss)
+
+            @mx.compile
+            def compiled_selected(batch, lengths):
+                return selected_grad(model, batch, lengths)
+
+            for completion_length in (3, 4, 5):
+                with self.subTest(completion_length=completion_length):
+                    token_length = 7 + completion_length
+                    values = [(i + 2) % 17 if i < token_length else 0 for i in range(16)]
+                    batch = mx.array([values], dtype=mx.int32)
+                    lengths = mx.array([[7, token_length]], dtype=mx.int32)
+                    full_value, original_gradient = full_grad(model, batch, lengths)
+                    selected_value, selected_gradient = compiled_selected(batch, lengths)
+                    mx.eval(full_value, selected_value, original_gradient, selected_gradient)
+                    self.assertAlmostEqual(float(full_value.item()), float(selected_value.item()), places=5)
+                    original = dict(tree_flatten(original_gradient))
+                    selected = dict(tree_flatten(selected_gradient))
+                    expected = {"language_model.model.hidden", "language_model.model.lora_a", "language_model.model.lora_b"}
+                    self.assertEqual(set(original), expected)
+                    self.assertEqual(set(original), set(selected))
+                    for name in original:
+                        self.assertTrue(mx.allclose(original[name], selected[name], atol=5e-6, rtol=5e-5).item(), name)
+        finally:
+            mx.set_default_device(previous_device)
+
 
 if __name__ == "__main__":
     unittest.main()

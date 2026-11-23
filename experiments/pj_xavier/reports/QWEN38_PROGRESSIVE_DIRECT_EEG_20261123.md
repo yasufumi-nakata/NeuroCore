@@ -62,6 +62,18 @@ runtime namespaceはsmac35の `~/pj-xavier/smac35/qwen38_progressive_20261123_v2
 
 Source SHA256：`75eecc4f83c61534a8642d57b97978ee2b0b8cefb3930ad5a26bf6c8b0811155`．Test SHA256：`79ea6a1566445631ef43b4af9337b5a545672991bcca95279b693abf0805b72e`．実機manifest SHA256：`078d88ff9c5d453f0ddc80964b34faa920d85194481e6a926276ba3798b2602f`．
 
+## v2停止とv3の省メモリ修正
+
+17:33:58 JST，v2は2回目のoptimizer更新後に50GBのpeak guardで停止しました．stateの最後の正常記録はstep1，loss0.132909，peak46.6538GBです．step2のloss1.750はworker logにありますが，失敗時の実peak値は未記録のため補いません．17:35にcontroller/worker両PID終了を確認し，noEEGは未開始です．v2は履歴として保持します．
+
+v3では正解label/EOSに対応するhiddenをLM headの前で選び，全文約700〜900token×24万語超のlogitsを作る処理を避けました．target位置pにはhidden位置p−1を対応させ，同じ凍結head・mask・分母で計算します．untied/unsharded条件を検査し，固定小幅gatherでcompileに対応します．cache上限と解放閾値は0へ変更しました．50GB guardは維持し，peakのresetで超過履歴を消す変更はありません．失敗時にも実更新数とactive/cache/peakを保存します．
+
+14件の通常CPU testが合格しました．さらにsmac35のMLXをCPUへ固定した小模型で，completion長3/4/5について元full-logits lossと新loss，hiddenとLoRA A/Bの勾配，compiled経路の同値性を検証しPASSしました．独立読取りレビューにも追加blockerはありません．cache設定差だけが停止原因だとは断定せず，実27Bでの削減量は新runで測ります．
+
+17:46:11 JSTに新namespace `~/pj-xavier/smac35/qwen38_progressive_20261123_v3/` でcontroller PID74013，EEG worker PID74015を起動しました．17:46:57に両PIDのGPU lock保持と初期評価中の状態を確認しました．baseからのfresh optimizer開始で，v2のoptimizer resumeではありません．EEG/noEEG両方をv3で比較します．実効学習内容・split・例順・seed・80更新予算・最終test保留を維持しています．
+
+v3 source SHA：`035f465baf9de29c28a9a6924b678b335e0c312eb9c7a6448df119fef548faf2`．Test SHA：`68191624afd65dbb728745d1004901be25f18b5d2122eda7d1fcd1fd3653e2ce`．Launch manifest SHA：`36d5e384f9811fb911611454118c202ff8ead90b8323a115bb054c2ef6a9016d`．Workstation引継ぎは `private/xavier/direct_qwen_eeg_v1/continuation_20261123_v3/` です．後続のstep数・peak・評価完了はv3の正本stateとGoogle Docを確認します．
+
 ## 解釈と次の判断
 
 修正版の正答率・balanced accuracy・被験者別結果・クラス偏りを，独立noEEG，shuffle，固定の文脈多数決と比較します．学習lossだけで成功とはしません．少数被験者のvalidationは探索的であり，複数seed，未学習session/task，独立testと既存能力保持の検証が後続に必要です．最終testは構成を固定するまで保留します．
