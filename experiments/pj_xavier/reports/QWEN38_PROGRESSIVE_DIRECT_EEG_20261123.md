@@ -74,6 +74,16 @@ v3では正解label/EOSに対応するhiddenをLM headの前で選び，全文�
 
 v3 source SHA：`035f465baf9de29c28a9a6924b678b335e0c312eb9c7a6448df119fef548faf2`．Test SHA：`68191624afd65dbb728745d1004901be25f18b5d2122eda7d1fcd1fd3653e2ce`．Launch manifest SHA：`36d5e384f9811fb911611454118c202ff8ead90b8323a115bb054c2ef6a9016d`．Workstation引継ぎは `private/xavier/direct_qwen_eeg_v1/continuation_20261123_v3/` です．後続のstep数・peak・評価完了はv3の正本stateとGoogle Docを確認します．
 
+## v4の実機根拠に基づく運用予算
+
+v3も17:50:01 JSTに2更新後のpeak50.962105324GBで停止しました．active15.204GB/cache0で，OOM例外ではありません．head周辺の変更で主peakが大きく下がったとは確認できませんでした．停止後にGPU推奨working set55,662,788,608B，物理メモリ68,719,476,736B（64GiB），swap0を確認しました．
+
+50GBは実機の限界ではなく，初回に置いた保守的な運用値でした．実測に基づき，現行v4は同じsource・学習方法のまま両armの運用上限を54GBへ見直しました．推奨値との差約1.66GBは設定上の差で，保証された実行時余裕ではありません．停止後の空きとswap0も，実行中の余裕を証明しません．更新後の累積peak guard，active/cache記録，4h上限，異常時停止を維持し，OS memory pressure/swapも観測します．新しいautograd実装や推論kernelの学習への強制は行いません．
+
+17:55:48 JSTに `~/pj-xavier/smac35/qwen38_progressive_20261123_v4/` でcontroller75004／worker75006を新規起動しました．17:56:59の初期評価中に両PID生存，peak15.503GB，OS memory pressure free72%，swap0を観測しました．v2/v3は保持し，v4はbaseからfresh optimizerです．schemaは監査済みv3のまま，v4は実行namespaceです．後続のstep数と54GB内での成立は正本stateで確認します．
+
+v4 launch manifest SHA：`3478517782d43ed85be5fda76ac68d8a5edd95735d29a1fd349ea97e31da50d2`．運用判断はv4 `memory_budget_decision.json`，workstation引継ぎは `private/xavier/direct_qwen_eeg_v1/continuation_20261123_v4/` に保存しています．
+
 ## 解釈と次の判断
 
 修正版の正答率・balanced accuracy・被験者別結果・クラス偏りを，独立noEEG，shuffle，固定の文脈多数決と比較します．学習lossだけで成功とはしません．少数被験者のvalidationは探索的であり，複数seed，未学習session/task，独立testと既存能力保持の検証が後続に必要です．最終testは構成を固定するまで保留します．

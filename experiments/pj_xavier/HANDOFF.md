@@ -2,6 +2,14 @@
 
 更新：2026-11-23 JST．この文書を現在状態の入口とし，実PID/lock・immutable run・receiptを正とします．古い「最新」が積み重なった記録は[保存版](reports/handoff_snapshots/HANDOFF_20261123_before_full_BCI.md)へ分離しました．
 
+## 17:55 JST 追加：現行runはv4，54GB運用予算
+
+現在はsmac35 `~/pj-xavier/smac35/qwen38_progressive_20261123_v4/sequence_state.json` を正本とします．17:55:48開始，初期controller75004／worker75006です．source035f465…／schema v3の学習方法は不変で，v4は新実行namespaceです．active時にEEG/noEEGを重複開始しません．
+
+v3は2更新後peak50.962GBが保守的な50GB guardを超え停止しました．実機GPU推奨55.663GB，物理64GiBを確認し，根拠を記録して両arm54GBへ運用予算を変更しました．推奨値との差は実行時の余裕保証ではありません．4h上限，累積peak guard，active/cacheと実完了更新数の記録を維持し，OS memory pressure/swapも観測します．旧runを保持しfresh base/fresh optimizer開始です．[詳細](reports/QWEN38_PROGRESSIVE_DIRECT_EEG_20261123.md)とprivate `continuation_20261123_v4/` を参照します．
+
+20/40/80stepでEEG/noEEG/shuffleの開発評価を行い，全64層LoRAは結果を見て次に判断します．80stepは0.2epoch，最終testは未使用，VLM画像経路・Computer Use・実時間EEG因果性は未実証です．以下のv3/v2 running記録と50GB条件は履歴です．取得workerは継続します．
+
 ## 17:46 JST 追加：直接EEG・省メモリ版Qwenの段階的LoRA比較
 
 最新のユーザー方針は，別学習のEEG encoderを置かずQwen内部で適応し，評価しながら学習を進めることです．推奨は広範囲LoRA/QLoRAで，FullFTや37台分散新設を最初の必須段階にしません．旧80stepのthinking/padding mask不整合を修正した4層rank8のEEG/noEEG比較を進めます．[方法・実行履歴・制約](reports/QWEN38_PROGRESSIVE_DIRECT_EEG_20261123.md)を参照します．
