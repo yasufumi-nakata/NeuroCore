@@ -2,6 +2,16 @@
 
 更新：2026-11-24 JST．この文書を現在状態の入口とし，実PID/lock・immutable run・receiptを正とします．古い「最新」が積み重なった記録は[保存版](reports/handoff_snapshots/HANDOFF_20261123_before_full_BCI.md)へ分離しました．
 
+## 2026-11-24 07:06 JST：通常学習の数値gate停止と独立低LR比較
+
+前の通常学習 `curriculum_initial400_v1` は06:37:30 JSTに20/400更新（5%）で `stopped_numeric_gate`．worker exit0／checkpoint再読込・SHA一致／sentry6/6／出力36/36，peak33.449GB．しかし同じ35有効例のMSE 25.542857→27.021429（+5.79%）が固定5%gateを超過しました．全例の無効罰点込みscore1135.9444→26.4583は形式改善を含み，通常MSE改善ではありません．線形補間MSE13.1028を下回れず，候補不採用・画像gate未実施・最終test未使用．停止receipt SHA256 `c5d611029447498bb3a889353213e31d77c3dbf5490903eda6ff0495e24b7ec7`．旧runを再起動しません．
+
+Train-only監査：20例は20元窓／3群／固有crop3.16秒，80目標値．同source全1977例は659元窓／4群／crop104秒，線形補間MSE20.17165．実測20更新平均52.43秒（中央値47.98秒），評価込み24分49秒．全358260例準備と実学習は別です．
+
+新runはsmac35 `evlm_build_20261124_v1/curriculum_lr1e5_matched20_20261124_v1`．07:05:25 JST起動，controller38185／supervisor38195／worker38197，07:06:07実PID・GPUlock確認，事前評価3/36，optimizer0/20，peak17.128GB，swap386.62MB．新plan SHA `a7ee1d5d3b71ba72b2a4b30a287a39e3588a867c60c47b300ff8314f0b5e486d`．LRだけ2e-5→1e-5，意図的に同一20例を対応比較に再提示します（新しい固有データ量ではなく継続resumeでもない）．不採用adapterは継承せずfresh base/fresh Adam，seed／全64層rank8／801tokens／54GB／固定dev36／数値・画像gate不変．20更新・2h上限，拡張なし．active中は重複起動禁止．終了後は実numeric/vision receiptを確認し，gate通過と有効性を区別します．失敗時は無目的にLR試行を続けず数値課題・表現と強い補間対照を見直します．適格データの順次学習／heldout deny／取得worker維持は継承します．
+
+07:03:26 JST統合取得は690240件／12.277559TB／37.095042TB＝33.0976%，残24.817483TB，旧37＋追加37worker／node・DB error0．前06:00から+505.422GB，速度旧74.622・追加58.220MB/s，現計画限定ETA11/26 13:52 JST頃（低信頼）．横断重複排除未完了，paused5.695592TBは非加算．ds008037 07:06時点5851 complete，1719 integrity_failed，候補未適用・train admission禁止．既存取得・raw無変更．
+
 ## 2026-11-24 EVLM 構築：新しい現在状態
 
 ユーザーは推奨方式でのEVLM構築と，取得済み関連データの順次全利用を指定しました．EEGを別の学習型encoderへ戻すことなく，Qwen3.8-27B-4bitの内部LoRAで適応します．[構築報告](reports/EVLM_BUILD_20261124.md)，[モデルカード](model/EVLM_MODEL_CARD.md)，[数値データ変換](reports/EVLM_NUMERIC_DATA_20261124.md)が今回の正本です．下の2026-11-23 v4 running等は履歴です．
