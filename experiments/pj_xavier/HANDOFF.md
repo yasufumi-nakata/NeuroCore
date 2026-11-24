@@ -2,6 +2,12 @@
 
 更新：2026-11-24 JST．この文書を現在状態の入口とし，実PID/lock・immutable run・receiptを正とします．古い「最新」が積み重なった記録は[保存版](reports/handoff_snapshots/HANDOFF_20261123_before_full_BCI.md)へ分離しました．
 
+## 2026-11-24 09:03 JST：残差表現の独立20更新を実機起動
+
+09:02:55 JSTにsmac35の新規run `evlm_build_20261124_v1/curriculum_residual_matched20_20261124_v1` を開始．09:03:10 controller47654／supervisor47659／worker47661・GPU lock保持を確認．baseline_sentry，実0/20更新（初動），memory free72%，swap362.56MB．前runの失敗adapterを継承せずfresh base/Adam，全64層rank8，LR2e-5，801 tokens，54GB，2h上限．固定manifest・20 train/36 dev indexは旧runと一致，1977 train候補全行一致と981 devの実tokenizer preflight PASS，最大717 tokens．旧と同じ20例を意図的に再提示する独立比較であり，新規固有EEG時間を増加計上しない．残差を絶対µVへ戻したMSE・既存5% numeric gate・format/sentry・画像gateを維持．丸め線形・Hermiteを対照に含む．元test/review未読．20更新到達だけでは採用・改善・意図・Computer Useを主張しない．新plan SHA c320092433ff36059eb225d3c55281f916beb5a6fe1ed53022bfb01b95ceadd0．次回は実state，PID，lock，数値receipt，画像receiptを確認し，active中に重複起動しない．旧失敗runを再開しない．
+
+09:00:38 JSTの取得は714,092件／13,050,151,592,540B／37,095,041,768,046B（35.1803%）．37台・74worker稼働，接続/DBエラー0，STOP0．残24,044,890,175,506B，paused6,062,241,186,263B非加算，横断重複未排除．直近3694.82秒で408.730GB増，旧53.858・追加56.765MB/s，現計画限定の遅い側ETA11/27 11:03 JST（低信頼）．ds008037は09:03:34に6008 complete／1719 integrity_failed，修復候補未適用・学習保留．取得worker/DB/raw無変更．
+
 ## 2026-11-24 08:02 JST：低LR比較停止・残差候補準備
 
 07:30:27に低LR比較もstopped_numeric_gate、20/20更新。固定35例MSE25.542857→37.65（+47.4%）、旧2e-5の27.021429より悪化。候補不採用、画像gateなし、test未使用。07:59 GPU lock空き。新規train-only CPU比較と残差候補1977例（全7908値復元、tokenizer全件PASS）はprepared_not_admitted、追加gradient0。次は別runnerで絶対MSE・既存5%gate・画像保持・強い補間対照を維持する。失敗run再起動禁止。詳細：[報告](reports/EVLM_RESIDUAL_DIAGNOSTIC_20261124.md)。07:59取得12.641421/37.095042TB（34.0785%）、74worker、ETA11/27 15:10 JST（低信頼）。ds008037候補未適用、学習禁止。
