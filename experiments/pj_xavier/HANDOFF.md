@@ -2,6 +2,14 @@
 
 更新：2026-11-24 JST．この文書を現在状態の入口とし，実PID/lock・immutable run・receiptを正とします．古い「最新」が積み重なった記録は[保存版](reports/handoff_snapshots/HANDOFF_20261123_before_full_BCI.md)へ分離しました．
 
+## 2026-11-24 10:03 JST：残差20更新のgate通過・次の20更新を起動
+
+09:31:27 JSTに残差matched20は `paused_update_budget`．実20/20，exit0，固定dev36全有効，MSE14.90278 µV²，sentry6/6，画像base/adapter各2/2，peak34.979GB．元baseは全36無効，通常MSEの対応改善は判定不能．線形13.10278，丸めHermite10.3125より悪く，科学的有効性未実証．親adapter SHA b1c06fa677d5948ffa85622e0cc9c2be117c4f7626bf08b1b16eaed4bd5d81ab，numeric receipt cb2fba74a18739ea22d5345cbac5fdcf6b2ade01b1736f8167bdb6b830eb1bd3，画像receipt 20dca3c964b177d9832a545c88964451d0704d50068e42f91b4963126efbccc5．
+
+10:02:40 JSTにsmac35 `evlm_build_20261124_v1/curriculum_residual_next20_20261124_v2` を起動．controller52320/supervisor52322/worker52324，10:02:56 GPU lock保持，baseline_sentry，0/20実更新．curriculum_id末尾v1は起動前停止したv1とはnamespaceが異なる．plan SHA 742a3ba407f3c57ab752256b98c3481186167c5859ad17c6a6d35af6986481a4，runner SHA deca7a69813ae6a1dc0372cecf09c5f7bf2fecb7b03e26d32d6e842015dbda2f．元20例と非重複の次の20例，offset20，固定dev36/54GB/全64層rank8/LR2e-5，2h上限，親adapter warm-start＋fresh Adam．親の数値・画像receipt/offset/source/再現MSEを拘束し，親再評価14.90278の不一致は勾配前停止．v1はreceipt外枠差異で起動前停止，v2で外枠と本体を検証．実preflightと4負例拒否，CPU残差5 tests PASS．次は実worker更新・gate・画像receiptを検証し，強い補間対照との性能差を報告．新bestなしなら漫然と次stageを反復しない．test未使用．
+
+10:00:37 JST取得：731247件，13.546026/37.095042TB＝36.5171%，残23.549015TB，paused6.153831TB非加算，37台/74worker，DB接続error0，STOP0．前時刻から495.875GB増，旧63.100/追加74.689MB/s，現計画限定ETA旧11/27 00:12，追加11/25 21:03 JST（低信頼）．retry601，integrity2198，access4006，restricted5，最小disk2.896TB，guardian87453 cycle332/feed94063 cycle314．ds008037 10:03 6091 complete/40.283GB，1719 integrity_failed，版候補未適用・学習保留．横断重複未排除，既存取得・raw無変更．Google Doc構築・取得tab追記readback済．
+
 ## 2026-11-24 09:03 JST：残差表現の独立20更新を実機起動
 
 09:02:55 JSTにsmac35の新規run `evlm_build_20261124_v1/curriculum_residual_matched20_20261124_v1` を開始．09:03:10 controller47654／supervisor47659／worker47661・GPU lock保持を確認．baseline_sentry，実0/20更新（初動），memory free72%，swap362.56MB．前runの失敗adapterを継承せずfresh base/Adam，全64層rank8，LR2e-5，801 tokens，54GB，2h上限．固定manifest・20 train/36 dev indexは旧runと一致，1977 train候補全行一致と981 devの実tokenizer preflight PASS，最大717 tokens．旧と同じ20例を意図的に再提示する独立比較であり，新規固有EEG時間を増加計上しない．残差を絶対µVへ戻したMSE・既存5% numeric gate・format/sentry・画像gateを維持．丸め線形・Hermiteを対照に含む．元test/review未読．20更新到達だけでは採用・改善・意図・Computer Useを主張しない．新plan SHA c320092433ff36059eb225d3c55281f916beb5a6fe1ed53022bfb01b95ceadd0．次回は実state，PID，lock，数値receipt，画像receiptを確認し，active中に重複起動しない．旧失敗runを再開しない．
