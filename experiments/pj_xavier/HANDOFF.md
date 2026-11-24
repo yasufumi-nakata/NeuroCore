@@ -2,6 +2,14 @@
 
 更新：2026-11-24 JST．この文書を現在状態の入口とし，実PID/lock・immutable run・receiptを正とします．古い「最新」が積み重なった記録は[保存版](reports/handoff_snapshots/HANDOFF_20261123_before_full_BCI.md)へ分離しました．
 
+## 2026-11-24 12:02 JST: residual short5 passes both engineering gates
+
+At 11:17:11 JST `curriculum_residual_vision_short5_20261124_v1` paused_update_budget, 5/5 real updates, exit0, peak31.899GB. Fixed dev36 all valid, absolute MSE 14.902778 -> 13.909722 uV^2, numeric gate passed; synthetic image base/adapter both 2/2. Adapter SHA 84678654842e158fead4ae14566dc30db295727cf709228b9113e4c5d0af7b3d, numeric receipt e95b4953c760cc6702f20e718f4d41aa60a30306d7669f3b0be250bba57c8365, vision receipt 8b6f019a565ffe70671d092256f4ee757c079f74d48b8673b815f0a530b5fb01. At 12:01 no GPU lock or running EVLM process, swap346.56MB. Accepted lineage 25 examples/3.92s unique crop; experiment union remains 40/6.32s (5 replayed). Worse than linear 13.102778 and Hermite 10.3125. No scientific utility/intent/OS operation demonstrated, test sealed. Do not duplicate or automatically expand. Next design independent retention checks and higher-level EEG objectives without optimizing on the same smoke; use eligible train data only.
+
+12:01:01 JST: fleet 756982 complete, 14.638225/37.095042TB (39.4614%), remaining 22.456817TB, paused 6.260363TB excluded. 37 nodes, snapshot 36 old +37 extra; smac39 old PID67583 verified shortly after; zero DB/connection errors and STOP. Minimum free2.858TB, retry609, integrity2404, access4006, restricted5, guardian87453 cycle356/feed94063 cycle337. +578.967GB/3621.13s, old57.549/extra102.337MB/s, low-confidence current-plan ETA old Nov27 06:12, extra Nov25 11:44 JST. Cross-DB dedup pending.
+
+12:02 smac34 ds008037: 6214 complete/55.405GB, 1719 integrity_failed. New nonoverlapping 686 files/4.238GB hashed, official and DB SHA 686/686 matched; cumulative audited 5729 (4774 match, 955 mismatch), remaining 485. Receipt SHA b6ad98e0e021f7c86d1900261e0a692c8af2889152fd9d99623909aee4a71797. No repair applied, no train admission, no raw/DB/worker changes or deletion. Google Doc both tabs appended and key fields read back. Workstation hourly_snapshot_20261124/hourly_1200_receipt.json.
+
 ## 2026-11-24 11:05 JST：残差追加20更新は画像gate失敗、早期5更新診断起動、公式版不一致実証
 
 10:27:41 JSTに残差next20 v2実20/20更新完了、worker exit0、peak33.449GB。固定dev36全有効、絶対MSE14.902778→13.090278 µV²（12.16%低下）、線形13.102778とほぼ同等、Hermite10.3125より悪い。numeric gate通過だが10:28:46画像gate失敗でcurriculum failed（base2/2、adapter1/2、画面外座標730,460、実操作0）。adapter 564a53cfd704c1d3f7d198603fc48c75409f389fa751def976bf07e533ecb1b6、numeric receipt db38108a4ab34b851c07a30ac1b9cadf050d8ea89cda0ddd9dba4a7ec411ecea、vision receipt 6e8fbc32d966247c2c8bbd9e1b7b443c6a23782d98b0b47bd0c609c95c2d5ac7を再hash確認。新adapter不採用、親はb1c06fa…の初回残差20更新。両20更新の非重複40例/4群/固有crop6.32秒は実提示済みの実験unionだが、採用モデルの学習は20例/3.16秒。科学的有効性未証明、test未使用。
