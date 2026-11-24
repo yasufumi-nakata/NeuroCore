@@ -1,0 +1,103 @@
+{
+  "schema": "xavier-design31578517-qc-public-aggregate-v1",
+  "source": "figshare:31578517:v2",
+  "source_url": "https://figshare.com/articles/dataset/Design_Emotion_Dataset/31578517/2",
+  "license": "CC BY 4.0",
+  "status": "scientifically_blocked_no_eligible_new_source_windows",
+  "stage_completed_at_jst": "2026-11-23T06:25:50.200240+09:00",
+  "observed_at_jst": "2026-11-23T06:26:37.883839+09:00",
+  "scope": "Source eligibility adjudication completed; additional source training was not started.",
+  "frozen_partitions": {
+    "train": 17,
+    "val": 5,
+    "test": 3
+  },
+  "signal_records_opened_in_preparation": 17,
+  "newsource_val_or_test_signals_opened": 0,
+  "questionnaire_or_label_tables_opened": 0,
+  "candidate_windows": 7130,
+  "admitted_windows": 0,
+  "new_unique_training_hours": 0,
+  "new_gradient_exposure_hours": 0,
+  "probe_runs": 0,
+  "fit_steps": 0,
+  "fixed_QC_rejections": {
+    "peak_above_fixed_100uV": 7062,
+    "flat_below_fixed_0_01uV": 68
+  },
+  "base_corpus_copied_into_new_trainable_corpus": false,
+  "prepared_waveform_file_count": 0,
+  "trainable_completion_created": false,
+  "metadata_freeze_sha256": "42e0c2470d1415661a2aa6a0a493375788349388095cacd6b79c3ddc3e5d73d7",
+  "preparation_result_sha256": "924cd5dc02b498e9fe79f5bcf9741ea18275472951a094fd82bc1fd8af2d0f76",
+  "certificates_sha256": "5376f04b155ada1c2d65a4e2eb5e8941bd4f569045288677c738056090ac8f30",
+  "prepared_protocol_sha256": "8e7c4b69c8ef60250a3e646f3efd4a4ca594f2aca5cee4dd8a157d943e29b1b0",
+  "stage_config_sha256": "50c2933bcff5c9e919234192b61da173f598eec4487fb81c732e1c7461742726",
+  "parent_BCI_best_sha256": "f66903e1dc9120da71c6275e70f121662671aadac13f44efaf92d18e4563954f",
+  "parent_BCI_completion_sha256": "a76b870cc24fa543ab8b9310eea2a063872b37cc567f26104fa78334ba85209a",
+  "parent_independent_verification_sha256": "adcc130286e6fb97c739a27c1dc0e6f25b4b32b1bc520a3bd29e596e55886a8d",
+  "numeric_diagnostic": {
+    "diagnostic_started_at_utc": "2026-11-22T21:29:09.416947+00:00",
+    "diagnostic_completed_at_utc": "2026-11-22T21:29:32.158074+00:00",
+    "result_sha256": "ebe92454a8602f4e669556c6b5d9a372d75b7d685284468b429593dfaa95d25d",
+    "records": 17,
+    "fixed_QC_rejections": {
+      "peak_above_fixed_100uV": 7062,
+      "flat_below_fixed_0_01uV": 68
+    },
+    "checks": {
+      "all_17_frozen_train": true,
+      "full_source_and_payload_SHA_reproduced": true,
+      "MNE_32channel_three_interval_V_match": true,
+      "fixed_QC_counts_reproduced": true,
+      "no_heldout_signal_reads": true,
+      "no_trainable_completion_no_fit": true
+    },
+    "native_min_V": -0.00983,
+    "native_max_V": 0.00983,
+    "native_std_V_range": [
+      0.00014045815010811833,
+      0.0026976668625956894
+    ],
+    "posttransform_min_V": -0.019382369256397514,
+    "posttransform_max_V": 0.018473033952316986,
+    "posttransform_std_V_range": [
+      3.8432681450997926e-05,
+      0.00045425841456977226
+    ],
+    "model_scaled_min": -193.82369256397513,
+    "model_scaled_max": 184.73033952316985,
+    "model_scaled_std_range": [
+      0.38432681450997924,
+      4.542584145697723
+    ],
+    "digital_endpoint_fraction_range": [
+      0.9446751273911109,
+      0.9998558411406345
+    ],
+    "digital_endpoint_fraction_weighted": 0.9860491986378384,
+    "MNE_maximum_abs_difference_V": 3.469446951953614e-18,
+    "MNE_interval_pairs": 51,
+    "heldout_signal_reads": 0,
+    "fit_steps": 0
+  },
+  "statistics_definition": "Min/max range across all 17 train records; std ranges are minima/maxima of per-file whole-channel/time population standard deviation; endpoint weighted fraction uses all native integer samples.",
+  "digital_samples_examined": 703004992,
+  "digital_endpoint_samples": 693197509,
+  "interpretation": "The reviewed parser and physical-V conversion agree with MNE. Delivered source integers concentrate at their declared endpoints; the origin of that numerical condition is unverified. No unsubstantiated unit correction, rescaling, clipping or QC relaxation was applied.",
+  "author_provenance_review": {
+    "README_claims_epoch_rejection_above_uV": 150,
+    "pre_py_contains_extra_unit_correction_or_normalization": false,
+    "pre_py_resample_hz": 200,
+    "delivered_header_hz_approximately": 1024,
+    "pre_py_executed": false,
+    "past_preprocessing_verified": false
+  },
+  "tests": {
+    "metadata_freeze": 5,
+    "EDF_adapter": 12,
+    "private_runtime_and_all_output_roundtrips": 13,
+    "all_passed": true
+  },
+  "prior_failures": "Private launch template parse and deny JSON serialization errors were retained and corrected before the successful complete source eligibility pass; no earlier fit occurred."
+}

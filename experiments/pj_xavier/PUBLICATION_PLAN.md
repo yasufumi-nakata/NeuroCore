@@ -1,0 +1,78 @@
+# PJ-Xavier 投稿方針と主張の成立条件
+
+更新：2026-11-23 JST．投稿先をCVPRに固定せず，研究内容と実証結果に合う会議・誌を選ぶというユーザーの最新指示を反映します．これは投稿方針であり，投稿済み・採択済みの記録ではありません．
+
+## 研究の中心
+
+PJ-XavierはNeuroCoreのAIを開発する研究です．既定のB案，すなわち **EEGを高性能LLM/VLMの内部へ接続し，操作前の画面・操作履歴と統合して高次の目的・意図・次の操作を推定する研究**を中心に据えます．PC操作は初期の検証・応用です．
+
+現在のCBraMod追加自己教師学習は，B案へ接続するencoderの基盤整備です．取得容量，自己教師学習時間，波形再構成MSEを，意図推定やAIエージェントの成功率として扱いません．[現在の実測](reports/smac_training_20261122_v1/BCI8089820.md)と[学習集計](reports/smac_training_20261122_v1/sequential_training_aggregate.json)を参照してください．
+
+## 投稿先の選び方
+
+**現時点の第一候補はNeurIPS，表現・融合手法の寄与が中心ならICLRを同等に検討します．** 以下の優先度は，公式の対象分野と現プロジェクトの目的からの研究上の判断であり，採択可能性を数値化したものではありません．
+
+| 候補 | この研究との接点 | 優先度を上げる実証 |
+| --- | --- | --- |
+| NeurIPS | マルチモーダル学習，神経科学，人とAI，汎化，意思決定を横断できる | EEGの追加情報が，強い画面・履歴のみのモデルを未知被験者・未知セッションで安定して上回る |
+| ICLR | 表現学習，転移学習，異種モダリティの統合 | EEGをLLM/VLM内部へ接続する学習法の新規性と，既存adapter・late fusion等に対する再現可能な改善 |
+| ICML | 方法論・評価法・応用から生じた汎用MLの貢献 | 問題設定と手法の寄与が明確で，十分な対照実験を投稿期限までに完成できる |
+| CVPR | 視覚条件付きの理解，マルチモーダル表現，visual agents | 視覚的な曖昧さの解消や未知画面への汎化が論文の中心的成果になる |
+| CHI | 脳波・視線・画面を通じた人とAIのinteraction | 利用者の意図・注意の曖昧さを解き，誤作動や操作負担を改善する実証が中心になる |
+| Nature Communications | 専門分野に重要な進展をもたらす学際研究 | 複数データ・被験者で再現する科学的知見や，十分な実験を伴う神経・AI融合の進展が得られる |
+
+Nature／Scienceは広い科学的意義を裏付ける成果が得られた場合に再検討します．現在の研究主題に対して，NEJM／The Lancet／Advanced Materials／Cellを通常の第一候補には置きません．投稿先名に合わせて，未取得の臨床・材料・細胞の成果を主張しません．
+
+h5指標は出版物単位の被引用実績です．研究との適合，方法の新規性，実験の強さ，対象読者と併せて判断します．対象誌・会議を増やすために，同じ原稿を同時投稿する方針ではありません．
+
+## 先行研究との差
+
+[UniMind v2](https://arxiv.org/abs/2506.18962v2)は，既にNeuro-Language Connectorとtask-aware queryでEEGをLLMへ接続し，10 datasetsで評価しています．EEGを内部接続することだけを新規性にしません．B案では，判定前の視覚環境・履歴と統合することで何の曖昧さが解消し，EEGがどの条件で独自の情報を加えるかを，既存UniMind型接続も含む対照で検証します．
+
+[NeuroLM（ICLR 2025）](https://proceedings.iclr.cc/paper_files/paper/2025/hash/8b4add8b0aa8749d80a34ca5d941c355-Abstract-Conference.html)もEEG tokenとLLMの内部統合を扱います．さらに[Shiinoki・Iwama・UshibaのbioRxiv v2](https://doi.org/10.1101/2025.06.01.657282)は，神経・眼球信号と画面文脈をLLMへ渡す意図推定・操作の先行例です．[Chiossiら（CHI 2026）](https://doi.org/10.1145/3772318.3790523)はgazeとEEGによるSelect／Observeを検討しています．「画面context＋EEG＋LLM」だけを新規性とせず，学習可能な内部融合の必要性と，同じ観測条件の強い非EEG対照に対する未知条件での追加価値を検証します．
+
+[草稿v1の査読報告](literature_review_20261123/REVIEW_REPORT_JA.md)と[独立方法監査](literature_review_20261123/INDEPENDENT_METHODS_REVIEW.md)を研究作業の優先順位へ反映します．現草稿は主要改稿・新規下流実験が必要であり，最新66.244h encoderのMSEと過去の別系統proxy結果だけからB案が成立したとは扱いません．CHIは[公式の貢献説明](https://chi2027.acm.org/contributions-to-chi/)に照らし，人のinteractionへの実証が中心になった場合の候補として加えます．
+
+[NeurIPS 2026審査基準](https://neurips.cc/Conferences/2026/ReviewerGuidelines)のUse-Inspired区分は，実用途の課題設定と，既存手法を組み合わせた場合も含む独自知見を対象にしています．現B案との適合は高いという判断ですが，次回の区分・要件は募集時に再確認します．新architectureやSOTAの有無だけで判断せず，主張の新規性と実証を確認します．
+
+## 論文で検証する仮説
+
+**操作前の視覚環境と操作履歴だけでは曖昧な高次意図を，EEGを内部統合したモデルが追加的に識別できるか**を中心の仮説とします．現時点では未実証です．
+
+| 必要な証拠 | 固定する比較・確認 |
+| --- | --- |
+| EEGの追加価値 | 同じLLM/VLM・同じ画面と履歴で，EEGあり／なし／別trialへ入替／時間ずらしを比較 |
+| 内部統合の方法上の価値 | EEGを内部へ接続するB案を，late fusion・EEG単独・同等計算量の既存手法と比較 |
+| 画面から正解が漏れていないこと | 判定時点以前のcontextに限定し，配置counterbalance，環境のみ，正解class上限，oracleとdecoderの区別を保持 |
+| 人・記録・課題をまたぐ汎化 | 同一trialや重複payloadを跨がせず，元グループ単位の未知被験者・未知セッション・未知課題を事前固定 |
+| 実データに基づく目的推定 | 同期EEG・画面・履歴・意図の根拠を確認し，cue分類，AI生成ラベル，人工環境のproxy，自由意図を区別 |
+| 再現性と不確実性 | 複数seed，元グループ単位の集計・区間推定，除外と欠測の全報告，計算量・遅延・失敗条件を記録 |
+
+視線・EOG・EMGを同時計測できるデータでは追加対照を設けます．未取得なら，神経信号に固有の情報だという解釈を限定します．公開base modelの事前学習データとの重複が不明な場合も，完全な未知sourceへの汎化と断定しません．
+
+主要評価は目的・意図推定の妥当性です．実PC操作のtask success，誤操作・棄却・遅延は応用評価として分けます．最終の主要指標・集計単位・対照・停止条件は，対象データが確定した時点で結果を見る前に登録します．
+
+## 取得・学習との接続
+
+約23.07TBの元候補の取得をS Macで継続します．学習適格性を確認したtrainを増やし，取得可能な全候補の判定後に最大の適格unionを固定して新しい再学習を行います．取得容量をそのまま下流タスクの教師データ量とみなしません．
+
+Design Emotionの全17trainは固定QCで適格窓0となり，fit0で科学的保留にしました．現在の研究上の優先作業は，B案の同期入力・label・内部接続・強い非EEG対照の成立を確認し，実際の意図推定に進むことです．全量取得と基盤学習は並行して継続し，次回以降もencoderのMSE更新だけでB案の進捗を代替しません．
+
+現状の66.2442h・10epoch追加学習，新BCI validationのMSE低下，既存validationの微小悪化はencoder段階の結果です．これだけで上記の仮説やトップ会議向けの貢献が成立したとは扱いません．
+
+## 日程の扱い
+
+2026-11-23に公式ページを確認しました．新規投稿を前提にすると，ICLR 2027本会議の本文締切は2026-09-25 AoE，CVPR 2027本会議は2026-11-16 AoEで，いずれも経過しています．既存の投稿済み原稿は確認できていません．
+
+ICML 2027は公式CFPとDatesで，abstractが2027-01-14 23:59 AoE，本文が2027-01-22 23:59 AoEです（日本時間ではそれぞれ1月15日／23日20:59）．成果が十分に成立した場合の候補とし，締切に合わせて不十分な結果を完成扱いにしません．
+
+NeurIPSの次回募集を中心に準備しますが，2027の公式CFP・締切を今回の確認では取得できませんでした．過去年の締切を2027の確定日として流用しません．投稿年と最終会議は，実証の完成時点と公式要項を照合して確定します．
+
+## 公式一次資料
+
+- [NeurIPS 2026 CFP：分野と研究の対象](https://neurips.cc/Conferences/2026/CallForPapers)
+- [ICLR 2027 CFP：表現学習・神経科学・日程](https://iclr.cc/Conferences/2027/CallForPapers)
+- [ICML 2027 CFP](https://icml.cc/Conferences/2027/CallForPapers)／[Dates](https://icml.cc/Conferences/2027/Dates)
+- [CVPR 2027 CFP](https://cvpr.thecvf.com/Conferences/2027/CallForPapers)／[Author Guidelines](https://cvpr.thecvf.com/Conferences/2027/AuthorGuidelines)
+- [Nature Communications Aims & Scope](https://www.nature.com/ncomms/ncomms/aims)
+- [Google Scholar Metricsの定義](https://scholar.google.com/intl/en/scholar/metrics.html)

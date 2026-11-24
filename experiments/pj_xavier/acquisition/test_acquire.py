@@ -381,6 +381,33 @@ class AcquisitionTests(unittest.TestCase):
             self.assertEqual(second["transferred_bytes"], 5)
             self.assertEqual(path.read_bytes(), b"abcdefgh")
 
+    def test_fixed_zero_byte_retry_is_prioritized_without_bypassing_backoff(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db = acquire.init_db(Path(tmp) / "state.sqlite")
+            records = [{"catalog_id": f"{n:06d}", "provider": "zenodo", "source_id": str(n),
+                        "source_version": str(n), "status": "resolved",
+                        "files": [acquire.make_file("a.eeg", f"https://zenodo.org/{n}/a.eeg",
+                                                    0 if n in (2, 3) else 8,
+                                                    evidence_url=f"https://zenodo.org/api/records/{n}")]}
+                       for n in (1, 2, 3, 4)]
+            acquire.ingest(db, records)
+            clock = __import__('time').time()
+            for n, retry_at in [(2, clock - 1), (3, clock + 600), (4, clock - 1)]:
+                db.execute("UPDATE downloads SET status='retry',error=?,attempts=5,retry_at=? WHERE catalog_id=?",
+                           ('FileNotFoundError:[Errno 2] missing .part', retry_at, f"{n:06d}"))
+            db.commit()
+            before = {r[1]: tuple(r) for r in db.execute("SELECT * FROM downloads")}
+            selected_id = db.execute("SELECT id FROM downloads WHERE catalog_id='000002'").fetchone()[0]
+            http = HttpFixture(Response(b"", 200, {"Content-Length": "0"}))
+            acquire.worker(db, Path(tmp) / "raw", reserve_gib=0, seconds=5, max_files=1,
+                           priority_catalog_ids=["000001", "000004"], http=http)
+            self.assertIsNotNone(http.headers)
+            row = db.execute("SELECT id,status,expected_bytes,bytes_present,attempts,sha256 FROM downloads WHERE catalog_id='000002'").fetchone()
+            self.assertEqual(tuple(row), (selected_id, 'complete', 0, 0, 6, hashlib.sha256(b"").hexdigest()))
+            for cid in ('000001', '000003', '000004'):
+                self.assertEqual(before[cid], tuple(db.execute("SELECT * FROM downloads WHERE catalog_id=?", (cid,)).fetchone()))
+            self.assertTrue((Path(tmp) / 'raw/zenodo-2-2/a.eeg').is_file())
+
     def test_priority_catalog_selects_eligible_rows_without_changing_active_lease(self):
         with tempfile.TemporaryDirectory() as tmp:
             db = acquire.init_db(Path(tmp) / "state.sqlite")
@@ -436,6 +463,223 @@ class AcquisitionTests(unittest.TestCase):
             self.assertEqual(result["bytes_present"], 3)
             self.assertEqual(result["transferred_bytes"], 3)
             self.assertEqual((Path(tmp) / "zenodo-1-1/a.eeg.part").read_bytes(), b"abc")
+
+
+def openneuro_job(data=b"abcdefgh", name="sub-synthetic/eeg/sub-synthetic_task-test_eeg.vhdr"):
+    dataset = "openneuro-ds005127-current-public-S3-cd8192ec5aab"
+    namespace = "source_" + hashlib.sha256(
+        b"https://openneuro.org/datasets/ds005127/versions/2.0.3").hexdigest()[:12]
+    path = namespace + "/" + name
+    key = "SHA256E-s" + str(len(data)) + "--" + hashlib.sha256(data).hexdigest() + ".vhdr"
+    url = "https://openneuro.org/crn/datasets/ds005127/objects/" + key + "?filename=" + Path(name).name
+    return {"id": hashlib.sha256((dataset + "/" + path).encode()).hexdigest(),
+            "catalog_id": "000836", "dataset_key": dataset, "relative_path": path,
+            "original_relative_path": path, "url": url, "expected_bytes": len(data),
+            "checksum_json": json.dumps({"algorithm": "unidentified", "value": key}),
+            "provider_file_identity": "openneuro:url:" + url}
+
+
+class OpenNeuroHttpFixture:
+    def __init__(self, spec, body=b"abcdefgh", status=200, headers=None, error=404, final_url=None):
+        self.spec, self.body, self.status = spec, body, status
+        self.response_headers = headers or {"Content-Length": str(len(body))}
+        self.error, self.final_url, self.calls = error, final_url, []
+
+    def request(self, url, headers=None):
+        self.calls.append((url, headers))
+        if url == self.spec["url"]:
+            raise urllib.error.HTTPError(url, self.error, "synthetic", {}, io.BytesIO())
+        allowed = acquire.openneuro_sha256e_fallback(self.spec)["url"]
+        if url != allowed:
+            raise AssertionError("Unexpected fallback origin")
+        response = Response(self.body, self.status, self.response_headers)
+        response.geturl = lambda: self.final_url or url
+        return response
+
+
+class OpenNeuroPinnedFallbackTests(unittest.TestCase):
+    def test_exact_source_namespace_identity_and_SHA256E_derive_one_official_route(self):
+        spec = openneuro_job()
+        original = dict(spec)
+        route = acquire.openneuro_sha256e_fallback(spec)
+        self.assertEqual(route["url"], "https://s3.amazonaws.com/openneuro.org/ds005127/sub-synthetic/eeg/sub-synthetic_task-test_eeg.vhdr")
+        self.assertEqual(route["checksum"], {"algorithm": "sha256", "value": hashlib.sha256(b"abcdefgh").hexdigest()})
+        self.assertEqual(spec, original)
+        for key, value in [("catalog_id", "000001"), ("dataset_key", "openneuro-ds999999-current-public-S3-cd8192ec5aab"),
+                           ("url", spec["url"].replace("openneuro.org/", "openneuro.org.other.example/", 1))]:
+            self.assertIsNone(acquire.openneuro_sha256e_fallback({**spec, key: value}))
+
+    def test_namespace_size_checksum_filename_and_DB_identity_mismatches_fail_closed(self):
+        spec = openneuro_job()
+        for key, value in [("expected_bytes", 9), ("expected_bytes", True),
+                           ("checksum_json", json.dumps({"algorithm": "unidentified", "value": "different"})),
+                           ("original_relative_path", spec["original_relative_path"].replace("40931ca38ec4", "000000000000")),
+                           ("relative_path", "renamed.vhdr"), ("provider_file_identity", "openneuro:url:wrong"),
+                           ("id", "0" * 64), ("url", spec["url"].replace("?filename=", "?extra=x&filename="))]:
+            with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                acquire.openneuro_sha256e_fallback({**spec, key: value})
+
+    def test_original_404_recovers_only_full_SHA_verified_bytes_without_mutating_job(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            spec = openneuro_job(); original = dict(spec); http = OpenNeuroHttpFixture(spec)
+            result = acquire.transfer(spec, tmp, http, 0)
+            self.assertEqual(result["status"], "complete")
+            self.assertEqual(result["sha256"], hashlib.sha256(b"abcdefgh").hexdigest())
+            self.assertEqual(len(http.calls), 2); self.assertEqual(http.calls[0][0], spec["url"])
+            path = acquire.destination(tmp, spec["dataset_key"], spec["relative_path"])
+            self.assertEqual(path.read_bytes(), b"abcdefgh")
+            receipt = json.loads(path.with_name(path.name + ".transport.json").read_text())
+            self.assertEqual(receipt["job_id"], spec["id"])
+            self.assertEqual(receipt["verified_sha256"], result["sha256"])
+            self.assertTrue(receipt["original_manifest_and_database_identity_unchanged"])
+            self.assertEqual(spec, original)
+
+    def test_auth_rate_limit_server_errors_and_redirected_404_never_fall_back(self):
+        for status in (401, 403, 429, 500):
+            with self.subTest(status=status), tempfile.TemporaryDirectory() as tmp:
+                spec = openneuro_job(); http = OpenNeuroHttpFixture(spec, error=status)
+                with self.assertRaises(urllib.error.HTTPError):acquire.transfer(spec, tmp, http, 0)
+                self.assertEqual(len(http.calls), 1)
+        with tempfile.TemporaryDirectory() as tmp:
+            spec = openneuro_job()
+            with patch.object(HttpFixture, 'request', side_effect=urllib.error.HTTPError(
+                    "https://other.example/missing", 404, "synthetic", {}, io.BytesIO())) as request:
+                with self.assertRaises(urllib.error.HTTPError):
+                    acquire.transfer(spec, tmp, HttpFixture(None), 0)
+                self.assertEqual(request.call_count, 1)
+
+    def test_wrong_S3_hash_is_held_instead_of_marked_complete(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            spec = openneuro_job(); result = acquire.transfer(spec, tmp, OpenNeuroHttpFixture(spec, b"xxxxxxxx"), 0)
+            self.assertEqual(result["status"], "integrity_failed")
+            path = acquire.destination(tmp, spec["dataset_key"], spec["relative_path"])
+            self.assertFalse(path.exists()); self.assertEqual(path.with_name(path.name + ".part").read_bytes(), b"xxxxxxxx")
+            self.assertFalse(path.with_name(path.name + ".transport.json").exists())
+
+    def test_S3_response_redirect_to_other_object_is_rejected_before_save(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            spec = openneuro_job(); http = OpenNeuroHttpFixture(spec, final_url="https://s3.amazonaws.com/other/object")
+            with self.assertRaisesRegex(ValueError, "redirected outside"):
+                acquire.transfer(spec, tmp, http, 0)
+            path = acquire.destination(tmp, spec["dataset_key"], spec["relative_path"])
+            self.assertFalse(path.with_name(path.name + ".part").exists())
+
+    def test_interrupted_fallback_resumes_only_bound_S3_with_full_hash(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            spec = openneuro_job(); first = OpenNeuroHttpFixture(spec, b"abc", headers={"Content-Length": "8", "ETag": '"one"'})
+            result = acquire.transfer(spec, tmp, first, 0); self.assertEqual(result["status"], "retry")
+            path = acquire.destination(tmp, spec["dataset_key"], spec["relative_path"])
+            meta = json.loads(path.with_name(path.name + ".part.meta.json").read_text())
+            self.assertEqual(meta["request_url_sha256"], hashlib.sha256(first.calls[1][0].encode()).hexdigest())
+            second = OpenNeuroHttpFixture(spec, b"defgh", 206, {"Content-Range": "bytes 3-7/8", "ETag": '"one"'})
+            result = acquire.transfer(spec, tmp, second, 0)
+            self.assertEqual(result["status"], "complete");self.assertEqual(path.read_bytes(), b"abcdefgh")
+            self.assertEqual(len(second.calls), 1);self.assertEqual(second.calls[0][1]["Range"], "bytes=3-")
+
+    def test_complete_fallback_partial_still_records_source_provenance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            spec = openneuro_job(); http = OpenNeuroHttpFixture(spec)
+            result = acquire.transfer(spec, tmp, http, 0, transfer_limit=8)
+            self.assertEqual(result["status"], "paused")
+            class NeverRequest:
+                def request(self, *args):raise AssertionError("Complete partial needs no request")
+            result = acquire.transfer(spec, tmp, NeverRequest(), 0)
+            self.assertEqual(result["status"], "complete")
+            path = acquire.destination(tmp, spec["dataset_key"], spec["relative_path"])
+            self.assertTrue(path.with_name(path.name + ".transport.json").exists())
+
+    def test_original_or_unbound_partial_is_never_joined_to_fallback(self):
+        for bound in (True, False):
+            with self.subTest(bound=bound), tempfile.TemporaryDirectory() as tmp:
+                spec = openneuro_job(); path = acquire.destination(tmp, spec["dataset_key"], spec["relative_path"])
+                part = path.with_name(path.name + ".part");part.write_bytes(b"abc")
+                if bound:acquire.atomic_json(path.with_name(path.name + ".part.meta.json"), {"url_sha256": hashlib.sha256(spec["url"].encode()).hexdigest()})
+                http = OpenNeuroHttpFixture(spec)
+                with self.assertRaises(ValueError):acquire.transfer(spec, tmp, http, 0)
+                self.assertEqual(part.read_bytes(), b"abc");self.assertLessEqual(len(http.calls), 1)
+
+    def test_tampered_fallback_partial_source_and_URL_binding_are_rejected(self):
+        for key, value in [("request_url_sha256", "0" * 64), ("source_sha256", "0" * 64),
+                           ("original_sha256e_key", "other"), ("expected_bytes", 9), ("fallback_reason", "unverified")]:
+            with self.subTest(key=key), tempfile.TemporaryDirectory() as tmp:
+                spec = openneuro_job();acquire.transfer(spec, tmp, OpenNeuroHttpFixture(spec, b"abc", headers={"Content-Length": "8"}), 0)
+                path=acquire.destination(tmp,spec["dataset_key"],spec["relative_path"]);meta_path=path.with_name(path.name+".part.meta.json")
+                meta=json.loads(meta_path.read_text());meta[key]=value;acquire.atomic_json(meta_path,meta)
+                http=OpenNeuroHttpFixture(spec)
+                with self.assertRaises(ValueError):acquire.transfer(spec,tmp,http,0)
+                self.assertEqual(http.calls, [])
+
+    def test_known_404_retry_priority_preserves_backoff_active_lease_and_original_identity(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db=acquire.init_db(Path(tmp)/'state.sqlite');clock=__import__('time').time()
+            specs=[openneuro_job(name=f'sub-synthetic/eeg/{n}.vhdr') for n in range(3)]
+            for i,spec in enumerate(specs):
+                value={**spec,'status':'retry' if i<2 else 'running','attempts':5,'error':'HTTPError:status=404',
+                       'retry_at':clock+600 if i==1 else 0,'lease_until':clock+600 if i==2 else 0}
+                db.execute('INSERT INTO downloads ('+','.join(value)+') VALUES ('+','.join('?' for _ in value)+')',list(value.values()))
+            acquire.ingest(db,[{'catalog_id':'000001','provider':'zenodo','source_id':'1','source_version':'1','status':'resolved',
+                                'files':[acquire.make_file('a.eeg','https://zenodo.org/a.eeg',8,evidence_url='https://zenodo.org/')]}])
+            db.commit();before={r[0]:tuple(r) for r in db.execute('SELECT * FROM downloads')}
+            acquire.worker(db,Path(tmp)/'raw',reserve_gib=0,seconds=5,max_files=1,http=OpenNeuroHttpFixture(specs[0]))
+            selected=dict(db.execute('SELECT * FROM downloads WHERE id=?',(specs[0]['id'],)).fetchone())
+            self.assertEqual(selected['status'],'complete');self.assertEqual(selected['attempts'],6)
+            for key in specs[0]:self.assertEqual(selected[key],specs[0][key])
+            for ident,row in before.items():
+                if ident!=specs[0]['id']:self.assertEqual(tuple(db.execute('SELECT * FROM downloads WHERE id=?',(ident,)).fetchone()),row)
+
+
+class KaggleCorrectedRetryTests(unittest.TestCase):
+    prefix = "metadata_corrected:kaggle_single_file_zip_transport:"
+
+    def insert(self, db, ident, catalog, **overrides):
+        spec = {**job(), "id": ident, "catalog_id": catalog,
+                "dataset_key": "synthetic-" + ident, "original_relative_path": "a.eeg",
+                "provider_file_identity": "synthetic:" + ident, **overrides}
+        db.execute("INSERT INTO downloads (" + ",".join(spec) + ") VALUES ("
+                   + ",".join("?" for _ in spec) + ")", list(spec.values()))
+        return spec
+
+    def test_verified_corrections_are_prioritized_but_backoff_and_lease_are_preserved(self):
+        for catalog in ("000420", "000381"):
+            with self.subTest(catalog=catalog), tempfile.TemporaryDirectory() as tmp:
+                db = acquire.init_db(Path(tmp) / "state.sqlite")
+                future = __import__("time").time() + 600
+                reason = self.prefix + "a" * 64
+                selected = self.insert(db, "fixed", catalog, status="retry", attempts=5, error=reason)
+                self.insert(db, "backoff", catalog, status="retry", attempts=5, error=reason, retry_at=future)
+                self.insert(db, "leased", catalog, status="running", attempts=5, error=reason, lease_until=future)
+                self.insert(db, "queued", "000001")
+                db.commit()
+                before = {r[0]: tuple(r) for r in db.execute("SELECT * FROM downloads")}
+                acquire.worker(db, Path(tmp) / "raw", reserve_gib=0, seconds=5, max_files=1,
+                               priority_catalog_ids=["000001"],
+                               http=HttpFixture(Response(b"abcdefgh", 200, {"Content-Length": "8"})))
+                actual = dict(db.execute("SELECT * FROM downloads WHERE id='fixed'").fetchone())
+                self.assertEqual((actual["status"], actual["attempts"]), ("complete", 6))
+                for key in ("id", "catalog_id", "dataset_key", "relative_path", "original_relative_path",
+                            "url", "expected_bytes", "checksum_json", "provider_file_identity"):
+                    self.assertEqual(actual[key], selected[key])
+                for ident in ("backoff", "leased", "queued"):
+                    self.assertEqual(tuple(db.execute("SELECT * FROM downloads WHERE id=?", (ident,)).fetchone()), before[ident])
+
+    def test_other_catalogs_malformed_proof_or_nonretry_rows_do_not_get_priority(self):
+        valid = self.prefix + "a" * 64
+        cases = [("000001", valid, "retry"), ("000420", valid[:-1], "retry"),
+                 ("000381", valid + "a", "retry"), ("000420", self.prefix + "G" * 64, "retry"),
+                 ("000381", self.prefix + "A" * 64, "retry"), ("000420", valid + "\n", "retry"),
+                 ("000381", "metadata_corrected:other:" + "a" * 64, "retry"),
+                 ("000420", valid, "paused"), ("000381", valid, "queued")]
+        for catalog, reason, status in cases:
+            with self.subTest(catalog=catalog, reason=reason, status=status), tempfile.TemporaryDirectory() as tmp:
+                db = acquire.init_db(Path(tmp) / "state.sqlite")
+                self.insert(db, "candidate", catalog, status=status, attempts=5, error=reason)
+                self.insert(db, "queued", "000002")
+                db.commit()
+                before = tuple(db.execute("SELECT * FROM downloads WHERE id='candidate'").fetchone())
+                acquire.worker(db, Path(tmp) / "raw", reserve_gib=0, seconds=5, max_files=1,
+                               http=HttpFixture(Response(b"abcdefgh", 200, {"Content-Length": "8"})))
+                self.assertEqual(tuple(db.execute("SELECT * FROM downloads WHERE id='candidate'").fetchone()), before)
+                self.assertEqual(db.execute("SELECT status FROM downloads WHERE id='queued'").fetchone()[0], "complete")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,101 @@
+{
+  "schema": "xavier-smac-acquisition-transport-recovery-public-aggregate-v1",
+  "observed_at": "2026-11-22T21:07:31.828879+00:00",
+  "observer_completed_at": "2026-11-22T21:07:35.152860+00:00",
+  "fleet": {
+    "complete_files": 234816,
+    "complete_bytes": 2489730344939,
+    "partial_bytes": 762176034748,
+    "complete_missing_files": 0,
+    "complete_size_mismatch_files": 0,
+    "nodes_with_data": 37,
+    "supervisors_alive": 37,
+    "errors": 0
+  },
+  "acquire_sha256": "d3476952a8d999b9c7113bd79ddb246bb210ea507cb330664fbff769180796e6",
+  "guardian_configuration_sha256": "56e9e505ba707098d8865b218a4c7d4f8548d21bb0fa6245396cf0a08babba15",
+  "current_plan_sha256": "8b7ca80c818d766c8a5356c7cb6f4c006a550a097d906c02bf743693f32186ec",
+  "approved_original_plan_sha256": "155a332f2336913abab7b37052cf0148b6a58a563454147fef4d303e1f5a29f3",
+  "original_plan_bytes": 23071349438764,
+  "transport_byte_delta": -12444184833,
+  "current_transport_plan_bytes": 23058905253931,
+  "plan_scope_changed": false,
+  "workers_stopped": 0,
+  "raw_data_transferred_to_workstation": 0,
+  "guardian_restart_completed": true,
+  "guardian_journal_preserved": true,
+  "guardian_seen_windows_preserved": true,
+  "guardian_original_horizon_preserved": true,
+  "openneuro": {
+    "targets": 29,
+    "statuses": {
+      "complete": 29
+    },
+    "all_identities_match": true,
+    "complete_actual_size_verified": 29,
+    "complete_checksum_verified": 29,
+    "complete_bytes": 448983914,
+    "partial_bytes": 0,
+    "fallback_receipts_verified": 29,
+    "checksum_mismatches": 0,
+    "read_only_checksum_budget_seconds": 300,
+    "elapsed_seconds": 0.3732914160937071
+  },
+  "kaggle": {
+    "audited_metadata_corrected": 100,
+    "complete_files": 60,
+    "complete_checksum_verified": 60,
+    "complete_bytes": 2193326136,
+    "retry_observations": 37,
+    "running_observations": 3,
+    "status_observation_note": "Rows were read during normal-worker progress; running observations are not a simultaneous stream count.",
+    "checksum_mismatches": 0,
+    "all_identities_match": true,
+    "remaining_entries": 40,
+    "remaining_reason": "All 40 observed rows retain the exact verified metadata-correction reason; no new transfer error observed."
+  },
+  "checksums": "Each recovered complete target was independently rehashed on its S Mac: original SHA256E for OpenNeuro; official ZIP MD5 and worker SHA256 for Kaggle.",
+  "assigned_file_entries": 598556,
+  "assigned_file_entries_changed": 0,
+  "unit_definition": "TB = 10^12 bytes; actual complete and partial bytes are separate observations",
+  "guardian": {
+    "restart_completed_at_utc": "2026-11-22T21:05:06.816268+00:00",
+    "first_fresh_heartbeat_at_utc": "2026-11-22T21:05:05.986917+00:00",
+    "active_existing_windows": 37,
+    "seen_windows_preserved": 37,
+    "window_hours": 48,
+    "poll_interval_seconds": 300,
+    "original_guardian_horizon_preserved": true,
+    "current_windows_restarted": 0,
+    "worker_processes_stopped": 0,
+    "preexisting_stop_markers_cleared": 0,
+    "only_driver_owned_stop_marker_removed": true
+  },
+  "deployment": {
+    "worker_acquire_copies_verified": 37,
+    "future_master_code_copies_verified": 38,
+    "assigned_manifest_bindings_revised": 2,
+    "original_plan_and_config_saved": true,
+    "old_approved_scope_retained": true
+  },
+  "tests": {
+    "acquisition_synthetic_tests_passed": 48,
+    "amendment_synthetic_tests_passed": 6,
+    "total": 54,
+    "executed_on": "workstation/container synthetic fixtures; no real EEG used"
+  },
+  "receipt_sha256": {
+    "acquisition_transport_amendment_completion_v1.json": "13f71854d4cc5dff041add5fc16d3d0e656d695a4763919162431c5153e1453f",
+    "acquisition_scope_transport_amendment_v1.json": "1513885a4ecd74380da430216bc9d5635a989b68b11b2967b83d9b209aafce9a",
+    "acquisition_after_transport_completion.json": "71949d54e2d241c394858f3d4308e7157d35124397348f011851c1a6d4620949",
+    "acquisition_after_transport_fleet_snapshot.json": "889f029b08f368fbf46e6c657dd8dac114626ba62e389f4108f7daf3191ea742",
+    "acquisition_retry_priority_amendment_synthetic_verification_v1.json": "a7ca386069db5a39353c0d57fb6878d896f14b728d8ec92ccd6704057d20c41b"
+  },
+  "limitations": [
+    "Snapshot reflects ongoing normal acquisition, not final completion of all assigned files.",
+    "Fleet actual-file checks validate existence and byte counts; full-fleet cryptographic rehash was not performed.",
+    "All recovered target files counted as checksum-verified were independently rehashed on their S Mac.",
+    "Acquisition completion does not imply scientific source admission or training exposure.",
+    "Kaggle row statuses were observed while workers advanced, so running observations are not a simultaneous stream count."
+  ]
+}
