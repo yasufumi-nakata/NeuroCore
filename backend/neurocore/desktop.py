@@ -358,7 +358,7 @@ class DesktopSessionManager:
             try:
                 if not isinstance(result, dict):
                     raise ValueError("Invalid service proposal")
-                clean = {key: value for key, value in result.items() if key not in {"scientific_validation", "execution_policy"}}
+                clean = {key: value for key, value in result.items() if key not in {"scientific_validation", "execution_policy", "input_condition"}}
                 result = validate_proposal(clean)
             except (ValueError, TypeError) as exc:
                 with self._state_lock:
@@ -454,7 +454,10 @@ class DesktopSessionManager:
                     raise DesktopError("action_outcome_unknown", "The OS action outcome is unknown; inspect the target before starting a new session", 503) from exc
                 with self._state_lock:
                     if not self._cancel.is_set():
-                        self._model_history.append({"action": action, "executed": True})
+                        # The inference service accepts flat, already-executed prior actions.
+                        # Do not send the session manager's nested receipt object:
+                        # the second multi-step proposal would reject its history.
+                        self._model_history.append(dict(action))
                         self._state = "active"
                     executed, outcome = True, "applied"
             else:
@@ -462,11 +465,11 @@ class DesktopSessionManager:
                     self._require(session_id)
                     self._state = "finished"
                     self._cancel.set()
-                    executed, outcome = False, "finished" if action["action"] == "finish" else "abstained"
+                    executed, outcome = False, "model_claimed_finish_unverified" if action["action"] == "finish" else "abstained"
             with self._state_lock:
                 self._clear_inputs()
                 self._event("action_result", proposal_id=proposal_id, action=action["action"], executed=executed, result=outcome)
-                response = {"proposal_id": proposal_id, "action": action, "executed": executed, "result": outcome, "replayed": False}
+                response = {"proposal_id": proposal_id, "action": action, "executed": executed, "result": outcome, "replayed": False, "goal_completion_verified": False}
         response = {**self.status(), **response}
         with self._state_lock:
             self._receipts[proposal_id] = _json_copy(response)

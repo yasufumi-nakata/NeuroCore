@@ -34,7 +34,10 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--compare", type=Path)
     parser.add_argument("--proposal", action="store_true")
+    parser.add_argument("--paired-ablation", action="store_true", help="Match same synthetic image and goal with EEG input omitted")
     args = parser.parse_args()
+    if args.paired_ablation and not args.proposal:
+        parser.error("--paired-ablation requires --proposal")
     if args.output.exists() or args.output.is_symlink():
         raise ValueError("smoke output must be new")
     started = time.monotonic()
@@ -87,6 +90,24 @@ def main():
             validate_proposal(proposal)
             report["proposal"] = proposal
             report["proposal_diagnostics"] = model.status()["last_inference"]
+            if args.paired_ablation:
+                # Input omission uses the same weights/screen/goal. It is not a
+                # re-trained strict noEEG control or an independent performance study.
+                no_eeg = model.propose_action(None, data.getvalue(), [],
+                                              "Click the button containing a blue circle.",
+                                              max_tokens=64, timeout_seconds=120)
+                validate_proposal(no_eeg)
+                if proposal["eeg_positions"] != 5 or no_eeg["eeg_positions"] != 0:
+                    raise RuntimeError("EEG/noEEG inference position contract failed")
+                report["no_eeg_proposal"] = no_eeg
+                report["no_eeg_diagnostics"] = model.status()["last_inference"]
+                report["paired_inference_ablation"] = {
+                    "input": "public_synthetic",
+                    "same_model_image_goal": True,
+                    "eeg_positions": [5, 0],
+                    "separately_trained_control": False,
+                    "independent_eeg_validation": False,
+                }
         report["status"] = "passed"
     finally:
         model.unload()

@@ -218,7 +218,7 @@ class XavierService:
     def _input(payload: dict[str, Any], *, propose: bool = False):
         allowed = {"prefix", "channels", "sample_rate_hz", "units", "preprocessing"}
         if propose:
-            allowed |= {"image_png_base64", "history", "goal"}
+            allowed |= {"image_png_base64", "history", "goal", "eeg_condition"}
         if not isinstance(payload, dict) or set(payload) - allowed:
             raise XavierServiceError("invalid_input", "Unexpected input fields")
         if "preprocessing" in payload:
@@ -233,6 +233,8 @@ class XavierService:
                 metadata["hardware_clock_certified"] is not False or metadata["physical_raw_timing_certified"] is not False
             ):
                 raise XavierServiceError("invalid_input", "Unknown preprocessing metadata")
+        if propose and payload.get("eeg_condition", "present") not in {"present", "no_eeg"}:
+            raise XavierServiceError("invalid_input", "EEG condition must be present or no_eeg")
         rows = payload.get("prefix")
         if not isinstance(rows, list) or len(rows) != 300 or any(not isinstance(row, list) or len(row) != 30 for row in rows):
             raise XavierServiceError("invalid_input", "prefix must contain exactly 300 samples by 30 channels")
@@ -291,9 +293,15 @@ class XavierService:
             try:
                 if len(json.dumps(history, allow_nan=False)) > 16384:
                     raise ValueError("history too large")
-                result = model.propose_action(prefix, png, history, goal, **kwargs)
+                # Exact per-trial EEG ablation: same screen, prompt, and model;
+                # omit the five EEG input positions without changing any weights.
+                # This is an inference control, not a separately trained no-EEG baseline.
+                condition = payload.get("eeg_condition", "present")
+                result = model.propose_action(prefix if condition == "present" else None,
+                                              png, history, goal, **kwargs)
                 self._record(model_status=model.status())
-                return {**result, "scientific_validation": "not_established", "executed": False,
+                return {**result, "input_condition": condition,
+                        "scientific_validation": "not_established", "executed": False,
                         "execution_policy": "proposal_only_no_driver"}
             except Exception as exc:
                 raise self._error(exc) from None

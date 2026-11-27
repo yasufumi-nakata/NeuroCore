@@ -1,7 +1,7 @@
 param(
   [string]$SshHost = "smac20",
   [string]$SshUser = "your_ssh_username",
-  [int]$ModelPort = 8011,
+  [int]$ModelPort = 8012,
   [int]$TunnelPort = 18010,
   [int]$AppPort = 8788,
   [switch]$NoTunnel
