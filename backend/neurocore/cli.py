@@ -2,8 +2,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import hashlib
+import os
+import zipfile
 import sys
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 from .acquisition import plan_inventory_acquisition, summarize_acquisition_plans
@@ -239,10 +245,175 @@ def _print(payload: dict, *, json_mode: bool) -> None:
     print(json.dumps(payload, indent=2, ensure_ascii=False))
 
 
+def _xavier_write_new_json(path: Path, payload: dict) -> None:
+    data = (json.dumps(payload, indent=2, allow_nan=False) + "\n").encode("utf-8")
+    fd = os.open(path.expanduser(), os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, "wb") as stream:
+        stream.write(data)
+
+
+def _xavier_validate_npy_header(stream) -> None:
+    import numpy as np
+    version = np.lib.format.read_magic(stream)
+    if version == (1, 0):
+        shape, _, dtype = np.lib.format.read_array_header_1_0(stream)
+    elif version == (2, 0):
+        shape, _, dtype = np.lib.format.read_array_header_2_0(stream)
+    else:
+        raise ValueError("Unsupported NPY format")
+    if shape != (25000, 34) or dtype.kind not in "iuf" or dtype.itemsize > 8:
+        raise ValueError("Native array header does not match the bounded source contract")
+
+
+def cmd_xavier_prepare(args: argparse.Namespace) -> int:
+    try:
+        import numpy as np
+        from .xavier.preprocessing import prepare_native_prefix
+        path = args.input.expanduser()
+        if path.stat().st_size > 32 * 1024 * 1024 or path.suffix.lower() not in {".npy", ".npz"}:
+            raise ValueError("Unsupported or oversized input")
+        if path.suffix.lower() == ".npz":
+            with zipfile.ZipFile(path) as archive:
+                files = archive.infolist()
+                if len(files) != 1 or files[0].filename != "native_uv.npy" or files[0].file_size > 16 * 1024 * 1024:
+                    raise ValueError("NPZ requires only a bounded native_uv array")
+                with archive.open(files[0]) as stream:
+                    _xavier_validate_npy_header(stream)
+            with np.load(path, allow_pickle=False) as archive:
+                native_uv = archive["native_uv"]
+        else:
+            with path.open("rb") as stream:
+                _xavier_validate_npy_header(stream)
+            native_uv = np.load(path, allow_pickle=False)
+        if args.channels.stat().st_size > 8192:
+            raise ValueError("Channel metadata too large")
+        channels = json.loads(args.channels.read_text(encoding="utf-8"))
+        result = prepare_native_prefix(native_uv, channels=channels, sample_rate_hz=10000, units="uV")
+        _xavier_write_new_json(args.output, result)
+        output = {"status": "prepared", "output": str(args.output), "samples": len(result["prefix"]),
+                  "channels": len(result["channels"]), "scientific_validation": "not_established"}
+        code = 0
+    except (OSError, ValueError, TypeError, KeyError, ImportError, zipfile.BadZipFile):
+        output = {"status": "error", "error": {"code": "prepare_failed",
+                  "message": "Check native input, ordered channel metadata, and a new output path"}}
+        code = 1
+    _print(output, json_mode=args.json)
+    return code
+
+
+def cmd_xavier_configure(args: argparse.Namespace) -> int:
+    try:
+        from .xavier.registry import ModelRegistry
+        from .xavier import registry as registry_module
+        catalog = ModelRegistry.from_file(Path(registry_module.__file__).with_name("packagedcatalog.json"))
+        models = catalog.list()
+        selected = args.model_id or (models[0]["model_id"] if len(models) == 1 else "")
+        entry = catalog.get(selected)
+        base = args.base_model.expanduser().resolve(strict=True)
+        if not base.is_dir():
+            raise ValueError("Base model directory required")
+        manifest = entry.package_dir / "manifest.json"
+        if manifest.stat().st_size > 1024 * 1024:
+            raise ValueError("Manifest too large")
+        digest = hashlib.sha256(manifest.read_bytes()).hexdigest()
+        if digest != entry.manifest_sha256:
+            raise ValueError("Packaged manifest mismatch")
+        body = {"schema": "neurocore-xavier-registry-v1", "models": [{"id": entry.model_id, "title": entry.title,
+                "package_dir": str(entry.package_dir), "base_model_dir": str(base), "manifest_sha256": digest}]}
+        _xavier_write_new_json(args.output, body)
+        output = {"status": "configured", "registry": str(args.output.resolve()), "model_id": entry.model_id,
+                  "manifest_sha256": digest, "activation": "Set XAVIER_MODEL_REGISTRY before starting the API"}
+        code = 0
+    except (OSError, ValueError, TypeError, KeyError):
+        output = {"status": "error", "error": {"code": "configure_failed",
+                  "message": "Check the bundled model, base directory, and a new registry output path"}}
+        code = 1
+    _print(output, json_mode=args.json)
+    return code
+
+
+class _XavierNoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def _xavier_http_request(url: str, method: str, payload: dict | None, timeout: float) -> dict:
+    body = None if payload is None else json.dumps(payload, allow_nan=False).encode("utf-8")
+    request = urllib.request.Request(url, data=body, method=method, headers={"Content-Type": "application/json"})
+    try:
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), _XavierNoRedirect())
+        with opener.open(request, timeout=timeout) as response:
+            body = response.read(8 * 1024 * 1024 + 1)
+            if len(body) > 8 * 1024 * 1024:
+                raise ValueError("API response exceeded the bound")
+            result = json.loads(body)
+            if not isinstance(result, dict):
+                raise ValueError("API response must be an object")
+            return result
+    except urllib.error.HTTPError as exc:
+        try:
+            detail = json.loads(exc.read(65536)).get("detail", {})
+        except (ValueError, AttributeError):
+            detail = {}
+        if not isinstance(detail, dict):
+            detail = {}
+        return {"status": "error", "error": {"code": detail.get("code", "http_error"),
+                                                "message": detail.get("message", "Xavier API rejected the request"),
+                                                "http_status": exc.code}}
+
+
+def cmd_xavier(args: argparse.Namespace) -> int:
+    """Operate the persistent local API process rather than losing weights on CLI exit."""
+    try:
+        parsed = urllib.parse.urlsplit(args.api_url)
+        if parsed.scheme != "http" or parsed.hostname not in {"127.0.0.1", "localhost", "::1"} or (
+            parsed.username or parsed.password or parsed.query or parsed.fragment or parsed.path not in {"", "/"}
+        ):
+            raise ValueError("Xavier CLI requires a loopback HTTP API URL (use an SSH tunnel for a remote node)")
+        if not 0 < args.timeout <= 600:
+            raise ValueError("timeout must be greater than zero and at most 600 seconds")
+        action, payload, method = args.xavier_action, None, "GET"
+        if action == "list":
+            path = "/models"
+        elif action == "inspect":
+            path = "/models/" + urllib.parse.quote(args.model_id, safe="")
+        elif action == "status":
+            path = "/status"
+        elif action in {"load", "unload"}:
+            path, method = "/" + action, "POST"
+            payload = {"model_id": args.model_id} if action == "load" else {}
+        else:
+            path, method = "/" + action, "POST"
+            if args.input == "-":
+                source = sys.stdin.read(8 * 1024 * 1024 + 1)
+            else:
+                with Path(args.input).expanduser().open("r", encoding="utf-8") as stream:
+                    source = stream.read(8 * 1024 * 1024 + 1)
+            if len(source.encode("utf-8")) > 8 * 1024 * 1024:
+                raise ValueError("Input JSON is limited to 8 MiB")
+            payload = json.loads(source)
+            if not isinstance(payload, dict):
+                raise ValueError("Input JSON must be an object")
+        result = _xavier_http_request(args.api_url.rstrip("/") + "/api/xavier" + path, method, payload, args.timeout)
+    except (OSError, ValueError, urllib.error.URLError):
+        result = {"status": "error", "error": {"code": "client_error",
+                    "message": "Check the loopback API, command options, and input JSON; no local model was started"}}
+    _print(result, json_mode=args.json)
+    return 1 if result.get("status") == "error" else 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="neurocore", description="NeuroCore EEG-to-control runtime")
     parser.add_argument("--version", action="version", version=f"neurocore {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
+
+    p_serve = sub.add_parser("serve", help="Start the Japanese application and its local API")
+    p_serve.add_argument("--port", type=int, default=8010)
+    p_serve.add_argument("--registry", type=Path, help="Trusted local model registry (model server only)")
+    p_serve.add_argument("--remote-model", help="Loopback HTTP URL of an SSH tunnel to the SMAC model server")
+    p_serve.add_argument("--desktop", action="store_true", help="Enable explicit screen capture and one-action application on this computer")
+    p_serve.add_argument("--api-only", action="store_true", help="Run without bundled UI assets")
+    p_serve.set_defaults(func=lambda args: __import__("neurocore.product", fromlist=["cmd_serve"]).cmd_serve(args))
 
     p_settings = sub.add_parser("settings", help="Print or write the default NeuroCore settings")
     p_settings.add_argument("--out", type=Path, default=None, help="Write default settings JSON to this path")
@@ -362,6 +533,31 @@ def build_parser() -> argparse.ArgumentParser:
     p_stream.add_argument("--seconds", type=float, default=3.0)
     p_stream.add_argument("--json", action="store_true")
     p_stream.set_defaults(func=cmd_stream_demo)
+    p_xavier = sub.add_parser("xavier", help="Use the persistent local Xavier inference API")
+    xavier_sub = p_xavier.add_subparsers(dest="xavier_action", required=True)
+    prepare = xavier_sub.add_parser("prepare", help="Prepare a native source-compatible EEG prefix without loading a model")
+    prepare.add_argument("--input", type=Path, required=True, help="Numeric NPY or NPZ with native_uv only; pickle is forbidden")
+    prepare.add_argument("--channels", type=Path, required=True, help="JSON ordered native channel names")
+    prepare.add_argument("--output", type=Path, required=True, help="New private request JSON path; existing files are preserved")
+    prepare.add_argument("--json", action="store_true")
+    prepare.set_defaults(func=cmd_xavier_prepare)
+    configure = xavier_sub.add_parser("configure", help="Write a registry for bundled weights and an existing base-model cache")
+    configure.add_argument("--base-model", type=Path, required=True)
+    configure.add_argument("--output", type=Path, required=True)
+    configure.add_argument("--model-id", default=None)
+    configure.add_argument("--json", action="store_true")
+    configure.set_defaults(func=cmd_xavier_configure)
+    for action in ("list", "inspect", "status", "load", "forecast", "propose", "unload"):
+        item = xavier_sub.add_parser(action)
+        item.add_argument("--api-url", default="http://127.0.0.1:8010", help="Persistent local API address")
+        item.add_argument("--timeout", type=float, default=120.0)
+        item.add_argument("--json", action="store_true")
+        if action in {"inspect", "load"}:
+            item.add_argument("model_id", help="ID from the server's fixed registry")
+        if action in {"forecast", "propose"}:
+            item.add_argument("--input", required=True, help="Request JSON file, or - for standard input")
+        item.set_defaults(func=cmd_xavier)
+
     return parser
 
 

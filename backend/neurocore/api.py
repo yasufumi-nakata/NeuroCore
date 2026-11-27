@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import time
 from typing import Any
 
@@ -14,6 +15,7 @@ from .synthetic import synthetic_eeg_frame
 from .kernels import Bandpass, ReReference, Resample, SpectralFeatures, ValidateEEG
 from .pipeline import Pipeline, PipelineExecutionError
 from .quality import score_signal_quality
+from .xavier.service import XavierService, XavierServiceError
 
 try:
     from fastapi import FastAPI, HTTPException
@@ -153,3 +155,98 @@ def _settings_from_payload(payload: dict[str, Any]) -> NeuroCoreSettings:
     if settings_payload is None:
         return NeuroCoreSettings.default()
     return NeuroCoreSettings.from_dict(settings_payload)
+
+
+# Captured once at API import/startup; requests cannot change registry paths.
+if os.environ.get("NEUROCORE_REMOTE_MODEL"):
+    from .xavier.remote import RemoteXavierService
+    _xavier_service = RemoteXavierService(os.environ["NEUROCORE_REMOTE_MODEL"])
+else:
+    _xavier_service = XavierService.from_environment()
+
+
+class _XavierBodyLimit:
+    def __init__(self, app, max_bytes: int = 8 * 1024 * 1024) -> None:
+        self.app, self.max_bytes = app, max_bytes
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http" or not scope.get("path", "").startswith("/api/xavier/") or scope.get("method") != "POST":
+            return await self.app(scope, receive, send)
+        chunks, total = [], 0
+        while True:
+            message = await receive()
+            if message["type"] == "http.disconnect":
+                return
+            body = message.get("body", b"")
+            total += len(body)
+            if total > self.max_bytes:
+                payload = b'{"detail":{"code":"request_too_large","message":"Xavier requests are limited to 8 MiB"}}'
+                await send({"type": "http.response.start", "status": 413, "headers": [(b"content-type", b"application/json")]})
+                await send({"type": "http.response.body", "body": payload})
+                return
+            chunks.append(body)
+            if not message.get("more_body", False):
+                break
+        delivered = False
+
+        async def replay():
+            nonlocal delivered
+            if not delivered:
+                delivered = True
+                return {"type": "http.request", "body": b"".join(chunks), "more_body": False}
+            return await receive()
+
+        await self.app(scope, replay, send)
+
+
+app.add_middleware(_XavierBodyLimit)
+
+
+def _xavier_call(method, *args):
+    try:
+        return method(*args)
+    except XavierServiceError as exc:
+        raise HTTPException(status_code=exc.http_status, detail=exc.to_dict()) from None
+
+
+@app.get("/api/xavier/models")
+def xavier_models() -> dict[str, Any]:
+    return _xavier_call(_xavier_service.list_models)
+
+
+@app.get("/api/xavier/models/{model_id}")
+def xavier_inspect(model_id: str) -> dict[str, Any]:
+    return _xavier_call(_xavier_service.inspect, model_id)
+
+
+@app.get("/api/xavier/status")
+def xavier_status() -> dict[str, Any]:
+    return _xavier_call(_xavier_service.status)
+
+
+@app.post("/api/xavier/load")
+def xavier_load(payload: dict[str, Any]) -> dict[str, Any]:
+    if set(payload) != {"model_id"} or not isinstance(payload["model_id"], str):
+        raise HTTPException(status_code=422, detail={"code": "invalid_input", "message": "Only a registered model_id is accepted"})
+    return _xavier_call(_xavier_service.load, payload["model_id"])
+
+
+@app.post("/api/xavier/forecast")
+def xavier_forecast(payload: dict[str, Any]) -> dict[str, Any]:
+    return _xavier_call(_xavier_service.forecast, payload)
+
+
+@app.post("/api/xavier/propose")
+def xavier_propose(payload: dict[str, Any]) -> dict[str, Any]:
+    return _xavier_call(_xavier_service.propose, payload)
+
+
+@app.post("/api/xavier/unload")
+def xavier_unload(payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    if payload:
+        raise HTTPException(status_code=422, detail={"code": "invalid_input", "message": "unload takes no parameters"})
+    return _xavier_call(_xavier_service.unload)
+
+
+from .product import install_product_routes
+install_product_routes(app, lambda: _xavier_service)

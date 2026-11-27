@@ -50,7 +50,7 @@ from .quality import SignalQualityReport, score_signal_quality
 from .settings import NeuroCoreSettings
 from .stream import StreamBuffer, StreamWindow
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "__version__",

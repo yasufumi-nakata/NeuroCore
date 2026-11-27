@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "neurocore"
-version = "0.2.0"
-description = "EEG-to-control runtime primitives for mouse, keyboard, and AI-agent orchestration without bundled decoder weights."
+version = "0.3.0"
+description = "EEG runtime with Xavier inference artifacts, causal signal preparation, multimodal proposals, and bounded control integration."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -30,6 +30,16 @@ dependencies = [
 
 [project.optional-dependencies]
 server = ["fastapi>=0.100", "uvicorn[standard]>=0.27"]
+desktop = ["fastapi>=0.100", "uvicorn[standard]>=0.27", "Pillow>=11", "PyAutoGUI>=0.9.54"]
+xavier = ["safetensors>=0.8", "Pillow>=11"]
+xavier-mlx = [
+    "mlx==0.32.4; sys_platform == 'darwin' and platform_machine == 'arm64'",
+    "mlx-vlm==0.8.0; sys_platform == 'darwin' and platform_machine == 'arm64'",
+    "transformers==5.24.0; sys_platform == 'darwin' and platform_machine == 'arm64'",
+    "numpy==2.5.5; sys_platform == 'darwin' and platform_machine == 'arm64'",
+    "safetensors==0.8.0",
+    "Pillow>=11",
+]
 io = [
     "antio>=0.5",
     "h5py>=3.10",
@@ -67,6 +77,10 @@ package-dir = { "" = "backend" }
 [tool.setuptools.packages.find]
 where = ["backend"]
 include = ["neurocore*"]
+
+[tool.setuptools.package-data]
+"neurocore" = ["web/*.html", "web/assets/*"]
+"neurocore.xavier" = ["catalog.json", "packagedcatalog.json", "assets/*.json", "assets/source30/*.json", "assets/source30/*.safetensors", "assets/source30/*.md", "assets/source30/*.txt"]
 
 [tool.pytest.ini_options]
 pythonpath = ["backend"]

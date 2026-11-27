@@ -46,8 +46,9 @@ class ControlAction:
 class ControlRouter:
     """Routes externally decoded intents into actions.
 
-    NeuroCore deliberately does not contain classifier weights or decision models.
-    A decoder supplies an IntentCommand; this router only validates and envelopes it.
+    A decoder or the optional Xavier integration supplies an IntentCommand.
+    This router validates and envelopes it; inference and execution have separate
+    lifecycles and authorization boundaries.
     """
 
     def __init__(self, settings: NeuroCoreSettings | None = None):
